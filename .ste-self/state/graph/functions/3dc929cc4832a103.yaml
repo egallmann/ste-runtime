@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/recon/phases/normalization.ts:normalizeAssertions:73
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/normalization.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-normalization
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/phases/normalization.ts:normalizeAssertions:73
+  name: normalizeAssertions
+  signature: 'function normalizeAssertions(rawAssertions: RawAssertion[], projectRoot: string): Promise<NormalizedAssertion[]>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - rawAssertions
+    - projectRoot
+  docstring: "Normalize raw assertions into AI-DOC schema format.\r\n\r\nMaps source elements to appropriate AI-DOC domains:\r\n- Functions -> graph:function\r\n- Classes -> graph:class\r\n- Imports -> graph:module relationships\r\n- API Endpoints -> api:endpoint\r\n- Data Models -> data:entity"
+  description: "Normalize raw assertions into AI-DOC schema format.\r\n\r\nMaps source elements to appropriate AI-DOC domains:\r\n- Functions -> graph:function\r\n- Classes -> graph:class\r\n- Imports -> graph:module relationships\r\n- API Endpoints -> api:endpoint\r\n- Data Models -> data:entity"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/normalization.ts
+  line: 73
+  language: typescript
+  source_checksum: 9a09357d99f13f8cc71f3acb35227513bcc429f9ea36a32db7b8139a617c10f8

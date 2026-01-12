@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/recon/phases/index.ts:runReconPhases:111
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/index.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/phases/index.ts:runReconPhases:111
+  name: runReconPhases
+  signature: 'function runReconPhases(options: ReconOptions): Promise<ReconResult>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - options
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/index.ts
+  line: 111
+  language: typescript
+  source_checksum: 601d68dad0b7e9f859d89ae14c6959ea5c72b62a25572c7028f1a282d8d3a641

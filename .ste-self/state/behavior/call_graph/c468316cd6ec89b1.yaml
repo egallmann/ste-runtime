@@ -1,0 +1,718 @@
+_slice:
+  id: function_calls:backend/lambda/remediations/executor.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/remediations/executor.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/remediations/executor.py:module
+  file: backend/lambda/remediations/executor.py
+  callGraph:
+    lambda_handler:
+      - name: info
+        type: method
+        target: logger
+        lineno: 95
+      - name: handle_sqs_batch
+        type: direct
+        lineno: 101
+      - name: handle_direct_invocation
+        type: direct
+        lineno: 104
+      - name: error
+        type: method
+        target: logger
+        lineno: 107
+      - name: error
+        type: method
+        target: logger
+        lineno: 108
+      - name: dumps
+        type: method
+        target: json
+        lineno: 95
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 108
+      - name: dumps
+        type: method
+        target: json
+        lineno: 112
+      - name: str
+        type: direct
+        lineno: 107
+      - name: str
+        type: direct
+        lineno: 114
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 115
+    handle_direct_invocation:
+      - name: get
+        type: method
+        target: event
+        lineno: 133
+      - name: get
+        type: method
+        target: event
+        lineno: 134
+      - name: get
+        type: method
+        target: event
+        lineno: 135
+      - name: info
+        type: method
+        target: logger
+        lineno: 137
+      - name: execute_remediation
+        type: direct
+        lineno: 140
+      - name: info
+        type: method
+        target: logger
+        lineno: 150
+      - name: dumps
+        type: method
+        target: json
+        lineno: 153
+      - name: error
+        type: method
+        target: logger
+        lineno: 157
+      - name: error
+        type: method
+        target: logger
+        lineno: 158
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 158
+      - name: dumps
+        type: method
+        target: json
+        lineno: 162
+      - name: str
+        type: direct
+        lineno: 157
+      - name: str
+        type: direct
+        lineno: 164
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 165
+    handle_sqs_batch:
+      - name: get
+        type: method
+        target: event
+        lineno: 184
+      - name: info
+        type: method
+        target: logger
+        lineno: 185
+      - name: info
+        type: method
+        target: logger
+        lineno: 241
+      - name: get
+        type: method
+        target: record
+        lineno: 192
+      - name: loads
+        type: method
+        target: json
+        lineno: 196
+      - name: info
+        type: method
+        target: logger
+        lineno: 197
+      - name: get
+        type: method
+        target: message_body
+        lineno: 204
+      - name: execute_remediation
+        type: direct
+        lineno: 209
+      - name: len
+        type: direct
+        lineno: 185
+      - name: info
+        type: method
+        target: logger
+        lineno: 222
+      - name: append
+        type: method
+        target: batch_item_failures
+        lineno: 226
+      - name: error
+        type: method
+        target: logger
+        lineno: 227
+      - name: error
+        type: method
+        target: logger
+        lineno: 231
+      - name: error
+        type: method
+        target: logger
+        lineno: 236
+      - name: error
+        type: method
+        target: logger
+        lineno: 237
+      - name: append
+        type: method
+        target: batch_item_failures
+        lineno: 239
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 237
+      - name: get
+        type: method
+        target: message_body
+        lineno: 197
+      - name: get
+        type: method
+        target: result
+        lineno: 227
+      - name: str
+        type: direct
+        lineno: 231
+      - name: str
+        type: direct
+        lineno: 236
+    execute_remediation:
+      - name: now
+        type: method
+        target: datetime
+        lineno: 265
+      - name: str
+        type: direct
+        lineno: 266
+      - name: info
+        type: method
+        target: logger
+        lineno: 268
+      - name: uuid4
+        type: method
+        target: uuid
+        lineno: 266
+      - name: get_control_definition
+        type: direct
+        lineno: 272
+      - name: info
+        type: method
+        target: logger
+        lineno: 273
+      - name: get_account_control_settings
+        type: direct
+        lineno: 287
+      - name: info
+        type: method
+        target: logger
+        lineno: 288
+      - name: get_resource_state
+        type: direct
+        lineno: 297
+      - name: info
+        type: method
+        target: logger
+        lineno: 298
+      - name: execute_remediation_action
+        type: direct
+        lineno: 302
+      - name: info
+        type: method
+        target: logger
+        lineno: 310
+      - name: get_resource_state
+        type: direct
+        lineno: 313
+      - name: info
+        type: method
+        target: logger
+        lineno: 314
+      - name: verify_remediation
+        type: direct
+        lineno: 317
+      - name: info
+        type: method
+        target: logger
+        lineno: 318
+      - name: now
+        type: method
+        target: datetime
+        lineno: 321
+      - name: int
+        type: direct
+        lineno: 322
+      - name: save_remediation_history
+        type: direct
+        lineno: 346
+      - name: info
+        type: method
+        target: logger
+        lineno: 347
+      - name: update_account_control_stats
+        type: direct
+        lineno: 355
+      - name: RemediationNotImplementedError
+        type: direct
+        lineno: 277
+      - name: get
+        type: method
+        target: control
+        lineno: 281
+      - name: RemediationNotImplementedError
+        type: direct
+        lineno: 282
+      - name: ApprovalRequiredError
+        type: direct
+        lineno: 292
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 334
+      - name: get
+        type: method
+        target: execution_result
+        lineno: 339
+      - name: get
+        type: method
+        target: execution_result
+        lineno: 343
+      - name: update_finding_status
+        type: direct
+        lineno: 351
+      - name: info
+        type: method
+        target: logger
+        lineno: 352
+      - name: warning
+        type: method
+        target: logger
+        lineno: 372
+      - name: save_remediation_history
+        type: direct
+        lineno: 375
+      - name: error
+        type: method
+        target: logger
+        lineno: 395
+      - name: error
+        type: method
+        target: logger
+        lineno: 396
+      - name: save_remediation_history
+        type: direct
+        lineno: 399
+      - name: get
+        type: method
+        target: account_control
+        lineno: 291
+      - name: total_seconds
+        type: method
+        target: end_time - start_time
+        lineno: 322
+      - name: isoformat
+        type: method
+        target: start_time
+        lineno: 327
+      - name: str
+        type: direct
+        lineno: 390
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 396
+      - name: lower
+        type: method
+        target: execution_result['status']
+        lineno: 367
+      - name: str
+        type: direct
+        lineno: 383
+      - name: str
+        type: direct
+        lineno: 407
+      - name: format_exc
+        type: method
+        target: traceback
+        lineno: 408
+      - name: str
+        type: direct
+        lineno: 372
+      - name: isoformat
+        type: method
+        target: start_time
+        lineno: 377
+      - name: str
+        type: direct
+        lineno: 395
+      - name: isoformat
+        type: method
+        target: start_time
+        lineno: 401
+    get_control_definition:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 429
+      - name: get_item
+        type: method
+        target: table
+        lineno: 432
+      - name: ControlNotFoundError
+        type: direct
+        lineno: 440
+      - name: error
+        type: method
+        target: logger
+        lineno: 445
+      - name: ControlNotFoundError
+        type: direct
+        lineno: 446
+      - name: str
+        type: direct
+        lineno: 445
+      - name: str
+        type: direct
+        lineno: 446
+    get_account_control_settings:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 455
+      - name: get_item
+        type: method
+        target: table
+        lineno: 458
+      - name: info
+        type: method
+        target: logger
+        lineno: 469
+      - name: error
+        type: method
+        target: logger
+        lineno: 479
+      - name: str
+        type: direct
+        lineno: 479
+    execute_remediation_action:
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 524
+      - name: info
+        type: method
+        target: logger
+        lineno: 527
+      - name: is_spoke_account
+        type: direct
+        lineno: 531
+      - name: info
+        type: method
+        target: logger
+        lineno: 607
+      - name: api_method
+        type: direct
+        lineno: 610
+      - name: info
+        type: method
+        target: logger
+        lineno: 612
+      - name: info
+        type: method
+        target: logger
+        lineno: 532
+      - name: get_executor_cross_account_client
+        type: direct
+        lineno: 536
+      - name: info
+        type: method
+        target: logger
+        lineno: 543
+      - name: client
+        type: method
+        target: boto3
+        lineno: 545
+      - name: get_rds_resource_details
+        type: direct
+        lineno: 550
+      - name: info
+        type: method
+        target: logger
+        lineno: 551
+      - name: getattr
+        type: direct
+        lineno: 597
+      - name: extract_resource_identifier
+        type: direct
+        lineno: 598
+      - name: error
+        type: method
+        target: logger
+        lineno: 621
+      - name: info
+        type: method
+        target: logger
+        lineno: 559
+      - name: getattr
+        type: direct
+        lineno: 566
+      - name: getattr
+        type: direct
+        lineno: 582
+      - name: extract_resource_identifier
+        type: direct
+        lineno: 583
+      - name: hasattr
+        type: direct
+        lineno: 594
+      - name: RemediationError
+        type: direct
+        lineno: 595
+      - name: str
+        type: direct
+        lineno: 624
+      - name: hasattr
+        type: direct
+        lineno: 579
+      - name: RemediationError
+        type: direct
+        lineno: 580
+      - name: dumps
+        type: method
+        target: json
+        lineno: 607
+      - name: dumps
+        type: method
+        target: json
+        lineno: 551
+      - name: str
+        type: direct
+        lineno: 621
+    extract_resource_identifier:
+      - name: warning
+        type: method
+        target: logger
+        lineno: 664
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 640
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 645
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 650
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 655
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 660
+    get_rds_resource_details:
+      - name: client
+        type: method
+        target: boto3
+        lineno: 696
+      - name: info
+        type: method
+        target: logger
+        lineno: 703
+      - name: describe_db_clusters
+        type: method
+        target: rds_client
+        lineno: 704
+      - name: RemediationError
+        type: direct
+        lineno: 744
+      - name: RemediationError
+        type: direct
+        lineno: 746
+      - name: error
+        type: method
+        target: logger
+        lineno: 748
+      - name: RemediationError
+        type: direct
+        lineno: 749
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 701
+      - name: startswith
+        type: method
+        target: cluster['Engine']
+        lineno: 711
+      - name: info
+        type: method
+        target: logger
+        lineno: 719
+      - name: describe_db_instances
+        type: method
+        target: rds_client
+        lineno: 720
+      - name: startswith
+        type: method
+        target: instance['Engine']
+        lineno: 726
+      - name: RemediationError
+        type: direct
+        lineno: 741
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 717
+      - name: get
+        type: method
+        target: instance
+        lineno: 727
+      - name: info
+        type: method
+        target: logger
+        lineno: 730
+      - name: str
+        type: direct
+        lineno: 748
+      - name: str
+        type: direct
+        lineno: 749
+    get_resource_state:
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 762
+      - name: now
+        type: method
+        target: datetime
+        lineno: 762
+    save_remediation_history:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 787
+      - name: put_item
+        type: method
+        target: table
+        lineno: 790
+      - name: info
+        type: method
+        target: logger
+        lineno: 791
+      - name: error
+        type: method
+        target: logger
+        lineno: 793
+      - name: str
+        type: direct
+        lineno: 793
+    update_finding_status:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 799
+      - name: update_item
+        type: method
+        target: table
+        lineno: 805
+      - name: info
+        type: method
+        target: logger
+        lineno: 820
+      - name: isoformat
+        type: method
+        target: datetime.utcnow()
+        lineno: 803
+      - name: error
+        type: method
+        target: logger
+        lineno: 822
+      - name: utcnow
+        type: method
+        target: datetime
+        lineno: 803
+      - name: isoformat
+        type: method
+        target: datetime.utcnow()
+        lineno: 817
+      - name: str
+        type: direct
+        lineno: 822
+      - name: utcnow
+        type: method
+        target: datetime
+        lineno: 817
+    update_account_control_stats:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 827
+      - name: update_item
+        type: method
+        target: table
+        lineno: 830
+      - name: info
+        type: method
+        target: logger
+        lineno: 854
+      - name: update_item
+        type: method
+        target: table
+        lineno: 843
+      - name: error
+        type: method
+        target: logger
+        lineno: 856
+      - name: isoformat
+        type: method
+        target: datetime.utcnow()
+        lineno: 837
+      - name: str
+        type: direct
+        lineno: 856
+      - name: isoformat
+        type: method
+        target: datetime.utcnow()
+        lineno: 850
+      - name: utcnow
+        type: method
+        target: datetime
+        lineno: 837
+      - name: utcnow
+        type: method
+        target: datetime
+        lineno: 850
+  callers:
+    - lambda_handler
+    - handle_direct_invocation
+    - handle_sqs_batch
+    - execute_remediation
+    - get_control_definition
+    - get_account_control_settings
+    - execute_remediation_action
+    - extract_resource_identifier
+    - get_rds_resource_details
+    - get_resource_state
+    - save_remediation_history
+    - update_finding_status
+    - update_account_control_stats
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/remediations/executor.py
+  line: 0
+  language: python
+  source_checksum: e9193426356ae78f2c61a424cf56eb5184900b14c4ade120248096e187f70404

@@ -1,0 +1,55 @@
+_slice:
+  id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/auth/auth.service.ts
+  references: []
+  tags:
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/filter-state.service.ts:FilterStateService
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/websocket.service.ts:WebSocketService
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/dashboard/dashboard-home.component.ts:DashboardHomeComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/dashboard/dashboard.component.ts:DashboardComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/login/login.component.ts:LoginComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/user-profile/user-profile.component.ts:UserProfileComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/users/user-list.component.ts:UserListComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/accounts/account-detail/account-detail.component.ts:AccountDetailComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/controls/controls-list/controls-list.component.ts:ControlsListComponent
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/findings/findings-list/findings-list.component.ts:FindingsListComponent
+element:
+  id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  name: AuthService
+  className: AuthService
+  providedIn: root
+  injectedDependencies:
+    - Router
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/auth/auth.service.ts
+  line: 18
+  language: angular
+  source_checksum: 785d0902244792d7ebc1e2d6291586ce4b084f61d01815a5d7ed4b0f9e6cfb09

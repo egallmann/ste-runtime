@@ -1,0 +1,53 @@
+_slice:
+  id: module-src-task-task-analysis
+  domain: graph
+  type: module
+  source_files:
+    - src/task/task-analysis.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-index
+    - domain: graph
+      type: function
+      id: function:src/task/task-analysis.ts:resolveScriptPath:17
+    - domain: graph
+      type: function
+      id: function:src/task/task-analysis.ts:runTaskAnalyze:22
+element:
+  id: module-src-task-task-analysis
+  path: src/task/task-analysis.ts
+  name: task-analysis
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - resolveScriptPath
+      - runTaskAnalyze
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: node:path
+        names:
+          - path
+      - module: node:url
+        names:
+          - fileURLToPath
+      - module: execa
+        names:
+          - execa
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/task/task-analysis.ts
+  line: 1
+  language: typescript
+  source_checksum: 3503cb5f1fc5ab74269b29b3fb6b68cd3eb9566dcdb59569bbf4d60d6a651587

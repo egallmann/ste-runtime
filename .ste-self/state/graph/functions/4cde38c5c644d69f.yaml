@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/mcp/graph-topology-analyzer.ts:analyzeGraphTopology:50
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/graph-topology-analyzer.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-graph-topology-analyzer
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/graph-topology-analyzer.ts:analyzeGraphTopology:50
+  name: analyzeGraphTopology
+  signature: 'function analyzeGraphTopology(graph: AidocGraph): Promise<GraphMetrics>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - graph
+  docstring: Analyze graph topology and calculate optimal traversal parameters
+  description: Analyze graph topology and calculate optimal traversal parameters
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/graph-topology-analyzer.ts
+  line: 50
+  language: typescript
+  source_checksum: a52f6b31ee3858c6637b536535e8d8d5f41fb7961465942e035ef7526a5582e2

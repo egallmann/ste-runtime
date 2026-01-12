@@ -1,0 +1,29 @@
+_slice:
+  id: module-fixtures-python-sample-app-__init__
+  domain: graph
+  type: module
+  source_files:
+    - fixtures/python-sample/app/__init__.py
+  references: []
+  referenced_by: []
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+module:
+  id: module-fixtures-python-sample-app-__init__
+  path: fixtures/python-sample/app/__init__.py
+  name: __init__
+  layer: util
+  exports:
+    classes: []
+    functions: []
+    constants: []
+  imports:
+    internal: []
+    external: []
+  metrics: {}

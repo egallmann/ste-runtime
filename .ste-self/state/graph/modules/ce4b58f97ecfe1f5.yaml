@@ -1,0 +1,43 @@
+_slice:
+  id: module-src-aidoc-python-aidoc-generator
+  domain: graph
+  type: module
+  source_files:
+    - src/aidoc/python-aidoc-generator.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-base-extractor
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/aidoc/python-aidoc-generator.ts:generatePythonAidoc:3
+element:
+  id: module-src-aidoc-python-aidoc-generator
+  path: src/aidoc/python-aidoc-generator.ts
+  name: python-aidoc-generator
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - generatePythonAidoc
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../extractors/base-extractor.js
+        names:
+          - ExtractedStructure
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/aidoc/python-aidoc-generator.ts
+  line: 1
+  language: typescript
+  source_checksum: e91c9744370b1c6efd2a3d7f3406149c1f97fb27d428fdc457ab120a661ae1a7

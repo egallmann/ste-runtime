@@ -1,0 +1,66 @@
+_slice:
+  id: module-src-recon-validation-report-generator
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/validation/report-generator.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-types
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-history-manager
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-self-validation
+    - domain: graph
+      type: function
+      id: function:src/recon/validation/report-generator.ts:generateReport:21
+    - domain: graph
+      type: function
+      id: function:src/recon/validation/report-generator.ts:printSummary:119
+element:
+  id: module-src-recon-validation-report-generator
+  path: src/recon/validation/report-generator.ts
+  name: report-generator
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - generateReport
+      - printSummary
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./types.js
+        names:
+          - ValidationFinding
+          - ValidationReport
+      - module: ./history-manager.js
+        names:
+          - pruneOldReports
+    external:
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: js-yaml
+        names:
+          - yaml
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/validation/report-generator.ts
+  line: 1
+  language: typescript
+  source_checksum: 57e3c3f959677bb832e935a899e4e969725e6c105d85db077037f9c56f1fe015

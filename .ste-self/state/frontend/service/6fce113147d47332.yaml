@@ -1,0 +1,57 @@
+_slice:
+  id: service:frontend/src/app/core/services/user.service.ts:UserService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/services/user.service.ts
+  references:
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/users
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:POST:/users
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:PUT:/users/{userId}/role
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:DELETE:/users/{userId}
+  tags:
+    - http:get
+    - http:post
+    - http:put
+    - http:delete
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/users/user-list.component.ts:UserListComponent
+element:
+  id: service:frontend/src/app/core/services/user.service.ts:UserService
+  name: UserService
+  className: UserService
+  providedIn: root
+  httpCalls:
+    - method: GET
+      urlPattern: '{apiUrl}/users'
+      functionName: getUsers
+    - method: POST
+      urlPattern: '{apiUrl}/users'
+      functionName: createUser
+    - method: PUT
+      urlPattern: '{apiUrl}/users/{userId}/role'
+      functionName: updateUserRole
+    - method: DELETE
+      urlPattern: '{apiUrl}/users/{userId}'
+      functionName: deleteUser
+  injectedDependencies:
+    - HttpClient
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/services/user.service.ts
+  line: 18
+  language: angular
+  source_checksum: 105df62ece49fea7d91bd3191bc6920576946e73f01326fe010974f454e9dc4e

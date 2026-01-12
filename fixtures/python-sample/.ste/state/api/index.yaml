@@ -1,0 +1,34 @@
+_slice:
+  id: api-index
+  domain: api
+  type: index
+  source_files: []
+  references: []
+  referenced_by: []
+  tags:
+    - api
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+endpoints:
+  - id: api-GET-api-greet-name
+    method: GET
+    path: /api/greet/<name>
+    summary: Greet a user by name.
+    domain_function: ''
+  - id: api-GET-api-users
+    method: GET
+    path: /api/users
+    summary: List all users.
+    domain_function: ''
+  - id: api-GET-api-users-user-id
+    method: GET
+    path: /api/users/<user_id>
+    summary: Get a user by ID.
+    domain_function: ''
+  - id: api-POST-api-users
+    method: POST
+    path: /api/users
+    summary: Create a new user.
+    domain_function: ''

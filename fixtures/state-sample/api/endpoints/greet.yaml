@@ -1,0 +1,31 @@
+_slice:
+  id: greet
+  domain: api
+  type: endpoint
+  source_files:
+    - app/api.py
+  references:
+    - domain: graph
+      type: module
+      id: module:app/services/greeting.py
+  referenced_by: []
+  tags:
+    - backend:api
+    - http:get
+
+endpoint:
+  method: GET
+  path: /api/greet/{name}
+  summary: Greet a user by name
+  domain_function: greet
+  handler: greet
+  parameters:
+    - name: name
+      in: path
+      required: true
+      type: string
+  responses:
+    - status: 200
+      description: Greeting message
+
+

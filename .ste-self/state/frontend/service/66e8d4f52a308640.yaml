@@ -1,0 +1,51 @@
+_slice:
+  id: service:frontend/src/app/core/services/metrics.service.ts:MetricsService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/services/metrics.service.ts
+  references:
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/settings/risk-index
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/metrics/dashboard
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/reports/data
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/reports/filter-options
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/exclusions
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/exclusions/{exclusionId}
+  tags:
+    - http:get
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/dashboard/dashboard-home.component.ts:DashboardHomeComponent
+element:
+  id: service:frontend/src/app/core/services/metrics.service.ts:MetricsService
+  name: MetricsService
+  className: MetricsService
+  providedIn: root
+  httpCalls:
+    - method: GET
+      urlPattern: '{environment.apiUrl}/api/metrics/dashboard'
+      functionName: getDashboardMetrics
+  injectedDependencies:
+    - HttpClient
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/services/metrics.service.ts
+  line: 61
+  language: angular
+  source_checksum: eec1cbd73fd52d92803ba06cd784e351d0763326e84022ee0b301d29bbbfcdcf

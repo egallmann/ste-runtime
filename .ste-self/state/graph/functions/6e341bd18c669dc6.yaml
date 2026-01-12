@@ -1,0 +1,29 @@
+_slice:
+  id: function:src/watch/change-detector.ts:listPythonFiles:55
+  domain: graph
+  type: function
+  source_files:
+    - src/watch/change-detector.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-change-detector
+  tags:
+    - async
+  referenced_by: []
+element:
+  id: function:src/watch/change-detector.ts:listPythonFiles:55
+  name: listPythonFiles
+  signature: 'function listPythonFiles(projectRoot: string): Promise<string[]>'
+  language: typescript
+  is_exported: false
+  is_async: true
+  parameters:
+    - projectRoot
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/change-detector.ts
+  line: 55
+  language: typescript
+  source_checksum: cf66337de58175a5bd468ae75adee35516f526e6a579966eabc87387e0561370

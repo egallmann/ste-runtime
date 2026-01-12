@@ -1,0 +1,31 @@
+_slice:
+  id: internal-graph-index
+  domain: graph
+  type: internal-index
+  source_files: []
+  references: []
+  referenced_by: []
+  tags:
+    - graph
+    - internal
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+modules:
+  - id: module-app-__init__
+    path: app/__init__.py
+    layer: util
+  - id: module-app-api
+    path: app/api.py
+    layer: util
+  - id: module-app-services-__init__
+    path: app/services/__init__.py
+    layer: util
+  - id: module-app-services-greeting
+    path: app/services/greeting.py
+    layer: util
+  - id: module-app-services-user_service
+    path: app/services/user_service.py
+    layer: util
+layers: []

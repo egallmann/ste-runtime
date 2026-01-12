@@ -1,0 +1,76 @@
+_slice:
+  id: module-src-rss-conversational-query
+  domain: graph
+  type: module
+  source_files:
+    - src/rss/conversational-query.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-loader
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: class
+      id: class:src/rss/conversational-query.ts:ConversationalQueryEngine
+    - domain: graph
+      type: function
+      id: function:src/rss/conversational-query.ts:ask:761
+    - domain: graph
+      type: function
+      id: function:src/rss/conversational-query.ts:formatForHuman:771
+    - domain: graph
+      type: function
+      id: function:src/rss/conversational-query.ts:formatForAgent:823
+element:
+  id: module-src-rss-conversational-query
+  path: src/rss/conversational-query.ts
+  name: conversational-query
+  language: typescript
+  layer: recon
+  exports:
+    classes:
+      - ConversationalQueryEngine
+    functions:
+      - ask
+      - formatForHuman
+      - formatForAgent
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./rss-operations.js
+        names:
+          - RssContext
+          - initRssContext
+          - search
+          - lookupByKey
+          - dependencies
+          - dependents
+          - blastRadius
+          - byTag
+          - findEntryPoints
+          - assembleContext
+          - getGraphStats
+          - extractFilePaths
+          - RssQueryResult
+      - module: ./graph-loader.js
+        names:
+          - AidocNode
+    external:
+      - module: lru-cache
+        names:
+          - LRUCache
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/conversational-query.ts
+  line: 1
+  language: typescript
+  source_checksum: 4a3a1258dcbe133ef77373597cc9ac511be5ba216acbb7ff485861551c249663

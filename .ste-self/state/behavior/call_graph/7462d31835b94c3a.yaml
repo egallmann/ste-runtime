@@ -1,0 +1,357 @@
+_slice:
+  id: function_calls:backend/lambda/api/report_generators/remediation_history_reporter.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/api/report_generators/remediation_history_reporter.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/api/report_generators/remediation_history_reporter.py:module
+  file: backend/lambda/api/report_generators/remediation_history_reporter.py
+  callGraph:
+    __init__:
+      - name: __init__
+        type: method
+        target: super()
+        lineno: 19
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 20
+      - name: get
+        type: method
+        target: os.environ
+        lineno: 21
+      - name: super
+        type: direct
+        lineno: 19
+    query_data:
+      - name: validate_filters
+        type: method
+        target: self
+        lineno: 39
+      - name: get
+        type: method
+        target: filters
+        lineno: 42
+      - name: convert_decimals
+        type: method
+        target: self
+        lineno: 107
+      - name: get
+        type: method
+        target: filters
+        lineno: 53
+      - name: get
+        type: method
+        target: filters
+        lineno: 92
+      - name: filter_by_values
+        type: method
+        target: self
+        lineno: 93
+      - name: get
+        type: method
+        target: filters
+        lineno: 95
+      - name: get
+        type: method
+        target: filters
+        lineno: 95
+      - name: filter_by_values
+        type: method
+        target: self
+        lineno: 96
+      - name: get
+        type: method
+        target: filters
+        lineno: 99
+      - name: get
+        type: method
+        target: filters
+        lineno: 99
+      - name: filter_by_date_range
+        type: method
+        target: self
+        lineno: 100
+      - name: strip
+        type: method
+        target: a
+        lineno: 44
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 47
+      - name: extend
+        type: method
+        target: remediations
+        lineno: 52
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 55
+      - name: get
+        type: method
+        target: filters
+        lineno: 60
+      - name: get
+        type: method
+        target: filters
+        lineno: 103
+      - name: get
+        type: method
+        target: filters
+        lineno: 104
+      - name: split
+        type: method
+        target: filters['account']
+        lineno: 44
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 62
+      - name: get
+        type: method
+        target: filters
+        lineno: 92
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 50
+      - name: eq
+        type: method
+        target: Key('result')
+        lineno: 58
+      - name: eq
+        type: method
+        target: Key('controlId')
+        lineno: 65
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 77
+      - name: extend
+        type: method
+        target: all_remediations
+        lineno: 82
+      - name: Key
+        type: direct
+        lineno: 50
+      - name: Key
+        type: direct
+        lineno: 58
+      - name: print
+        type: direct
+        lineno: 86
+      - name: Key
+        type: direct
+        lineno: 65
+      - name: eq
+        type: method
+        target: Key('result')
+        lineno: 80
+      - name: Key
+        type: direct
+        lineno: 80
+      - name: str
+        type: direct
+        lineno: 86
+    calculate_summary:
+      - name: Counter
+        type: direct
+        lineno: 120
+      - name: len
+        type: direct
+        lineno: 123
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 124
+      - name: len
+        type: direct
+        lineno: 139
+      - name: len
+        type: direct
+        lineno: 140
+      - name: get
+        type: method
+        target: item
+        lineno: 129
+      - name: set
+        type: direct
+        lineno: 139
+      - name: set
+        type: direct
+        lineno: 140
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 144
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 145
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 146
+      - name: round
+        type: direct
+        lineno: 147
+      - name: round
+        type: direct
+        lineno: 148
+      - name: get
+        type: method
+        target: item
+        lineno: 120
+      - name: get
+        type: method
+        target: item
+        lineno: 131
+      - name: sum
+        type: direct
+        lineno: 134
+      - name: len
+        type: direct
+        lineno: 134
+      - name: get
+        type: method
+        target: item
+        lineno: 139
+      - name: get
+        type: method
+        target: item
+        lineno: 140
+      - name: get
+        type: method
+        target: item
+        lineno: 139
+      - name: get
+        type: method
+        target: item
+        lineno: 140
+    prepare_chart_data:
+      - name: Counter
+        type: direct
+        lineno: 164
+      - name: Counter
+        type: direct
+        lineno: 172
+      - name: defaultdict
+        type: direct
+        lineno: 179
+      - name: get
+        type: method
+        target: item
+        lineno: 181
+      - name: get
+        type: method
+        target: item
+        lineno: 164
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 166
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 167
+      - name: get
+        type: method
+        target: result_counts
+        lineno: 168
+      - name: get
+        type: method
+        target: item
+        lineno: 172
+      - name: most_common
+        type: method
+        target: control_counts
+        lineno: 175
+      - name: get
+        type: method
+        target: item
+        lineno: 185
+      - name: sorted
+        type: direct
+        lineno: 194
+      - name: items
+        type: method
+        target: trend_data
+        lineno: 194
+    prepare_table_data:
+      - name: sort
+        type: method
+        target: table_data
+        lineno: 237
+      - name: get
+        type: method
+        target: item
+        lineno: 219
+      - name: append
+        type: method
+        target: table_data
+        lineno: 220
+      - name: get
+        type: method
+        target: item
+        lineno: 221
+      - name: get
+        type: method
+        target: item
+        lineno: 222
+      - name: get
+        type: method
+        target: item
+        lineno: 223
+      - name: get_account_name
+        type: direct
+        lineno: 225
+      - name: get
+        type: method
+        target: item
+        lineno: 226
+      - name: get
+        type: method
+        target: item
+        lineno: 227
+      - name: get
+        type: method
+        target: item
+        lineno: 228
+      - name: get
+        type: method
+        target: item
+        lineno: 229
+      - name: get
+        type: method
+        target: item
+        lineno: 230
+      - name: get
+        type: method
+        target: item
+        lineno: 231
+      - name: get
+        type: method
+        target: item
+        lineno: 232
+      - name: get
+        type: method
+        target: item
+        lineno: 233
+  callers:
+    - __init__
+    - query_data
+    - calculate_summary
+    - prepare_chart_data
+    - prepare_table_data
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/report_generators/remediation_history_reporter.py
+  line: 0
+  language: python
+  source_checksum: 7cb724f8daa4624c4ef438bb1f192caa46b6a6c0de1770cf8053b1f2d4d2b7cf

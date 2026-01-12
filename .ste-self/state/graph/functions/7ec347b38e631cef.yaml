@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/watch/file-watcher.ts:startWatch:3
+  domain: graph
+  type: function
+  source_files:
+    - src/watch/file-watcher.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-file-watcher
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/watch/file-watcher.ts:startWatch:3
+  name: startWatch
+  signature: 'function startWatch(target: string): Promise<void>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - target
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/file-watcher.ts
+  line: 3
+  language: typescript
+  source_checksum: de9e75c828b0fb19fdb89a7b669f7da41e010829a1529133a2ce5f7cb6187cec

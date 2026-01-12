@@ -1,0 +1,34 @@
+_slice:
+  id: function:src/recon/validation/history-manager.ts:saveChecksumEntry:45
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/validation/history-manager.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-history-manager
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/validation/history-manager.ts:saveChecksumEntry:45
+  name: saveChecksumEntry
+  signature: 'function saveChecksumEntry(stateDir: string, runId: string, checksums: ChecksumEntry[]): Promise<void>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - stateDir
+    - runId
+    - checksums
+  docstring: "Save checksum entry for current run.\r\nMaintains retention policy (last 10 runs)."
+  description: "Save checksum entry for current run.\r\nMaintains retention policy (last 10 runs)."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/validation/history-manager.ts
+  line: 45
+  language: typescript
+  source_checksum: 089983cbe5d2d69010d3cbba1864ee2be68afc9fe6286ba79e2a5bcc0b4676f6

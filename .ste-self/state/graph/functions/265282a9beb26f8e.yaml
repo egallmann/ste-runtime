@@ -1,0 +1,35 @@
+_slice:
+  id: function:src/recon/phases/divergence.ts:detectDivergence:56
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/divergence.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-divergence
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/phases/divergence.ts:detectDivergence:56
+  name: detectDivergence
+  signature: 'function detectDivergence(newAssertions: NormalizedAssertion[], priorState: Map<string, NormalizedAssertion>, projectRoot: string, stateRoot: string): Promise<ValidationResult>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - newAssertions
+    - priorState
+    - projectRoot
+    - stateRoot
+  docstring: "Validate state and identify semantic enrichments.\r\n\r\n**No conflicts are created.** All changes are either:\r\n1. Authoritative updates (source changed)\r\n2. Semantic enrichment (extractor improved)\r\n3. Orphaned slices (source deleted)"
+  description: "Validate state and identify semantic enrichments.\r\n\r\n**No conflicts are created.** All changes are either:\r\n1. Authoritative updates (source changed)\r\n2. Semantic enrichment (extractor improved)\r\n3. Orphaned slices (source deleted)"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/divergence.ts
+  line: 56
+  language: typescript
+  source_checksum: 8a3808e20ff422e5cd94c219f3579e1d87f1b87083eb182549478a098fcce5a6

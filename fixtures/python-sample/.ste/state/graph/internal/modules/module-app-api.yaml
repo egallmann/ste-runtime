@@ -1,0 +1,63 @@
+_slice:
+  id: module-app-api
+  domain: graph
+  type: module
+  source_files:
+    - app/api.py
+  references:
+    - domain: graph
+      type: module
+      id: module-app-services-greeting
+    - domain: graph
+      type: module
+      id: module-app-services-user_service
+  referenced_by:
+    - domain: api
+      type: endpoint
+      id: api-GET-api-greet-name
+    - domain: api
+      type: endpoint
+      id: api-GET-api-users
+    - domain: api
+      type: endpoint
+      id: api-GET-api-users-user-id
+    - domain: api
+      type: endpoint
+      id: api-POST-api-users
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+module:
+  id: module-app-api
+  path: app/api.py
+  name: api
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - create_user
+      - get_user
+      - greet
+      - list_users
+    constants: []
+  imports:
+    internal:
+      - module_id: module-app-services-greeting
+        items:
+          - GreetingService
+      - module_id: module-app-services-user_service
+        items:
+          - User
+          - UserService
+    external:
+      - package: flask
+        items:
+          - Flask
+          - jsonify
+          - request
+  metrics: {}

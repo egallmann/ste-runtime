@@ -1,0 +1,40 @@
+_slice:
+  id: service:frontend/src/app/core/services/findings.service.ts:FindingsService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/services/findings.service.ts
+  references:
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/websocket.service.ts:WebSocketService
+  tags:
+    - http:get
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/findings/findings-list/findings-list.component.ts:FindingsListComponent
+element:
+  id: service:frontend/src/app/core/services/findings.service.ts:FindingsService
+  name: FindingsService
+  className: FindingsService
+  providedIn: root
+  httpCalls:
+    - method: GET
+      urlPattern: '{apiUrl}'
+      functionName: listFindings
+    - method: GET
+      urlPattern: '{apiUrl}/{encodeURIComponent(findingId)}'
+      functionName: getFinding
+  injectedDependencies:
+    - HttpClient
+    - WebSocketService
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/services/findings.service.ts
+  line: 18
+  language: angular
+  source_checksum: 81f06994fc4790fafe1809b7a0c199f7d0f76c94d7e28ff87ccfc21daeb0bbe0

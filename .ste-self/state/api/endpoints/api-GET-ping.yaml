@@ -1,0 +1,35 @@
+_slice:
+  id: api-GET-ping
+  domain: api
+  type: endpoint
+  source_files:
+    - python-scripts/examples/flask_sample.py
+  references:
+    - domain: graph
+      type: module
+      id: module-python-scripts-examples-flask_sample
+  referenced_by: []
+  tags:
+    - api
+    - flask
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+endpoint:
+  id: api-GET-ping
+  method: GET
+  path: /ping
+  summary: Simple healthcheck endpoint.
+  domain_function: ''
+  handler:
+    file: python-scripts/examples/flask_sample.py
+    function: ping
+    class: ''
+    line: 8
+  authentication:
+    required: false
+    type: none
+    scopes: []
+    roles: []
+  responses: []

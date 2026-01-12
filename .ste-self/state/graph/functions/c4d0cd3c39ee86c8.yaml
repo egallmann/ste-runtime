@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/mcp/tools-structural.ts:searchSemanticGraph:27
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/tools-structural.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-structural
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/tools-structural.ts:searchSemanticGraph:27
+  name: searchSemanticGraph
+  signature: "function searchSemanticGraph(ctx: RssContext, args: {\r\n    query: string;\r\n    maxResults?: number;\r\n    domain?: string;\r\n    type?: string;\r\n  }): void"
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - ctx
+    - args
+  docstring: "Tool: search_semantic_graph\r\n\r\nSearch the semantic graph for components, functions, entities.\r\nThis is the entry point discovery mechanism."
+  description: "Tool: search_semantic_graph\r\n\r\nSearch the semantic graph for components, functions, entities.\r\nThis is the entry point discovery mechanism."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-structural.ts
+  line: 27
+  language: typescript
+  source_checksum: c0e3e56ae249d4ec69ace870d9c14d2dfcd05577bd843ad85b6c286c6bade102

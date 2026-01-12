@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:getRequiredProperties:236
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/cfn/cfn-spec-loader.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-cfn-cfn-spec-loader
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:getRequiredProperties:236
+  name: getRequiredProperties
+  signature: 'function getRequiredProperties(spec: CloudFormationSpec, resourceType: string): string[]'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - spec
+    - resourceType
+  docstring: Get required properties for a resource type
+  description: Get required properties for a resource type
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/cfn/cfn-spec-loader.ts
+  line: 236
+  language: typescript
+  source_checksum: 193dfd70008e006c8aeffd0d0486f438af85d121d358e1995b1fb51d7396664d

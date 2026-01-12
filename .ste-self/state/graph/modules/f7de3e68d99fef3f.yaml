@@ -1,0 +1,123 @@
+_slice:
+  id: module-src-cli-rss-cli
+  domain: graph
+  type: module
+  source_files:
+    - src/cli/rss-cli.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-loader
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:c:56
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:parseArgs:70
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:printHelp:117
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:formatNode:174
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:formatNodes:199
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:formatQueryResult:219
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleStats:223
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleSearch:250
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleLookup:258
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleDependencies:305
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleDependents:314
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleBlastRadius:323
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleByTag:332
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:handleContext:340
+    - domain: graph
+      type: function
+      id: function:src/cli/rss-cli.ts:main:397
+element:
+  id: module-src-cli-rss-cli
+  path: src/cli/rss-cli.ts
+  name: rss-cli
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - c
+      - parseArgs
+      - printHelp
+      - formatNode
+      - formatNodes
+      - formatQueryResult
+      - handleStats
+      - handleSearch
+      - handleLookup
+      - handleDependencies
+      - handleDependents
+      - handleBlastRadius
+      - handleByTag
+      - handleContext
+      - main
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../rss/rss-operations.js
+        names:
+          - initRssContext
+          - lookup
+          - lookupByKey
+          - dependencies
+          - dependents
+          - blastRadius
+          - byTag
+          - search
+          - findEntryPoints
+          - assembleContext
+          - getGraphStats
+          - RssContext
+          - RssQueryResult
+      - module: ../rss/graph-loader.js
+        names:
+          - AidocNode
+    external:
+      - module: node:path
+        names:
+          - path
+      - module: node:url
+        names:
+          - fileURLToPath
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/cli/rss-cli.ts
+  line: 1
+  language: typescript
+  source_checksum: 25d95300e27c7efa73893eb71bdb56bf1ce756cc3fa9e682e521c0594bdb8f7d

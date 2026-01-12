@@ -1,0 +1,27 @@
+_slice:
+  id: function:src/cli/recon-cli.ts:printHelp:40
+  domain: graph
+  type: function
+  source_files:
+    - src/cli/recon-cli.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-cli-recon-cli
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/cli/recon-cli.ts:printHelp:40
+  name: printHelp
+  signature: 'function printHelp(): void'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/cli/recon-cli.ts
+  line: 40
+  language: typescript
+  source_checksum: e041d0c0bd60c8ac2af434f58f230915f112bae3ba7bf5f083440b8c8033e5a0

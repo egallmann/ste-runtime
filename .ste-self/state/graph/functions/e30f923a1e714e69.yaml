@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:loadCfnSpec:162
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/cfn/cfn-spec-loader.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-cfn-cfn-spec-loader
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:loadCfnSpec:162
+  name: loadCfnSpec
+  signature: 'function loadCfnSpec(runtimeDir: string): Promise<CloudFormationSpec>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - runtimeDir
+  docstring: "Load the CloudFormation Resource Specification\r\n\r\nLoads from cache if valid, otherwise fetches from AWS.\r\nUses in-memory cache for repeated calls within same process."
+  description: "Load the CloudFormation Resource Specification\r\n\r\nLoads from cache if valid, otherwise fetches from AWS.\r\nUses in-memory cache for repeated calls within same process."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/cfn/cfn-spec-loader.ts
+  line: 162
+  language: typescript
+  source_checksum: 193dfd70008e006c8aeffd0d0486f438af85d121d358e1995b1fb51d7396664d

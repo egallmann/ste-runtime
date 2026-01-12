@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/mcp/tools-context.ts:getImplementationContext:139
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/tools-context.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-context
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/tools-context.ts:getImplementationContext:139
+  name: getImplementationContext
+  signature: "function getImplementationContext(ctx: RssContext, args: {\r\n    key: string;\r\n    includeSource?: boolean;\r\n    includeDependencies?: boolean;\r\n    depth?: number;\r\n    maxSourceLines?: number;\r\n  }): void"
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - ctx
+    - args
+  docstring: "Tool: get_implementation_context\r\n\r\nGet full implementation context for a specific component.\r\nReturns the component + its dependencies with source code."
+  description: "Tool: get_implementation_context\r\n\r\nGet full implementation context for a specific component.\r\nReturns the component + its dependencies with source code."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-context.ts
+  line: 139
+  language: typescript
+  source_checksum: b3fbfbd61f4f8854f831f2e9c5eca07e78c247d6e3afecc26342c950303b0bb6

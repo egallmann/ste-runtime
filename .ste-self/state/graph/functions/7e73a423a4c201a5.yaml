@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/watch/full-reconciliation.ts:computeSourceChecksums:81
+  domain: graph
+  type: function
+  source_files:
+    - src/watch/full-reconciliation.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-full-reconciliation
+  tags:
+    - async
+  referenced_by: []
+element:
+  id: function:src/watch/full-reconciliation.ts:computeSourceChecksums:81
+  name: computeSourceChecksums
+  signature: 'function computeSourceChecksums(projectRoot: string): Promise<Map<string, string>>'
+  language: typescript
+  is_exported: false
+  is_async: true
+  parameters:
+    - projectRoot
+  docstring: Compute checksums for all source files
+  description: Compute checksums for all source files
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/full-reconciliation.ts
+  line: 81
+  language: typescript
+  source_checksum: 352239986546d378c7cc7b66031215b8dbbddee0ed6bde10668845fa0654e837

@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/extractors/json/json-extractor.ts:matchesPattern:105
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/json/json-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-json-json-extractor
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/extractors/json/json-extractor.ts:matchesPattern:105
+  name: matchesPattern
+  signature: 'function matchesPattern(filePath: string, pattern: string): boolean'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - filePath
+    - pattern
+  docstring: Simple glob-like pattern matching
+  description: Simple glob-like pattern matching
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/json/json-extractor.ts
+  line: 105
+  language: typescript
+  source_checksum: 2949e390ef87349d5e8cf463c966c737f09acc642640de72e95e9dc7adbd94fc

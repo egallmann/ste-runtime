@@ -1,0 +1,163 @@
+_slice:
+  id: module-src-recon-phases-index
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/phases/index.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+    - domain: graph
+      type: module
+      id: module-src-discovery-index
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-discovery
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-normalization
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-population
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-divergence
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-self-validation
+    - domain: graph
+      type: module
+      id: module-src-watch-update-coordinator
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-recon-index
+    - domain: graph
+      type: module
+      id: module-src-test-extractor-test-utils
+    - domain: graph
+      type: module
+      id: module-src-extractors-angular-angular-extractor
+    - domain: graph
+      type: module
+      id: module-src-extractors-css-css-extractor
+    - domain: graph
+      type: module
+      id: module-src-extractors-json-json-extractor
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-discovery
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-divergence
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/index.ts:runReconPhases:111
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-normalization
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-population
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-self-validation
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-coverage-validator
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-graph-validator
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-identity-validator
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-repeatability-validator
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-schema-validator
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-types
+element:
+  id: module-src-recon-phases-index
+  path: src/recon/phases/index.ts
+  name: index
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - runReconPhases
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../index.js
+        names:
+          - ReconOptions
+          - ReconResult
+      - module: ../../config/index.js
+        names:
+          - SupportedLanguage
+      - module: ../../discovery/index.js
+        names:
+          - ProjectDiscovery
+      - module: ./discovery.js
+        names:
+          - discoverFiles
+          - discoverFilesLegacy
+      - module: ./extraction.js
+        names:
+          - extractAssertions
+      - module: ./inference.js
+        names:
+          - inferRelationships
+      - module: ./normalization.js
+        names:
+          - normalizeAssertions
+      - module: ./population.js
+        names:
+          - populateAiDoc
+      - module: ./divergence.js
+        names:
+          - detectDivergence
+          - ValidationResult
+      - module: ./self-validation.js
+        names:
+          - runSelfValidation
+      - module: ../../watch/update-coordinator.js
+        names:
+          - updateCoordinator
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/index.ts
+  line: 1
+  language: typescript
+  source_checksum: 601d68dad0b7e9f859d89ae14c6959ea5c72b62a25572c7028f1a282d8d3a641

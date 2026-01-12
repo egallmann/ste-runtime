@@ -1,0 +1,85 @@
+_slice:
+  id: module-src-mcp-tools-structural
+  domain: graph
+  type: module
+  source_files:
+    - src/mcp/tools-structural.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-mcp-mcp-server
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:searchSemanticGraph:27
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:getDependencies:68
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:getDependents:102
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:getBlastRadius:136
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:lookupByKeyTool:170
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:lookupTool:209
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:byTagTool:251
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-structural.ts:getGraphStatsTool:282
+element:
+  id: module-src-mcp-tools-structural
+  path: src/mcp/tools-structural.ts
+  name: tools-structural
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - searchSemanticGraph
+      - getDependencies
+      - getDependents
+      - getBlastRadius
+      - lookupByKeyTool
+      - lookupTool
+      - byTagTool
+      - getGraphStatsTool
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../rss/rss-operations.js
+        names:
+          - RssContext
+      - module: ../rss/rss-operations.js
+        names:
+          - search
+          - lookupByKey
+          - lookup
+          - dependencies
+          - dependents
+          - blastRadius
+          - byTag
+          - getGraphStats
+          - SearchOptions
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-structural.ts
+  line: 1
+  language: typescript
+  source_checksum: c0e3e56ae249d4ec69ace870d9c14d2dfcd05577bd843ad85b6c286c6bade102

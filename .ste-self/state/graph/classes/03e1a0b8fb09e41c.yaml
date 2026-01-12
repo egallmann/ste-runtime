@@ -1,0 +1,37 @@
+_slice:
+  id: class:src/watch/update-coordinator.ts:UpdateCoordinator
+  domain: graph
+  type: class
+  source_files:
+    - src/watch/update-coordinator.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-update-coordinator
+  tags: []
+  referenced_by: []
+element:
+  id: class:src/watch/update-coordinator.ts:UpdateCoordinator
+  name: UpdateCoordinator
+  language: typescript
+  is_exported: true
+  methods:
+    - startUpdate
+    - recordSliceWrite
+    - completeUpdate
+    - isFromActiveUpdate
+    - getCurrentGeneration
+    - getStats
+    - clear
+  properties:
+    - activeUpdates
+    - currentGeneration
+  docstring: Coordinates RECON updates to prevent cascading loops
+  description: Coordinates RECON updates to prevent cascading loops
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/update-coordinator.ts
+  line: 24
+  language: typescript
+  source_checksum: 2d5ed4af9b2410f85a1515e49c5d8927c7e1d53fccbbd51a12f3b7d27f349f45

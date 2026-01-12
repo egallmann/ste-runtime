@@ -1,0 +1,35 @@
+_slice:
+  id: function:src/mcp/tools-operational.ts:getGraphHealth:140
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/tools-operational.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-operational
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/tools-operational.ts:getGraphHealth:140
+  name: getGraphHealth
+  signature: 'function getGraphHealth(ctx: RssContext): void'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - ctx
+  docstring: |-
+    Tool: get_graph_health
+
+    Get validation status and health metrics for the semantic graph.
+  description: 'Tool: get_graph_health'
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-operational.ts
+  line: 140
+  language: typescript
+  source_checksum: 62cec8caf60f5673747d9ede0cb4c7d8f97a3c27a681a06724952cbfe37f02e2

@@ -1,0 +1,49 @@
+_slice:
+  id: component:frontend/src/app/features/findings/findings-list/findings-list.component.ts:FindingsListComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/findings/findings-list/findings-list.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/findings/findings-list/findings-list.component.html
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/findings.service.ts:FindingsService
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/account.service.ts:AccountService
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-findings-list
+  referenced_by: []
+element:
+  id: component:frontend/src/app/features/findings/findings-list/findings-list.component.ts:FindingsListComponent
+  name: FindingsListComponent
+  className: FindingsListComponent
+  selector: app-findings-list
+  templateUrl: ./findings-list.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - FormsModule
+    - ControlDetailModalComponent
+  inputs: []
+  outputs: []
+  injectedServices:
+    - FindingsService
+    - AccountService
+    - AuthService
+    - Router
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/findings/findings-list/findings-list.component.ts
+  line: 11
+  language: angular
+  source_checksum: 96e3d21289a40028a0df4826bb1daaef6df2b87f0b1efc8c9325d1ee2279aac5

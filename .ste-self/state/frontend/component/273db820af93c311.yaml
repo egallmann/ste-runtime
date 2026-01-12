@@ -1,0 +1,63 @@
+_slice:
+  id: component:frontend/src/app/shared/components/searchable-multiselect/searchable-multiselect.component.ts:SearchableMultiselectComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/shared/components/searchable-multiselect/searchable-multiselect.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/shared/components/searchable-multiselect/searchable-multiselect.component.html
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-searchable-multiselect
+  referenced_by:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/shared/report-filters/report-filters.component.html
+element:
+  id: component:frontend/src/app/shared/components/searchable-multiselect/searchable-multiselect.component.ts:SearchableMultiselectComponent
+  name: SearchableMultiselectComponent
+  className: SearchableMultiselectComponent
+  selector: app-searchable-multiselect
+  templateUrl: ./searchable-multiselect.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - FormsModule
+  inputs:
+    - name: options
+      type: SelectOption[]
+      required: true
+    - name: selectedValues
+      type: string[]
+      required: false
+    - name: placeholder
+      type: string
+      required: false
+    - name: label
+      type: string
+      required: false
+    - name: multiSelect
+      type: boolean
+      required: false
+    - name: disabled
+      type: boolean
+      required: false
+    - name: maxHeight
+      type: string
+      required: false
+  outputs:
+    - name: selectionChange
+      type: string[]
+  injectedServices:
+    - ChangeDetectorRef
+    - ElementRef
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/shared/components/searchable-multiselect/searchable-multiselect.component.ts
+  line: 36
+  language: angular
+  source_checksum: d9b6aedc97fd1031e9f3651ce82347f0a96ab79912a6c4ca50ddab2db2e82c8f

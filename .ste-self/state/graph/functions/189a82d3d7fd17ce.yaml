@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:saveToCache:116
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/cfn/cfn-spec-loader.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-cfn-cfn-spec-loader
+  tags:
+    - async
+  referenced_by: []
+element:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:saveToCache:116
+  name: saveToCache
+  signature: 'function saveToCache(runtimeDir: string, spec: CloudFormationSpec): Promise<void>'
+  language: typescript
+  is_exported: false
+  is_async: true
+  parameters:
+    - runtimeDir
+    - spec
+  docstring: Save spec to cache
+  description: Save spec to cache
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/cfn/cfn-spec-loader.ts
+  line: 116
+  language: typescript
+  source_checksum: 193dfd70008e006c8aeffd0d0486f438af85d121d358e1995b1fb51d7396664d

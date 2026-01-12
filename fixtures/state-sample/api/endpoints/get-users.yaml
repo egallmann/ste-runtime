@@ -1,0 +1,30 @@
+_slice:
+  id: get-users
+  domain: api
+  type: endpoint
+  source_files:
+    - app/api.py
+  references:
+    - domain: graph
+      type: module
+      id: module:app/services/user_service.py
+    - domain: data
+      type: entity
+      id: user
+  referenced_by: []
+  tags:
+    - backend:api
+    - http:get
+
+endpoint:
+  method: GET
+  path: /api/users
+  summary: List all users
+  domain_function: list_users
+  handler: list_users
+  parameters: []
+  responses:
+    - status: 200
+      description: List of users
+
+

@@ -1,0 +1,85 @@
+_slice:
+  id: module-src-test-extractor-test-utils
+  domain: graph
+  type: module
+  source_files:
+    - src/test/extractor-test-utils.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+  tags:
+    - layer:test
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:expectGraphEdges:18
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:expectBidirectionalEdges:44
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:createRawImportAssertion:82
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:assertInferenceCreatesEdges:113
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:createModuleAssertion:147
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:assertRelativeImportResolution:186
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:findMissingReferences:219
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:assertNoOrphanedReferences:248
+    - domain: graph
+      type: function
+      id: function:src/test/extractor-test-utils.ts:assertBidirectionalConsistency:274
+element:
+  id: module-src-test-extractor-test-utils
+  path: src/test/extractor-test-utils.ts
+  name: extractor-test-utils
+  language: typescript
+  layer: test
+  exports:
+    classes: []
+    functions:
+      - expectGraphEdges
+      - expectBidirectionalEdges
+      - createRawImportAssertion
+      - assertInferenceCreatesEdges
+      - createModuleAssertion
+      - assertRelativeImportResolution
+      - findMissingReferences
+      - assertNoOrphanedReferences
+      - assertBidirectionalConsistency
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../recon/phases/index.js
+        names:
+          - NormalizedAssertion
+          - RawAssertion
+      - module: ../recon/phases/inference.js
+        names:
+          - inferRelationships
+    external:
+      - module: vitest
+        names:
+          - expect
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/test/extractor-test-utils.ts
+  line: 1
+  language: typescript
+  source_checksum: 191cee2609a3e6418b8a42af49006b5a4793ab1e7c748be0eb3149053461b79b

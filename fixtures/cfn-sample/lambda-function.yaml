@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda function for testing CFN extractor
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: TestFunction
+  
+  MemorySize:
+    Type: Number
+    Default: 256
+    MinValue: 128
+    MaxValue: 10240
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${FunctionName}-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  TestFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      Runtime: python3.11
+      Handler: index.lambda_handler
+      MemorySize: !Ref MemorySize
+      Timeout: 30
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Hello from Lambda'}
+      Environment:
+        Variables:
+          LOG_LEVEL: INFO
+          ENVIRONMENT: dev
+
+  FunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${TestFunction}
+      RetentionInDays: 14
+
+Outputs:
+  FunctionArn:
+    Description: ARN of the Lambda function
+    Value: !GetAtt TestFunction.Arn
+  
+  FunctionName:
+    Description: Name of the Lambda function
+    Value: !Ref TestFunction
+
+

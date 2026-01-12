@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/validation/report-generator.ts:printSummary:119
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/validation/report-generator.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-report-generator
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/validation/report-generator.ts:printSummary:119
+  name: printSummary
+  signature: 'function printSummary(findings: ValidationFinding[]): void'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - findings
+  docstring: Print summary to console (for non-silent modes).
+  description: Print summary to console (for non-silent modes).
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/validation/report-generator.ts
+  line: 119
+  language: typescript
+  source_checksum: 57e3c3f959677bb832e935a899e4e969725e6c105d85db077037f9c56f1fe015

@@ -1,0 +1,171 @@
+_slice:
+  id: module-src-extractors-angular-angular-extractor
+  domain: graph
+  type: module
+  source_files:
+    - src/extractors/angular/angular-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+    - domain: graph
+      type: module
+      id: module-src-utils-paths
+    - domain: graph
+      type: module
+      id: module-src-extractors-css-css-extractor
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:getAngularFileType:95
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:parseDecoratorArgs:112
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:parsePropertyValue:145
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractSignalInputsOutputs:178
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractInjectCalls:236
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractComponentDecorator:266
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractHttpUrlFromCall:364
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractHttpCallsFromMethod:414
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:visit:422
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractInjectableDecorator:462
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractPipeDecorator:520
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractDirectiveDecorator:551
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractComponent:621
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:visit:639
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractService:724
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:visit:741
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractPipe:768
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:visit:785
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractDirective:812
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:visit:829
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractGuard:856
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:visit:873
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractRoutes:915
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractTemplate:971
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extractFromAngular:1055
+    - domain: graph
+      type: function
+      id: function:src/extractors/angular/angular-extractor.ts:extract:1086
+element:
+  id: module-src-extractors-angular-angular-extractor
+  path: src/extractors/angular/angular-extractor.ts
+  name: angular-extractor
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - getAngularFileType
+      - parseDecoratorArgs
+      - parsePropertyValue
+      - extractSignalInputsOutputs
+      - extractInjectCalls
+      - extractComponentDecorator
+      - extractHttpUrlFromCall
+      - extractHttpCallsFromMethod
+      - visit
+      - extractInjectableDecorator
+      - extractPipeDecorator
+      - extractDirectiveDecorator
+      - extractComponent
+      - visit
+      - extractService
+      - visit
+      - extractPipe
+      - visit
+      - extractDirective
+      - visit
+      - extractGuard
+      - visit
+      - extractRoutes
+      - extractTemplate
+      - extractFromAngular
+      - extract
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../../recon/phases/index.js
+        names:
+          - DiscoveredFile
+          - RawAssertion
+      - module: ../../config/index.js
+        names:
+          - AngularPatterns
+      - module: ../../utils/paths.js
+        names:
+          - toPosixPath
+      - module: ../css/css-extractor.js
+        names:
+          - extractCssSemantics
+    external:
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: typescript
+        names:
+          - ts
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/angular/angular-extractor.ts
+  line: 1
+  language: typescript
+  source_checksum: 65f3b12d20bd7ea505eeceefb754266cec3d039fd32ee93e58a2cc2ce5a07c52

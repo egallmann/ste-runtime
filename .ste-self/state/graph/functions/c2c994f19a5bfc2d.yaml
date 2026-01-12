@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/extractors/python/python-extractor.ts:runParser:17
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/python/python-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-python-python-extractor
+  tags:
+    - async
+  referenced_by: []
+element:
+  id: function:src/extractors/python/python-extractor.ts:runParser:17
+  name: runParser
+  signature: 'function runParser(binary: string, targetFile: string): void'
+  language: typescript
+  is_exported: false
+  is_async: true
+  parameters:
+    - binary
+    - targetFile
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/python/python-extractor.ts
+  line: 17
+  language: typescript
+  source_checksum: 4c88a352ec446a68e33a200c23aefd79181c1cde65ba95cb78e6ef0041a998c4

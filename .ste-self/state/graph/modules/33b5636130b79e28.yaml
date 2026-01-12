@@ -1,0 +1,55 @@
+_slice:
+  id: module-src-cli-discovery-cli
+  domain: graph
+  type: module
+  source_files:
+    - src/cli/discovery-cli.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-discovery-index
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/cli/discovery-cli.ts:formatDomainType:13
+    - domain: graph
+      type: function
+      id: function:src/cli/discovery-cli.ts:formatConfidence:29
+    - domain: graph
+      type: function
+      id: function:src/cli/discovery-cli.ts:main:35
+element:
+  id: module-src-cli-discovery-cli
+  path: src/cli/discovery-cli.ts
+  name: discovery-cli
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - formatDomainType
+      - formatConfidence
+      - main
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../discovery/index.js
+        names:
+          - ProjectDiscovery
+          - DomainType
+    external:
+      - module: path
+        names:
+          - path
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/cli/discovery-cli.ts
+  line: 1
+  language: typescript
+  source_checksum: 05efcced4bcb376790af95d6c5e0271812b9de32fb8e3c2e4ee88efd11ae0117

@@ -1,0 +1,39 @@
+_slice:
+  id: component:frontend/src/app/shared/components/info-popover/info-popover.component.ts:InfoPopoverComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/shared/components/info-popover/info-popover.component.ts
+  references: []
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-info-popover
+  referenced_by:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/dashboard/dashboard-home.component.html
+element:
+  id: component:frontend/src/app/shared/components/info-popover/info-popover.component.ts:InfoPopoverComponent
+  name: InfoPopoverComponent
+  className: InfoPopoverComponent
+  selector: app-info-popover
+  standalone: true
+  inputs:
+    - name: title
+      required: false
+    - name: weights
+      type: '{ critical: number; high: number; medium: number; low: number } | null'
+      required: false
+    - name: cap
+      type: number | null
+      required: false
+  outputs: []
+  injectedServices: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/shared/components/info-popover/info-popover.component.ts
+  line: 3
+  language: angular
+  source_checksum: 2b8c12dd07b0b90cd828a815bc1df95eb16ac27a987ba4667b7a2e650aba17ce

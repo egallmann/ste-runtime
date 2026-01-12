@@ -1,0 +1,104 @@
+_slice:
+  id: module-src-mcp-tools-operational
+  domain: graph
+  type: module
+  source_files:
+    - src/mcp/tools-operational.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+    - domain: graph
+      type: module
+      id: module-src-recon-full-recon
+    - domain: graph
+      type: module
+      id: module-src-recon-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-mcp-mcp-server
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-operational.ts:detectMissingExtractors:28
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-operational.ts:getGraphHealth:140
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-operational.ts:triggerFullRecon:180
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-operational.ts:getGraphDiagnostics:371
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-operational.ts:generateRecommendations:407
+    - domain: graph
+      type: function
+      id: function:src/mcp/tools-operational.ts:triggerSelfRecon:448
+element:
+  id: module-src-mcp-tools-operational
+  path: src/mcp/tools-operational.ts
+  name: tools-operational
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - detectMissingExtractors
+      - getGraphHealth
+      - triggerFullRecon
+      - getGraphDiagnostics
+      - generateRecommendations
+      - triggerSelfRecon
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../rss/rss-operations.js
+        names:
+          - RssContext
+      - module: ../rss/rss-operations.js
+        names:
+          - validateGraphHealth
+          - findOrphanedNodes
+          - findAllBrokenEdges
+          - validateBidirectionalEdges
+      - module: ../recon/full-recon.js
+        names:
+          - runFullRecon
+      - module: ../recon/index.js
+        names:
+          - executeRecon
+      - module: ../config/index.js
+        names:
+          - loadConfig
+          - loadConfigFromFile
+          - ResolvedConfig
+    external:
+      - module: globby
+        names:
+          - globby
+      - module: node:path
+        names:
+          - path
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:url
+        names:
+          - fileURLToPath
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-operational.ts
+  line: 1
+  language: typescript
+  source_checksum: 62cec8caf60f5673747d9ede0cb4c7d8f97a3c27a681a06724952cbfe37f02e2

@@ -1,0 +1,641 @@
+_slice:
+  id: function_calls:backend/scripts/validate-api-performance.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/scripts/validate-api-performance.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/scripts/validate-api-performance.py:module
+  file: backend/scripts/validate-api-performance.py
+  callGraph:
+    main:
+      - name: ArgumentParser
+        type: method
+        target: argparse
+        lineno: 493
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 496
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 502
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 507
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 511
+      - name: parse_args
+        type: method
+        target: parser
+        lineno: 517
+      - name: endswith
+        type: method
+        target: args.profile
+        lineno: 520
+      - name: print
+        type: direct
+        lineno: 521
+      - name: APIValidator
+        type: direct
+        lineno: 524
+      - name: run_all_validations
+        type: method
+        target: validator
+        lineno: 529
+      - name: exit
+        type: method
+        target: sys
+        lineno: 530
+      - name: print
+        type: direct
+        lineno: 532
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 534
+      - name: exit
+        type: method
+        target: sys
+        lineno: 535
+    __init__:
+      - name: get
+        type: method
+        target: API_URLS
+        lineno: 78
+      - name: Session
+        type: method
+        target: boto3
+        lineno: 81
+      - name: resource
+        type: method
+        target: self.session
+        lineno: 82
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 85
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 88
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 91
+      - name: format
+        type: method
+        target: TABLE_NAMES['controls']
+        lineno: 86
+      - name: format
+        type: method
+        target: TABLE_NAMES['accounts']
+        lineno: 89
+      - name: format
+        type: method
+        target: TABLE_NAMES['account_controls']
+        lineno: 92
+    make_api_call:
+      - name: time
+        type: method
+        target: time
+        lineno: 121
+      - name: get
+        type: method
+        target: requests
+        lineno: 124
+      - name: time
+        type: method
+        target: time
+        lineno: 125
+      - name: json
+        type: method
+        target: response
+        lineno: 128
+      - name: get_headers
+        type: method
+        target: self
+        lineno: 124
+      - name: time
+        type: method
+        target: time
+        lineno: 134
+      - name: str
+        type: direct
+        lineno: 135
+    get_ddb_controls_count:
+      - name: query
+        type: method
+        target: self.controls_table
+        lineno: 144
+      - name: get
+        type: method
+        target: response
+        lineno: 149
+      - name: query
+        type: method
+        target: self.controls_table
+        lineno: 153
+      - name: get
+        type: method
+        target: response
+        lineno: 159
+      - name: print
+        type: direct
+        lineno: 163
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 146
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 155
+      - name: Key
+        type: direct
+        lineno: 146
+      - name: Key
+        type: direct
+        lineno: 155
+    get_ddb_accounts_count:
+      - name: query
+        type: method
+        target: self.accounts_table
+        lineno: 173
+      - name: get
+        type: method
+        target: response
+        lineno: 178
+      - name: query
+        type: method
+        target: self.accounts_table
+        lineno: 182
+      - name: get
+        type: method
+        target: response
+        lineno: 188
+      - name: print
+        type: direct
+        lineno: 192
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 175
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 184
+      - name: Key
+        type: direct
+        lineno: 175
+      - name: Key
+        type: direct
+        lineno: 184
+    record_result:
+      - name: append
+        type: method
+        target: self.results['tests']
+        lineno: 200
+      - name: print
+        type: direct
+        lineno: 221
+    validate_controls_endpoint:
+      - name: print
+        type: direct
+        lineno: 225
+      - name: print
+        type: direct
+        lineno: 226
+      - name: print
+        type: direct
+        lineno: 227
+      - name: get_ddb_controls_count
+        type: method
+        target: self
+        lineno: 230
+      - name: print
+        type: direct
+        lineno: 231
+      - name: make_api_call
+        type: method
+        target: self
+        lineno: 234
+      - name: get
+        type: method
+        target: data
+        lineno: 259
+      - name: get
+        type: method
+        target: data
+        lineno: 271
+      - name: record_result
+        type: method
+        target: self
+        lineno: 238
+      - name: record_result
+        type: method
+        target: self
+        lineno: 252
+      - name: record_result
+        type: method
+        target: self
+        lineno: 255
+      - name: record_result
+        type: method
+        target: self
+        lineno: 261
+      - name: record_result
+        type: method
+        target: self
+        lineno: 240
+      - name: print
+        type: direct
+        lineno: 242
+      - name: record_result
+        type: method
+        target: self
+        lineno: 245
+      - name: record_result
+        type: method
+        target: self
+        lineno: 264
+      - name: record_result
+        type: method
+        target: self
+        lineno: 267
+      - name: record_result
+        type: method
+        target: self
+        lineno: 282
+      - name: record_result
+        type: method
+        target: self
+        lineno: 285
+      - name: get
+        type: method
+        target: control
+        lineno: 278
+      - name: append
+        type: method
+        target: missing_fields
+        lineno: 279
+      - name: get
+        type: method
+        target: data
+        lineno: 246
+      - name: min
+        type: direct
+        lineno: 283
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 286
+      - name: len
+        type: direct
+        lineno: 283
+      - name: get
+        type: method
+        target: control
+        lineno: 279
+    validate_accounts_endpoint:
+      - name: print
+        type: direct
+        lineno: 290
+      - name: print
+        type: direct
+        lineno: 291
+      - name: print
+        type: direct
+        lineno: 292
+      - name: get_ddb_accounts_count
+        type: method
+        target: self
+        lineno: 295
+      - name: print
+        type: direct
+        lineno: 296
+      - name: make_api_call
+        type: method
+        target: self
+        lineno: 299
+      - name: get
+        type: method
+        target: data
+        lineno: 324
+      - name: get
+        type: method
+        target: data
+        lineno: 336
+      - name: record_result
+        type: method
+        target: self
+        lineno: 303
+      - name: record_result
+        type: method
+        target: self
+        lineno: 317
+      - name: record_result
+        type: method
+        target: self
+        lineno: 320
+      - name: record_result
+        type: method
+        target: self
+        lineno: 326
+      - name: sum
+        type: direct
+        lineno: 338
+      - name: record_result
+        type: method
+        target: self
+        lineno: 305
+      - name: print
+        type: direct
+        lineno: 307
+      - name: record_result
+        type: method
+        target: self
+        lineno: 310
+      - name: record_result
+        type: method
+        target: self
+        lineno: 329
+      - name: record_result
+        type: method
+        target: self
+        lineno: 332
+      - name: len
+        type: direct
+        lineno: 339
+      - name: record_result
+        type: method
+        target: self
+        lineno: 340
+      - name: record_result
+        type: method
+        target: self
+        lineno: 343
+      - name: record_result
+        type: method
+        target: self
+        lineno: 347
+      - name: get
+        type: method
+        target: data
+        lineno: 311
+      - name: get
+        type: method
+        target: a
+        lineno: 338
+      - name: len
+        type: direct
+        lineno: 341
+      - name: len
+        type: direct
+        lineno: 344
+    validate_dashboard_metrics:
+      - name: print
+        type: direct
+        lineno: 352
+      - name: print
+        type: direct
+        lineno: 353
+      - name: print
+        type: direct
+        lineno: 354
+      - name: get_ddb_controls_count
+        type: method
+        target: self
+        lineno: 357
+      - name: get_ddb_accounts_count
+        type: method
+        target: self
+        lineno: 358
+      - name: print
+        type: direct
+        lineno: 360
+      - name: make_api_call
+        type: method
+        target: self
+        lineno: 363
+      - name: get
+        type: method
+        target: data
+        lineno: 389
+      - name: get
+        type: method
+        target: data
+        lineno: 401
+      - name: record_result
+        type: method
+        target: self
+        lineno: 367
+      - name: record_result
+        type: method
+        target: self
+        lineno: 382
+      - name: record_result
+        type: method
+        target: self
+        lineno: 385
+      - name: record_result
+        type: method
+        target: self
+        lineno: 391
+      - name: record_result
+        type: method
+        target: self
+        lineno: 403
+      - name: record_result
+        type: method
+        target: self
+        lineno: 369
+      - name: print
+        type: direct
+        lineno: 372
+      - name: record_result
+        type: method
+        target: self
+        lineno: 375
+      - name: record_result
+        type: method
+        target: self
+        lineno: 394
+      - name: record_result
+        type: method
+        target: self
+        lineno: 397
+      - name: record_result
+        type: method
+        target: self
+        lineno: 406
+      - name: record_result
+        type: method
+        target: self
+        lineno: 409
+      - name: get
+        type: method
+        target: data
+        lineno: 376
+    print_summary:
+      - name: print
+        type: direct
+        lineno: 414
+      - name: print
+        type: direct
+        lineno: 415
+      - name: print
+        type: direct
+        lineno: 416
+      - name: print
+        type: direct
+        lineno: 420
+      - name: print
+        type: direct
+        lineno: 421
+      - name: print
+        type: direct
+        lineno: 422
+      - name: print
+        type: direct
+        lineno: 423
+      - name: print
+        type: direct
+        lineno: 424
+      - name: print
+        type: direct
+        lineno: 425
+      - name: print
+        type: direct
+        lineno: 426
+      - name: print
+        type: direct
+        lineno: 427
+      - name: print
+        type: direct
+        lineno: 428
+      - name: print
+        type: direct
+        lineno: 431
+      - name: print
+        type: direct
+        lineno: 434
+      - name: isoformat
+        type: method
+        target: datetime.now()
+        lineno: 422
+      - name: now
+        type: method
+        target: datetime
+        lineno: 422
+    validate_ddb_only:
+      - name: print
+        type: direct
+        lineno: 439
+      - name: print
+        type: direct
+        lineno: 440
+      - name: print
+        type: direct
+        lineno: 441
+      - name: get_ddb_controls_count
+        type: method
+        target: self
+        lineno: 444
+      - name: get_ddb_accounts_count
+        type: method
+        target: self
+        lineno: 453
+      - name: record_result
+        type: method
+        target: self
+        lineno: 446
+      - name: record_result
+        type: method
+        target: self
+        lineno: 449
+      - name: record_result
+        type: method
+        target: self
+        lineno: 455
+      - name: record_result
+        type: method
+        target: self
+        lineno: 458
+      - name: record_result
+        type: method
+        target: self
+        lineno: 464
+      - name: record_result
+        type: method
+        target: self
+        lineno: 467
+    run_all_validations:
+      - name: print
+        type: direct
+        lineno: 472
+      - name: print
+        type: direct
+        lineno: 473
+      - name: print
+        type: direct
+        lineno: 474
+      - name: print
+        type: direct
+        lineno: 475
+      - name: print
+        type: direct
+        lineno: 476
+      - name: print_summary
+        type: method
+        target: self
+        lineno: 489
+      - name: print
+        type: direct
+        lineno: 479
+      - name: validate_ddb_only
+        type: method
+        target: self
+        lineno: 480
+      - name: print
+        type: direct
+        lineno: 482
+      - name: validate_controls_endpoint
+        type: method
+        target: self
+        lineno: 484
+      - name: validate_accounts_endpoint
+        type: method
+        target: self
+        lineno: 485
+      - name: validate_dashboard_metrics
+        type: method
+        target: self
+        lineno: 486
+  callers:
+    - main
+    - __init__
+    - make_api_call
+    - get_ddb_controls_count
+    - get_ddb_accounts_count
+    - record_result
+    - validate_controls_endpoint
+    - validate_accounts_endpoint
+    - validate_dashboard_metrics
+    - print_summary
+    - validate_ddb_only
+    - run_all_validations
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/validate-api-performance.py
+  line: 0
+  language: python
+  source_checksum: eb263ef843c536b505625b982fd50fe444159fa3d02fd1fe0624be26ff43a6ca

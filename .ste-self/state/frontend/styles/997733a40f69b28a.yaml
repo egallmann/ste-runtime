@@ -1,0 +1,23 @@
+_slice:
+  id: styles:C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/styles.css
+  domain: frontend
+  type: styles
+  source_files:
+    - C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/styles.css
+  references: []
+  tags:
+    - frontend:styles
+  referenced_by: []
+element:
+  id: styles:C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/styles.css
+  cssVariablesUsed: []
+  scssVariablesUsed: []
+  mediaQueries: []
+  stateModifiers: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-css-extractor-v1
+  file: C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/styles.css
+  line: 1
+  language: css
+  source_checksum: 0c914cabb4f02e979fd78cdce2aee611fb70fa8f50c0ae13a59d9c3a0a1ad858

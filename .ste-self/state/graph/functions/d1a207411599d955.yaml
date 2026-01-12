@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/cli/rss-cli.ts:formatNodes:199
+  domain: graph
+  type: function
+  source_files:
+    - src/cli/rss-cli.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-cli-rss-cli
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/cli/rss-cli.ts:formatNodes:199
+  name: formatNodes
+  signature: 'function formatNodes(nodes: AidocNode[], format: ''table'' | ''json'' | ''compact'', truncated: boolean): void'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - nodes
+    - format
+    - truncated
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/cli/rss-cli.ts
+  line: 199
+  language: typescript
+  source_checksum: 25d95300e27c7efa73893eb71bdb56bf1ce756cc3fa9e682e521c0594bdb8f7d

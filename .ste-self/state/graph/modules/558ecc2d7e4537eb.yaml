@@ -1,0 +1,59 @@
+_slice:
+  id: module-src-recon-phases-divergence
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/phases/divergence.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/divergence.ts:detectDivergence:56
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/divergence.ts:detectSemanticEnrichment:114
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+element:
+  id: module-src-recon-phases-divergence
+  path: src/recon/phases/divergence.ts
+  name: divergence
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - detectDivergence
+      - detectSemanticEnrichment
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./index.js
+        names:
+          - NormalizedAssertion
+    external:
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: js-yaml
+        names:
+          - yaml
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/divergence.ts
+  line: 1
+  language: typescript
+  source_checksum: 8a3808e20ff422e5cd94c219f3579e1d87f1b87083eb182549478a098fcce5a6

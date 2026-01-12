@@ -1,0 +1,39 @@
+_slice:
+  id: module-src-discovery-index
+  domain: graph
+  type: module
+  source_files:
+    - src/discovery/index.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-discovery-cli
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+element:
+  id: module-src-discovery-index
+  path: src/discovery/index.ts
+  name: index
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/discovery/index.ts
+  line: 1
+  language: typescript
+  source_checksum: 65ad24864024a6e184c3f33676e7e0cffe7c9ec467c05497d4ac48b6d43e6570

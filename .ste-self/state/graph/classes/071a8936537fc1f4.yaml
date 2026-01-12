@@ -1,0 +1,41 @@
+_slice:
+  id: class:src/mcp/mcp-server.ts:McpServer
+  domain: graph
+  type: class
+  source_files:
+    - src/mcp/mcp-server.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-mcp-server
+  tags: []
+  referenced_by: []
+element:
+  id: class:src/mcp/mcp-server.ts:McpServer
+  name: McpServer
+  language: typescript
+  is_exported: true
+  methods:
+    - initialize
+    - reloadContext
+    - registerHandlers
+    - start
+    - stop
+  properties:
+    - server
+    - options
+    - rssContext
+    - graphMetrics
+    - isInitialized
+  docstring: |-
+    MCP Server
+
+    Exposes RSS operations and context assembly via MCP protocol.
+  description: MCP Server
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/mcp-server.ts
+  line: 35
+  language: typescript
+  source_checksum: 5bf6d804650b1cf25baec0786117513fe1d14b89b786b70dd362ce15d1410f67

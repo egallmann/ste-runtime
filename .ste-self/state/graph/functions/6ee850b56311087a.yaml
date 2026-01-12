@@ -1,0 +1,34 @@
+_slice:
+  id: function:src/rss/rss-operations.ts:blastRadius:208
+  domain: graph
+  type: function
+  source_files:
+    - src/rss/rss-operations.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/rss/rss-operations.ts:blastRadius:208
+  name: blastRadius
+  signature: 'function blastRadius(ctx: RssContext, startKey: string, maxDepth: number, maxNodes: number): RssQueryResult'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - ctx
+    - startKey
+    - maxDepth
+    - maxNodes
+  docstring: "blast_radius(item, depth) — Bidirectional traversal\r\n\r\nReturns all slices connected to the given item in either direction.\r\nThis answers: \"What is the full impact surface of this slice?\""
+  description: "blast_radius(item, depth) — Bidirectional traversal\r\n\r\nReturns all slices connected to the given item in either direction.\r\nThis answers: \"What is the full impact surface of this slice?\""
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/rss-operations.ts
+  line: 208
+  language: typescript
+  source_checksum: 44c875e9e4c26c3277950fcd455f022b420e33198869324425ffdfbe675c2450

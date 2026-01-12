@@ -1,0 +1,71 @@
+_slice:
+  id: module-src-watch-full-reconciliation
+  domain: graph
+  type: module
+  source_files:
+    - src/watch/full-reconciliation.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/watch/full-reconciliation.ts:computeFileChecksum:40
+    - domain: graph
+      type: function
+      id: function:src/watch/full-reconciliation.ts:loadAllSlices:53
+    - domain: graph
+      type: function
+      id: function:src/watch/full-reconciliation.ts:computeSourceChecksums:81
+    - domain: graph
+      type: function
+      id: function:src/watch/full-reconciliation.ts:runFullReconciliation:125
+    - domain: graph
+      type: function
+      id: function:src/watch/full-reconciliation.ts:scheduleFullReconciliation:200
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-population
+element:
+  id: module-src-watch-full-reconciliation
+  path: src/watch/full-reconciliation.ts
+  name: full-reconciliation
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - computeFileChecksum
+      - loadAllSlices
+      - computeSourceChecksums
+      - runFullReconciliation
+      - scheduleFullReconciliation
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: node:crypto
+        names:
+          - createHash
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: globby
+        names:
+          - globby
+      - module: js-yaml
+        names:
+          - yaml
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/full-reconciliation.ts
+  line: 1
+  language: typescript
+  source_checksum: 352239986546d378c7cc7b66031215b8dbbddee0ed6bde10668845fa0654e837

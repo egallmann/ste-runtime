@@ -1,0 +1,53 @@
+_slice:
+  id: module-src-recon-validation-schema-validator
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/validation/schema-validator.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-types
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-self-validation
+    - domain: graph
+      type: function
+      id: function:src/recon/validation/schema-validator.ts:validateSchema:38
+element:
+  id: module-src-recon-validation-schema-validator
+  path: src/recon/validation/schema-validator.ts
+  name: schema-validator
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - validateSchema
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../phases/index.js
+        names:
+          - NormalizedAssertion
+      - module: ./types.js
+        names:
+          - ValidationFinding
+          - ValidatorContext
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/validation/schema-validator.ts
+  line: 1
+  language: typescript
+  source_checksum: c101a0b21bff88b507b6ca64872bc7bd4d064a3e0788884b78134e1dafbe0c03

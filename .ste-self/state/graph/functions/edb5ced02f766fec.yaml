@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/extractors/angular/angular-extractor.ts:extract:1086
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/angular/angular-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-angular-angular-extractor
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/extractors/angular/angular-extractor.ts:extract:1086
+  name: extract
+  signature: 'function extract(files: DiscoveredFile[], projectRoot: string): Promise<RawAssertion[]>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - files
+    - projectRoot
+  docstring: "Extract Angular files\r\nEntry point for RECON extraction phase"
+  description: "Extract Angular files\r\nEntry point for RECON extraction phase"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/angular/angular-extractor.ts
+  line: 1086
+  language: typescript
+  source_checksum: 65f3b12d20bd7ea505eeceefb754266cec3d039fd32ee93e58a2cc2ce5a07c52

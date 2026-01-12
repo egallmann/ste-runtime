@@ -1,0 +1,31 @@
+_slice:
+  id: service:frontend/src/app/core/services/websocket.service.ts:WebSocketService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/services/websocket.service.ts
+  references:
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  tags:
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/findings.service.ts:FindingsService
+element:
+  id: service:frontend/src/app/core/services/websocket.service.ts:WebSocketService
+  name: WebSocketService
+  className: WebSocketService
+  providedIn: root
+  injectedDependencies:
+    - AuthService
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/services/websocket.service.ts
+  line: 39
+  language: angular
+  source_checksum: ee5b9f123bbcb20458b57949194d54d3a264b5f555379b92e0677550e6e838c5

@@ -1,0 +1,20 @@
+validation_run:
+  timestamp: '2026-01-11T22:03:02.624Z'
+  recon_run_id: recon-1768168982497
+  validation_version: 0.1.0
+summary:
+  total_findings: 2
+  errors: 0
+  warnings: 0
+  info: 2
+findings:
+  - category: INFO
+    validator: graph
+    affected_artifacts: []
+    description: 411 module(s) are not referenced by other modules (may be entry points)
+    suggested_investigation: Expected for entry points; investigate if count seems high
+  - category: INFO
+    validator: coverage
+    affected_artifacts: []
+    description: 'AI-DOC file validity: 64/64 files exist (100%)'
+    suggested_investigation: All AI-DOC entries reference valid files

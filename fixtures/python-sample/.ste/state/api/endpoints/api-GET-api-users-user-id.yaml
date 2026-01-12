@@ -1,0 +1,35 @@
+_slice:
+  id: api-GET-api-users-user-id
+  domain: api
+  type: endpoint
+  source_files:
+    - app/api.py
+  references:
+    - domain: graph
+      type: module
+      id: module-app-api
+  referenced_by: []
+  tags:
+    - api
+    - flask
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+endpoint:
+  id: api-GET-api-users-user-id
+  method: GET
+  path: /api/users/<user_id>
+  summary: Get a user by ID.
+  domain_function: ''
+  handler:
+    file: app/api.py
+    function: get_user
+    class: ''
+    line: 20
+  authentication:
+    required: false
+    type: none
+    scopes: []
+    roles: []
+  responses: []

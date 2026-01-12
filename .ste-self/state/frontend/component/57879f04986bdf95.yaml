@@ -1,0 +1,56 @@
+_slice:
+  id: component:frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.ts:RemediationHistoryReportComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.html
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-remediation-history-report
+  referenced_by:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/reports-container/reports-container.component.html
+element:
+  id: component:frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.ts:RemediationHistoryReportComponent
+  name: RemediationHistoryReportComponent
+  className: RemediationHistoryReportComponent
+  selector: app-remediation-history-report
+  templateUrl: ./remediation-history-report.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - SummaryCardsComponent
+    - ReportChartComponent
+    - ReportFiltersComponent
+  inputs:
+    - name: data
+      type: ReportData
+      required: true
+    - name: filters
+      type: ReportFilters
+      required: true
+    - name: exporting
+      type: boolean
+      required: false
+    - name: availableFilters
+      type: FilterConfig[]
+      required: true
+  outputs:
+    - name: export
+      type: void
+    - name: filtersChange
+      type: ReportFilters
+  injectedServices: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.ts
+  line: 13
+  language: angular
+  source_checksum: 4de30f149d6b09f92be366d7fcea254d25e87d041da819c468b69a2070713124

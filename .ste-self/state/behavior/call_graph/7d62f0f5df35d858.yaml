@@ -1,0 +1,1065 @@
+_slice:
+  id: function_calls:backend/scripts/validate-controls.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/scripts/validate-controls.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/scripts/validate-controls.py:module
+  file: backend/scripts/validate-controls.py
+  callGraph:
+    load_baseline:
+      - name: exists
+        type: method
+        target: baseline_path
+        lineno: 576
+      - name: open
+        type: direct
+        lineno: 583
+      - name: load
+        type: method
+        target: json
+        lineno: 584
+    save_baseline:
+      - name: print
+        type: direct
+        lineno: 603
+      - name: print
+        type: direct
+        lineno: 604
+      - name: print
+        type: direct
+        lineno: 605
+      - name: isoformat
+        type: method
+        target: datetime.now()
+        lineno: 595
+      - name: len
+        type: direct
+        lineno: 596
+      - name: sorted
+        type: direct
+        lineno: 597
+      - name: open
+        type: direct
+        lineno: 600
+      - name: dump
+        type: method
+        target: json
+        lineno: 601
+      - name: is_enriched
+        type: method
+        target: QualityValidator
+        lineno: 591
+      - name: now
+        type: method
+        target: datetime
+        lineno: 595
+      - name: len
+        type: direct
+        lineno: 604
+      - name: len
+        type: direct
+        lineno: 605
+    check_baseline_regression:
+      - name: set
+        type: direct
+        lineno: 614
+      - name: get
+        type: method
+        target: baseline
+        lineno: 614
+      - name: is_enriched
+        type: method
+        target: QualityValidator
+        lineno: 612
+      - name: sorted
+        type: direct
+        lineno: 619
+      - name: list
+        type: direct
+        lineno: 619
+    load_controls:
+      - name: print
+        type: direct
+        lineno: 635
+      - name: exists
+        type: method
+        target: catalog_path
+        lineno: 627
+      - name: print
+        type: direct
+        lineno: 628
+      - name: exit
+        type: method
+        target: sys
+        lineno: 629
+      - name: open
+        type: direct
+        lineno: 631
+      - name: load
+        type: method
+        target: json
+        lineno: 632
+      - name: isinstance
+        type: direct
+        lineno: 634
+      - name: get
+        type: method
+        target: data
+        lineno: 634
+      - name: len
+        type: direct
+        lineno: 635
+    filter_controls:
+      - name: print
+        type: direct
+        lineno: 653
+      - name: print
+        type: direct
+        lineno: 646
+      - name: print
+        type: direct
+        lineno: 651
+      - name: len
+        type: direct
+        lineno: 653
+      - name: get
+        type: method
+        target: c
+        lineno: 645
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 646
+      - name: get
+        type: method
+        target: c
+        lineno: 650
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 651
+    print_schema_results:
+      - name: print
+        type: direct
+        lineno: 664
+      - name: sorted
+        type: direct
+        lineno: 666
+      - name: print
+        type: direct
+        lineno: 661
+      - name: keys
+        type: method
+        target: results
+        lineno: 666
+      - name: print
+        type: direct
+        lineno: 667
+      - name: print
+        type: direct
+        lineno: 670
+      - name: print
+        type: direct
+        lineno: 669
+      - name: len
+        type: direct
+        lineno: 664
+    print_quality_results:
+      - name: print
+        type: direct
+        lineno: 688
+      - name: print
+        type: direct
+        lineno: 689
+      - name: print
+        type: direct
+        lineno: 690
+      - name: print
+        type: direct
+        lineno: 691
+      - name: print
+        type: direct
+        lineno: 692
+      - name: print
+        type: direct
+        lineno: 693
+      - name: print
+        type: direct
+        lineno: 676
+      - name: print
+        type: direct
+        lineno: 707
+      - name: defaultdict
+        type: direct
+        lineno: 710
+      - name: sorted
+        type: direct
+        lineno: 714
+      - name: print
+        type: direct
+        lineno: 720
+      - name: print
+        type: direct
+        lineno: 724
+      - name: print
+        type: direct
+        lineno: 725
+      - name: print
+        type: direct
+        lineno: 727
+      - name: print
+        type: direct
+        lineno: 728
+      - name: values
+        type: method
+        target: results
+        lineno: 680
+      - name: append
+        type: method
+        target: by_control[issue.control_id]
+        lineno: 712
+      - name: keys
+        type: method
+        target: by_control
+        lineno: 714
+      - name: print
+        type: direct
+        lineno: 715
+      - name: print
+        type: direct
+        lineno: 718
+      - name: len
+        type: direct
+        lineno: 688
+      - name: len
+        type: direct
+        lineno: 689
+      - name: len
+        type: direct
+        lineno: 690
+      - name: len
+        type: direct
+        lineno: 691
+      - name: len
+        type: direct
+        lineno: 692
+      - name: print
+        type: direct
+        lineno: 717
+      - name: len
+        type: direct
+        lineno: 707
+      - name: len
+        type: direct
+        lineno: 724
+    create_validation_checkpoint:
+      - name: mkdir
+        type: method
+        target: checkpoint_dir
+        lineno: 751
+      - name: strftime
+        type: method
+        target: datetime.now()
+        lineno: 754
+      - name: strftime
+        type: method
+        target: datetime.now()
+        lineno: 755
+      - name: len
+        type: direct
+        lineno: 759
+      - name: print
+        type: direct
+        lineno: 820
+      - name: join
+        type: method
+        target: '''-'''
+        lineno: 742
+      - name: open
+        type: direct
+        lineno: 817
+      - name: write
+        type: method
+        target: f
+        lineno: 818
+      - name: print
+        type: direct
+        lineno: 824
+      - name: sorted
+        type: direct
+        lineno: 742
+      - name: now
+        type: method
+        target: datetime
+        lineno: 754
+      - name: now
+        type: method
+        target: datetime
+        lineno: 755
+      - name: title
+        type: method
+        target: context.replace('-', ' ')
+        lineno: 762
+      - name: strftime
+        type: method
+        target: datetime.now()
+        lineno: 764
+      - name: len
+        type: direct
+        lineno: 770
+      - name: is_enriched
+        type: method
+        target: QualityValidator
+        lineno: 759
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 775
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 778
+      - name: replace
+        type: method
+        target: context
+        lineno: 762
+      - name: now
+        type: method
+        target: datetime
+        lineno: 764
+      - name: len
+        type: direct
+        lineno: 771
+      - name: sorted
+        type: direct
+        lineno: 775
+      - name: Path
+        type: direct
+        lineno: 750
+    main:
+      - name: ArgumentParser
+        type: method
+        target: argparse
+        lineno: 829
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 852
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 860
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 865
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 872
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 877
+      - name: parse_args
+        type: method
+        target: parser
+        lineno: 883
+      - name: print
+        type: direct
+        lineno: 891
+      - name: print
+        type: direct
+        lineno: 892
+      - name: print
+        type: direct
+        lineno: 893
+      - name: load_controls
+        type: direct
+        lineno: 896
+      - name: filter_controls
+        type: direct
+        lineno: 899
+      - name: print
+        type: direct
+        lineno: 989
+      - name: print
+        type: direct
+        lineno: 990
+      - name: print
+        type: direct
+        lineno: 991
+      - name: print
+        type: direct
+        lineno: 1000
+      - name: exit
+        type: method
+        target: sys
+        lineno: 1001
+      - name: print
+        type: direct
+        lineno: 906
+      - name: print
+        type: direct
+        lineno: 907
+      - name: print
+        type: direct
+        lineno: 908
+      - name: load_baseline
+        type: direct
+        lineno: 910
+      - name: print
+        type: direct
+        lineno: 941
+      - name: print
+        type: direct
+        lineno: 942
+      - name: print
+        type: direct
+        lineno: 943
+      - name: SchemaValidator
+        type: direct
+        lineno: 945
+      - name: validate_controls
+        type: method
+        target: schema_validator
+        lineno: 946
+      - name: print_schema_results
+        type: direct
+        lineno: 948
+      - name: print
+        type: direct
+        lineno: 958
+      - name: print
+        type: direct
+        lineno: 959
+      - name: print
+        type: direct
+        lineno: 960
+      - name: QualityValidator
+        type: direct
+        lineno: 962
+      - name: validate_controls
+        type: method
+        target: quality_validator
+        lineno: 963
+      - name: print_quality_results
+        type: direct
+        lineno: 965
+      - name: print
+        type: direct
+        lineno: 976
+      - name: print
+        type: direct
+        lineno: 977
+      - name: print
+        type: direct
+        lineno: 978
+      - name: save_baseline
+        type: direct
+        lineno: 980
+      - name: print
+        type: direct
+        lineno: 981
+      - name: create_validation_checkpoint
+        type: direct
+        lineno: 986
+      - name: print
+        type: direct
+        lineno: 994
+      - name: get
+        type: method
+        target: baseline
+        lineno: 912
+      - name: print
+        type: direct
+        lineno: 913
+      - name: check_baseline_regression
+        type: direct
+        lineno: 915
+      - name: print
+        type: direct
+        lineno: 996
+      - name: Path
+        type: direct
+        lineno: 886
+      - name: Path
+        type: direct
+        lineno: 887
+      - name: Path
+        type: direct
+        lineno: 888
+      - name: print
+        type: direct
+        lineno: 918
+      - name: print
+        type: direct
+        lineno: 919
+      - name: print
+        type: direct
+        lineno: 920
+      - name: print
+        type: direct
+        lineno: 921
+      - name: print
+        type: direct
+        lineno: 922
+      - name: sorted
+        type: direct
+        lineno: 923
+      - name: print
+        type: direct
+        lineno: 925
+      - name: len
+        type: direct
+        lineno: 928
+      - name: len
+        type: direct
+        lineno: 929
+      - name: print
+        type: direct
+        lineno: 932
+      - name: print
+        type: direct
+        lineno: 933
+      - name: print
+        type: direct
+        lineno: 934
+      - name: print
+        type: direct
+        lineno: 937
+      - name: print
+        type: direct
+        lineno: 953
+      - name: exit
+        type: method
+        target: sys
+        lineno: 954
+      - name: print
+        type: direct
+        lineno: 998
+      - name: print
+        type: direct
+        lineno: 924
+      - name: print
+        type: direct
+        lineno: 936
+      - name: values
+        type: method
+        target: quality_results
+        lineno: 969
+      - name: len
+        type: direct
+        lineno: 919
+      - name: len
+        type: direct
+        lineno: 920
+      - name: len
+        type: direct
+        lineno: 921
+      - name: is_enriched
+        type: method
+        target: QualityValidator
+        lineno: 928
+      - name: is_enriched
+        type: method
+        target: QualityValidator
+        lineno: 920
+    __init__:
+      - name: Draft7Validator
+        type: direct
+        lineno: 123
+      - name: print
+        type: direct
+        lineno: 125
+      - name: exists
+        type: method
+        target: schema_path
+        lineno: 115
+      - name: print
+        type: direct
+        lineno: 116
+      - name: exit
+        type: method
+        target: sys
+        lineno: 117
+      - name: open
+        type: direct
+        lineno: 119
+      - name: load
+        type: method
+        target: json
+        lineno: 120
+    validate_control:
+      - name: extend
+        type: method
+        target: issues
+        lineno: 214
+      - name: extend
+        type: method
+        target: issues
+        lineno: 215
+      - name: extend
+        type: method
+        target: issues
+        lineno: 216
+      - name: extend
+        type: method
+        target: issues
+        lineno: 217
+      - name: is_enriched
+        type: method
+        target: self
+        lineno: 210
+      - name: _validate_remediation_metadata
+        type: method
+        target: self
+        lineno: 214
+      - name: _validate_rollback_metadata
+        type: method
+        target: self
+        lineno: 215
+      - name: _validate_organizational_defaults
+        type: method
+        target: self
+        lineno: 216
+      - name: _validate_sourceidentifier_format
+        type: method
+        target: self
+        lineno: 217
+    validate_controls:
+      - name: get
+        type: method
+        target: control
+        lineno: 565
+      - name: validate_control
+        type: method
+        target: self
+        lineno: 566
+    is_placeholder:
+      - name: isinstance
+        type: direct
+        lineno: 191
+      - name: upper
+        type: method
+        target: value.strip()
+        lineno: 192
+      - name: strip
+        type: method
+        target: value
+        lineno: 192
+    _validate_remediation_metadata:
+      - name: get
+        type: method
+        target: control
+        lineno: 225
+      - name: get
+        type: method
+        target: rem
+        lineno: 228
+      - name: get
+        type: method
+        target: rem
+        lineno: 243
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 244
+      - name: get
+        type: method
+        target: rem
+        lineno: 253
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 254
+      - name: get
+        type: method
+        target: rem
+        lineno: 271
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 272
+      - name: get
+        type: method
+        target: rem
+        lineno: 289
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 290
+      - name: get
+        type: method
+        target: rem
+        lineno: 307
+      - name: get
+        type: method
+        target: rem
+        lineno: 343
+      - name: get
+        type: method
+        target: rem
+        lineno: 344
+      - name: get
+        type: method
+        target: rem
+        lineno: 345
+      - name: bool
+        type: direct
+        lineno: 347
+      - name: append
+        type: method
+        target: issues
+        lineno: 234
+      - name: append
+        type: method
+        target: issues
+        lineno: 245
+      - name: len
+        type: direct
+        lineno: 329
+      - name: count
+        type: method
+        target: manual_guidance
+        lineno: 330
+      - name: append
+        type: method
+        target: issues
+        lineno: 364
+      - name: QualityIssue
+        type: direct
+        lineno: 234
+      - name: QualityIssue
+        type: direct
+        lineno: 245
+      - name: append
+        type: method
+        target: issues
+        lineno: 256
+      - name: append
+        type: method
+        target: issues
+        lineno: 263
+      - name: append
+        type: method
+        target: issues
+        lineno: 274
+      - name: append
+        type: method
+        target: issues
+        lineno: 281
+      - name: append
+        type: method
+        target: issues
+        lineno: 292
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 309
+      - name: append
+        type: method
+        target: issues
+        lineno: 310
+      - name: len
+        type: direct
+        lineno: 325
+      - name: findall
+        type: method
+        target: re
+        lineno: 329
+      - name: append
+        type: method
+        target: issues
+        lineno: 334
+      - name: append
+        type: method
+        target: issues
+        lineno: 355
+      - name: QualityIssue
+        type: direct
+        lineno: 364
+      - name: QualityIssue
+        type: direct
+        lineno: 256
+      - name: QualityIssue
+        type: direct
+        lineno: 263
+      - name: QualityIssue
+        type: direct
+        lineno: 274
+      - name: QualityIssue
+        type: direct
+        lineno: 281
+      - name: QualityIssue
+        type: direct
+        lineno: 292
+      - name: append
+        type: method
+        target: issues
+        lineno: 299
+      - name: QualityIssue
+        type: direct
+        lineno: 310
+      - name: len
+        type: direct
+        lineno: 316
+      - name: append
+        type: method
+        target: issues
+        lineno: 317
+      - name: QualityIssue
+        type: direct
+        lineno: 334
+      - name: QualityIssue
+        type: direct
+        lineno: 355
+      - name: QualityIssue
+        type: direct
+        lineno: 299
+      - name: QualityIssue
+        type: direct
+        lineno: 317
+      - name: len
+        type: direct
+        lineno: 320
+    _validate_rollback_metadata:
+      - name: get
+        type: method
+        target: control
+        lineno: 377
+      - name: get
+        type: method
+        target: control
+        lineno: 378
+      - name: get
+        type: method
+        target: rem
+        lineno: 381
+      - name: get
+        type: method
+        target: rollback
+        lineno: 385
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 386
+      - name: get
+        type: method
+        target: rollback
+        lineno: 395
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 396
+      - name: get
+        type: method
+        target: rollback
+        lineno: 405
+      - name: get
+        type: method
+        target: rollback
+        lineno: 418
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 419
+      - name: get
+        type: method
+        target: rollback
+        lineno: 428
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 429
+      - name: append
+        type: method
+        target: issues
+        lineno: 387
+      - name: append
+        type: method
+        target: issues
+        lineno: 397
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 409
+      - name: append
+        type: method
+        target: issues
+        lineno: 420
+      - name: append
+        type: method
+        target: issues
+        lineno: 430
+      - name: get
+        type: method
+        target: rollback
+        lineno: 439
+      - name: get
+        type: method
+        target: rollback
+        lineno: 440
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 442
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 458
+      - name: QualityIssue
+        type: direct
+        lineno: 387
+      - name: QualityIssue
+        type: direct
+        lineno: 397
+      - name: append
+        type: method
+        target: issues
+        lineno: 410
+      - name: QualityIssue
+        type: direct
+        lineno: 420
+      - name: QualityIssue
+        type: direct
+        lineno: 430
+      - name: QualityIssue
+        type: direct
+        lineno: 410
+      - name: append
+        type: method
+        target: issues
+        lineno: 444
+      - name: append
+        type: method
+        target: issues
+        lineno: 451
+      - name: append
+        type: method
+        target: issues
+        lineno: 460
+      - name: append
+        type: method
+        target: issues
+        lineno: 467
+      - name: QualityIssue
+        type: direct
+        lineno: 444
+      - name: QualityIssue
+        type: direct
+        lineno: 451
+      - name: QualityIssue
+        type: direct
+        lineno: 460
+      - name: QualityIssue
+        type: direct
+        lineno: 467
+    _validate_organizational_defaults:
+      - name: get
+        type: method
+        target: control
+        lineno: 480
+      - name: get
+        type: method
+        target: org_defaults
+        lineno: 483
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 484
+      - name: get
+        type: method
+        target: org_defaults
+        lineno: 494
+      - name: append
+        type: method
+        target: issues
+        lineno: 485
+      - name: is_placeholder
+        type: method
+        target: self
+        lineno: 495
+      - name: append
+        type: method
+        target: issues
+        lineno: 496
+      - name: QualityIssue
+        type: direct
+        lineno: 485
+      - name: QualityIssue
+        type: direct
+        lineno: 496
+    _validate_sourceidentifier_format:
+      - name: get
+        type: method
+        target: control
+        lineno: 515
+      - name: get
+        type: method
+        target: control
+        lineno: 516
+      - name: get
+        type: method
+        target: control
+        lineno: 517
+      - name: compile
+        type: method
+        target: re
+        lineno: 535
+      - name: append
+        type: method
+        target: issues
+        lineno: 525
+      - name: match
+        type: method
+        target: pattern
+        lineno: 537
+      - name: append
+        type: method
+        target: issues
+        lineno: 548
+      - name: QualityIssue
+        type: direct
+        lineno: 525
+      - name: QualityIssue
+        type: direct
+        lineno: 548
+      - name: lower
+        type: method
+        target: source_id
+        lineno: 541
+      - name: upper
+        type: method
+        target: source_id
+        lineno: 543
+  callers:
+    - load_baseline
+    - save_baseline
+    - check_baseline_regression
+    - load_controls
+    - filter_controls
+    - print_schema_results
+    - print_quality_results
+    - create_validation_checkpoint
+    - main
+    - __init__
+    - validate_control
+    - validate_controls
+    - is_placeholder
+    - _validate_remediation_metadata
+    - _validate_rollback_metadata
+    - _validate_organizational_defaults
+    - _validate_sourceidentifier_format
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/validate-controls.py
+  line: 0
+  language: python
+  source_checksum: bce7d776edc0119b7b8769875978f8ade8fef49a97767043af0584ecb433b611

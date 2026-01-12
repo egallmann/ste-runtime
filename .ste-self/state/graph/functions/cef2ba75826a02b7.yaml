@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/extractors/cfn/cfn-types.ts:getCategoryForService:142
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/cfn/cfn-types.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-cfn-cfn-types
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/extractors/cfn/cfn-types.ts:getCategoryForService:142
+  name: getCategoryForService
+  signature: 'function getCategoryForService(service: string): ServiceCategory'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - service
+  docstring: Get category for a service
+  description: Get category for a service
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/cfn/cfn-types.ts
+  line: 142
+  language: typescript
+  source_checksum: 5d953df1eb6b1ea5de3f5ac6e0a4ac680741fd21cc8c539a033c5c6f7b685e1b

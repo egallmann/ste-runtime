@@ -1,0 +1,790 @@
+_slice:
+  id: function_calls:backend/scripts/validate-api-responses.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/scripts/validate-api-responses.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/scripts/validate-api-responses.py:module
+  file: backend/scripts/validate-api-responses.py
+  callGraph:
+    print_header:
+      - name: print
+        type: direct
+        lineno: 59
+      - name: print
+        type: direct
+        lineno: 60
+      - name: print
+        type: direct
+        lineno: 61
+    print_subheader:
+      - name: print
+        type: direct
+        lineno: 66
+      - name: print
+        type: direct
+        lineno: 67
+      - name: print
+        type: direct
+        lineno: 68
+    print_success:
+      - name: print
+        type: direct
+        lineno: 73
+    print_warning:
+      - name: print
+        type: direct
+        lineno: 78
+    print_error:
+      - name: print
+        type: direct
+        lineno: 83
+    print_info:
+      - name: print
+        type: direct
+        lineno: 88
+    invoke_lambda:
+      - name: invoke
+        type: method
+        target: lambda_client
+        lineno: 115
+      - name: loads
+        type: method
+        target: json
+        lineno: 121
+      - name: decode
+        type: method
+        target: response['Payload'].read()
+        lineno: 121
+      - name: loads
+        type: method
+        target: json
+        lineno: 125
+      - name: print_error
+        type: direct
+        lineno: 139
+      - name: dumps
+        type: method
+        target: json
+        lineno: 118
+      - name: get
+        type: method
+        target: payload
+        lineno: 125
+      - name: len
+        type: direct
+        lineno: 129
+      - name: len
+        type: direct
+        lineno: 135
+      - name: read
+        type: method
+        target: response['Payload']
+        lineno: 121
+      - name: get
+        type: method
+        target: payload
+        lineno: 129
+      - name: dumps
+        type: method
+        target: json
+        lineno: 135
+      - name: str
+        type: direct
+        lineno: 140
+    get_ddb_controls_count:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 146
+      - name: query
+        type: method
+        target: table
+        lineno: 147
+      - name: get
+        type: method
+        target: response
+        lineno: 152
+      - name: print_error
+        type: direct
+        lineno: 154
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 149
+      - name: Key
+        type: direct
+        lineno: 149
+    get_ddb_account_controls_count:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 161
+      - name: query
+        type: method
+        target: table
+        lineno: 162
+      - name: get
+        type: method
+        target: response
+        lineno: 166
+      - name: print_error
+        type: direct
+        lineno: 168
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 163
+      - name: Key
+        type: direct
+        lineno: 163
+    get_ddb_accounts:
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 175
+      - name: query
+        type: method
+        target: table
+        lineno: 176
+      - name: get
+        type: method
+        target: response
+        lineno: 181
+      - name: print_error
+        type: direct
+        lineno: 183
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 178
+      - name: Key
+        type: direct
+        lineno: 178
+    analyze_payload_fields:
+      - name: isinstance
+        type: direct
+        lineno: 201
+      - name: items
+        type: method
+        target: data
+        lineno: 202
+      - name: isinstance
+        type: direct
+        lineno: 206
+      - name: len
+        type: direct
+        lineno: 217
+      - name: analyze_payload_fields
+        type: direct
+        lineno: 208
+      - name: isinstance
+        type: direct
+        lineno: 212
+      - name: dumps
+        type: method
+        target: json
+        lineno: 216
+    validate_controls_endpoint:
+      - name: print_subheader
+        type: direct
+        lineno: 228
+      - name: get_table_name
+        type: direct
+        lineno: 241
+      - name: get_ddb_controls_count
+        type: direct
+        lineno: 242
+      - name: print_info
+        type: direct
+        lineno: 244
+      - name: get_lambda_name
+        type: direct
+        lineno: 247
+      - name: print_info
+        type: direct
+        lineno: 263
+      - name: invoke_lambda
+        type: direct
+        lineno: 264
+      - name: get
+        type: method
+        target: body
+        lineno: 273
+      - name: get
+        type: method
+        target: body
+        lineno: 278
+      - name: print_info
+        type: direct
+        lineno: 297
+      - name: print_info
+        type: direct
+        lineno: 298
+      - name: print_info
+        type: direct
+        lineno: 299
+      - name: get
+        type: method
+        target: results
+        lineno: 301
+      - name: print_error
+        type: direct
+        lineno: 267
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 269
+      - name: len
+        type: direct
+        lineno: 273
+      - name: analyze_payload_fields
+        type: direct
+        lineno: 281
+      - name: print_success
+        type: direct
+        lineno: 288
+      - name: print_error
+        type: direct
+        lineno: 291
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 293
+      - name: print_warning
+        type: direct
+        lineno: 302
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 303
+      - name: get
+        type: method
+        target: body
+        lineno: 273
+      - name: items
+        type: method
+        target: field_analysis['field_sizes']
+        lineno: 284
+      - name: get
+        type: method
+        target: results
+        lineno: 298
+      - name: get
+        type: method
+        target: results
+        lineno: 299
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 302
+    validate_account_controls_endpoint:
+      - name: print_subheader
+        type: direct
+        lineno: 314
+      - name: get_table_name
+        type: direct
+        lineno: 328
+      - name: get_ddb_controls_count
+        type: direct
+        lineno: 329
+      - name: print_info
+        type: direct
+        lineno: 331
+      - name: get_lambda_name
+        type: direct
+        lineno: 334
+      - name: print_info
+        type: direct
+        lineno: 350
+      - name: invoke_lambda
+        type: direct
+        lineno: 351
+      - name: get
+        type: method
+        target: body
+        lineno: 360
+      - name: get
+        type: method
+        target: body
+        lineno: 365
+      - name: print_info
+        type: direct
+        lineno: 389
+      - name: print_info
+        type: direct
+        lineno: 390
+      - name: print_info
+        type: direct
+        lineno: 391
+      - name: print_error
+        type: direct
+        lineno: 354
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 356
+      - name: len
+        type: direct
+        lineno: 360
+      - name: analyze_payload_fields
+        type: direct
+        lineno: 368
+      - name: print_success
+        type: direct
+        lineno: 380
+      - name: print_warning
+        type: direct
+        lineno: 383
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 385
+      - name: print_warning
+        type: direct
+        lineno: 395
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 396
+      - name: get
+        type: method
+        target: body
+        lineno: 360
+      - name: isinstance
+        type: direct
+        lineno: 373
+      - name: analyze_payload_fields
+        type: direct
+        lineno: 374
+      - name: get
+        type: method
+        target: results
+        lineno: 390
+      - name: get
+        type: method
+        target: results
+        lineno: 391
+      - name: items
+        type: method
+        target: nested_control_analysis['field_sizes']
+        lineno: 376
+    validate_metrics_endpoint:
+      - name: print_subheader
+        type: direct
+        lineno: 407
+      - name: get_table_name
+        type: direct
+        lineno: 419
+      - name: get_ddb_controls_count
+        type: direct
+        lineno: 420
+      - name: print_info
+        type: direct
+        lineno: 422
+      - name: get_lambda_name
+        type: direct
+        lineno: 425
+      - name: print_info
+        type: direct
+        lineno: 444
+      - name: invoke_lambda
+        type: direct
+        lineno: 445
+      - name: get
+        type: method
+        target: body.get('overall', {})
+        lineno: 454
+      - name: print_info
+        type: direct
+        lineno: 469
+      - name: print_info
+        type: direct
+        lineno: 470
+      - name: print_info
+        type: direct
+        lineno: 471
+      - name: print_error
+        type: direct
+        lineno: 448
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 450
+      - name: print_success
+        type: direct
+        lineno: 460
+      - name: print_error
+        type: direct
+        lineno: 463
+      - name: append
+        type: method
+        target: results['issues']
+        lineno: 465
+      - name: replace
+        type: method
+        target: datetime.now(timezone.utc).isoformat()
+        lineno: 432
+      - name: get
+        type: method
+        target: body
+        lineno: 454
+      - name: get
+        type: method
+        target: body.get('overall', {})
+        lineno: 470
+      - name: get
+        type: method
+        target: body.get('overall', {})
+        lineno: 471
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 432
+      - name: get
+        type: method
+        target: body
+        lineno: 470
+      - name: get
+        type: method
+        target: body
+        lineno: 471
+      - name: now
+        type: method
+        target: datetime
+        lineno: 432
+    generate_report:
+      - name: append
+        type: method
+        target: report
+        lineno: 479
+      - name: append
+        type: method
+        target: report
+        lineno: 480
+      - name: append
+        type: method
+        target: report
+        lineno: 481
+      - name: append
+        type: method
+        target: report
+        lineno: 482
+      - name: append
+        type: method
+        target: report
+        lineno: 483
+      - name: append
+        type: method
+        target: report
+        lineno: 486
+      - name: append
+        type: method
+        target: report
+        lineno: 487
+      - name: append
+        type: method
+        target: report
+        lineno: 508
+      - name: append
+        type: method
+        target: report
+        lineno: 509
+      - name: append
+        type: method
+        target: report
+        lineno: 510
+      - name: append
+        type: method
+        target: report
+        lineno: 511
+      - name: append
+        type: method
+        target: report
+        lineno: 512
+      - name: append
+        type: method
+        target: report
+        lineno: 526
+      - name: append
+        type: method
+        target: report
+        lineno: 527
+      - name: join
+        type: method
+        target: '''\n'''
+        lineno: 537
+      - name: get
+        type: method
+        target: r
+        lineno: 495
+      - name: get
+        type: method
+        target: r
+        lineno: 496
+      - name: append
+        type: method
+        target: report
+        lineno: 506
+      - name: get
+        type: method
+        target: r
+        lineno: 517
+      - name: append
+        type: method
+        target: report
+        lineno: 521
+      - name: append
+        type: method
+        target: report
+        lineno: 522
+      - name: extend
+        type: method
+        target: report
+        lineno: 523
+      - name: get
+        type: method
+        target: r
+        lineno: 495
+      - name: get
+        type: method
+        target: r
+        lineno: 496
+      - name: append
+        type: method
+        target: all_issues
+        lineno: 518
+      - name: append
+        type: method
+        target: report
+        lineno: 531
+      - name: get
+        type: method
+        target: r
+        lineno: 532
+      - name: get
+        type: method
+        target: r
+        lineno: 534
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 482
+      - name: len
+        type: direct
+        lineno: 505
+      - name: len
+        type: direct
+        lineno: 509
+      - name: append
+        type: method
+        target: report
+        lineno: 533
+      - name: append
+        type: method
+        target: report
+        lineno: 535
+      - name: now
+        type: method
+        target: datetime
+        lineno: 482
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 533
+    main:
+      - name: ArgumentParser
+        type: method
+        target: argparse
+        lineno: 541
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 544
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 549
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 555
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 560
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 564
+      - name: parse_args
+        type: method
+        target: parser
+        lineno: 569
+      - name: print_header
+        type: direct
+        lineno: 571
+      - name: print_info
+        type: direct
+        lineno: 572
+      - name: print_info
+        type: direct
+        lineno: 573
+      - name: print_info
+        type: direct
+        lineno: 574
+      - name: Session
+        type: method
+        target: boto3
+        lineno: 577
+      - name: client
+        type: method
+        target: session
+        lineno: 578
+      - name: resource
+        type: method
+        target: session
+        lineno: 579
+      - name: get_table_name
+        type: direct
+        lineno: 610
+      - name: get_ddb_accounts
+        type: direct
+        lineno: 611
+      - name: generate_report
+        type: direct
+        lineno: 641
+      - name: print
+        type: direct
+        lineno: 642
+      - name: any
+        type: direct
+        lineno: 651
+      - name: print_success
+        type: direct
+        lineno: 654
+      - name: validate_controls_endpoint
+        type: direct
+        lineno: 585
+      - name: append
+        type: method
+        target: results
+        lineno: 586
+      - name: validate_metrics_endpoint
+        type: direct
+        lineno: 598
+      - name: append
+        type: method
+        target: results
+        lineno: 599
+      - name: next
+        type: direct
+        lineno: 615
+      - name: print_success
+        type: direct
+        lineno: 648
+      - name: exit
+        type: method
+        target: sys
+        lineno: 652
+      - name: print_error
+        type: direct
+        lineno: 588
+      - name: append
+        type: method
+        target: results
+        lineno: 589
+      - name: print_error
+        type: direct
+        lineno: 601
+      - name: append
+        type: method
+        target: results
+        lineno: 602
+      - name: validate_account_controls_endpoint
+        type: direct
+        lineno: 617
+      - name: append
+        type: method
+        target: results
+        lineno: 621
+      - name: get
+        type: method
+        target: account
+        lineno: 628
+      - name: print_warning
+        type: direct
+        lineno: 638
+      - name: open
+        type: direct
+        lineno: 646
+      - name: write
+        type: method
+        target: f
+        lineno: 647
+      - name: get
+        type: method
+        target: a
+        lineno: 615
+      - name: print_error
+        type: direct
+        lineno: 623
+      - name: validate_account_controls_endpoint
+        type: direct
+        lineno: 630
+      - name: append
+        type: method
+        target: results
+        lineno: 634
+      - name: print_error
+        type: direct
+        lineno: 636
+      - name: str
+        type: direct
+        lineno: 593
+      - name: str
+        type: direct
+        lineno: 606
+    default:
+      - name: isinstance
+        type: direct
+        lineno: 52
+      - name: default
+        type: method
+        target: super()
+        lineno: 54
+      - name: float
+        type: direct
+        lineno: 53
+      - name: super
+        type: direct
+        lineno: 54
+  callers:
+    - print_header
+    - print_subheader
+    - print_success
+    - print_warning
+    - print_error
+    - print_info
+    - invoke_lambda
+    - get_ddb_controls_count
+    - get_ddb_account_controls_count
+    - get_ddb_accounts
+    - analyze_payload_fields
+    - validate_controls_endpoint
+    - validate_account_controls_endpoint
+    - validate_metrics_endpoint
+    - generate_report
+    - main
+    - default
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/validate-api-responses.py
+  line: 0
+  language: python
+  source_checksum: db324172fa4a53b9e756acf0941b1a8e3071612df863fa388332f4c7cc76de56

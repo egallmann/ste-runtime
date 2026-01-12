@@ -1,0 +1,28 @@
+_slice:
+  id: function:src/recon/common.ts:sortReferences:420
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/common.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-common
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/common.ts:sortReferences:420
+  name: sortReferences
+  signature: 'function sortReferences(refs: Reference[]): void'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - refs
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/common.ts
+  line: 420
+  language: typescript
+  source_checksum: f45d91d25143500ab08764e7d2d51a2356e28c1f94e54165a521ea30e3658103

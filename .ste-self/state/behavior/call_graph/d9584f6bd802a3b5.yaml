@@ -1,0 +1,693 @@
+_slice:
+  id: function_calls:backend/scripts/investigate-account-controls-count.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/scripts/investigate-account-controls-count.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/scripts/investigate-account-controls-count.py:module
+  file: backend/scripts/investigate-account-controls-count.py
+  callGraph:
+    parse_args:
+      - name: ArgumentParser
+        type: method
+        target: argparse
+        lineno: 34
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 35
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 40
+      - name: add_argument
+        type: method
+        target: parser
+        lineno: 45
+      - name: parse_args
+        type: method
+        target: parser
+        lineno: 51
+    get_dynamodb_resources:
+      - name: Session
+        type: method
+        target: boto3
+        lineno: 56
+      - name: resource
+        type: method
+        target: session
+        lineno: 57
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 59
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 60
+    query_catalog_controls:
+      - name: print
+        type: direct
+        lineno: 67
+      - name: query
+        type: method
+        target: catalog_table
+        lineno: 69
+      - name: print
+        type: direct
+        lineno: 77
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 71
+      - name: len
+        type: direct
+        lineno: 77
+      - name: Key
+        type: direct
+        lineno: 71
+    query_account_controls:
+      - name: print
+        type: direct
+        lineno: 83
+      - name: query
+        type: method
+        target: account_controls_table
+        lineno: 85
+      - name: print
+        type: direct
+        lineno: 99
+      - name: query
+        type: method
+        target: account_controls_table
+        lineno: 93
+      - name: extend
+        type: method
+        target: items
+        lineno: 97
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 86
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 94
+      - name: len
+        type: direct
+        lineno: 99
+      - name: Key
+        type: direct
+        lineno: 86
+      - name: Key
+        type: direct
+        lineno: 94
+    analyze_status_breakdown:
+      - name: defaultdict
+        type: direct
+        lineno: 105
+      - name: defaultdict
+        type: direct
+        lineno: 106
+      - name: get
+        type: method
+        target: item
+        lineno: 109
+      - name: len
+        type: direct
+        lineno: 126
+      - name: append
+        type: method
+        target: status_samples[category]
+        lineno: 127
+      - name: get
+        type: method
+        target: item
+        lineno: 128
+      - name: get
+        type: method
+        target: item
+        lineno: 130
+      - name: get
+        type: method
+        target: item
+        lineno: 131
+    check_for_duplicates:
+      - name: set
+        type: direct
+        lineno: 141
+      - name: add
+        type: method
+        target: seen
+        lineno: 146
+      - name: append
+        type: method
+        target: duplicates
+        lineno: 145
+    generate_report:
+      - name: strftime
+        type: method
+        target: datetime.now()
+        lineno: 169
+      - name: print
+        type: direct
+        lineno: 172
+      - name: print
+        type: direct
+        lineno: 173
+      - name: print
+        type: direct
+        lineno: 174
+      - name: print
+        type: direct
+        lineno: 175
+      - name: print
+        type: direct
+        lineno: 176
+      - name: print
+        type: direct
+        lineno: 177
+      - name: print
+        type: direct
+        lineno: 180
+      - name: print
+        type: direct
+        lineno: 181
+      - name: print
+        type: direct
+        lineno: 182
+      - name: sorted
+        type: direct
+        lineno: 183
+      - name: print
+        type: direct
+        lineno: 187
+      - name: print
+        type: direct
+        lineno: 188
+      - name: print
+        type: direct
+        lineno: 189
+      - name: print
+        type: direct
+        lineno: 190
+      - name: print
+        type: direct
+        lineno: 193
+      - name: print
+        type: direct
+        lineno: 194
+      - name: print
+        type: direct
+        lineno: 195
+      - name: print
+        type: direct
+        lineno: 196
+      - name: print
+        type: direct
+        lineno: 199
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 201
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 202
+      - name: print
+        type: direct
+        lineno: 245
+      - name: sorted
+        type: direct
+        lineno: 246
+      - name: print
+        type: direct
+        lineno: 252
+      - name: print
+        type: direct
+        lineno: 273
+      - name: print
+        type: direct
+        lineno: 290
+      - name: print
+        type: direct
+        lineno: 368
+      - name: items
+        type: method
+        target: status_counts
+        lineno: 183
+      - name: print
+        type: direct
+        lineno: 184
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 209
+      - name: print
+        type: direct
+        lineno: 210
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 214
+      - name: print
+        type: direct
+        lineno: 215
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 219
+      - name: print
+        type: direct
+        lineno: 220
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 224
+      - name: print
+        type: direct
+        lineno: 225
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 229
+      - name: print
+        type: direct
+        lineno: 230
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 232
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 234
+      - name: print
+        type: direct
+        lineno: 235
+      - name: print
+        type: direct
+        lineno: 238
+      - name: append
+        type: method
+        target: discrepancies
+        lineno: 239
+      - name: print
+        type: direct
+        lineno: 242
+      - name: items
+        type: method
+        target: status_samples
+        lineno: 246
+      - name: print
+        type: direct
+        lineno: 247
+      - name: print
+        type: direct
+        lineno: 255
+      - name: print
+        type: direct
+        lineno: 256
+      - name: print
+        type: direct
+        lineno: 276
+      - name: print
+        type: direct
+        lineno: 277
+      - name: print
+        type: direct
+        lineno: 280
+      - name: print
+        type: direct
+        lineno: 281
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 283
+      - name: print
+        type: direct
+        lineno: 284
+      - name: print
+        type: direct
+        lineno: 285
+      - name: print
+        type: direct
+        lineno: 288
+      - name: open
+        type: direct
+        lineno: 295
+      - name: write
+        type: method
+        target: f
+        lineno: 296
+      - name: write
+        type: method
+        target: f
+        lineno: 297
+      - name: write
+        type: method
+        target: f
+        lineno: 298
+      - name: write
+        type: method
+        target: f
+        lineno: 299
+      - name: write
+        type: method
+        target: f
+        lineno: 300
+      - name: write
+        type: method
+        target: f
+        lineno: 302
+      - name: write
+        type: method
+        target: f
+        lineno: 303
+      - name: write
+        type: method
+        target: f
+        lineno: 304
+      - name: sorted
+        type: direct
+        lineno: 305
+      - name: write
+        type: method
+        target: f
+        lineno: 308
+      - name: write
+        type: method
+        target: f
+        lineno: 309
+      - name: write
+        type: method
+        target: f
+        lineno: 310
+      - name: write
+        type: method
+        target: f
+        lineno: 311
+      - name: write
+        type: method
+        target: f
+        lineno: 313
+      - name: write
+        type: method
+        target: f
+        lineno: 314
+      - name: write
+        type: method
+        target: f
+        lineno: 315
+      - name: write
+        type: method
+        target: f
+        lineno: 316
+      - name: write
+        type: method
+        target: f
+        lineno: 318
+      - name: write
+        type: method
+        target: f
+        lineno: 332
+      - name: sorted
+        type: direct
+        lineno: 333
+      - name: write
+        type: method
+        target: f
+        lineno: 339
+      - name: write
+        type: method
+        target: f
+        lineno: 355
+      - name: now
+        type: method
+        target: datetime
+        lineno: 169
+      - name: print
+        type: direct
+        lineno: 249
+      - name: print
+        type: direct
+        lineno: 258
+      - name: print
+        type: direct
+        lineno: 259
+      - name: strftime
+        type: method
+        target: datetime.now()
+        lineno: 293
+      - name: items
+        type: method
+        target: status_counts
+        lineno: 305
+      - name: write
+        type: method
+        target: f
+        lineno: 306
+      - name: write
+        type: method
+        target: f
+        lineno: 323
+      - name: write
+        type: method
+        target: f
+        lineno: 326
+      - name: write
+        type: method
+        target: f
+        lineno: 327
+      - name: sorted
+        type: direct
+        lineno: 328
+      - name: write
+        type: method
+        target: f
+        lineno: 330
+      - name: items
+        type: method
+        target: status_samples
+        lineno: 333
+      - name: write
+        type: method
+        target: f
+        lineno: 334
+      - name: write
+        type: method
+        target: f
+        lineno: 335
+      - name: write
+        type: method
+        target: f
+        lineno: 336
+      - name: write
+        type: method
+        target: f
+        lineno: 337
+      - name: write
+        type: method
+        target: f
+        lineno: 341
+      - name: write
+        type: method
+        target: f
+        lineno: 342
+      - name: write
+        type: method
+        target: f
+        lineno: 357
+      - name: write
+        type: method
+        target: f
+        lineno: 358
+      - name: len
+        type: direct
+        lineno: 190
+      - name: len
+        type: direct
+        lineno: 228
+      - name: print
+        type: direct
+        lineno: 261
+      - name: write
+        type: method
+        target: f
+        lineno: 321
+      - name: list
+        type: direct
+        lineno: 328
+      - name: write
+        type: method
+        target: f
+        lineno: 329
+      - name: dumps
+        type: method
+        target: json
+        lineno: 336
+      - name: write
+        type: method
+        target: f
+        lineno: 344
+      - name: write
+        type: method
+        target: f
+        lineno: 345
+      - name: write
+        type: method
+        target: f
+        lineno: 360
+      - name: write
+        type: method
+        target: f
+        lineno: 361
+      - name: len
+        type: direct
+        lineno: 239
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 262
+      - name: print
+        type: direct
+        lineno: 263
+      - name: now
+        type: method
+        target: datetime
+        lineno: 293
+      - name: len
+        type: direct
+        lineno: 311
+      - name: write
+        type: method
+        target: f
+        lineno: 347
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 362
+      - name: write
+        type: method
+        target: f
+        lineno: 363
+      - name: write
+        type: method
+        target: f
+        lineno: 364
+      - name: write
+        type: method
+        target: f
+        lineno: 366
+      - name: sorted
+        type: direct
+        lineno: 238
+      - name: len
+        type: direct
+        lineno: 258
+      - name: print
+        type: direct
+        lineno: 266
+      - name: print
+        type: direct
+        lineno: 267
+      - name: print
+        type: direct
+        lineno: 269
+      - name: print
+        type: direct
+        lineno: 270
+      - name: get
+        type: method
+        target: status_counts
+        lineno: 348
+      - name: write
+        type: method
+        target: f
+        lineno: 349
+      - name: list
+        type: direct
+        lineno: 238
+      - name: len
+        type: direct
+        lineno: 344
+      - name: write
+        type: method
+        target: f
+        lineno: 351
+      - name: write
+        type: method
+        target: f
+        lineno: 353
+    main:
+      - name: parse_args
+        type: direct
+        lineno: 375
+      - name: print
+        type: direct
+        lineno: 377
+      - name: print
+        type: direct
+        lineno: 378
+      - name: print
+        type: direct
+        lineno: 379
+      - name: print
+        type: direct
+        lineno: 380
+      - name: get_dynamodb_resources
+        type: direct
+        lineno: 383
+      - name: query_catalog_controls
+        type: direct
+        lineno: 388
+      - name: query_account_controls
+        type: direct
+        lineno: 391
+      - name: analyze_status_breakdown
+        type: direct
+        lineno: 394
+      - name: check_for_duplicates
+        type: direct
+        lineno: 395
+      - name: find_missing_controls
+        type: direct
+        lineno: 396
+      - name: generate_report
+        type: direct
+        lineno: 399
+      - name: len
+        type: direct
+        lineno: 401
+      - name: len
+        type: direct
+        lineno: 402
+      - name: print
+        type: direct
+        lineno: 411
+      - name: print
+        type: direct
+        lineno: 414
+      - name: len
+        type: direct
+        lineno: 411
+  callers:
+    - parse_args
+    - get_dynamodb_resources
+    - query_catalog_controls
+    - query_account_controls
+    - analyze_status_breakdown
+    - check_for_duplicates
+    - generate_report
+    - main
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/investigate-account-controls-count.py
+  line: 0
+  language: python
+  source_checksum: 7d9af74a4494ea8f0fc7517d6d2b499de9b979d16e92c35ff90321c0e15a3662

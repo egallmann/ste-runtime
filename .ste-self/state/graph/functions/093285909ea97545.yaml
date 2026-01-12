@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/phases/divergence.ts:detectSemanticEnrichment:114
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/divergence.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-divergence
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/divergence.ts:detectSemanticEnrichment:114
+  name: detectSemanticEnrichment
+  signature: 'function detectSemanticEnrichment(prior: NormalizedAssertion, current: NormalizedAssertion): SemanticEnrichment[]'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - prior
+    - current
+  docstring: "Detect semantic enrichment (extractor improvements).\r\n\r\nThese are NOT conflicts - they represent:\r\n- Better extractors (e.g., TypeScript → Angular)\r\n- Source code changes (authoritative)\r\n- Legitimate semantic evolution"
+  description: "Detect semantic enrichment (extractor improvements).\r\n\r\nThese are NOT conflicts - they represent:\r\n- Better extractors (e.g., TypeScript → Angular)\r\n- Source code changes (authoritative)\r\n- Legitimate semantic evolution"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/divergence.ts
+  line: 114
+  language: typescript
+  source_checksum: 8a3808e20ff422e5cd94c219f3579e1d87f1b87083eb182549478a098fcce5a6

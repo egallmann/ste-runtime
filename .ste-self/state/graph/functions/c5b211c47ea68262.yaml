@@ -1,0 +1,36 @@
+_slice:
+  id: function:src/test/extractor-test-utils.ts:assertInferenceCreatesEdges:113
+  domain: graph
+  type: function
+  source_files:
+    - src/test/extractor-test-utils.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-test-extractor-test-utils
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/test/extractor-test-utils.ts:assertInferenceCreatesEdges:113
+  name: assertInferenceCreatesEdges
+  signature: 'function assertInferenceCreatesEdges(normalized: NormalizedAssertion[], rawAssertions: RawAssertion[], fromId: string, toIds: string[]): NormalizedAssertion[]'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - normalized
+    - rawAssertions
+    - fromId
+    - toIds
+  docstring: "Run inference and assert that edges are created correctly.\r\nThis is the core validation that extractors must pass."
+  description: "Run inference and assert that edges are created correctly.\r\nThis is the core validation that extractors must pass."
+  examples:
+    - "await assertInferenceCreatesEdges(\r\n  normalizedAssertions,\r\n  rawImportAssertions,\r\n  'module-src-a',\r\n  ['module-src-b', 'module-src-c']\r\n);"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/test/extractor-test-utils.ts
+  line: 113
+  language: typescript
+  source_checksum: 191cee2609a3e6418b8a42af49006b5a4793ab1e7c748be0eb3149053461b79b

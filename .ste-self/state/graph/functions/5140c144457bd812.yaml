@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/recon/phases/inference.ts:buildBidirectionalEdges:1195
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/inference.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/inference.ts:buildBidirectionalEdges:1195
+  name: buildBidirectionalEdges
+  signature: 'function buildBidirectionalEdges(assertions: NormalizedAssertion[]): NormalizedAssertion[]'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - assertions
+  docstring: "Build bidirectional edges by computing referenced_by from references.\r\nPer SYS-13: Graph Completeness — bidirectional relationships required"
+  description: "Build bidirectional edges by computing referenced_by from references.\r\nPer SYS-13: Graph Completeness — bidirectional relationships required"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/inference.ts
+  line: 1195
+  language: typescript
+  source_checksum: fd8b3718620973138c02b6706cafd5ee4121f1b3cba8bb1cedc9e222c6c57cc7

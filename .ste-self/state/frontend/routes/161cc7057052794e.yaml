@@ -1,0 +1,42 @@
+_slice:
+  id: routes:frontend/src/app/app.routes.ts
+  domain: frontend
+  type: routes
+  source_files:
+    - frontend/src/app/app.routes.ts
+  references: []
+  tags:
+    - frontend:angular
+    - frontend:routes
+  referenced_by: []
+element:
+  id: routes:frontend/src/app/app.routes.ts
+  routes:
+    - path: login
+      guards:
+        - authGuard
+    - path: dashboard
+      guards:
+        - authGuard
+    - path: ''
+    - path: users
+    - path: controls
+    - path: accounts
+    - path: accounts/:accountId
+    - path: findings
+    - path: reports
+    - path: remediations
+    - path: exclusions
+    - path: profile
+    - path: ''
+    - path: '**'
+  routeCount: 14
+  hasLazyLoading: false
+  hasGuards: true
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/app.routes.ts
+  line: 1
+  language: angular
+  source_checksum: 6710ede82e98112c7efefbb0e8615bcd265143731e68d4eb49c624f74dd8de07

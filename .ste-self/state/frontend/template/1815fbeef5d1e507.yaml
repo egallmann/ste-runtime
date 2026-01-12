@@ -1,0 +1,43 @@
+_slice:
+  id: template:frontend/src/app/features/accounts/account-detail/account-detail.component.html
+  domain: frontend
+  type: template
+  source_files:
+    - frontend/src/app/features/accounts/account-detail/account-detail.component.html
+  references:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.ts:ControlDetailModalComponent
+  tags:
+    - frontend:angular
+    - frontend:template
+    - directive:ngclass
+    - directive:ngmodel
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/accounts/account-detail/account-detail.component.ts:AccountDetailComponent
+element:
+  id: template:frontend/src/app/features/accounts/account-detail/account-detail.component.html
+  parentComponent: AccountDetailComponent
+  childComponents:
+    - selector: app-control-detail-modal
+      inputs:
+        - controlId
+        - accountConfig
+      outputs:
+        - close
+  directives:
+    - ngClass
+    - ngModel
+  pipes:
+    - control
+  hasConditionals: false
+  hasLoops: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/accounts/account-detail/account-detail.component.html
+  line: 1
+  language: angular
+  source_checksum: a62fd73d574244e8c0cb1937bfcfe99121a5c4e2a4d59b8b9d1e3d06e60afb00

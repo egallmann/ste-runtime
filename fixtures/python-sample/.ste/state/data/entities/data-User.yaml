@@ -1,0 +1,44 @@
+_slice:
+  id: data-User
+  domain: data
+  type: entity
+  source_files:
+    - app/services/user_service.py
+  references:
+    - domain: graph
+      type: module
+      id: module-app-services-user_service
+  referenced_by: []
+  tags:
+    - data
+    - entity
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+entity:
+  id: data-User
+  name: User
+  description: User entity model.
+  source:
+    file: app/services/user_service.py
+    class: User
+    line: 9
+  persistence:
+    type: none
+  fields:
+    - name: created_at
+      type: datetime
+      default: field(default_factory=datetime.now)
+    - name: email
+      type: str
+    - name: id
+      type: str
+    - name: name
+      type: str
+    - name: roles
+      type: List[str]
+      default: field(default_factory=list)
+  relationships: []
+  indexes: []
+  validation_rules: []

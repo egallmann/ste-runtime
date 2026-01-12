@@ -1,0 +1,63 @@
+_slice:
+  id: aws_sdk_usage:backend/scripts/initialize-account-controls.py:module
+  domain: behavior
+  type: aws_sdk_usage
+  source_files:
+    - backend/scripts/initialize-account-controls.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: aws_sdk_usage:backend/scripts/initialize-account-controls.py:module
+  file: backend/scripts/initialize-account-controls.py
+  clients:
+    - service: dynamodb
+      method: resource
+      lineno: 32
+    - service: dynamodb
+      method: resource
+      lineno: 34
+  operations:
+    - method: query
+      operationType: read
+      target: table
+      lineno: 45
+    - method: query
+      operationType: read
+      target: table
+      lineno: 77
+    - method: scan
+      operationType: read
+      target: table
+      lineno: 234
+    - method: scan
+      operationType: read
+      target: table
+      lineno: 248
+    - method: query
+      operationType: read
+      target: table
+      lineno: 54
+    - method: query
+      operationType: read
+      target: table
+      lineno: 86
+    - method: scan
+      operationType: read
+      target: table
+      lineno: 239
+    - method: put_item
+      operationType: write
+      target: writer
+      lineno: 206
+  services:
+    - dynamodb
+  hasReadOperations: true
+  hasWriteOperations: true
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/initialize-account-controls.py
+  line: 0
+  language: python
+  source_checksum: abdcbb69b6996204a143c5e06a040db74709c0633d63b26cf6e13f3e5f80a07b

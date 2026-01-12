@@ -1,0 +1,86 @@
+_slice:
+  id: module-src-watch-change-detector
+  domain: graph
+  type: module
+  source_files:
+    - src/watch/change-detector.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-watch-cli
+    - domain: graph
+      type: module
+      id: module-src-recon-full-recon
+    - domain: graph
+      type: module
+      id: module-src-recon-incremental-recon
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:hashFile:41
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:listPythonFiles:55
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:loadReconManifest:59
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:ensureManifestDir:71
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:writeReconManifest:76
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:buildFullManifest:82
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:detectFileChanges:103
+    - domain: graph
+      type: function
+      id: function:src/watch/change-detector.ts:manifestPath:164
+element:
+  id: module-src-watch-change-detector
+  path: src/watch/change-detector.ts
+  name: change-detector
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - hashFile
+      - listPythonFiles
+      - loadReconManifest
+      - ensureManifestDir
+      - writeReconManifest
+      - buildFullManifest
+      - detectFileChanges
+      - manifestPath
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: node:crypto
+        names:
+          - createHash
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: globby
+        names:
+          - globby
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/change-detector.ts
+  line: 1
+  language: typescript
+  source_checksum: cf66337de58175a5bd468ae75adee35516f526e6a579966eabc87387e0561370

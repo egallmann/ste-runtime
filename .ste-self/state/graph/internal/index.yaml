@@ -1,0 +1,40 @@
+_slice:
+  id: internal-graph-index
+  domain: graph
+  type: internal-index
+  source_files: []
+  references: []
+  referenced_by: []
+  tags:
+    - graph
+    - internal
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+modules:
+  - id: module-fixtures-python-sample-app-__init__
+    path: fixtures/python-sample/app/__init__.py
+    layer: util
+  - id: module-fixtures-python-sample-app-api
+    path: fixtures/python-sample/app/api.py
+    layer: util
+  - id: module-fixtures-python-sample-app-services-__init__
+    path: fixtures/python-sample/app/services/__init__.py
+    layer: util
+  - id: module-fixtures-python-sample-app-services-greeting
+    path: fixtures/python-sample/app/services/greeting.py
+    layer: util
+  - id: module-fixtures-python-sample-app-services-user_service
+    path: fixtures/python-sample/app/services/user_service.py
+    layer: util
+  - id: module-python-scripts-ast_parser
+    path: python-scripts/ast_parser.py
+    layer: util
+  - id: module-python-scripts-examples-flask_sample
+    path: python-scripts/examples/flask_sample.py
+    layer: util
+  - id: module-python-scripts-task_analysis
+    path: python-scripts/task_analysis.py
+    layer: util
+layers: []

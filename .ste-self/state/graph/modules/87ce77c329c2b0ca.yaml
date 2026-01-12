@@ -1,0 +1,43 @@
+_slice:
+  id: module-src-watch-file-watcher
+  domain: graph
+  type: module
+  source_files:
+    - src/watch/file-watcher.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-index
+    - domain: graph
+      type: function
+      id: function:src/watch/file-watcher.ts:startWatch:3
+element:
+  id: module-src-watch-file-watcher
+  path: src/watch/file-watcher.ts
+  name: file-watcher
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - startWatch
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: chokidar
+        names:
+          - chokidar
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/file-watcher.ts
+  line: 1
+  language: typescript
+  source_checksum: de9e75c828b0fb19fdb89a7b669f7da41e010829a1529133a2ce5f7cb6187cec

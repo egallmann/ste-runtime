@@ -1,0 +1,27 @@
+_slice:
+  id: styles:C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/user-profile/user-profile.component.css
+  domain: frontend
+  type: styles
+  source_files:
+    - C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/user-profile/user-profile.component.css
+  references: []
+  tags:
+    - frontend:styles
+  referenced_by: []
+element:
+  id: styles:C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/user-profile/user-profile.component.css
+  cssVariablesUsed: []
+  scssVariablesUsed: []
+  mediaQueries:
+    - '(max-width: 640px)'
+  stateModifiers:
+    - ':focus'
+    - ':hover'
+    - ':disabled'
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-css-extractor-v1
+  file: C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/user-profile/user-profile.component.css
+  line: 1
+  language: css
+  source_checksum: cf48a3caf3d2c948ef1045296263a9ad34882e76f679024ab2277e8c1822699c

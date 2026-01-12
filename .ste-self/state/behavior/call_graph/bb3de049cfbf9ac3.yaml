@@ -1,0 +1,548 @@
+_slice:
+  id: function_calls:backend/scripts/generate-control-review-csv.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/scripts/generate-control-review-csv.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/scripts/generate-control-review-csv.py:module
+  file: backend/scripts/generate-control-review-csv.py
+  callGraph:
+    load_controls_catalog:
+      - name: exists
+        type: method
+        target: catalog_path
+        lineno: 46
+      - name: print
+        type: direct
+        lineno: 47
+      - name: exit
+        type: method
+        target: sys
+        lineno: 48
+      - name: open
+        type: direct
+        lineno: 50
+      - name: load
+        type: method
+        target: json
+        lineno: 51
+      - name: Path
+        type: direct
+        lineno: 44
+    filter_controls_by_service:
+      - name: startswith
+        type: method
+        target: c['controlId']
+        lineno: 57
+    sort_controls_by_severity:
+      - name: sorted
+        type: direct
+        lineno: 63
+      - name: get
+        type: method
+        target: severity_order
+        lineno: 63
+      - name: get
+        type: method
+        target: x
+        lineno: 63
+    analyze_control:
+      - name: lower
+        type: method
+        target: control.get('title', '')
+        lineno: 78
+      - name: lower
+        type: method
+        target: control.get('description', '')
+        lineno: 79
+      - name: get
+        type: method
+        target: control
+        lineno: 80
+      - name: any
+        type: direct
+        lineno: 95
+      - name: any
+        type: direct
+        lineno: 116
+      - name: get
+        type: method
+        target: control
+        lineno: 78
+      - name: get
+        type: method
+        target: control
+        lineno: 79
+      - name: update
+        type: method
+        target: analysis
+        lineno: 97
+      - name: update
+        type: method
+        target: analysis
+        lineno: 106
+      - name: update
+        type: method
+        target: analysis
+        lineno: 118
+      - name: update
+        type: method
+        target: analysis
+        lineno: 138
+      - name: any
+        type: direct
+        lineno: 148
+      - name: update
+        type: method
+        target: analysis
+        lineno: 127
+      - name: replace
+        type: method
+        target: title
+        lineno: 137
+      - name: update
+        type: method
+        target: analysis
+        lineno: 150
+      - name: update
+        type: method
+        target: analysis
+        lineno: 170
+      - name: any
+        type: direct
+        lineno: 180
+      - name: update
+        type: method
+        target: analysis
+        lineno: 159
+      - name: update
+        type: method
+        target: analysis
+        lineno: 181
+      - name: any
+        type: direct
+        lineno: 191
+      - name: any
+        type: direct
+        lineno: 203
+      - name: update
+        type: method
+        target: analysis
+        lineno: 193
+      - name: update
+        type: method
+        target: analysis
+        lineno: 204
+      - name: update
+        type: method
+        target: analysis
+        lineno: 216
+      - name: update
+        type: method
+        target: analysis
+        lineno: 228
+      - name: update
+        type: method
+        target: analysis
+        lineno: 239
+      - name: update
+        type: method
+        target: analysis
+        lineno: 250
+      - name: update
+        type: method
+        target: analysis
+        lineno: 261
+    generate_csv:
+      - name: print
+        type: direct
+        lineno: 275
+      - name: print
+        type: direct
+        lineno: 314
+      - name: open
+        type: direct
+        lineno: 290
+      - name: DictWriter
+        type: method
+        target: csv
+        lineno: 291
+      - name: writeheader
+        type: method
+        target: writer
+        lineno: 292
+      - name: enumerate
+        type: direct
+        lineno: 294
+      - name: analyze_control
+        type: direct
+        lineno: 296
+      - name: writerow
+        type: method
+        target: writer
+        lineno: 302
+      - name: len
+        type: direct
+        lineno: 275
+      - name: print
+        type: direct
+        lineno: 300
+      - name: len
+        type: direct
+        lineno: 314
+      - name: len
+        type: direct
+        lineno: 314
+      - name: get
+        type: method
+        target: control
+        lineno: 304
+      - name: get
+        type: method
+        target: control
+        lineno: 305
+      - name: len
+        type: direct
+        lineno: 300
+    main:
+      - name: print
+        type: direct
+        lineno: 317
+      - name: print
+        type: direct
+        lineno: 318
+      - name: print
+        type: direct
+        lineno: 319
+      - name: print
+        type: direct
+        lineno: 320
+      - name: print
+        type: direct
+        lineno: 321
+      - name: upper
+        type: method
+        target: sys.argv[1]
+        lineno: 336
+      - name: print
+        type: direct
+        lineno: 338
+      - name: print
+        type: direct
+        lineno: 339
+      - name: print
+        type: direct
+        lineno: 342
+      - name: load_controls_catalog
+        type: direct
+        lineno: 343
+      - name: print
+        type: direct
+        lineno: 344
+      - name: print
+        type: direct
+        lineno: 345
+      - name: print
+        type: direct
+        lineno: 348
+      - name: filter_controls_by_service
+        type: direct
+        lineno: 349
+      - name: print
+        type: direct
+        lineno: 356
+      - name: print
+        type: direct
+        lineno: 357
+      - name: sort_controls_by_severity
+        type: direct
+        lineno: 360
+      - name: print
+        type: direct
+        lineno: 368
+      - name: print
+        type: direct
+        lineno: 373
+      - name: mkdir
+        type: method
+        target: output_dir
+        lineno: 377
+      - name: print
+        type: direct
+        lineno: 381
+      - name: generate_csv
+        type: direct
+        lineno: 382
+      - name: print
+        type: direct
+        lineno: 383
+      - name: print
+        type: direct
+        lineno: 384
+      - name: print
+        type: direct
+        lineno: 390
+      - name: print
+        type: direct
+        lineno: 391
+      - name: sum
+        type: direct
+        lineno: 394
+      - name: sum
+        type: direct
+        lineno: 395
+      - name: sum
+        type: direct
+        lineno: 396
+      - name: print
+        type: direct
+        lineno: 399
+      - name: print
+        type: direct
+        lineno: 400
+      - name: print
+        type: direct
+        lineno: 401
+      - name: print
+        type: direct
+        lineno: 402
+      - name: print
+        type: direct
+        lineno: 403
+      - name: print
+        type: direct
+        lineno: 404
+      - name: print
+        type: direct
+        lineno: 405
+      - name: print
+        type: direct
+        lineno: 410
+      - name: print
+        type: direct
+        lineno: 411
+      - name: print
+        type: direct
+        lineno: 412
+      - name: print
+        type: direct
+        lineno: 413
+      - name: print
+        type: direct
+        lineno: 414
+      - name: print
+        type: direct
+        lineno: 415
+      - name: print
+        type: direct
+        lineno: 416
+      - name: print
+        type: direct
+        lineno: 417
+      - name: print
+        type: direct
+        lineno: 420
+      - name: print
+        type: direct
+        lineno: 421
+      - name: print
+        type: direct
+        lineno: 422
+      - name: print
+        type: direct
+        lineno: 423
+      - name: print
+        type: direct
+        lineno: 424
+      - name: print
+        type: direct
+        lineno: 425
+      - name: print
+        type: direct
+        lineno: 426
+      - name: print
+        type: direct
+        lineno: 427
+      - name: print
+        type: direct
+        lineno: 428
+      - name: print
+        type: direct
+        lineno: 429
+      - name: print
+        type: direct
+        lineno: 430
+      - name: print
+        type: direct
+        lineno: 431
+      - name: print
+        type: direct
+        lineno: 432
+      - name: print
+        type: direct
+        lineno: 433
+      - name: print
+        type: direct
+        lineno: 434
+      - name: print
+        type: direct
+        lineno: 435
+      - name: print
+        type: direct
+        lineno: 436
+      - name: print
+        type: direct
+        lineno: 437
+      - name: print
+        type: direct
+        lineno: 438
+      - name: print
+        type: direct
+        lineno: 439
+      - name: print
+        type: direct
+        lineno: 440
+      - name: print
+        type: direct
+        lineno: 441
+      - name: print
+        type: direct
+        lineno: 442
+      - name: print
+        type: direct
+        lineno: 443
+      - name: print
+        type: direct
+        lineno: 444
+      - name: print
+        type: direct
+        lineno: 445
+      - name: print
+        type: direct
+        lineno: 446
+      - name: print
+        type: direct
+        lineno: 447
+      - name: print
+        type: direct
+        lineno: 448
+      - name: len
+        type: direct
+        lineno: 324
+      - name: print
+        type: direct
+        lineno: 325
+      - name: print
+        type: direct
+        lineno: 326
+      - name: print
+        type: direct
+        lineno: 327
+      - name: print
+        type: direct
+        lineno: 328
+      - name: print
+        type: direct
+        lineno: 329
+      - name: print
+        type: direct
+        lineno: 330
+      - name: print
+        type: direct
+        lineno: 331
+      - name: print
+        type: direct
+        lineno: 332
+      - name: print
+        type: direct
+        lineno: 333
+      - name: exit
+        type: method
+        target: sys
+        lineno: 334
+      - name: print
+        type: direct
+        lineno: 352
+      - name: print
+        type: direct
+        lineno: 353
+      - name: exit
+        type: method
+        target: sys
+        lineno: 354
+      - name: get
+        type: method
+        target: control
+        lineno: 365
+      - name: get
+        type: method
+        target: severities
+        lineno: 370
+      - name: open
+        type: direct
+        lineno: 388
+      - name: dump
+        type: method
+        target: json
+        lineno: 389
+      - name: get
+        type: method
+        target: severities
+        lineno: 407
+      - name: get
+        type: method
+        target: severities
+        lineno: 366
+      - name: print
+        type: direct
+        lineno: 372
+      - name: print
+        type: direct
+        lineno: 409
+      - name: len
+        type: direct
+        lineno: 344
+      - name: len
+        type: direct
+        lineno: 356
+      - name: lower
+        type: method
+        target: service_prefix
+        lineno: 378
+      - name: lower
+        type: method
+        target: service_prefix
+        lineno: 387
+      - name: len
+        type: direct
+        lineno: 403
+      - name: Path
+        type: direct
+        lineno: 376
+      - name: analyze_control
+        type: direct
+        lineno: 394
+      - name: analyze_control
+        type: direct
+        lineno: 395
+      - name: analyze_control
+        type: direct
+        lineno: 396
+  callers:
+    - load_controls_catalog
+    - filter_controls_by_service
+    - sort_controls_by_severity
+    - analyze_control
+    - generate_csv
+    - main
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/generate-control-review-csv.py
+  line: 0
+  language: python
+  source_checksum: 1e1dce001ed33f669c9d6d25f0584b19d34fd16e2b0fc3cb09ae09a79dcbc38d

@@ -1,0 +1,83 @@
+# Pre-commit hook for ste-runtime
+# Ensures only stable, tested code can be committed
+
+set -e
+
+echo ""
+echo "=========================================="
+echo "Running pre-commit checks..."
+echo "=========================================="
+echo ""
+
+# [1/5] Build check
+echo "[1/5] Building project..."
+npm run build
+if [ $? -eq 0 ]; then
+  echo "[OK] Build successful"
+else
+  echo "[FAIL] Build failed - commit aborted"
+  exit 1
+fi
+echo ""
+
+# [2/5] RECON self-check
+echo "[2/5] Running RECON self-check..."
+npm run recon:self > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+  echo "[OK] RECON self-check passed"
+else
+  echo "[FAIL] RECON self-check failed - commit aborted"
+  exit 1
+fi
+echo ""
+
+# [3/5] Tests
+echo "[3/5] Running tests..."
+npm test
+if [ $? -eq 0 ]; then
+  echo "[OK] All tests passed"
+else
+  echo "[FAIL] Tests failed - commit aborted"
+  exit 1
+fi
+echo ""
+
+# [4/5] RSS stats
+echo "[4/5] Running RSS stats check..."
+npm run rss:stats > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+  echo "[OK] RSS stats check passed"
+else
+  echo "[FAIL] RSS stats check failed - commit aborted"
+  exit 1
+fi
+echo ""
+
+# [5/5] Test coverage
+echo "[5/5] Checking test coverage..."
+MIN_COVERAGE=50
+COVERAGE_OUTPUT=$(npm run test:coverage 2>&1)
+COVERAGE_PERCENT=$(echo "$COVERAGE_OUTPUT" | grep -oP 'Statements\s+:\s+\K[\d.]+' | head -1)
+
+if [ -z "$COVERAGE_PERCENT" ]; then
+  # Try alternative pattern for coverage output
+  COVERAGE_PERCENT=$(echo "$COVERAGE_OUTPUT" | grep -oP 'Statements\s+\|\s+\K[\d.]+' | head -1)
+fi
+
+if [ -z "$COVERAGE_PERCENT" ]; then
+  echo "[WARN] Could not parse coverage percentage - skipping coverage check"
+else
+  COVERAGE_INT=$(echo "$COVERAGE_PERCENT" | cut -d. -f1)
+  if [ "$COVERAGE_INT" -ge "$MIN_COVERAGE" ]; then
+    echo "[OK] Test coverage is ${COVERAGE_PERCENT}% (minimum: ${MIN_COVERAGE}%)"
+  else
+    echo "[FAIL] Test coverage is ${COVERAGE_PERCENT}% (minimum: ${MIN_COVERAGE}%) - commit aborted"
+    exit 1
+  fi
+fi
+echo ""
+
+echo "=========================================="
+echo "All pre-commit checks passed!"
+echo "=========================================="
+echo ""

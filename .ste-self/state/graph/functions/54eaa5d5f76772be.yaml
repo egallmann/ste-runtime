@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/rss/rss-operations.ts:traverse:105
+  domain: graph
+  type: function
+  source_files:
+    - src/rss/rss-operations.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/rss/rss-operations.ts:traverse:105
+  name: traverse
+  signature: 'function traverse(key: string, depth: number, fromKey: string | null): void'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - key
+    - depth
+    - fromKey
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/rss-operations.ts
+  line: 105
+  language: typescript
+  source_checksum: 44c875e9e4c26c3277950fcd455f022b420e33198869324425ffdfbe675c2450

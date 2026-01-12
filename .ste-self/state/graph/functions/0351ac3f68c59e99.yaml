@@ -1,0 +1,28 @@
+_slice:
+  id: function:src/cli/discovery-cli.ts:formatConfidence:29
+  domain: graph
+  type: function
+  source_files:
+    - src/cli/discovery-cli.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-cli-discovery-cli
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/cli/discovery-cli.ts:formatConfidence:29
+  name: formatConfidence
+  signature: 'function formatConfidence(confidence: number): string'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - confidence
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/cli/discovery-cli.ts
+  line: 29
+  language: typescript
+  source_checksum: 05efcced4bcb376790af95d6c5e0271812b9de32fb8e3c2e4ee88efd11ae0117

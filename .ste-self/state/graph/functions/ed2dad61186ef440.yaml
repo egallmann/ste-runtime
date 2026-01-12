@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/watch/transaction-detector.ts:looksLikeCursorBatch:164
+  domain: graph
+  type: function
+  source_files:
+    - src/watch/transaction-detector.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-transaction-detector
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/watch/transaction-detector.ts:looksLikeCursorBatch:164
+  name: looksLikeCursorBatch
+  signature: 'function looksLikeCursorBatch(changeSet: StableChangeSet): boolean'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - changeSet
+  docstring: 'Heuristic: Detect if a change set looks like a Cursor batch operation'
+  description: 'Heuristic: Detect if a change set looks like a Cursor batch operation'
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/transaction-detector.ts
+  line: 164
+  language: typescript
+  source_checksum: d21dcb1f54ab7c90939539da21dc12f6d86460d9cd76ff58767443ca62a4e7ad

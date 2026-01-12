@@ -1,0 +1,18 @@
+{
+  "$schema": "./ste.config.schema.json",
+  "version": "1.0.0",
+  "description": "STE Runtime self-analysis configuration - indexes the runtime's own source code",
+  "languages": ["typescript"],
+  "sourceDirs": [
+    "src"
+  ],
+  "stateDir": ".ste-self/state",
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "*.test.ts",
+    "*.spec.ts",
+    ".ste-self"
+  ]
+}
+

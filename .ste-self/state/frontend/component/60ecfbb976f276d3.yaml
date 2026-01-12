@@ -1,0 +1,41 @@
+_slice:
+  id: component:frontend/src/app/features/login/login.component.ts:LoginComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/login/login.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/login/login.component.html
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-login
+  referenced_by: []
+element:
+  id: component:frontend/src/app/features/login/login.component.ts:LoginComponent
+  name: LoginComponent
+  className: LoginComponent
+  selector: app-login
+  templateUrl: ./login.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - ReactiveFormsModule
+  inputs: []
+  outputs: []
+  injectedServices:
+    - FormBuilder
+    - Router
+    - AuthService
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/login/login.component.ts
+  line: 7
+  language: angular
+  source_checksum: 2d4544416f66adca38f75fa214adbb07787791cfe36774b139ef4d86f5ab9163

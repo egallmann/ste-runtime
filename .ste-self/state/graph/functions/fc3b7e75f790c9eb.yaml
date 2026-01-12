@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/recon/phases/inference.ts:resolveModuleReference:995
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/inference.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/inference.ts:resolveModuleReference:995
+  name: resolveModuleReference
+  signature: 'function resolveModuleReference(modulePath: string, fromFile: string, language: string | undefined): string | null'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - modulePath
+    - fromFile
+    - language
+  docstring: Resolve a module reference to a module ID based on language
+  description: Resolve a module reference to a module ID based on language
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/inference.ts
+  line: 995
+  language: typescript
+  source_checksum: fd8b3718620973138c02b6706cafd5ee4121f1b3cba8bb1cedc9e222c6c57cc7

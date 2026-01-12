@@ -1,0 +1,41 @@
+_slice:
+  id: template:frontend/src/app/features/reports/shared/report-filters/report-filters.component.html
+  domain: frontend
+  type: template
+  source_files:
+    - frontend/src/app/features/reports/shared/report-filters/report-filters.component.html
+  references:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/shared/components/searchable-multiselect/searchable-multiselect.component.ts:SearchableMultiselectComponent
+  tags:
+    - frontend:angular
+    - frontend:template
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/reports/shared/report-filters/report-filters.component.ts:ReportFiltersComponent
+element:
+  id: template:frontend/src/app/features/reports/shared/report-filters/report-filters.component.html
+  parentComponent: ReportFiltersComponent
+  childComponents:
+    - selector: app-searchable-multiselect
+      inputs:
+        - label
+        - options
+        - selectedValues
+        - placeholder
+        - multiSelect
+      outputs:
+        - selectionChange
+  directives: []
+  pipes: []
+  hasConditionals: false
+  hasLoops: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/reports/shared/report-filters/report-filters.component.html
+  line: 1
+  language: angular
+  source_checksum: ad7768d560b0f37541aaad2968b04b46fc9680778c59ec45573881b9e1699662

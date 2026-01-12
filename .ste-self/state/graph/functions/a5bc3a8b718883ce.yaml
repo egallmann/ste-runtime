@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/mcp/context-source-loader.ts:loadSourceGroupedByFile:113
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/context-source-loader.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-context-source-loader
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/context-source-loader.ts:loadSourceGroupedByFile:113
+  name: loadSourceGroupedByFile
+  signature: 'function loadSourceGroupedByFile(nodes: AidocNode[], options: LoadSourceOptions): Promise<Map<string, SourceContext[]>>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - nodes
+    - options
+  docstring: Load source code grouped by file (more efficient for multiple slices from same file)
+  description: Load source code grouped by file (more efficient for multiple slices from same file)
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/context-source-loader.ts
+  line: 113
+  language: typescript
+  source_checksum: 07ac366c4759e009ced3686e029c42b9e77d228f2f131c352a2bbc22c83c36db

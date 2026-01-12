@@ -1,0 +1,33 @@
+_slice:
+  id: module-src-index
+  domain: graph
+  type: module
+  source_files:
+    - src/index.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by: []
+element:
+  id: module-src-index
+  path: src/index.ts
+  name: index
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/index.ts
+  line: 1
+  language: typescript
+  source_checksum: 79d327911632236f6c75a7f12dbe43be5f6de36a12eef4609fca8aa685d01551

@@ -1,0 +1,27 @@
+_slice:
+  id: cfn_trigger:backend/cloudformation/hub/oops-infrastructure.yaml:RemediationExecutorEventSourceMapping
+  domain: infrastructure
+  type: trigger
+  source_files:
+    - backend/cloudformation/hub/oops-infrastructure.yaml
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: cfn_trigger:backend/cloudformation/hub/oops-infrastructure.yaml:RemediationExecutorEventSourceMapping
+  logicalId: RemediationExecutorEventSourceMapping
+  triggerType: event_source_mapping
+  sourceType: sqs
+  sourceRef: RemediationQueue
+  sourceArn: '!GetAtt RemediationQueue.Arn'
+  targetRef: RemediationExecutorLambda
+  targetFunction: '!Ref RemediationExecutorLambda'
+  batchSize: 10
+  enabled: true
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-cloudformation-extractor-v1
+  file: backend/cloudformation/hub/oops-infrastructure.yaml
+  line: 0
+  language: cloudformation
+  source_checksum: a1676567f2026f02261df125e5ed5f96f1ca2b46783c91a6013dea67be0a68bd

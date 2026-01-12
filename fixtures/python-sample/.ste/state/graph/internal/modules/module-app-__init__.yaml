@@ -1,0 +1,29 @@
+_slice:
+  id: module-app-__init__
+  domain: graph
+  type: module
+  source_files:
+    - app/__init__.py
+  references: []
+  referenced_by: []
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+module:
+  id: module-app-__init__
+  path: app/__init__.py
+  name: __init__
+  layer: util
+  exports:
+    classes: []
+    functions: []
+    constants: []
+  imports:
+    internal: []
+    external: []
+  metrics: {}

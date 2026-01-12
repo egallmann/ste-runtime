@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/mcp/graph-topology-analyzer.ts:detectPattern:181
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/graph-topology-analyzer.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-graph-topology-analyzer
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/mcp/graph-topology-analyzer.ts:detectPattern:181
+  name: detectPattern
+  signature: 'function detectPattern(metrics: GraphMetrics): ArchitecturePattern'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - metrics
+  docstring: Detect architecture pattern from metrics
+  description: Detect architecture pattern from metrics
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/graph-topology-analyzer.ts
+  line: 181
+  language: typescript
+  source_checksum: a52f6b31ee3858c6637b536535e8d8d5f41fb7961465942e035ef7526a5582e2

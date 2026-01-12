@@ -1,0 +1,101 @@
+_slice:
+  id: module-src-rss-graph-traversal
+  domain: graph
+  type: module
+  source_files:
+    - src/rss/graph-traversal.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-loader
+    - domain: graph
+      type: module
+      id: module-src-rss-schema
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-index
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:makeNodeKey:34
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:ensureStateExists:38
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:resolveTaskAnalysisScript:49
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:runTaskAnalysis:54
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:discoverEntryPoints:78
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:gatherNeighbors:101
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:toBundleNode:133
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:assembleRssBundle:166
+    - domain: graph
+      type: function
+      id: function:src/rss/graph-traversal.ts:runRssTraversal:208
+element:
+  id: module-src-rss-graph-traversal
+  path: src/rss/graph-traversal.ts
+  name: graph-traversal
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - makeNodeKey
+      - ensureStateExists
+      - resolveTaskAnalysisScript
+      - runTaskAnalysis
+      - discoverEntryPoints
+      - gatherNeighbors
+      - toBundleNode
+      - assembleRssBundle
+      - runRssTraversal
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./graph-loader.js
+        names:
+          - loadAidocGraph
+      - module: ./schema.js
+        names:
+          - BundleNode
+          - DEFAULT_DEPTH_LIMIT
+          - DEFAULT_GRAPH_VERSION
+          - EntryPoint
+          - RssBundle
+          - rssBundleSchema
+    external:
+      - module: node:fs
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: node:url
+        names:
+          - fileURLToPath
+      - module: execa
+        names:
+          - execa
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/graph-traversal.ts
+  line: 1
+  language: typescript
+  source_checksum: 1170624fa08fa14f869c7605a210f1977c9cdac0ed5703b20ed6bd4dc432ef9d

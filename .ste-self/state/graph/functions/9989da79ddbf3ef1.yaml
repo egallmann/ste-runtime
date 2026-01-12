@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/recon/phases/extraction-cloudformation.ts:getTemplateName:292
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction-cloudformation.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction-cloudformation.ts:getTemplateName:292
+  name: getTemplateName
+  signature: 'function getTemplateName(filePath: string): string'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - filePath
+  docstring: Get template name from file path
+  description: Get template name from file path
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction-cloudformation.ts
+  line: 292
+  language: typescript
+  source_checksum: 68a7ed29dea36dde56b30b71689584ec5e353a78d23afa6dc814210d3c110329

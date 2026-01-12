@@ -1,0 +1,35 @@
+_slice:
+  id: function:src/test/extractor-test-utils.ts:assertRelativeImportResolution:186
+  domain: graph
+  type: function
+  source_files:
+    - src/test/extractor-test-utils.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-test-extractor-test-utils
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/test/extractor-test-utils.ts:assertRelativeImportResolution:186
+  name: assertRelativeImportResolution
+  signature: 'function assertRelativeImportResolution(fromFile: string, importPath: string, expectedModuleId: string): void'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - fromFile
+    - importPath
+    - expectedModuleId
+  docstring: Validate that relative import resolution works correctly.
+  description: Validate that relative import resolution works correctly.
+  examples:
+    - "assertRelativeImportResolution(\r\n  'src/mcp/server.ts',\r\n  './tools.js',\r\n  'module-src-mcp-tools'\r\n);"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/test/extractor-test-utils.ts
+  line: 186
+  language: typescript
+  source_checksum: 191cee2609a3e6418b8a42af49006b5a4793ab1e7c748be0eb3149053461b79b

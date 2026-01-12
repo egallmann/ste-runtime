@@ -1,0 +1,1304 @@
+_slice:
+  id: function_calls:backend/lambda/finding-processor/processor.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/finding-processor/processor.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/finding-processor/processor.py:module
+  file: backend/lambda/finding-processor/processor.py
+  callGraph:
+    lambda_handler:
+      - name: print
+        type: direct
+        lineno: 76
+      - name: extract_config_event
+        type: direct
+        lineno: 80
+      - name: get
+        type: method
+        target: config_event
+        lineno: 93
+      - name: print
+        type: direct
+        lineno: 82
+      - name: validate_event_schema
+        type: direct
+        lineno: 86
+      - name: print
+        type: direct
+        lineno: 87
+      - name: emit_metric
+        type: direct
+        lineno: 88
+      - name: send_alert
+        type: direct
+        lineno: 89
+      - name: process_compliance_change_event
+        type: direct
+        lineno: 96
+      - name: print
+        type: direct
+        lineno: 105
+      - name: emit_metric
+        type: direct
+        lineno: 106
+      - name: send_alert
+        type: direct
+        lineno: 107
+      - name: dumps
+        type: method
+        target: json
+        lineno: 76
+      - name: process_configuration_item_change_event
+        type: direct
+        lineno: 98
+      - name: print
+        type: direct
+        lineno: 100
+      - name: emit_metric
+        type: direct
+        lineno: 101
+      - name: str
+        type: direct
+        lineno: 107
+      - name: str
+        type: direct
+        lineno: 105
+    process_compliance_change_event:
+      - name: get
+        type: method
+        target: config_event
+        lineno: 118
+      - name: get
+        type: method
+        target: config_event['detail']
+        lineno: 119
+      - name: get
+        type: method
+        target: config_event['detail']
+        lineno: 120
+      - name: get
+        type: method
+        target: config_event['detail']
+        lineno: 121
+      - name: get
+        type: method
+        target: config_event['detail']['newEvaluationResult']
+        lineno: 122
+      - name: get
+        type: method
+        target: config_event
+        lineno: 123
+      - name: print
+        type: direct
+        lineno: 125
+      - name: auto_enroll_spoke_account
+        type: direct
+        lineno: 128
+      - name: update_spoke_event_timestamp
+        type: direct
+        lineno: 131
+      - name: get
+        type: method
+        target: config_event
+        lineno: 134
+      - name: get
+        type: method
+        target: detail
+        lineno: 135
+      - name: print
+        type: direct
+        lineno: 149
+      - name: map_source_identifier_to_control
+        type: direct
+        lineno: 152
+      - name: print
+        type: direct
+        lineno: 159
+      - name: get_control_metadata
+        type: direct
+        lineno: 162
+      - name: get_account_control_settings
+        type: direct
+        lineno: 168
+      - name: get
+        type: method
+        target: account_control_settings
+        lineno: 178
+      - name: get
+        type: method
+        target: account_control_settings
+        lineno: 179
+      - name: get
+        type: method
+        target: account_control_settings
+        lineno: 180
+      - name: print
+        type: direct
+        lineno: 182
+      - name: is_resource_excluded
+        type: direct
+        lineno: 191
+      - name: transform_to_oops_finding
+        type: direct
+        lineno: 197
+      - name: get_existing_finding
+        type: direct
+        lineno: 209
+      - name: update_account_control_stats
+        type: direct
+        lineno: 222
+      - name: emit_metric
+        type: direct
+        lineno: 241
+      - name: print
+        type: direct
+        lineno: 246
+      - name: print
+        type: direct
+        lineno: 138
+      - name: print
+        type: direct
+        lineno: 140
+      - name: get_config_rule_source_identifier
+        type: direct
+        lineno: 141
+      - name: print
+        type: direct
+        lineno: 144
+      - name: emit_metric
+        type: direct
+        lineno: 145
+      - name: send_alert
+        type: direct
+        lineno: 146
+      - name: print
+        type: direct
+        lineno: 154
+      - name: emit_metric
+        type: direct
+        lineno: 155
+      - name: send_alert
+        type: direct
+        lineno: 156
+      - name: print
+        type: direct
+        lineno: 164
+      - name: print
+        type: direct
+        lineno: 170
+      - name: print
+        type: direct
+        lineno: 186
+      - name: emit_metric
+        type: direct
+        lineno: 187
+      - name: print
+        type: direct
+        lineno: 192
+      - name: emit_metric
+        type: direct
+        lineno: 193
+      - name: print
+        type: direct
+        lineno: 212
+      - name: update_existing_finding
+        type: direct
+        lineno: 213
+      - name: print
+        type: direct
+        lineno: 216
+      - name: create_new_finding
+        type: direct
+        lineno: 217
+      - name: emit_metric
+        type: direct
+        lineno: 218
+      - name: print
+        type: direct
+        lineno: 234
+      - name: send_to_remediation_queue
+        type: direct
+        lineno: 235
+      - name: emit_metric
+        type: direct
+        lineno: 236
+      - name: print
+        type: direct
+        lineno: 238
+      - name: print
+        type: direct
+        lineno: 250
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 252
+      - name: emit_metric
+        type: direct
+        lineno: 253
+      - name: send_websocket_notification
+        type: direct
+        lineno: 227
+      - name: print
+        type: direct
+        lineno: 229
+      - name: str
+        type: direct
+        lineno: 254
+    process_configuration_item_change_event:
+      - name: get
+        type: method
+        target: config_event
+        lineno: 269
+      - name: get
+        type: method
+        target: config_event
+        lineno: 270
+      - name: auto_enroll_spoke_account
+        type: direct
+        lineno: 273
+      - name: update_spoke_event_timestamp
+        type: direct
+        lineno: 274
+      - name: get
+        type: method
+        target: config_event
+        lineno: 277
+      - name: get
+        type: method
+        target: detail
+        lineno: 278
+      - name: get
+        type: method
+        target: detail
+        lineno: 279
+      - name: get
+        type: method
+        target: config_item
+        lineno: 281
+      - name: get
+        type: method
+        target: config_item
+        lineno: 282
+      - name: get
+        type: method
+        target: config_item
+        lineno: 283
+      - name: get
+        type: method
+        target: config_item
+        lineno: 284
+      - name: print
+        type: direct
+        lineno: 286
+      - name: print
+        type: direct
+        lineno: 305
+      - name: fetch_resource_tags
+        type: direct
+        lineno: 310
+      - name: dumps
+        type: method
+        target: json
+        lineno: 347
+      - name: len
+        type: direct
+        lineno: 348
+      - name: print
+        type: direct
+        lineno: 350
+      - name: emit_metric
+        type: direct
+        lineno: 378
+      - name: get
+        type: method
+        target: configuration
+        lineno: 291
+      - name: get
+        type: method
+        target: configuration
+        lineno: 292
+      - name: construct_arn
+        type: direct
+        lineno: 303
+      - name: get
+        type: method
+        target: config_item
+        lineno: 318
+      - name: get
+        type: method
+        target: config_item
+        lineno: 319
+      - name: print
+        type: direct
+        lineno: 320
+      - name: get
+        type: method
+        target: config_diff
+        lineno: 336
+      - name: get
+        type: method
+        target: detail
+        lineno: 337
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 338
+      - name: print
+        type: direct
+        lineno: 344
+      - name: encode
+        type: method
+        target: state_json
+        lineno: 348
+      - name: print
+        type: direct
+        lineno: 354
+      - name: print
+        type: direct
+        lineno: 373
+      - name: print
+        type: direct
+        lineno: 374
+      - name: emit_metric
+        type: direct
+        lineno: 375
+      - name: print
+        type: direct
+        lineno: 382
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 384
+      - name: emit_metric
+        type: direct
+        lineno: 385
+      - name: print
+        type: direct
+        lineno: 295
+      - name: construct_arn
+        type: direct
+        lineno: 297
+      - name: print
+        type: direct
+        lineno: 299
+      - name: construct_arn
+        type: direct
+        lineno: 300
+      - name: put_object
+        type: method
+        target: s3
+        lineno: 358
+      - name: print
+        type: direct
+        lineno: 364
+      - name: emit_metric
+        type: direct
+        lineno: 365
+      - name: now
+        type: method
+        target: datetime
+        lineno: 338
+      - name: print
+        type: direct
+        lineno: 367
+      - name: emit_metric
+        type: direct
+        lineno: 368
+      - name: len
+        type: direct
+        lineno: 344
+      - name: str
+        type: direct
+        lineno: 386
+    extract_config_event:
+      - name: get
+        type: method
+        target: event
+        lineno: 396
+    load_config_schema:
+      - name: get_object
+        type: method
+        target: s3
+        lineno: 406
+      - name: decode
+        type: method
+        target: response['Body'].read()
+        lineno: 407
+      - name: loads
+        type: method
+        target: json
+        lineno: 408
+      - name: print
+        type: direct
+        lineno: 409
+      - name: print
+        type: direct
+        lineno: 411
+      - name: read
+        type: method
+        target: response['Body']
+        lineno: 407
+      - name: str
+        type: direct
+        lineno: 411
+    validate_event_schema:
+      - name: load_config_schema
+        type: direct
+        lineno: 418
+      - name: print
+        type: direct
+        lineno: 420
+      - name: validate
+        type: method
+        target: jsonschema
+        lineno: 448
+      - name: print
+        type: direct
+        lineno: 451
+      - name: print
+        type: direct
+        lineno: 452
+      - name: print
+        type: direct
+        lineno: 455
+      - name: print
+        type: direct
+        lineno: 438
+      - name: print
+        type: direct
+        lineno: 443
+      - name: print
+        type: direct
+        lineno: 426
+      - name: print
+        type: direct
+        lineno: 433
+      - name: join
+        type: method
+        target: ''' > '''
+        lineno: 452
+      - name: str
+        type: direct
+        lineno: 455
+      - name: str
+        type: direct
+        lineno: 452
+    auto_enroll_spoke_account:
+      - name: get_item
+        type: method
+        target: accounts_table
+        lineno: 466
+      - name: print
+        type: direct
+        lineno: 469
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 470
+      - name: put_item
+        type: method
+        target: accounts_table
+        lineno: 472
+      - name: print
+        type: direct
+        lineno: 489
+      - name: emit_metric
+        type: direct
+        lineno: 490
+      - name: print
+        type: direct
+        lineno: 492
+      - name: print
+        type: direct
+        lineno: 495
+      - name: emit_metric
+        type: direct
+        lineno: 497
+      - name: now
+        type: method
+        target: datetime
+        lineno: 470
+      - name: str
+        type: direct
+        lineno: 495
+    update_spoke_event_timestamp:
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 503
+      - name: update_item
+        type: method
+        target: accounts_table
+        lineno: 504
+      - name: print
+        type: direct
+        lineno: 512
+      - name: print
+        type: direct
+        lineno: 514
+      - name: now
+        type: method
+        target: datetime
+        lineno: 503
+      - name: str
+        type: direct
+        lineno: 514
+    get_config_rule_source_identifier:
+      - name: describe_config_rules
+        type: method
+        target: config_client
+        lineno: 531
+      - name: get
+        type: method
+        target: response
+        lineno: 535
+      - name: print
+        type: direct
+        lineno: 543
+      - name: get
+        type: method
+        target: config_rule['Source']
+        lineno: 537
+      - name: print
+        type: direct
+        lineno: 554
+      - name: print
+        type: direct
+        lineno: 540
+      - name: print
+        type: direct
+        lineno: 549
+      - name: print
+        type: direct
+        lineno: 551
+    normalize_source_identifier:
+      - name: upper
+        type: method
+        target: source_identifier.strip().replace('-', '_')
+        lineno: 580
+      - name: replace
+        type: method
+        target: source_identifier.strip()
+        lineno: 580
+      - name: strip
+        type: method
+        target: source_identifier
+        lineno: 580
+    map_source_identifier_to_control:
+      - name: normalize_source_identifier
+        type: direct
+        lineno: 596
+      - name: print
+        type: direct
+        lineno: 597
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 600
+      - name: get
+        type: method
+        target: response
+        lineno: 606
+      - name: print
+        type: direct
+        lineno: 612
+      - name: print
+        type: direct
+        lineno: 609
+      - name: print
+        type: direct
+        lineno: 616
+      - name: eq
+        type: method
+        target: Key('sourceIdentifier')
+        lineno: 602
+      - name: Key
+        type: direct
+        lineno: 602
+    get_control_metadata:
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 623
+      - name: get
+        type: method
+        target: response
+        lineno: 628
+      - name: print
+        type: direct
+        lineno: 634
+      - name: eq
+        type: method
+        target: Key('controlId')
+        lineno: 624
+      - name: Key
+        type: direct
+        lineno: 624
+    get_account_control_settings:
+      - name: get_item
+        type: method
+        target: account_controls_table
+        lineno: 641
+      - name: get
+        type: method
+        target: response
+        lineno: 648
+      - name: print
+        type: direct
+        lineno: 651
+    is_resource_excluded:
+      - name: get_item
+        type: method
+        target: exclusions_table
+        lineno: 658
+      - name: get
+        type: method
+        target: response
+        lineno: 665
+      - name: get
+        type: method
+        target: exclusion
+        lineno: 670
+      - name: get
+        type: method
+        target: exclusion
+        lineno: 673
+      - name: print
+        type: direct
+        lineno: 683
+      - name: replace
+        type: method
+        target: datetime.now(timezone.utc).isoformat()
+        lineno: 675
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 675
+      - name: now
+        type: method
+        target: datetime
+        lineno: 675
+    construct_arn:
+      - name: startswith
+        type: method
+        target: resource_id
+        lineno: 709
+      - name: print
+        type: direct
+        lineno: 710
+      - name: lower
+        type: method
+        target: resource_type.split('::')[1]
+        lineno: 714
+      - name: print
+        type: direct
+        lineno: 717
+      - name: print
+        type: direct
+        lineno: 876
+      - name: split
+        type: method
+        target: resource_type
+        lineno: 714
+      - name: split
+        type: method
+        target: resource_id
+        lineno: 743
+      - name: lower
+        type: method
+        target: resource_type.split('::')[2]
+        lineno: 748
+      - name: split
+        type: method
+        target: resource_type
+        lineno: 748
+      - name: print
+        type: direct
+        lineno: 800
+      - name: lower
+        type: method
+        target: resource_type.split('::')[2]
+        lineno: 835
+      - name: split
+        type: method
+        target: resource_type
+        lineno: 835
+      - name: print
+        type: direct
+        lineno: 872
+      - name: lower
+        type: method
+        target: resource_type.split('::')[2]
+        lineno: 870
+      - name: len
+        type: direct
+        lineno: 870
+      - name: split
+        type: method
+        target: resource_type
+        lineno: 870
+      - name: split
+        type: method
+        target: resource_type
+        lineno: 870
+    fetch_resource_tags:
+      - name: print
+        type: direct
+        lineno: 904
+      - name: print
+        type: direct
+        lineno: 905
+      - name: get_resources
+        type: method
+        target: tagging
+        lineno: 931
+      - name: get
+        type: method
+        target: response
+        lineno: 937
+      - name: split
+        type: method
+        target: resource_arn
+        lineno: 909
+      - name: print
+        type: direct
+        lineno: 912
+      - name: is_spoke_account
+        type: direct
+        lineno: 915
+      - name: print
+        type: direct
+        lineno: 916
+      - name: get_processor_cross_account_client
+        type: direct
+        lineno: 920
+      - name: print
+        type: direct
+        lineno: 927
+      - name: client
+        type: method
+        target: boto3
+        lineno: 929
+      - name: get
+        type: method
+        target: resource_mapping
+        lineno: 939
+      - name: print
+        type: direct
+        lineno: 949
+      - name: fetch_resource_tags_from_config
+        type: direct
+        lineno: 950
+      - name: print
+        type: direct
+        lineno: 953
+      - name: fetch_resource_tags_from_config
+        type: direct
+        lineno: 954
+      - name: len
+        type: direct
+        lineno: 910
+      - name: print
+        type: direct
+        lineno: 943
+      - name: print
+        type: direct
+        lineno: 946
+      - name: len
+        type: direct
+        lineno: 943
+    fetch_resource_tags_from_config:
+      - name: print
+        type: direct
+        lineno: 973
+      - name: split
+        type: method
+        target: resource_arn
+        lineno: 977
+      - name: batch_get_resource_config
+        type: method
+        target: config
+        lineno: 1011
+      - name: get
+        type: method
+        target: response
+        lineno: 1018
+      - name: print
+        type: direct
+        lineno: 990
+      - name: is_spoke_account
+        type: direct
+        lineno: 994
+      - name: print
+        type: direct
+        lineno: 995
+      - name: get_processor_cross_account_client
+        type: direct
+        lineno: 999
+      - name: print
+        type: direct
+        lineno: 1006
+      - name: client
+        type: method
+        target: boto3
+        lineno: 1008
+      - name: get
+        type: method
+        target: config_item
+        lineno: 1020
+      - name: print
+        type: direct
+        lineno: 1029
+      - name: print
+        type: direct
+        lineno: 1033
+      - name: len
+        type: direct
+        lineno: 981
+      - name: split
+        type: method
+        target: resource_arn
+        lineno: 987
+      - name: print
+        type: direct
+        lineno: 1023
+      - name: print
+        type: direct
+        lineno: 1026
+      - name: len
+        type: direct
+        lineno: 1023
+    transform_to_oops_finding:
+      - name: replace
+        type: method
+        target: datetime.now(timezone.utc).isoformat()
+        lineno: 1048
+      - name: str
+        type: direct
+        lineno: 1051
+      - name: get
+        type: method
+        target: status_mapping
+        lineno: 1060
+      - name: construct_arn
+        type: direct
+        lineno: 1063
+      - name: print
+        type: direct
+        lineno: 1064
+      - name: fetch_resource_tags
+        type: direct
+        lineno: 1068
+      - name: uuid4
+        type: method
+        target: uuid
+        lineno: 1051
+      - name: get
+        type: method
+        target: control_metadata
+        lineno: 1087
+      - name: get
+        type: method
+        target: control_metadata
+        lineno: 1088
+      - name: get
+        type: method
+        target: control_metadata
+        lineno: 1089
+      - name: get
+        type: method
+        target: control_metadata.get('remediation', {})
+        lineno: 1090
+      - name: get
+        type: method
+        target: config_event['detail']
+        lineno: 1096
+      - name: dumps
+        type: method
+        target: json
+        lineno: 1097
+      - name: print
+        type: direct
+        lineno: 1103
+      - name: print
+        type: direct
+        lineno: 1105
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 1048
+      - name: get
+        type: method
+        target: control_metadata
+        lineno: 1090
+      - name: now
+        type: method
+        target: datetime
+        lineno: 1048
+      - name: len
+        type: direct
+        lineno: 1103
+      - name: list
+        type: direct
+        lineno: 1103
+      - name: keys
+        type: method
+        target: resource_tags
+        lineno: 1103
+    get_existing_finding:
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 1117
+      - name: get
+        type: method
+        target: response
+        lineno: 1123
+      - name: print
+        type: direct
+        lineno: 1129
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 1119
+      - name: eq
+        type: method
+        target: Key('resourceIdControlId')
+        lineno: 1119
+      - name: Key
+        type: direct
+        lineno: 1119
+      - name: Key
+        type: direct
+        lineno: 1119
+    create_new_finding:
+      - name: put_item
+        type: method
+        target: findings_table
+        lineno: 1139
+      - name: print
+        type: direct
+        lineno: 1140
+      - name: print
+        type: direct
+        lineno: 1143
+    update_existing_finding:
+      - name: replace
+        type: method
+        target: datetime.now(timezone.utc).isoformat()
+        lineno: 1155
+      - name: get
+        type: method
+        target: status_mapping
+        lineno: 1164
+      - name: update_item
+        type: method
+        target: findings_table
+        lineno: 1190
+      - name: print
+        type: direct
+        lineno: 1200
+      - name: print
+        type: direct
+        lineno: 1187
+      - name: print
+        type: direct
+        lineno: 1203
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 1155
+      - name: now
+        type: method
+        target: datetime
+        lineno: 1155
+      - name: len
+        type: direct
+        lineno: 1187
+      - name: list
+        type: direct
+        lineno: 1187
+      - name: keys
+        type: method
+        target: new_finding['resourceTags']
+        lineno: 1187
+    update_account_control_stats:
+      - name: replace
+        type: method
+        target: datetime.now(timezone.utc).isoformat()
+        lineno: 1210
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 1213
+      - name: len
+        type: direct
+        lineno: 1219
+      - name: update_item
+        type: method
+        target: account_controls_table
+        lineno: 1222
+      - name: print
+        type: direct
+        lineno: 1234
+      - name: get
+        type: method
+        target: response
+        lineno: 1219
+      - name: print
+        type: direct
+        lineno: 1237
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 1210
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 1215
+      - name: eq
+        type: method
+        target: Key('controlId')
+        lineno: 1216
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 1216
+      - name: now
+        type: method
+        target: datetime
+        lineno: 1210
+      - name: Key
+        type: direct
+        lineno: 1215
+      - name: Key
+        type: direct
+        lineno: 1216
+      - name: Key
+        type: direct
+        lineno: 1216
+    send_to_remediation_queue:
+      - name: send_message
+        type: method
+        target: sqs
+        lineno: 1254
+      - name: print
+        type: direct
+        lineno: 1269
+      - name: print
+        type: direct
+        lineno: 1272
+      - name: dumps
+        type: method
+        target: json
+        lineno: 1256
+    emit_metric:
+      - name: put_metric_data
+        type: method
+        target: cloudwatch
+        lineno: 1294
+      - name: items
+        type: method
+        target: dimensions
+        lineno: 1288
+      - name: print
+        type: direct
+        lineno: 1307
+      - name: append
+        type: method
+        target: metric_dimensions
+        lineno: 1289
+      - name: now
+        type: method
+        target: datetime
+        lineno: 1301
+    send_websocket_notification:
+      - name: client
+        type: method
+        target: boto3
+        lineno: 1318
+      - name: Table
+        type: method
+        target: dynamodb
+        lineno: 1324
+      - name: query
+        type: method
+        target: connections_table
+        lineno: 1325
+      - name: get
+        type: method
+        target: response
+        lineno: 1329
+      - name: print
+        type: direct
+        lineno: 1344
+      - name: print
+        type: direct
+        lineno: 1390
+      - name: query
+        type: method
+        target: connections_table
+        lineno: 1333
+      - name: extend
+        type: method
+        target: connections
+        lineno: 1338
+      - name: print
+        type: direct
+        lineno: 1341
+      - name: print
+        type: direct
+        lineno: 1393
+      - name: eq
+        type: method
+        target: Key('connectionType')
+        lineno: 1327
+      - name: get
+        type: method
+        target: response
+        lineno: 1338
+      - name: get
+        type: method
+        target: finding
+        lineno: 1349
+      - name: get
+        type: method
+        target: finding
+        lineno: 1349
+      - name: get
+        type: method
+        target: finding
+        lineno: 1351
+      - name: get
+        type: method
+        target: finding
+        lineno: 1352
+      - name: get
+        type: method
+        target: finding
+        lineno: 1353
+      - name: get
+        type: method
+        target: finding
+        lineno: 1354
+      - name: get
+        type: method
+        target: finding
+        lineno: 1355
+      - name: get
+        type: method
+        target: finding
+        lineno: 1356
+      - name: get
+        type: method
+        target: finding
+        lineno: 1357
+      - name: get
+        type: method
+        target: finding
+        lineno: 1358
+      - name: get
+        type: method
+        target: finding
+        lineno: 1359
+      - name: get
+        type: method
+        target: finding
+        lineno: 1360
+      - name: post_to_connection
+        type: method
+        target: apigw_management
+        lineno: 1372
+      - name: eq
+        type: method
+        target: Key('connectionType')
+        lineno: 1335
+      - name: len
+        type: direct
+        lineno: 1344
+      - name: print
+        type: direct
+        lineno: 1380
+      - name: print
+        type: direct
+        lineno: 1388
+      - name: Key
+        type: direct
+        lineno: 1327
+      - name: encode
+        type: method
+        target: json.dumps(notification)
+        lineno: 1374
+      - name: delete_item
+        type: method
+        target: connections_table
+        lineno: 1382
+      - name: Key
+        type: direct
+        lineno: 1335
+      - name: dumps
+        type: method
+        target: json
+        lineno: 1374
+    send_alert:
+      - name: publish
+        type: method
+        target: sns
+        lineno: 1410
+      - name: print
+        type: direct
+        lineno: 1416
+      - name: print
+        type: direct
+        lineno: 1418
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 1404
+      - name: dumps
+        type: method
+        target: json
+        lineno: 1407
+      - name: now
+        type: method
+        target: datetime
+        lineno: 1404
+  callers:
+    - lambda_handler
+    - process_compliance_change_event
+    - process_configuration_item_change_event
+    - extract_config_event
+    - load_config_schema
+    - validate_event_schema
+    - auto_enroll_spoke_account
+    - update_spoke_event_timestamp
+    - get_config_rule_source_identifier
+    - normalize_source_identifier
+    - map_source_identifier_to_control
+    - get_control_metadata
+    - get_account_control_settings
+    - is_resource_excluded
+    - construct_arn
+    - fetch_resource_tags
+    - fetch_resource_tags_from_config
+    - transform_to_oops_finding
+    - get_existing_finding
+    - create_new_finding
+    - update_existing_finding
+    - update_account_control_stats
+    - send_to_remediation_queue
+    - emit_metric
+    - send_websocket_notification
+    - send_alert
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/finding-processor/processor.py
+  line: 0
+  language: python
+  source_checksum: 7138efbc6b213df3e22649f8dc2d2a7501705c2e6e0ac2f5e910b7bf2377baad

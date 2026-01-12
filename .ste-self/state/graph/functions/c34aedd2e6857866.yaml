@@ -1,0 +1,36 @@
+_slice:
+  id: function:src/recon/phases/population.ts:populateAiDoc:51
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/population.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-population
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/phases/population.ts:populateAiDoc:51
+  name: populateAiDoc
+  signature: 'function populateAiDoc(assertions: NormalizedAssertion[], projectRoot: string, stateRoot: string, processedFiles: string[], options: PopulationOptions): Promise<PopulationResult>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - assertions
+    - projectRoot
+    - stateRoot
+    - processedFiles
+    - options
+  docstring: "Populate AI-DOC state with normalized assertions.\r\n\r\nImplements create/update/delete semantics:\r\n- Groups assertions by source file\r\n- For each processed file, removes orphaned slices\r\n- Writes new/updated slices\r\n- Returns detailed stats"
+  description: "Populate AI-DOC state with normalized assertions.\r\n\r\nImplements create/update/delete semantics:\r\n- Groups assertions by source file\r\n- For each processed file, removes orphaned slices\r\n- Writes new/updated slices\r\n- Returns detailed stats"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/population.ts
+  line: 51
+  language: typescript
+  source_checksum: 67629ab4291f5770f0300098cda48db547a8c17a434b3672df7e5408469e0774

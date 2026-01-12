@@ -1,0 +1,95 @@
+_slice:
+  id: module-src-recon-phases-normalization
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/phases/normalization.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+    - domain: graph
+      type: module
+      id: module-src-utils-paths
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:getExtractorName:22
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:getFileExtension:44
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:normalizeAssertions:73
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:normalizeModule:112
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:normalizeElement:181
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:extractResourceSpecificMetadata:898
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:fileToModuleId:911
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:inferLayer:916
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/normalization.ts:isInternalImport:968
+element:
+  id: module-src-recon-phases-normalization
+  path: src/recon/phases/normalization.ts
+  name: normalization
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - getExtractorName
+      - getFileExtension
+      - normalizeAssertions
+      - normalizeModule
+      - normalizeElement
+      - extractResourceSpecificMetadata
+      - fileToModuleId
+      - inferLayer
+      - isInternalImport
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./index.js
+        names:
+          - RawAssertion
+          - NormalizedAssertion
+      - module: ../../config/index.js
+        names:
+          - SupportedLanguage
+      - module: ../../utils/paths.js
+        names:
+          - generateModuleId
+          - toPosixPath
+    external:
+      - module: node:path
+        names:
+          - path
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/normalization.ts
+  line: 1
+  language: typescript
+  source_checksum: 9a09357d99f13f8cc71f3acb35227513bcc429f9ea36a32db7b8139a617c10f8

@@ -1,0 +1,43 @@
+_slice:
+  id: module-src-discovery-project-discovery
+  domain: graph
+  type: module
+  source_files:
+    - src/discovery/project-discovery.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: class
+      id: class:src/discovery/project-discovery.ts:ProjectDiscovery
+element:
+  id: module-src-discovery-project-discovery
+  path: src/discovery/project-discovery.ts
+  name: project-discovery
+  language: typescript
+  layer: util
+  exports:
+    classes:
+      - ProjectDiscovery
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: fs
+        names:
+          - fs
+      - module: path
+        names:
+          - path
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/discovery/project-discovery.ts
+  line: 1
+  language: typescript
+  source_checksum: 626c480b1e9695e0ae90a103d1077ed1aaa8697a98a018245aa5cafa3f1e34fd

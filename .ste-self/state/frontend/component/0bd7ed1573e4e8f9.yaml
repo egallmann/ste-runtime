@@ -1,0 +1,55 @@
+_slice:
+  id: component:frontend/src/app/features/reports/shared/summary-cards/summary-cards.component.ts:SummaryCardsComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/reports/shared/summary-cards/summary-cards.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/shared/summary-cards/summary-cards.component.html
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-summary-cards
+  referenced_by:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/compliance-framework-report/compliance-framework-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/active-findings-report/active-findings-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/team-findings-report/team-findings-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/control-effectiveness-report/control-effectiveness-report.component.html
+element:
+  id: component:frontend/src/app/features/reports/shared/summary-cards/summary-cards.component.ts:SummaryCardsComponent
+  name: SummaryCardsComponent
+  className: SummaryCardsComponent
+  selector: app-summary-cards
+  templateUrl: ./summary-cards.component.html
+  standalone: true
+  imports:
+    - CommonModule
+  inputs:
+    - name: cards
+      type: SummaryCard[]
+      required: true
+  outputs: []
+  injectedServices: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/reports/shared/summary-cards/summary-cards.component.ts
+  line: 10
+  language: angular
+  source_checksum: d9b4c44302557330fc3e0c9f17bd452f96dc99f1a4173f71bcf3414ad1d5a0f7

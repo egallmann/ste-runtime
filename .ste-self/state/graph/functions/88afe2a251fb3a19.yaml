@@ -1,0 +1,29 @@
+_slice:
+  id: function:src/recon/incremental-recon.ts:buildModuleLookupFromGraph:114
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/incremental-recon.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-incremental-recon
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/incremental-recon.ts:buildModuleLookupFromGraph:114
+  name: buildModuleLookupFromGraph
+  signature: 'function buildModuleLookupFromGraph(projectRoot: string, graphLookup: Map<string, { sourceFiles: string[]; id: string; domain: string; type: string }>): ModuleNameLookup'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - projectRoot
+    - graphLookup
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/incremental-recon.ts
+  line: 114
+  language: typescript
+  source_checksum: 83cc5834c2efb0d8fe9aa0ccc17d967aa909cee4f373d76a4542dc0595df2e44

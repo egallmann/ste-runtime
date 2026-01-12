@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/mcp/tools-structural.ts:getBlastRadius:136
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/tools-structural.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-structural
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/tools-structural.ts:getBlastRadius:136
+  name: getBlastRadius
+  signature: "function getBlastRadius(ctx: RssContext, args: {\r\n    key: string;\r\n    depth?: number;\r\n    maxNodes?: number;\r\n  }): void"
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - ctx
+    - args
+  docstring: "Tool: get_blast_radius\r\n\r\nAnalyze full impact surface of changing this component.\r\nBidirectional traversal (both dependencies and dependents)."
+  description: "Tool: get_blast_radius\r\n\r\nAnalyze full impact surface of changing this component.\r\nBidirectional traversal (both dependencies and dependents)."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-structural.ts
+  line: 136
+  language: typescript
+  source_checksum: c0e3e56ae249d4ec69ace870d9c14d2dfcd05577bd843ad85b6c286c6bade102

@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/phases/inference.ts:resolvePythonRelativeImport:1063
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/inference.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/inference.ts:resolvePythonRelativeImport:1063
+  name: resolvePythonRelativeImport
+  signature: 'function resolvePythonRelativeImport(importPath: string, fromFile: string): string | null'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - importPath
+    - fromFile
+  docstring: Resolve Python relative imports (. and ..)
+  description: Resolve Python relative imports (. and ..)
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/inference.ts
+  line: 1063
+  language: typescript
+  source_checksum: fd8b3718620973138c02b6706cafd5ee4121f1b3cba8bb1cedc9e222c6c57cc7

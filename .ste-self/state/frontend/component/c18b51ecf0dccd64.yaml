@@ -1,0 +1,62 @@
+_slice:
+  id: component:frontend/src/app/features/reports/shared/report-filters/report-filters.component.ts:ReportFiltersComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/reports/shared/report-filters/report-filters.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/shared/report-filters/report-filters.component.html
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-report-filters
+  referenced_by:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/compliance-framework-report/compliance-framework-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/active-findings-report/active-findings-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/team-findings-report/team-findings-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/remediation-history-report/remediation-history-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.html
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/control-effectiveness-report/control-effectiveness-report.component.html
+element:
+  id: component:frontend/src/app/features/reports/shared/report-filters/report-filters.component.ts:ReportFiltersComponent
+  name: ReportFiltersComponent
+  className: ReportFiltersComponent
+  selector: app-report-filters
+  templateUrl: ./report-filters.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - FormsModule
+    - SearchableMultiselectComponent
+  inputs:
+    - name: availableFilters
+      type: FilterConfig[]
+      required: true
+    - name: currentFilters
+      type: ReportFilters
+      required: true
+  outputs:
+    - name: filtersChange
+      type: ReportFilters
+  injectedServices: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/reports/shared/report-filters/report-filters.component.ts
+  line: 12
+  language: angular
+  source_checksum: 0a19096704198d5bf8f123798dd4b1d7d82d85667dc0895341f2ec0ea80bc113

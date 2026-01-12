@@ -1,0 +1,104 @@
+_slice:
+  id: module-python-scripts-task_analysis
+  domain: graph
+  type: module
+  source_files:
+    - python-scripts/task_analysis.py
+  references: []
+  referenced_by:
+    - domain: data
+      type: entity
+      id: data-AidocState
+    - domain: data
+      type: entity
+      id: data-Candidate
+    - domain: data
+      type: entity
+      id: data-Endpoint
+    - domain: data
+      type: entity
+      id: data-Entity
+    - domain: data
+      type: entity
+      id: data-Module
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+module:
+  id: module-python-scripts-task_analysis
+  path: python-scripts/task_analysis.py
+  name: task_analysis
+  layer: util
+  exports:
+    classes:
+      - AidocState
+      - Candidate
+      - Endpoint
+      - Entity
+      - Module
+    functions:
+      - _build_arg_parser
+      - _build_candidates
+      - _cli
+      - _collect_candidate_tokens
+      - _detect_domain_hint
+      - _detect_http_method
+      - _ensure_yaml_available
+      - _extract_path_hint
+      - _format_table
+      - _load_endpoints
+      - _load_entities
+      - _load_modules
+      - _path_tokens
+      - _safe_load_yaml
+      - _score_candidate
+      - _tokenize
+      - _unique
+      - analyze_task
+      - load_aidoc_state
+      - main
+    constants: []
+  imports:
+    internal: []
+    external:
+      - package: __future__
+        items:
+          - annotations
+      - package: argparse
+        items:
+          - argparse
+      - package: dataclasses
+        items:
+          - dataclass
+      - package: json
+        items:
+          - json
+      - package: os
+        items:
+          - os
+      - package: pathlib
+        items:
+          - Path
+      - package: re
+        items:
+          - re
+      - package: sys
+        items:
+          - sys
+      - package: typing
+        items:
+          - Dict
+          - Iterable
+          - List
+          - Optional
+          - Sequence
+          - Tuple
+      - package: yaml
+        items:
+          - yaml
+  metrics: {}

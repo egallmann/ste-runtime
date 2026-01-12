@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/mcp/graph-topology-analyzer.ts:percentile:171
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/graph-topology-analyzer.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-graph-topology-analyzer
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/mcp/graph-topology-analyzer.ts:percentile:171
+  name: percentile
+  signature: 'function percentile(values: number[], p: number): number'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - values
+    - p
+  docstring: Calculate percentile of an array
+  description: Calculate percentile of an array
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/graph-topology-analyzer.ts
+  line: 171
+  language: typescript
+  source_checksum: a52f6b31ee3858c6637b536535e8d8d5f41fb7961465942e035ef7526a5582e2

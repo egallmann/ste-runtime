@@ -1,0 +1,49 @@
+_slice:
+  id: data-Candidate
+  domain: data
+  type: entity
+  source_files:
+    - python-scripts/task_analysis.py
+  references:
+    - domain: graph
+      type: module
+      id: module-python-scripts-task_analysis
+  referenced_by: []
+  tags:
+    - data
+    - entity
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+entity:
+  id: data-Candidate
+  name: Candidate
+  description: ''
+  source:
+    file: python-scripts/task_analysis.py
+    class: Candidate
+    line: 58
+  persistence:
+    type: none
+  fields:
+    - name: description
+      type: str
+    - name: domain
+      type: str
+    - name: id
+      type: str
+    - name: location
+      type: Optional[str]
+      default: None
+    - name: rationale
+      type: str
+    - name: score
+      type: float
+    - name: title
+      type: str
+    - name: type
+      type: str
+  relationships: []
+  indexes: []
+  validation_rules: []

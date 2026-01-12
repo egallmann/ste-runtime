@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/extractors/css/css-extractor.ts:extractScssVariablesUsed:190
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/css/css-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-css-css-extractor
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/extractors/css/css-extractor.ts:extractScssVariablesUsed:190
+  name: extractScssVariablesUsed
+  signature: 'function extractScssVariablesUsed(content: string): string[]'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - content
+  docstring: "Extract SCSS variables used in content\r\nPattern: $variable-name (in property values)"
+  description: "Extract SCSS variables used in content\r\nPattern: $variable-name (in property values)"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/css/css-extractor.ts
+  line: 190
+  language: typescript
+  source_checksum: 3d0b22efece9bd49467a1f2e92e0ee21c268d7ef1fa9da9a54dea448476db0b6

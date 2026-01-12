@@ -1,0 +1,24 @@
+_slice:
+  id: data-index
+  domain: data
+  type: index
+  source_files: []
+  references: []
+  referenced_by: []
+  tags:
+    - data
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+entities:
+  - id: data-GreetingConfig
+    name: GreetingConfig
+    type: entity
+    table: ''
+  - id: data-User
+    name: User
+    type: entity
+    table: ''
+dtos: []
+enums: []

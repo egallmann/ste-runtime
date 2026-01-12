@@ -1,0 +1,42 @@
+{
+  "totalComponents": 625,
+  "componentsByDomain": {
+    "api": 7,
+    "behavior": 107,
+    "data": 8,
+    "frontend": 83,
+    "graph": 414,
+    "infrastructure": 6
+  },
+  "componentsByType": {
+    "endpoint": 6,
+    "index": 2,
+    "function_calls": 51,
+    "env_var_access": 23,
+    "aws_sdk_usage": 33,
+    "entity": 7,
+    "component": 25,
+    "routes": 1,
+    "service": 12,
+    "styles": 22,
+    "template": 23,
+    "class": 10,
+    "function": 331,
+    "internal-index": 1,
+    "module": 72,
+    "trigger": 6
+  },
+  "avgDependencyDepth": 2.7264,
+  "maxDependencyDepth": 7,
+  "p95DependencyDepth": 7,
+  "avgDependentDepth": 0.576,
+  "maxDependentDepth": 7,
+  "avgDependenciesPerComponent": 0.9568,
+  "avgDependentsPerComponent": 0.8944,
+  "detectedPattern": "component-tree",
+  "hasDeepTrees": true,
+  "hasWideNetwork": false,
+  "recommendedDepth": 5,
+  "reasoning": "Detected component-tree architecture. Avg depth: 2.7, P95 depth: 7.0, Max depth: 7. Recommended depth: 5.",
+  "lastAnalyzed": "2026-01-11T21:38:44.173Z"
+}

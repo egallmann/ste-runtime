@@ -1,0 +1,57 @@
+_slice:
+  id: module-fixtures-python-sample-app-api
+  domain: graph
+  type: module
+  source_files:
+    - fixtures/python-sample/app/api.py
+  references: []
+  referenced_by:
+    - domain: api
+      type: endpoint
+      id: api-GET-api-greet-name
+    - domain: api
+      type: endpoint
+      id: api-GET-api-users
+    - domain: api
+      type: endpoint
+      id: api-GET-api-users-user-id
+    - domain: api
+      type: endpoint
+      id: api-POST-api-users
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+module:
+  id: module-fixtures-python-sample-app-api
+  path: fixtures/python-sample/app/api.py
+  name: api
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - create_user
+      - get_user
+      - greet
+      - list_users
+    constants: []
+  imports:
+    internal: []
+    external:
+      - package: app.services.greeting
+        items:
+          - GreetingService
+      - package: app.services.user_service
+        items:
+          - User
+          - UserService
+      - package: flask
+        items:
+          - Flask
+          - jsonify
+          - request
+  metrics: {}

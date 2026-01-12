@@ -1,0 +1,33 @@
+{
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "sourceDirs": [
+    "src",
+    "lib"
+  ],
+  "ignorePatterns": [],
+  "watchdog": {
+    "enabled": false,
+    "debounceMs": 500,
+    "aiEditDebounceMs": 2000,
+    "syntaxValidation": true,
+    "transactionDetection": true,
+    "stabilityCheckMs": 100,
+    "patterns": ["**/*.py", "**/*.ts", "**/*.js", "**/*.tsx", "**/*.jsx"],
+    "ignore": [".git", "node_modules", ".venv", "__pycache__", "dist", "build"],
+    "fullReconciliationInterval": 300000,
+    "fallbackPolling": false,
+    "pollingInterval": 5000
+  },
+  "mcp": {
+    "transport": "stdio",
+    "logLevel": "info"
+  },
+  "rss": {
+    "stateRoot": ".ste/state",
+    "defaultDepth": 2,
+    "maxResults": 50
+  }
+}

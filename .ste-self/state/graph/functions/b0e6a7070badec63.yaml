@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractSpecMetadata:331
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction-cloudformation.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractSpecMetadata:331
+  name: extractSpecMetadata
+  signature: 'function extractSpecMetadata(resourceType: string, spec: CloudFormationSpec | null): Record<string, unknown>'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - resourceType
+    - spec
+  docstring: "Extract spec-informed metadata for a resource type.\r\n\r\nThis is LAYER 2 of the extraction architecture:\r\n- Uses the AWS CFN Resource Specification\r\n- Works for ALL 700+ resource types\r\n- No hardcoding required\r\n\r\nReturns metadata that helps with:\r\n- Understanding if this is a known AWS type\r\n- What properties are required\r\n- What properties likely reference other resources\r\n- Service categorization for tagging"
+  description: "Extract spec-informed metadata for a resource type.\r\n\r\nThis is LAYER 2 of the extraction architecture:\r\n- Uses the AWS CFN Resource Specification\r\n- Works for ALL 700+ resource types\r\n- No hardcoding required\r\n\r\nReturns metadata that helps with:\r\n- Understanding if this is a known AWS type\r\n- What properties are required\r\n- What properties likely reference other resources\r\n- Service categorization for tagging"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction-cloudformation.ts
+  line: 331
+  language: typescript
+  source_checksum: 68a7ed29dea36dde56b30b71689584ec5e353a78d23afa6dc814210d3c110329

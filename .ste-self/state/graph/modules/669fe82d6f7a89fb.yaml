@@ -1,0 +1,52 @@
+_slice:
+  id: module-src-watch-write-tracker
+  domain: graph
+  type: module
+  source_files:
+    - src/watch/write-tracker.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: class
+      id: class:src/watch/write-tracker.ts:WriteTracker
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-population
+element:
+  id: module-src-watch-write-tracker
+  path: src/watch/write-tracker.ts
+  name: write-tracker
+  language: typescript
+  layer: util
+  exports:
+    classes:
+      - WriteTracker
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: node:crypto
+        names:
+          - createHash
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: lru-cache
+        names:
+          - LRUCache
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/write-tracker.ts
+  line: 1
+  language: typescript
+  source_checksum: 596f26bd1b509d1e9dbf7907b1c7e7d69f3bc56c271a43f236f5017a2c746d91

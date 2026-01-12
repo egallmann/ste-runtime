@@ -1,0 +1,81 @@
+_slice:
+  id: module-src-mcp-graph-topology-analyzer
+  domain: graph
+  type: module
+  source_files:
+    - src/mcp/graph-topology-analyzer.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-loader
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:analyzeGraphTopology:50
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:measureDepth:127
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:mean:163
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:percentile:171
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:detectPattern:181
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:calculateOptimalDepth:210
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:saveGraphMetrics:244
+    - domain: graph
+      type: function
+      id: function:src/mcp/graph-topology-analyzer.ts:loadGraphMetrics:256
+    - domain: graph
+      type: module
+      id: module-src-mcp-mcp-server
+element:
+  id: module-src-mcp-graph-topology-analyzer
+  path: src/mcp/graph-topology-analyzer.ts
+  name: graph-topology-analyzer
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - analyzeGraphTopology
+      - measureDepth
+      - mean
+      - percentile
+      - detectPattern
+      - calculateOptimalDepth
+      - saveGraphMetrics
+      - loadGraphMetrics
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../rss/graph-loader.js
+        names:
+          - AidocGraph
+          - AidocNode
+    external:
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/graph-topology-analyzer.ts
+  line: 1
+  language: typescript
+  source_checksum: a52f6b31ee3858c6637b536535e8d8d5f41fb7961465942e035ef7526a5582e2

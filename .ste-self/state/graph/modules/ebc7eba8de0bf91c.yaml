@@ -1,0 +1,99 @@
+_slice:
+  id: module-src-mcp-mcp-server
+  domain: graph
+  type: module
+  source_files:
+    - src/mcp/mcp-server.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-rss-operations
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-loader
+    - domain: graph
+      type: module
+      id: module-src-mcp-graph-topology-analyzer
+    - domain: graph
+      type: module
+      id: module-src-config-index
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-structural
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-context
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-operational
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-watch-cli
+    - domain: graph
+      type: class
+      id: class:src/mcp/mcp-server.ts:McpServer
+element:
+  id: module-src-mcp-mcp-server
+  path: src/mcp/mcp-server.ts
+  name: mcp-server
+  language: typescript
+  layer: util
+  exports:
+    classes:
+      - McpServer
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../rss/rss-operations.js
+        names:
+          - initRssContext
+          - RssContext
+      - module: ../rss/graph-loader.js
+        names:
+          - loadAidocGraph
+      - module: ./graph-topology-analyzer.js
+        names:
+          - analyzeGraphTopology
+          - saveGraphMetrics
+          - loadGraphMetrics
+          - GraphMetrics
+      - module: ../config/index.js
+        names:
+          - ResolvedConfig
+      - module: ./tools-structural.js
+        names:
+          - structuralTools
+      - module: ./tools-context.js
+        names:
+          - contextTools
+      - module: ./tools-operational.js
+        names:
+          - operationalTools
+    external:
+      - module: '@modelcontextprotocol/sdk/server/index.js'
+        names:
+          - Server
+      - module: '@modelcontextprotocol/sdk/server/stdio.js'
+        names:
+          - StdioServerTransport
+      - module: '@modelcontextprotocol/sdk/types.js'
+        names:
+          - CallToolRequestSchema
+          - ListToolsRequestSchema
+      - module: node:path
+        names:
+          - path
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/mcp-server.ts
+  line: 1
+  language: typescript
+  source_checksum: 5bf6d804650b1cf25baec0786117513fe1d14b89b786b70dd362ce15d1410f67

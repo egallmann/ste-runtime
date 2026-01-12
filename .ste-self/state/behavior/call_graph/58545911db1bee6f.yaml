@@ -1,0 +1,1001 @@
+_slice:
+  id: function_calls:backend/lambda/api/metrics.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/api/metrics.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/api/metrics.py:module
+  file: backend/lambda/api/metrics.py
+  callGraph:
+    lambda_handler:
+      - name: get
+        type: method
+        target: event
+        lineno: 45
+      - name: get
+        type: method
+        target: event
+        lineno: 46
+      - name: response
+        type: direct
+        lineno: 50
+      - name: get_dashboard_metrics
+        type: direct
+        lineno: 49
+      - name: print
+        type: direct
+        lineno: 52
+      - name: response
+        type: direct
+        lineno: 53
+      - name: get
+        type: method
+        target: event
+        lineno: 48
+      - name: str
+        type: direct
+        lineno: 53
+    get_dashboard_metrics:
+      - name: time
+        type: method
+        target: time
+        lineno: 65
+      - name: now
+        type: method
+        target: datetime
+        lineno: 66
+      - name: parse_range
+        type: direct
+        lineno: 67
+      - name: get_active_findings_for_aggregation
+        type: direct
+        lineno: 94
+      - name: aggregate_findings
+        type: direct
+        lineno: 97
+      - name: sort
+        type: method
+        target: account_compliance
+        lineno: 120
+      - name: get_recent_activity
+        type: direct
+        lineno: 123
+      - name: print
+        type: direct
+        lineno: 153
+      - name: response
+        type: direct
+        lineno: 155
+      - name: ThreadPoolExecutor
+        type: direct
+        lineno: 71
+      - name: as_completed
+        type: direct
+        lineno: 80
+      - name: next
+        type: direct
+        lineno: 107
+      - name: append
+        type: method
+        target: account_compliance
+        lineno: 112
+      - name: compute_naive_compliance
+        type: direct
+        lineno: 134
+      - name: compute_risk_index
+        type: direct
+        lineno: 148
+      - name: time
+        type: method
+        target: time
+        lineno: 152
+      - name: submit
+        type: method
+        target: executor
+        lineno: 73
+      - name: submit
+        type: method
+        target: executor
+        lineno: 74
+      - name: submit
+        type: method
+        target: executor
+        lineno: 75
+      - name: submit
+        type: method
+        target: executor
+        lineno: 76
+      - name: round
+        type: direct
+        lineno: 110
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 149
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 149
+      - name: result
+        type: method
+        target: future
+        lineno: 83
+      - name: print
+        type: direct
+        lineno: 85
+      - name: items
+        type: method
+        target: accounts_map
+        lineno: 107
+    parse_range:
+      - name: get
+        type: method
+        target: params
+        lineno: 159
+      - name: get
+        type: method
+        target: params
+        lineno: 160
+      - name: timedelta
+        type: direct
+        lineno: 170
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 164
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 165
+      - name: replace
+        type: method
+        target: iso_from
+        lineno: 164
+      - name: replace
+        type: method
+        target: iso_to
+        lineno: 165
+    compute_risk_index:
+      - name: sum
+        type: direct
+        lineno: 177
+      - name: int
+        type: direct
+        lineno: 178
+      - name: min
+        type: direct
+        lineno: 178
+      - name: round
+        type: direct
+        lineno: 178
+      - name: get
+        type: method
+        target: by_severity
+        lineno: 177
+      - name: items
+        type: method
+        target: weights
+        lineno: 177
+    get_current_findings_by_severity:
+      - name: keys
+        type: method
+        target: by_severity
+        lineno: 190
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 192
+      - name: get
+        type: method
+        target: q
+        lineno: 201
+      - name: len
+        type: direct
+        lineno: 202
+      - name: len
+        type: direct
+        lineno: 203
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 197
+      - name: eq
+        type: method
+        target: Key('severity')
+        lineno: 194
+      - name: between
+        type: method
+        target: Key('timestamp')
+        lineno: 194
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 195
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 195
+      - name: Key
+        type: direct
+        lineno: 197
+      - name: Key
+        type: direct
+        lineno: 194
+      - name: Key
+        type: direct
+        lineno: 194
+    get_risk_index_trend:
+      - name: replace
+        type: method
+        target: start
+        lineno: 226
+      - name: min
+        type: direct
+        lineno: 228
+      - name: append
+        type: method
+        target: buckets
+        lineno: 229
+      - name: keys
+        type: method
+        target: by_sev
+        lineno: 237
+      - name: compute_risk_index
+        type: direct
+        lineno: 249
+      - name: append
+        type: method
+        target: trend
+        lineno: 250
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 238
+      - name: len
+        type: direct
+        lineno: 247
+      - name: timedelta
+        type: direct
+        lineno: 228
+      - name: get
+        type: method
+        target: q
+        lineno: 247
+      - name: isoformat
+        type: method
+        target: bucket_start
+        lineno: 251
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 243
+      - name: eq
+        type: method
+        target: Key('severity')
+        lineno: 240
+      - name: between
+        type: method
+        target: Key('timestamp')
+        lineno: 240
+      - name: isoformat
+        type: method
+        target: bucket_start
+        lineno: 241
+      - name: isoformat
+        type: method
+        target: bucket_end
+        lineno: 241
+      - name: Key
+        type: direct
+        lineno: 243
+      - name: Key
+        type: direct
+        lineno: 240
+      - name: Key
+        type: direct
+        lineno: 240
+    get_findings_by_account:
+      - name: query
+        type: method
+        target: accounts_table
+        lineno: 269
+      - name: get
+        type: method
+        target: accounts_response
+        lineno: 274
+      - name: sort
+        type: method
+        target: results
+        lineno: 321
+      - name: get
+        type: method
+        target: account
+        lineno: 278
+      - name: get
+        type: method
+        target: account
+        lineno: 279
+      - name: sum
+        type: direct
+        lineno: 310
+      - name: append
+        type: method
+        target: results
+        lineno: 311
+      - name: print
+        type: direct
+        lineno: 325
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 271
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 286
+      - name: get
+        type: method
+        target: q
+        lineno: 295
+      - name: values
+        type: method
+        target: severity_counts
+        lineno: 310
+      - name: upper
+        type: method
+        target: finding.get('severity', '')
+        lineno: 298
+      - name: print
+        type: direct
+        lineno: 308
+      - name: Key
+        type: direct
+        lineno: 271
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 291
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 288
+      - name: between
+        type: method
+        target: Key('timestamp')
+        lineno: 288
+      - name: get
+        type: method
+        target: finding
+        lineno: 298
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 289
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 289
+      - name: Key
+        type: direct
+        lineno: 291
+      - name: Key
+        type: direct
+        lineno: 288
+      - name: Key
+        type: direct
+        lineno: 288
+    get_top_controls_by_findings:
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 340
+      - name: keys
+        type: method
+        target: controls_map
+        lineno: 356
+      - name: sorted
+        type: direct
+        lineno: 374
+      - name: get
+        type: method
+        target: controls_map
+        lineno: 378
+      - name: append
+        type: method
+        target: results
+        lineno: 379
+      - name: print
+        type: direct
+        lineno: 389
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 342
+      - name: get
+        type: method
+        target: c
+        lineno: 347
+      - name: get
+        type: method
+        target: c
+        lineno: 348
+      - name: get
+        type: method
+        target: controls_response
+        lineno: 350
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 358
+      - name: get
+        type: method
+        target: q
+        lineno: 367
+      - name: items
+        type: method
+        target: control_counts
+        lineno: 374
+      - name: print
+        type: direct
+        lineno: 371
+      - name: get
+        type: method
+        target: control_info
+        lineno: 381
+      - name: get
+        type: method
+        target: control_info
+        lineno: 383
+      - name: Key
+        type: direct
+        lineno: 342
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 363
+      - name: eq
+        type: method
+        target: Key('controlId')
+        lineno: 360
+      - name: between
+        type: method
+        target: Key('timestamp')
+        lineno: 360
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 361
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 361
+      - name: Key
+        type: direct
+        lineno: 363
+      - name: Key
+        type: direct
+        lineno: 360
+      - name: Key
+        type: direct
+        lineno: 360
+    get_account_compliance:
+      - name: query
+        type: method
+        target: accounts_table
+        lineno: 404
+      - name: get
+        type: method
+        target: accounts_response
+        lineno: 409
+      - name: get_total_controls_count
+        type: direct
+        lineno: 412
+      - name: sort
+        type: method
+        target: results
+        lineno: 451
+      - name: get
+        type: method
+        target: account
+        lineno: 416
+      - name: get
+        type: method
+        target: account
+        lineno: 417
+      - name: append
+        type: method
+        target: results
+        lineno: 441
+      - name: print
+        type: direct
+        lineno: 455
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 406
+      - name: round
+        type: direct
+        lineno: 439
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 423
+      - name: get
+        type: method
+        target: q
+        lineno: 432
+      - name: Key
+        type: direct
+        lineno: 406
+      - name: print
+        type: direct
+        lineno: 434
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 425
+      - name: between
+        type: method
+        target: Key('timestamp')
+        lineno: 425
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 428
+      - name: eq
+        type: method
+        target: Key('severity')
+        lineno: 428
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 426
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 426
+      - name: Key
+        type: direct
+        lineno: 425
+      - name: Key
+        type: direct
+        lineno: 425
+      - name: Key
+        type: direct
+        lineno: 428
+      - name: Key
+        type: direct
+        lineno: 428
+    get_recent_activity:
+      - name: query
+        type: method
+        target: accounts_table
+        lineno: 470
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 481
+      - name: get
+        type: method
+        target: q
+        lineno: 491
+      - name: get
+        type: method
+        target: a
+        lineno: 476
+      - name: get
+        type: method
+        target: finding
+        lineno: 495
+      - name: append
+        type: method
+        target: results
+        lineno: 496
+      - name: print
+        type: direct
+        lineno: 509
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 472
+      - name: get
+        type: method
+        target: accounts_response
+        lineno: 477
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 483
+      - name: between
+        type: method
+        target: Key('timestamp')
+        lineno: 483
+      - name: get
+        type: method
+        target: finding
+        lineno: 497
+      - name: get
+        type: method
+        target: finding
+        lineno: 499
+      - name: get
+        type: method
+        target: finding
+        lineno: 501
+      - name: get
+        type: method
+        target: finding
+        lineno: 502
+      - name: get
+        type: method
+        target: account_names
+        lineno: 503
+      - name: Key
+        type: direct
+        lineno: 472
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 484
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 484
+      - name: get
+        type: method
+        target: finding
+        lineno: 500
+      - name: Key
+        type: direct
+        lineno: 483
+      - name: Key
+        type: direct
+        lineno: 483
+      - name: get
+        type: method
+        target: finding
+        lineno: 500
+    compute_naive_compliance:
+      - name: sum
+        type: direct
+        lineno: 514
+      - name: max
+        type: direct
+        lineno: 518
+      - name: values
+        type: method
+        target: by_severity
+        lineno: 514
+      - name: min
+        type: direct
+        lineno: 518
+    get_active_findings_for_aggregation:
+      - name: time
+        type: method
+        target: time
+        lineno: 543
+      - name: print
+        type: direct
+        lineno: 568
+      - name: scan
+        type: method
+        target: findings_table
+        lineno: 559
+      - name: extend
+        type: method
+        target: items
+        lineno: 560
+      - name: get
+        type: method
+        target: response
+        lineno: 563
+      - name: time
+        type: method
+        target: time
+        lineno: 567
+      - name: print
+        type: direct
+        lineno: 572
+      - name: get
+        type: method
+        target: response
+        lineno: 560
+      - name: eq
+        type: method
+        target: Attr('status')
+        lineno: 550
+      - name: between
+        type: method
+        target: Attr('timestamp')
+        lineno: 550
+      - name: len
+        type: direct
+        lineno: 568
+      - name: isoformat
+        type: method
+        target: start
+        lineno: 551
+      - name: isoformat
+        type: method
+        target: end
+        lineno: 551
+      - name: Attr
+        type: direct
+        lineno: 550
+      - name: Attr
+        type: direct
+        lineno: 550
+    aggregate_findings:
+      - name: replace
+        type: method
+        target: start
+        lineno: 612
+      - name: items
+        type: method
+        target: by_account
+        lineno: 657
+      - name: sort
+        type: method
+        target: findings_by_account
+        lineno: 667
+      - name: min
+        type: direct
+        lineno: 614
+      - name: append
+        type: method
+        target: buckets
+        lineno: 615
+      - name: upper
+        type: method
+        target: finding.get('severity', 'MEDIUM')
+        lineno: 624
+      - name: get
+        type: method
+        target: finding
+        lineno: 625
+      - name: get
+        type: method
+        target: finding
+        lineno: 626
+      - name: get
+        type: method
+        target: finding
+        lineno: 627
+      - name: sum
+        type: direct
+        lineno: 658
+      - name: append
+        type: method
+        target: findings_by_account
+        lineno: 659
+      - name: sorted
+        type: direct
+        lineno: 670
+      - name: get
+        type: method
+        target: controls_map
+        lineno: 673
+      - name: append
+        type: method
+        target: top_controls
+        lineno: 674
+      - name: compute_risk_index
+        type: direct
+        lineno: 684
+      - name: append
+        type: method
+        target: risk_trend
+        lineno: 685
+      - name: sum
+        type: direct
+        lineno: 695
+      - name: keys
+        type: method
+        target: accounts_map
+        lineno: 596
+      - name: lower
+        type: method
+        target: sev
+        lineno: 635
+      - name: values
+        type: method
+        target: counts
+        lineno: 658
+      - name: items
+        type: method
+        target: by_control
+        lineno: 670
+      - name: values
+        type: method
+        target: by_severity
+        lineno: 695
+      - name: timedelta
+        type: direct
+        lineno: 614
+      - name: get
+        type: method
+        target: finding
+        lineno: 624
+      - name: get
+        type: method
+        target: by_control
+        lineno: 641
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 646
+      - name: get
+        type: method
+        target: accounts_map
+        lineno: 660
+      - name: get
+        type: method
+        target: ctrl_info
+        lineno: 676
+      - name: get
+        type: method
+        target: ctrl_info
+        lineno: 678
+      - name: isoformat
+        type: method
+        target: bucket['start']
+        lineno: 686
+      - name: replace
+        type: method
+        target: ts_str
+        lineno: 646
+    get_accounts_map:
+      - name: query
+        type: method
+        target: accounts_table
+        lineno: 705
+      - name: get
+        type: method
+        target: a
+        lineno: 711
+      - name: print
+        type: direct
+        lineno: 715
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 707
+      - name: get
+        type: method
+        target: response
+        lineno: 712
+      - name: Key
+        type: direct
+        lineno: 707
+    get_controls_map:
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 725
+      - name: print
+        type: direct
+        lineno: 738
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 727
+      - name: get
+        type: method
+        target: c
+        lineno: 732
+      - name: get
+        type: method
+        target: c
+        lineno: 733
+      - name: get
+        type: method
+        target: response
+        lineno: 735
+      - name: Key
+        type: direct
+        lineno: 727
+    get_total_accounts_count:
+      - name: query
+        type: method
+        target: accounts_table
+        lineno: 751
+      - name: get
+        type: method
+        target: response
+        lineno: 756
+      - name: print
+        type: direct
+        lineno: 758
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 753
+      - name: Key
+        type: direct
+        lineno: 753
+    get_total_controls_count:
+      - name: print
+        type: direct
+        lineno: 792
+      - name: print
+        type: direct
+        lineno: 770
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 785
+      - name: get
+        type: method
+        target: response
+        lineno: 786
+      - name: get
+        type: method
+        target: response
+        lineno: 788
+      - name: print
+        type: direct
+        lineno: 795
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 779
+      - name: Key
+        type: direct
+        lineno: 779
+    response:
+      - name: dumps
+        type: method
+        target: json
+        lineno: 808
+    default:
+      - name: isinstance
+        type: direct
+        lineno: 26
+      - name: isinstance
+        type: direct
+        lineno: 28
+      - name: default
+        type: method
+        target: super()
+        lineno: 30
+      - name: float
+        type: direct
+        lineno: 27
+      - name: isoformat
+        type: method
+        target: obj
+        lineno: 29
+      - name: super
+        type: direct
+        lineno: 30
+  callers:
+    - lambda_handler
+    - get_dashboard_metrics
+    - parse_range
+    - compute_risk_index
+    - get_current_findings_by_severity
+    - get_risk_index_trend
+    - get_findings_by_account
+    - get_top_controls_by_findings
+    - get_account_compliance
+    - get_recent_activity
+    - compute_naive_compliance
+    - get_active_findings_for_aggregation
+    - aggregate_findings
+    - get_accounts_map
+    - get_controls_map
+    - get_total_accounts_count
+    - get_total_controls_count
+    - response
+    - default
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/metrics.py
+  line: 0
+  language: python
+  source_checksum: 2c47bc3e61380c852d43248e9793a3d8c056b92e1be8f6de7abbfc2ca634cbca

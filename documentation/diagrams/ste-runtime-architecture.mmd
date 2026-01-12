@@ -1,0 +1,38 @@
+flowchart TB
+    %% External Interface
+    Cursor[Cursor IDE] -->|MCP Protocol<br/>stdio transport| MCPServer[MCP Server<br/>15 Tools Exposed]
+    
+    %% MCP Server Layer 1: Structural Queries
+    MCPServer --> Layer1[Layer 1: Structural Queries<br/>Fast graph operations<br/>&lt;100ms response]
+    Layer1 --> RSSGraph[In-Memory RSS Graph<br/>Loaded from AI-DOC state]
+    
+    %% MCP Server Layer 2: Context Assembly
+    MCPServer --> Layer2[Layer 2: Context Assembly<br/>Graph + source code<br/>100-500ms response]
+    Layer2 --> Layer1
+    Layer2 --> FileSystem[File System<br/>Source code files]
+    
+    %% File Watching & RECON Pipeline
+    Watchdog[Watchdog Orchestrator<br/>Coordinates file watching<br/>and RECON triggering] --> FileWatcher[File Watcher<br/>chokidar FSWatcher<br/>Monitors project files]
+    FileWatcher -->|file changes| EditQueue[Edit Queue Manager<br/>Debouncing &amp; Coalescing<br/>500ms manual / 2s AI edits]
+    EditQueue -->|stable changes| TxDetector[Transaction Detector<br/>Multi-file edit detection<br/>3s transaction window]
+    TxDetector -->|complete transaction| IncrementalRecon[Incremental RECON<br/>O changed files<br/>Updates AI-DOC state]
+    IncrementalRecon -->|writes| AIDocState[AI-DOC State<br/>.ste/state/<br/>YAML slices on disk]
+    AIDocState -->|loads| RSSGraph
+    IncrementalRecon -->|notifies| MCPServer
+    MCPServer -->|reloads context| RSSGraph
+    
+    %% Styling
+    classDef external fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef mcp fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef layer1 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef layer2 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef watchdog fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef storage fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    
+    class Cursor external
+    class MCPServer mcp
+    class Layer1 layer1
+    class Layer2 layer2
+    class Watchdog,FileWatcher,EditQueue,TxDetector,IncrementalRecon watchdog
+    class RSSGraph,AIDocState,FileSystem storage
+

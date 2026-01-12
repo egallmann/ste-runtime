@@ -1,0 +1,33 @@
+_slice:
+  id: template:frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.html
+  domain: frontend
+  type: template
+  source_files:
+    - frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.html
+  references: []
+  tags:
+    - frontend:angular
+    - frontend:template
+    - directive:ngclass
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.ts:ControlDetailModalComponent
+element:
+  id: template:frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.html
+  parentComponent: ControlDetailModalComponent
+  childComponents: []
+  directives:
+    - ngClass
+  pipes:
+    - json
+    - control
+  hasConditionals: false
+  hasLoops: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.html
+  line: 1
+  language: angular
+  source_checksum: 2e2e05dfda16501c57594a0e14f0603a5b08c94a24429750b0cc7a33a912440a

@@ -1,0 +1,74 @@
+_slice:
+  id: module-src-watch-watchdog
+  domain: graph
+  type: module
+  source_files:
+    - src/watch/watchdog.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-edit-queue-manager
+    - domain: graph
+      type: module
+      id: module-src-watch-transaction-detector
+    - domain: graph
+      type: module
+      id: module-src-recon-incremental-recon
+    - domain: graph
+      type: module
+      id: module-src-config-index
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-watch-cli
+    - domain: graph
+      type: class
+      id: class:src/watch/watchdog.ts:Watchdog
+element:
+  id: module-src-watch-watchdog
+  path: src/watch/watchdog.ts
+  name: watchdog
+  language: typescript
+  layer: util
+  exports:
+    classes:
+      - Watchdog
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./edit-queue-manager.js
+        names:
+          - EditQueueManager
+          - StableChangeSet
+      - module: ./transaction-detector.js
+        names:
+          - TransactionDetector
+      - module: ../recon/incremental-recon.js
+        names:
+          - runIncrementalRecon
+      - module: ../config/index.js
+        names:
+          - ResolvedConfig
+    external:
+      - module: chokidar
+        names:
+          - chokidar
+      - module: node:events
+        names:
+          - EventEmitter
+      - module: node:path
+        names:
+          - path
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/watchdog.ts
+  line: 1
+  language: typescript
+  source_checksum: d65f7978121c568ef16f84250f7c3f92c658953cff58a07f9d8ed961cd822b35

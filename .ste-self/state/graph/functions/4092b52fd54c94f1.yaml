@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/full-recon.ts:writeDataDomain:63
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/full-recon.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-full-recon
+  tags:
+    - async
+  referenced_by: []
+element:
+  id: function:src/recon/full-recon.ts:writeDataDomain:63
+  name: writeDataDomain
+  signature: 'function writeDataDomain(projectRoot: string, entities: EntityDoc[], timestamp: string): void'
+  language: typescript
+  is_exported: false
+  is_async: true
+  parameters:
+    - projectRoot
+    - entities
+    - timestamp
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/full-recon.ts
+  line: 63
+  language: typescript
+  source_checksum: 10494f9399253802c0d0ddc0d9cef797303c716fdd2630587f16bd91a9401de8

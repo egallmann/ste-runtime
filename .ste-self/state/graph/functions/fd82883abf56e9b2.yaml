@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/recon/phases/normalization.ts:getFileExtension:44
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/normalization.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-normalization
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/normalization.ts:getFileExtension:44
+  name: getFileExtension
+  signature: 'function getFileExtension(language: SupportedLanguage): string'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - language
+  docstring: Get file extension for a language
+  description: Get file extension for a language
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/normalization.ts
+  line: 44
+  language: typescript
+  source_checksum: 9a09357d99f13f8cc71f3acb35227513bcc429f9ea36a32db7b8139a617c10f8

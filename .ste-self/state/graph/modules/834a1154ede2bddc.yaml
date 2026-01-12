@@ -1,0 +1,136 @@
+_slice:
+  id: module-src-config-index
+  domain: graph
+  type: module
+  source_files:
+    - src/config/index.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-cli-index
+    - domain: graph
+      type: module
+      id: module-src-cli-recon-cli
+    - domain: graph
+      type: module
+      id: module-src-cli-watch-cli
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:findProjectRoot:262
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:detectLanguages:312
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:loadConfigFromPath:420
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:loadConfigFile:444
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:validateSourceDirs:461
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:detectSelfAnalysis:488
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:isSystemOrHomeDirectory:525
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:validateProjectScope:554
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:validateProjectRootBounds:611
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:enforceProjectBoundary:645
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:loadConfig:676
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:loadConfigFromFile:832
+    - domain: graph
+      type: function
+      id: function:src/config/index.ts:initConfig:946
+    - domain: graph
+      type: module
+      id: module-src-recon-index
+    - domain: graph
+      type: module
+      id: module-src-mcp-mcp-server
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-operational
+    - domain: graph
+      type: module
+      id: module-src-watch-watchdog
+    - domain: graph
+      type: module
+      id: module-src-extractors-angular-angular-extractor
+    - domain: graph
+      type: module
+      id: module-src-extractors-json-json-extractor
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-discovery
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-inference
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-normalization
+element:
+  id: module-src-config-index
+  path: src/config/index.ts
+  name: index
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - findProjectRoot
+      - detectLanguages
+      - loadConfigFromPath
+      - loadConfigFile
+      - validateSourceDirs
+      - detectSelfAnalysis
+      - isSystemOrHomeDirectory
+      - validateProjectScope
+      - validateProjectRootBounds
+      - enforceProjectBoundary
+      - loadConfig
+      - loadConfigFromFile
+      - initConfig
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external:
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: zod
+        names:
+          - z
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/config/index.ts
+  line: 1
+  language: typescript
+  source_checksum: e2b49a900a73cde3831481b4f389afd92b71d7d3001d68c2942814c97d793b99

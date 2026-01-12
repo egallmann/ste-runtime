@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/config/index.ts:loadConfigFromPath:420
+  domain: graph
+  type: function
+  source_files:
+    - src/config/index.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-config-index
+  tags:
+    - async
+  referenced_by: []
+element:
+  id: function:src/config/index.ts:loadConfigFromPath:420
+  name: loadConfigFromPath
+  signature: 'function loadConfigFromPath(configPath: string): Promise<SteConfig | null>'
+  language: typescript
+  is_exported: false
+  is_async: true
+  parameters:
+    - configPath
+  docstring: Load configuration from a specific config file path
+  description: Load configuration from a specific config file path
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/config/index.ts
+  line: 420
+  language: typescript
+  source_checksum: e2b49a900a73cde3831481b4f389afd92b71d7d3001d68c2942814c97d793b99

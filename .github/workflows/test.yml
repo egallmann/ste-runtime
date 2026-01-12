@@ -1,0 +1,52 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ste-runtime/package-lock.json
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    
+    - name: Install dependencies
+      working-directory: ./ste-runtime
+      run: npm ci
+    
+    - name: Build TypeScript
+      working-directory: ./ste-runtime
+      run: npm run build
+    
+    - name: Run tests
+      working-directory: ./ste-runtime
+      run: npm test
+    
+    - name: Verify RECON self-documentation
+      working-directory: ./ste-runtime
+      run: |
+        npm run recon:self
+        echo "RECON self-documentation completed successfully"
+

@@ -1,0 +1,102 @@
+_slice:
+  id: module-src-recon-phases-inference
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/phases/inference.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+    - domain: graph
+      type: module
+      id: module-src-utils-paths
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-test-extractor-test-utils
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:inferRelationships:54
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:buildRelationshipMap:934
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:buildImportMap:972
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:resolveModuleReference:995
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:resolvePythonModule:1022
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:resolvePythonRelativeImport:1063
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:resolveCloudFormationResource:1092
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:resolveAngularDependency:1102
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:resolveImportToModuleId:1131
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:deduplicateReferences:1176
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/inference.ts:buildBidirectionalEdges:1195
+element:
+  id: module-src-recon-phases-inference
+  path: src/recon/phases/inference.ts
+  name: inference
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - inferRelationships
+      - buildRelationshipMap
+      - buildImportMap
+      - resolveModuleReference
+      - resolvePythonModule
+      - resolvePythonRelativeImport
+      - resolveCloudFormationResource
+      - resolveAngularDependency
+      - resolveImportToModuleId
+      - deduplicateReferences
+      - buildBidirectionalEdges
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./index.js
+        names:
+          - RawAssertion
+          - NormalizedAssertion
+      - module: ../../config/index.js
+        names:
+          - SupportedLanguage
+      - module: ../../utils/paths.js
+        names:
+          - generateModuleId
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/inference.ts
+  line: 1
+  language: typescript
+  source_checksum: fd8b3718620973138c02b6706cafd5ee4121f1b3cba8bb1cedc9e222c6c57cc7

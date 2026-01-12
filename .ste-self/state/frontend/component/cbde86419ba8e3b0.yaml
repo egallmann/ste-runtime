@@ -1,0 +1,49 @@
+_slice:
+  id: component:frontend/src/app/features/dashboard/dashboard-home.component.ts:DashboardHomeComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/dashboard/dashboard-home.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/dashboard/dashboard-home.component.html
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/metrics.service.ts:MetricsService
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/settings.service.ts:SettingsService
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-dashboard-home
+  referenced_by: []
+element:
+  id: component:frontend/src/app/features/dashboard/dashboard-home.component.ts:DashboardHomeComponent
+  name: DashboardHomeComponent
+  className: DashboardHomeComponent
+  selector: app-dashboard-home
+  templateUrl: ./dashboard-home.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - RouterModule
+    - SparklineComponent
+    - InfoPopoverComponent
+  inputs: []
+  outputs: []
+  injectedServices:
+    - AuthService
+    - MetricsService
+    - SettingsService
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/dashboard/dashboard-home.component.ts
+  line: 45
+  language: angular
+  source_checksum: 9acf2b51fad46e89b2d5bd71fad26e25eb252421dfb7a0e040c2e0edf9929a89

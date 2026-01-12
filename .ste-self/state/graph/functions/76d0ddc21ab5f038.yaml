@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractRefFromIntrinsic:1173
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction-cloudformation.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractRefFromIntrinsic:1173
+  name: extractRefFromIntrinsic
+  signature: 'function extractRefFromIntrinsic(value: unknown): string | undefined'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - value
+  docstring: "Extract a logical resource reference from an intrinsic function.\r\nHandles !Ref, !GetAtt, and nested intrinsics."
+  description: "Extract a logical resource reference from an intrinsic function.\r\nHandles !Ref, !GetAtt, and nested intrinsics."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction-cloudformation.ts
+  line: 1173
+  language: typescript
+  source_checksum: 68a7ed29dea36dde56b30b71689584ec5e353a78d23afa6dc814210d3c110329

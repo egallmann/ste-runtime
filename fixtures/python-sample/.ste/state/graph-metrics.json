@@ -1,0 +1,28 @@
+{
+  "totalComponents": 14,
+  "componentsByDomain": {
+    "api": 5,
+    "data": 3,
+    "graph": 6
+  },
+  "componentsByType": {
+    "endpoint": 4,
+    "index": 2,
+    "entity": 2,
+    "internal-index": 1,
+    "module": 5
+  },
+  "avgDependencyDepth": 0.7857142857142857,
+  "maxDependencyDepth": 2,
+  "p95DependencyDepth": 2,
+  "avgDependentDepth": 0.35714285714285715,
+  "maxDependentDepth": 2,
+  "avgDependenciesPerComponent": 0.5714285714285714,
+  "avgDependentsPerComponent": 0.5714285714285714,
+  "detectedPattern": "flat",
+  "hasDeepTrees": false,
+  "hasWideNetwork": false,
+  "recommendedDepth": 2,
+  "reasoning": "Detected flat architecture. Avg depth: 0.8, P95 depth: 2.0, Max depth: 2. Recommended depth: 2.",
+  "lastAnalyzed": "2026-01-12T02:14:45.841Z"
+}

@@ -1,0 +1,48 @@
+_slice:
+  id: module-app-services-user_service
+  domain: graph
+  type: module
+  source_files:
+    - app/services/user_service.py
+  references: []
+  referenced_by:
+    - domain: data
+      type: entity
+      id: data-User
+    - domain: graph
+      type: module
+      id: module-app-api
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+module:
+  id: module-app-services-user_service
+  path: app/services/user_service.py
+  name: user_service
+  layer: util
+  exports:
+    classes:
+      - User
+      - UserService
+    functions: []
+    constants: []
+  imports:
+    internal: []
+    external:
+      - package: dataclasses
+        items:
+          - dataclass
+          - field
+      - package: datetime
+        items:
+          - datetime
+      - package: typing
+        items:
+          - List
+          - Optional
+  metrics: {}

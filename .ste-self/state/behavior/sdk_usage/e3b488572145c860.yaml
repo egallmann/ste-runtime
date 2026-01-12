@@ -1,0 +1,59 @@
+_slice:
+  id: aws_sdk_usage:backend/lambda/remediations/executor.py:module
+  domain: behavior
+  type: aws_sdk_usage
+  source_files:
+    - backend/lambda/remediations/executor.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: aws_sdk_usage:backend/lambda/remediations/executor.py:module
+  file: backend/lambda/remediations/executor.py
+  clients:
+    - service: dynamodb
+      method: resource
+      lineno: 37
+    - service: dynamodb
+      method: client
+      lineno: 38
+    - service: rds
+      method: client
+      lineno: 696
+  operations:
+    - method: get_item
+      operationType: read
+      target: table
+      lineno: 432
+    - method: get_item
+      operationType: read
+      target: table
+      lineno: 458
+    - method: put_item
+      operationType: write
+      target: table
+      lineno: 790
+    - method: update_item
+      operationType: write
+      target: table
+      lineno: 805
+    - method: update_item
+      operationType: write
+      target: table
+      lineno: 830
+    - method: update_item
+      operationType: write
+      target: table
+      lineno: 843
+  services:
+    - dynamodb
+    - rds
+  hasReadOperations: true
+  hasWriteOperations: true
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/remediations/executor.py
+  line: 0
+  language: python
+  source_checksum: e9193426356ae78f2c61a424cf56eb5184900b14c4ade120248096e187f70404

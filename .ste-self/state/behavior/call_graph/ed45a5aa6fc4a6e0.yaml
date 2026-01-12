@@ -1,0 +1,302 @@
+_slice:
+  id: function_calls:backend/lambda/api/report_generators/trend_analysis_reporter.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/api/report_generators/trend_analysis_reporter.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/api/report_generators/trend_analysis_reporter.py:module
+  file: backend/lambda/api/report_generators/trend_analysis_reporter.py
+  callGraph:
+    __init__:
+      - name: __init__
+        type: method
+        target: super()
+        lineno: 19
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 20
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 23
+      - name: get
+        type: method
+        target: os.environ
+        lineno: 21
+      - name: get
+        type: method
+        target: os.environ
+        lineno: 24
+      - name: super
+        type: direct
+        lineno: 19
+    query_data:
+      - name: validate_filters
+        type: method
+        target: self
+        lineno: 41
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 48
+      - name: get
+        type: method
+        target: filters
+        lineno: 55
+      - name: get
+        type: method
+        target: filters
+        lineno: 61
+      - name: filter_by_date_range
+        type: method
+        target: self
+        lineno: 84
+      - name: _generate_daily_trends
+        type: method
+        target: self
+        lineno: 92
+      - name: convert_decimals
+        type: method
+        target: self
+        lineno: 94
+      - name: get
+        type: method
+        target: filters
+        lineno: 44
+      - name: isoformat
+        type: method
+        target: datetime.now()
+        lineno: 44
+      - name: get
+        type: method
+        target: filters
+        lineno: 45
+      - name: isoformat
+        type: method
+        target: datetime.now() - timedelta(days=30)
+        lineno: 45
+      - name: filter_by_values
+        type: method
+        target: self
+        lineno: 57
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 51
+      - name: strip
+        type: method
+        target: a
+        lineno: 56
+      - name: strip
+        type: method
+        target: a
+        lineno: 62
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 64
+      - name: extend
+        type: method
+        target: remediations
+        lineno: 69
+      - name: now
+        type: method
+        target: datetime
+        lineno: 44
+      - name: split
+        type: method
+        target: filters['account']
+        lineno: 56
+      - name: split
+        type: method
+        target: filters['account']
+        lineno: 62
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 74
+      - name: extend
+        type: method
+        target: remediations
+        lineno: 79
+      - name: len
+        type: direct
+        lineno: 88
+      - name: now
+        type: method
+        target: datetime
+        lineno: 45
+      - name: timedelta
+        type: direct
+        lineno: 45
+      - name: Key
+        type: direct
+        lineno: 51
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 67
+      - name: eq
+        type: method
+        target: Key('result')
+        lineno: 77
+      - name: Key
+        type: direct
+        lineno: 67
+      - name: Key
+        type: direct
+        lineno: 77
+    _generate_daily_trends:
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 101
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 102
+      - name: defaultdict
+        type: direct
+        lineno: 105
+      - name: defaultdict
+        type: direct
+        lineno: 121
+      - name: replace
+        type: method
+        target: start_date
+        lineno: 101
+      - name: get
+        type: method
+        target: finding
+        lineno: 107
+      - name: get
+        type: method
+        target: remediation
+        lineno: 123
+      - name: isoformat
+        type: method
+        target: current.date()
+        lineno: 142
+      - name: append
+        type: method
+        target: trend_data
+        lineno: 146
+      - name: timedelta
+        type: direct
+        lineno: 157
+      - name: replace
+        type: method
+        target: end_date
+        lineno: 102
+      - name: date
+        type: method
+        target: datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+        lineno: 111
+      - name: date
+        type: method
+        target: datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+        lineno: 127
+      - name: date
+        type: method
+        target: start
+        lineno: 112
+      - name: date
+        type: method
+        target: end
+        lineno: 112
+      - name: isoformat
+        type: method
+        target: finding_date
+        lineno: 113
+      - name: get
+        type: method
+        target: finding
+        lineno: 115
+      - name: date
+        type: method
+        target: start
+        lineno: 128
+      - name: date
+        type: method
+        target: end
+        lineno: 128
+      - name: isoformat
+        type: method
+        target: remediation_date
+        lineno: 129
+      - name: date
+        type: method
+        target: current
+        lineno: 142
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 111
+      - name: lower
+        type: method
+        target: severity
+        lineno: 116
+      - name: fromisoformat
+        type: method
+        target: datetime
+        lineno: 127
+      - name: get
+        type: method
+        target: remediation
+        lineno: 131
+      - name: replace
+        type: method
+        target: timestamp
+        lineno: 111
+      - name: replace
+        type: method
+        target: timestamp
+        lineno: 127
+    calculate_summary:
+      - name: sum
+        type: direct
+        lineno: 184
+      - name: max
+        type: direct
+        lineno: 188
+      - name: min
+        type: direct
+        lineno: 189
+      - name: abs
+        type: direct
+        lineno: 197
+      - name: round
+        type: direct
+        lineno: 206
+      - name: round
+        type: direct
+        lineno: 212
+      - name: len
+        type: direct
+        lineno: 185
+    prepare_table_data:
+      - name: append
+        type: method
+        target: table_data
+        lineno: 259
+      - name: round
+        type: direct
+        lineno: 263
+  callers:
+    - __init__
+    - query_data
+    - _generate_daily_trends
+    - calculate_summary
+    - prepare_table_data
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/report_generators/trend_analysis_reporter.py
+  line: 0
+  language: python
+  source_checksum: 2ef1c57c9686a837e11454b2ed9070594a3a2efc4e193161866e6c50b9a93864

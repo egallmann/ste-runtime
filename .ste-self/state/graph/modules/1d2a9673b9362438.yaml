@@ -1,0 +1,73 @@
+_slice:
+  id: module-src-cli-recon-cli
+  domain: graph
+  type: module
+  source_files:
+    - src/cli/recon-cli.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/cli/recon-cli.ts:parseArgs:24
+    - domain: graph
+      type: function
+      id: function:src/cli/recon-cli.ts:printHelp:40
+    - domain: graph
+      type: function
+      id: function:src/cli/recon-cli.ts:main:81
+    - domain: graph
+      type: function
+      id: function:src/cli/recon-cli.ts:printResult:276
+element:
+  id: module-src-cli-recon-cli
+  path: src/cli/recon-cli.ts
+  name: recon-cli
+  language: typescript
+  layer: util
+  exports:
+    classes: []
+    functions:
+      - parseArgs
+      - printHelp
+      - main
+      - printResult
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ../recon/index.js
+        names:
+          - executeRecon
+      - module: ../config/index.js
+        names:
+          - loadConfig
+          - loadConfigFromFile
+          - initConfig
+          - ResolvedConfig
+    external:
+      - module: node:path
+        names:
+          - path
+      - module: node:url
+        names:
+          - fileURLToPath
+      - module: node:fs/promises
+        names:
+          - fs
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/cli/recon-cli.ts
+  line: 1
+  language: typescript
+  source_checksum: e041d0c0bd60c8ac2af434f58f230915f112bae3ba7bf5f083440b8c8033e5a0

@@ -1,0 +1,35 @@
+_slice:
+  id: api-POST-api-users
+  domain: api
+  type: endpoint
+  source_files:
+    - app/api.py
+  references:
+    - domain: graph
+      type: module
+      id: module-app-api
+  referenced_by: []
+  tags:
+    - api
+    - flask
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+endpoint:
+  id: api-POST-api-users
+  method: POST
+  path: /api/users
+  summary: Create a new user.
+  domain_function: ''
+  handler:
+    file: app/api.py
+    function: create_user
+    class: ''
+    line: 29
+  authentication:
+    required: false
+    type: none
+    scopes: []
+    roles: []
+  responses: []

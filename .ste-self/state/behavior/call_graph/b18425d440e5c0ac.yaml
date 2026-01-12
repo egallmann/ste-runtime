@@ -1,0 +1,108 @@
+_slice:
+  id: function_calls:backend/lambda/shared/cross_account_utils.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/shared/cross_account_utils.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/shared/cross_account_utils.py:module
+  file: backend/lambda/shared/cross_account_utils.py
+  callGraph:
+    assume_spoke_role:
+      - name: warning
+        type: method
+        target: logger
+        lineno: 114
+      - name: warning
+        type: method
+        target: logger
+        lineno: 115
+      - name: info
+        type: method
+        target: logger
+        lineno: 84
+      - name: error
+        type: method
+        target: logger
+        lineno: 119
+      - name: assume_role
+        type: method
+        target: sts_client
+        lineno: 87
+      - name: info
+        type: method
+        target: logger
+        lineno: 94
+      - name: info
+        type: method
+        target: logger
+        lineno: 95
+      - name: debug
+        type: method
+        target: logger
+        lineno: 107
+      - name: warning
+        type: method
+        target: logger
+        lineno: 110
+      - name: str
+        type: direct
+        lineno: 119
+    get_cross_account_client:
+      - name: assume_spoke_role
+        type: direct
+        lineno: 161
+      - name: debug
+        type: method
+        target: logger
+        lineno: 173
+      - name: client
+        type: method
+        target: boto3
+        lineno: 174
+      - name: is_spoke_account
+        type: direct
+        lineno: 156
+      - name: debug
+        type: method
+        target: logger
+        lineno: 157
+      - name: client
+        type: method
+        target: boto3
+        lineno: 158
+      - name: warning
+        type: method
+        target: logger
+        lineno: 168
+      - name: warning
+        type: method
+        target: logger
+        lineno: 169
+      - name: client
+        type: method
+        target: boto3
+        lineno: 170
+    get_processor_cross_account_client:
+      - name: get_cross_account_client
+        type: direct
+        lineno: 201
+    get_executor_cross_account_client:
+      - name: get_cross_account_client
+        type: direct
+        lineno: 228
+  callers:
+    - assume_spoke_role
+    - get_cross_account_client
+    - get_processor_cross_account_client
+    - get_executor_cross_account_client
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/shared/cross_account_utils.py
+  line: 0
+  language: python
+  source_checksum: 80b30cec8c03c5e60b25bb8351999595a316a4adc6aa33a8f9907aff84e6fe29

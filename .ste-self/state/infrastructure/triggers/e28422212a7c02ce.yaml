@@ -1,0 +1,29 @@
+_slice:
+  id: cfn_trigger:backend/cloudformation/hub/oops-infrastructure.yaml:SpokeHealthCheckScheduleRule-SpokeHealthCheckTarget
+  domain: infrastructure
+  type: trigger
+  source_files:
+    - backend/cloudformation/hub/oops-infrastructure.yaml
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: cfn_trigger:backend/cloudformation/hub/oops-infrastructure.yaml:SpokeHealthCheckScheduleRule-SpokeHealthCheckTarget
+  logicalId: SpokeHealthCheckScheduleRule
+  triggerType: scheduled_event
+  sourceType: eventbridge
+  sourceRef: SpokeHealthCheckScheduleRule
+  targetRef: SpokeHealthMonitorLambda
+  targetArn: '!GetAtt SpokeHealthMonitorLambda.Arn'
+  eventBusName: default
+  scheduleExpression: rate(10 minutes)
+  eventSources: []
+  eventDetailTypes: []
+  state: ENABLED
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-cloudformation-extractor-v1
+  file: backend/cloudformation/hub/oops-infrastructure.yaml
+  line: 0
+  language: cloudformation
+  source_checksum: a1676567f2026f02261df125e5ed5f96f1ca2b46783c91a6013dea67be0a68bd

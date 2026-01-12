@@ -1,0 +1,28 @@
+_slice:
+  id: aws_sdk_usage:backend/lambda/api/report_generators/base_reporter.py:module
+  domain: behavior
+  type: aws_sdk_usage
+  source_files:
+    - backend/lambda/api/report_generators/base_reporter.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: aws_sdk_usage:backend/lambda/api/report_generators/base_reporter.py:module
+  file: backend/lambda/api/report_generators/base_reporter.py
+  clients:
+    - service: dynamodb
+      method: resource
+      lineno: 23
+  operations: []
+  services:
+    - dynamodb
+  hasReadOperations: false
+  hasWriteOperations: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/report_generators/base_reporter.py
+  line: 0
+  language: python
+  source_checksum: 1cd567f771d390fb2790d4c604061ab29645f4297be3c130dbe2bef66deaebdc

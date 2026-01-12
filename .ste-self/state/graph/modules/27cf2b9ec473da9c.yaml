@@ -1,0 +1,149 @@
+_slice:
+  id: module-src-recon-phases-extraction
+  domain: graph
+  type: module
+  source_files:
+    - src/recon/phases/extraction.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+    - domain: graph
+      type: module
+      id: module-src-config-index
+    - domain: graph
+      type: module
+      id: module-src-utils-paths
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+    - domain: graph
+      type: module
+      id: module-src-extractors-json-index
+    - domain: graph
+      type: module
+      id: module-src-extractors-angular-index
+    - domain: graph
+      type: module
+      id: module-src-extractors-css-index
+  tags:
+    - layer:recon
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:getPythonParserPath:28
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:getPythonBinary:54
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractAssertions:62
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractFromPython:167
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:buildPythonFunctionSignature:363
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractJsDoc:383
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractFromTypeScript:490
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:visit:504
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:getFunctionSignature:594
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:hasExportModifier:607
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:getLineNumber:612
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractClassMethods:617
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractClassProperties:629
+    - domain: graph
+      type: function
+      id: function:src/recon/phases/extraction.ts:extractImportedNames:641
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-index
+element:
+  id: module-src-recon-phases-extraction
+  path: src/recon/phases/extraction.ts
+  name: extraction
+  language: typescript
+  layer: recon
+  exports:
+    classes: []
+    functions:
+      - getPythonParserPath
+      - getPythonBinary
+      - extractAssertions
+      - extractFromPython
+      - buildPythonFunctionSignature
+      - extractJsDoc
+      - extractFromTypeScript
+      - visit
+      - getFunctionSignature
+      - hasExportModifier
+      - getLineNumber
+      - extractClassMethods
+      - extractClassProperties
+      - extractImportedNames
+    constants: []
+    data_models: []
+  imports:
+    internal:
+      - module: ./index.js
+        names:
+          - DiscoveredFile
+          - RawAssertion
+      - module: ../../config/index.js
+        names:
+          - SupportedLanguage
+          - JsonPatterns
+      - module: ../../utils/paths.js
+        names:
+          - generateSliceId
+          - toPosixPath
+      - module: ./extraction-cloudformation.js
+        names:
+          - extractFromCloudFormation
+      - module: ../../extractors/json/index.js
+        names:
+          - extractFromJson
+      - module: ../../extractors/angular/index.js
+        names:
+          - extractFromAngular
+      - module: ../../extractors/css/index.js
+        names:
+          - extractFromCss
+    external:
+      - module: node:fs/promises
+        names:
+          - fs
+      - module: node:path
+        names:
+          - path
+      - module: typescript
+        names:
+          - ts
+      - module: execa
+        names:
+          - execa
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction.ts
+  line: 1
+  language: typescript
+  source_checksum: 3191b585689c435636ba7407cecaa00368f7dc66de7e30a7543d97aa076d9522

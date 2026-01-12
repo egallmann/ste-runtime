@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/recon/index.ts:executeRecon:62
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/index.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-index
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/index.ts:executeRecon:62
+  name: executeRecon
+  signature: 'function executeRecon(options: ReconOptions): Promise<ReconResult>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - options
+  docstring: "Execute RECON over the working tree.\r\n\r\nPer E-ADR-001 §5.4:\r\n- MUST produce AI-DOC graph updates\r\n- MUST produce explicit conflict records\r\n- MUST NOT resolve conflicts automatically\r\n- MUST NOT block commits\r\n- MUST NOT halt development workflows"
+  description: "Execute RECON over the working tree.\r\n\r\nPer E-ADR-001 §5.4:\r\n- MUST produce AI-DOC graph updates\r\n- MUST produce explicit conflict records\r\n- MUST NOT resolve conflicts automatically\r\n- MUST NOT block commits\r\n- MUST NOT halt development workflows"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/index.ts
+  line: 62
+  language: typescript
+  source_checksum: e72f59374eca2905364afd70dfe64701290a02736802d9112dc91c109b67c0aa

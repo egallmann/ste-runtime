@@ -1,0 +1,33 @@
+_slice:
+  id: create-user
+  domain: api
+  type: endpoint
+  source_files:
+    - app/api.py
+  references:
+    - domain: graph
+      type: module
+      id: module:app/services/user_service.py
+    - domain: data
+      type: entity
+      id: user
+  referenced_by: []
+  tags:
+    - backend:api
+    - http:post
+
+endpoint:
+  method: POST
+  path: /api/users
+  summary: Create a new user
+  domain_function: create_user
+  handler: create_user
+  parameters:
+    - name: body
+      in: body
+      required: true
+  responses:
+    - status: 201
+      description: User created
+
+

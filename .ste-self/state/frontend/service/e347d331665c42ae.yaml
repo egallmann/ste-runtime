@@ -1,0 +1,58 @@
+_slice:
+  id: service:frontend/src/app/core/services/remediation.service.ts:RemediationService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/services/remediation.service.ts
+  references:
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/settings/risk-index
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/metrics/dashboard
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/reports/data
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/reports/filter-options
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/exclusions
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/exclusions/{exclusionId}
+  tags:
+    - http:get
+    - http:post
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/remediations/remediations-list/remediations-list.component.ts:RemediationsListComponent
+element:
+  id: service:frontend/src/app/core/services/remediation.service.ts:RemediationService
+  name: RemediationService
+  className: RemediationService
+  providedIn: root
+  httpCalls:
+    - method: GET
+      urlPattern: '{apiUrl}/api/reports/data'
+      functionName: getRemediationHistory
+    - method: GET
+      urlPattern: '{apiUrl}/{remediationId}'
+      functionName: getRemediationById
+    - method: POST
+      urlPattern: '{environment.apiUrl}/findings/{findingId}/remediate'
+      functionName: triggerRemediation
+  injectedDependencies:
+    - HttpClient
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/services/remediation.service.ts
+  line: 13
+  language: angular
+  source_checksum: a7bb304029eb73799a4f861be8c32a01d220fa4d2e770d49ba1c9b060e803d4d

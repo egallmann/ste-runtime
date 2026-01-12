@@ -1,0 +1,28 @@
+_slice:
+  id: aws_sdk_usage:backend/lambda/remediations/cross_account_utils.py:module
+  domain: behavior
+  type: aws_sdk_usage
+  source_files:
+    - backend/lambda/remediations/cross_account_utils.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: aws_sdk_usage:backend/lambda/remediations/cross_account_utils.py:module
+  file: backend/lambda/remediations/cross_account_utils.py
+  clients:
+    - service: sts
+      method: client
+      lineno: 30
+  operations: []
+  services:
+    - sts
+  hasReadOperations: false
+  hasWriteOperations: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/remediations/cross_account_utils.py
+  line: 0
+  language: python
+  source_checksum: 47aeed417db911382c6f20a68e673d91e102a4a6a0922f12ec8780643705ef2b

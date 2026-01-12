@@ -1,0 +1,39 @@
+_slice:
+  id: template:frontend/src/app/features/controls/controls-list/controls-list.component.html
+  domain: frontend
+  type: template
+  source_files:
+    - frontend/src/app/features/controls/controls-list/controls-list.component.html
+  references:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/shared/components/control-detail-modal/control-detail-modal.component.ts:ControlDetailModalComponent
+  tags:
+    - frontend:angular
+    - frontend:template
+    - directive:ngclass
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/controls/controls-list/controls-list.component.ts:ControlsListComponent
+element:
+  id: template:frontend/src/app/features/controls/controls-list/controls-list.component.html
+  parentComponent: ControlsListComponent
+  childComponents:
+    - selector: app-control-detail-modal
+      inputs:
+        - controlId
+      outputs:
+        - close
+  directives:
+    - ngClass
+  pipes: []
+  hasConditionals: false
+  hasLoops: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/controls/controls-list/controls-list.component.html
+  line: 1
+  language: angular
+  source_checksum: fdb08786f1b2605dec8be9bdf8ccb1f24d61a5cf74351d3723ddddecd5a9790e

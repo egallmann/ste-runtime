@@ -1,0 +1,56 @@
+_slice:
+  id: component:frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.ts:TrendAnalysisReportComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.html
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-trend-analysis-report
+  referenced_by:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/reports/reports-container/reports-container.component.html
+element:
+  id: component:frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.ts:TrendAnalysisReportComponent
+  name: TrendAnalysisReportComponent
+  className: TrendAnalysisReportComponent
+  selector: app-trend-analysis-report
+  templateUrl: ./trend-analysis-report.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - SummaryCardsComponent
+    - ReportChartComponent
+    - ReportFiltersComponent
+  inputs:
+    - name: data
+      type: ReportData
+      required: true
+    - name: filters
+      type: ReportFilters
+      required: true
+    - name: exporting
+      type: boolean
+      required: false
+    - name: availableFilters
+      type: FilterConfig[]
+      required: true
+  outputs:
+    - name: export
+      type: void
+    - name: filtersChange
+      type: ReportFilters
+  injectedServices: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/reports/report-views/trend-analysis-report/trend-analysis-report.component.ts
+  line: 13
+  language: angular
+  source_checksum: cdb05a841c5874e590df5039c65c9a7d48607cdcf2a4311a63901d194e925496

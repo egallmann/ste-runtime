@@ -1,0 +1,55 @@
+validation_run:
+  timestamp: '2026-01-11T22:02:21.376Z'
+  recon_run_id: recon-1768168941222
+  validation_version: 0.1.0
+summary:
+  total_findings: 4
+  errors: 0
+  warnings: 0
+  info: 4
+findings:
+  - category: INFO
+    validator: repeatability
+    affected_artifacts:
+      - function:src/cli/recon-cli.ts:printResult:218
+      - function:src/config/index.ts:validateProjectScope:554
+      - function:src/config/index.ts:validateProjectRootBounds:611
+      - function:src/config/index.ts:enforceProjectBoundary:645
+      - function:src/config/index.ts:loadConfig:676
+      - function:src/config/index.ts:loadConfigFromFile:832
+      - function:src/config/index.ts:initConfig:946
+      - function:src/recon/index.ts:executeRecon:62
+      - function:src/mcp/tools-operational.ts:triggerFullRecon:179
+      - function:src/mcp/tools-operational.ts:getGraphDiagnostics:272
+      - function:src/mcp/tools-operational.ts:generateRecommendations:308
+      - function:src/mcp/tools-operational.ts:triggerSelfRecon:349
+      - function:src/recon/phases/discovery.ts:discoverFilesFromConfig:375
+      - function:src/recon/phases/discovery.ts:discoverFilesLegacy:388
+    description: 14 new artifact(s) detected since last run
+  - category: INFO
+    validator: repeatability
+    affected_artifacts:
+      - function:src/cli/recon-cli.ts:printResult:160
+      - function:src/config/index.ts:validateProjectRootBounds:548
+      - function:src/config/index.ts:enforceProjectBoundary:582
+      - function:src/config/index.ts:loadConfig:613
+      - function:src/config/index.ts:loadConfigFromFile:766
+      - function:src/config/index.ts:initConfig:880
+      - function:src/mcp/tools-operational.ts:triggerFullRecon:177
+      - function:src/mcp/tools-operational.ts:getGraphDiagnostics:206
+      - function:src/mcp/tools-operational.ts:generateRecommendations:242
+      - function:src/mcp/tools-operational.ts:triggerSelfRecon:283
+      - function:src/recon/index.ts:executeRecon:60
+      - function:src/recon/phases/discovery.ts:discoverFilesFromConfig:362
+      - function:src/recon/phases/discovery.ts:discoverFilesLegacy:375
+    description: 13 artifact(s) removed since last run
+  - category: INFO
+    validator: graph
+    affected_artifacts: []
+    description: 411 module(s) are not referenced by other modules (may be entry points)
+    suggested_investigation: Expected for entry points; investigate if count seems high
+  - category: INFO
+    validator: coverage
+    affected_artifacts: []
+    description: 'AI-DOC file validity: 64/64 files exist (100%)'
+    suggested_investigation: All AI-DOC entries reference valid files

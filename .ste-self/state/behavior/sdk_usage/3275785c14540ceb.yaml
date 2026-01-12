@@ -1,0 +1,52 @@
+_slice:
+  id: aws_sdk_usage:backend/lambda/spoke-health-monitor/monitor.py:module
+  domain: behavior
+  type: aws_sdk_usage
+  source_files:
+    - backend/lambda/spoke-health-monitor/monitor.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: aws_sdk_usage:backend/lambda/spoke-health-monitor/monitor.py:module
+  file: backend/lambda/spoke-health-monitor/monitor.py
+  clients:
+    - service: dynamodb
+      method: resource
+      lineno: 11
+    - service: cloudwatch
+      method: client
+      lineno: 12
+    - service: s3
+      method: client
+      lineno: 13
+  operations:
+    - method: update_item
+      operationType: write
+      target: accounts_table
+      lineno: 50
+    - method: query
+      operationType: read
+      target: accounts_table
+      lineno: 85
+    - method: update_item
+      operationType: write
+      target: accounts_table
+      lineno: 227
+    - method: update_item
+      operationType: write
+      target: accounts_table
+      lineno: 113
+  services:
+    - dynamodb
+    - cloudwatch
+    - s3
+  hasReadOperations: true
+  hasWriteOperations: true
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/spoke-health-monitor/monitor.py
+  line: 0
+  language: python
+  source_checksum: bbd6ee2b9639c0d8c2ae5dd1c074613ed428007e439c9762d223a9294513792e

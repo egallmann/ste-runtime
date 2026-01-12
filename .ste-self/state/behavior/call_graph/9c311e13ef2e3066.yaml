@@ -1,0 +1,393 @@
+_slice:
+  id: function_calls:backend/scripts/validate-master-catalog.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/scripts/validate-master-catalog.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/scripts/validate-master-catalog.py:module
+  file: backend/scripts/validate-master-catalog.py
+  callGraph:
+    load_json:
+      - name: open
+        type: direct
+        lineno: 21
+      - name: load
+        type: method
+        target: json
+        lineno: 22
+    validate_security_hub_controls_present:
+      - name: defaultdict
+        type: direct
+        lineno: 51
+      - name: items
+        type: method
+        target: expected_ranges
+        lineno: 65
+      - name: sorted
+        type: direct
+        lineno: 70
+      - name: split
+        type: method
+        target: control_id
+        lineno: 56
+      - name: int
+        type: direct
+        lineno: 57
+      - name: append
+        type: method
+        target: errors
+        lineno: 67
+      - name: min
+        type: direct
+        lineno: 71
+      - name: max
+        type: direct
+        lineno: 72
+      - name: append
+        type: method
+        target: warnings
+        lineno: 75
+      - name: append
+        type: method
+        target: errors
+        lineno: 81
+      - name: append
+        type: method
+        target: warnings
+        lineno: 84
+      - name: len
+        type: direct
+        lineno: 86
+      - name: append
+        type: method
+        target: controls_by_service[service]
+        lineno: 60
+    validate_source_identifier_mapping:
+      - name: defaultdict
+        type: direct
+        lineno: 104
+      - name: items
+        type: method
+        target: source_ids
+        lineno: 129
+      - name: get
+        type: method
+        target: control
+        lineno: 110
+      - name: append
+        type: method
+        target: errors
+        lineno: 135
+      - name: append
+        type: method
+        target: warnings
+        lineno: 143
+      - name: int
+        type: direct
+        lineno: 113
+      - name: len
+        type: direct
+        lineno: 130
+      - name: append
+        type: method
+        target: errors
+        lineno: 131
+      - name: append
+        type: method
+        target: errors
+        lineno: 139
+      - name: len
+        type: direct
+        lineno: 147
+      - name: append
+        type: method
+        target: source_ids[source_id]
+        lineno: 117
+      - name: split
+        type: method
+        target: control_id
+        lineno: 113
+      - name: append
+        type: method
+        target: security_hub_with_source
+        lineno: 120
+      - name: append
+        type: method
+        target: config_rules_without_source
+        lineno: 123
+      - name: len
+        type: direct
+        lineno: 136
+      - name: len
+        type: direct
+        lineno: 144
+    validate_no_collisions:
+      - name: append
+        type: method
+        target: errors
+        lineno: 178
+      - name: split
+        type: method
+        target: control_id
+        lineno: 159
+      - name: int
+        type: direct
+        lineno: 160
+      - name: append
+        type: method
+        target: errors
+        lineno: 180
+      - name: len
+        type: direct
+        lineno: 182
+      - name: get
+        type: method
+        target: control
+        lineno: 166
+      - name: get
+        type: method
+        target: control
+        lineno: 167
+      - name: append
+        type: method
+        target: suspicious_controls
+        lineno: 168
+      - name: len
+        type: direct
+        lineno: 178
+      - name: get
+        type: method
+        target: control
+        lineno: 171
+    validate_data_integrity:
+      - name: set
+        type: direct
+        lineno: 198
+      - name: set
+        type: direct
+        lineno: 204
+      - name: get
+        type: method
+        target: control
+        lineno: 200
+      - name: get
+        type: method
+        target: control
+        lineno: 206
+      - name: append
+        type: method
+        target: errors
+        lineno: 212
+      - name: append
+        type: method
+        target: errors
+        lineno: 221
+      - name: append
+        type: method
+        target: warnings
+        lineno: 225
+      - name: add
+        type: method
+        target: original_source_ids
+        lineno: 201
+      - name: add
+        type: method
+        target: new_source_ids
+        lineno: 207
+      - name: list
+        type: direct
+        lineno: 213
+      - name: append
+        type: method
+        target: errors
+        lineno: 214
+      - name: len
+        type: direct
+        lineno: 229
+      - name: len
+        type: direct
+        lineno: 212
+    main:
+      - name: print
+        type: direct
+        lineno: 235
+      - name: print
+        type: direct
+        lineno: 236
+      - name: print
+        type: direct
+        lineno: 237
+      - name: print
+        type: direct
+        lineno: 238
+      - name: load_json
+        type: direct
+        lineno: 244
+      - name: load_json
+        type: direct
+        lineno: 245
+      - name: print
+        type: direct
+        lineno: 247
+      - name: print
+        type: direct
+        lineno: 248
+      - name: print
+        type: direct
+        lineno: 249
+      - name: print
+        type: direct
+        lineno: 254
+      - name: print
+        type: direct
+        lineno: 255
+      - name: print
+        type: direct
+        lineno: 256
+      - name: validate_security_hub_controls_present
+        type: direct
+        lineno: 257
+      - name: print
+        type: direct
+        lineno: 271
+      - name: print
+        type: direct
+        lineno: 274
+      - name: print
+        type: direct
+        lineno: 275
+      - name: print
+        type: direct
+        lineno: 276
+      - name: validate_source_identifier_mapping
+        type: direct
+        lineno: 277
+      - name: print
+        type: direct
+        lineno: 291
+      - name: print
+        type: direct
+        lineno: 294
+      - name: print
+        type: direct
+        lineno: 295
+      - name: print
+        type: direct
+        lineno: 296
+      - name: validate_no_collisions
+        type: direct
+        lineno: 297
+      - name: print
+        type: direct
+        lineno: 306
+      - name: print
+        type: direct
+        lineno: 309
+      - name: print
+        type: direct
+        lineno: 310
+      - name: print
+        type: direct
+        lineno: 311
+      - name: validate_data_integrity
+        type: direct
+        lineno: 312
+      - name: print
+        type: direct
+        lineno: 326
+      - name: print
+        type: direct
+        lineno: 329
+      - name: print
+        type: direct
+        lineno: 330
+      - name: print
+        type: direct
+        lineno: 331
+      - name: Path
+        type: direct
+        lineno: 240
+      - name: print
+        type: direct
+        lineno: 261
+      - name: print
+        type: direct
+        lineno: 265
+      - name: print
+        type: direct
+        lineno: 268
+      - name: print
+        type: direct
+        lineno: 281
+      - name: print
+        type: direct
+        lineno: 285
+      - name: print
+        type: direct
+        lineno: 288
+      - name: print
+        type: direct
+        lineno: 301
+      - name: print
+        type: direct
+        lineno: 305
+      - name: print
+        type: direct
+        lineno: 316
+      - name: print
+        type: direct
+        lineno: 320
+      - name: print
+        type: direct
+        lineno: 323
+      - name: print
+        type: direct
+        lineno: 334
+      - name: print
+        type: direct
+        lineno: 335
+      - name: print
+        type: direct
+        lineno: 338
+      - name: print
+        type: direct
+        lineno: 339
+      - name: print
+        type: direct
+        lineno: 263
+      - name: print
+        type: direct
+        lineno: 270
+      - name: print
+        type: direct
+        lineno: 283
+      - name: print
+        type: direct
+        lineno: 290
+      - name: print
+        type: direct
+        lineno: 303
+      - name: print
+        type: direct
+        lineno: 318
+      - name: print
+        type: direct
+        lineno: 325
+  callers:
+    - load_json
+    - validate_security_hub_controls_present
+    - validate_source_identifier_mapping
+    - validate_no_collisions
+    - validate_data_integrity
+    - main
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/scripts/validate-master-catalog.py
+  line: 0
+  language: python
+  source_checksum: 4407da41a33d0d49b525bc66625b4f2a59a84a2f6fb24c0d4d73ae1e140c9972

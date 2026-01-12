@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/phases/population.ts:getTargetPath:344
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/population.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-population
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/population.ts:getTargetPath:344
+  name: getTargetPath
+  signature: 'function getTargetPath(stateDir: string, assertion: NormalizedAssertion): string'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - stateDir
+    - assertion
+  docstring: "Get the target file path for a slice using content-addressable hashing.\r\n\r\nFilenames are hashed because:\r\n- AI-DOC is machine-readable, not human-edited\r\n- Avoids filesystem length limits (Windows 260 char, Unix 255 char)\r\n- Prevents special character issues\r\n- Slice ID is the source of truth, not filename"
+  description: "Get the target file path for a slice using content-addressable hashing.\r\n\r\nFilenames are hashed because:\r\n- AI-DOC is machine-readable, not human-edited\r\n- Avoids filesystem length limits (Windows 260 char, Unix 255 char)\r\n- Prevents special character issues\r\n- Slice ID is the source of truth, not filename"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/population.ts
+  line: 344
+  language: typescript
+  source_checksum: 67629ab4291f5770f0300098cda48db547a8c17a434b3672df7e5408469e0774

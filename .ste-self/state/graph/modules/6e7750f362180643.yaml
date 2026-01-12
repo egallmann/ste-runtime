@@ -1,0 +1,46 @@
+_slice:
+  id: module-src-extractors-base-extractor
+  domain: graph
+  type: module
+  source_files:
+    - src/extractors/base-extractor.ts
+  references: []
+  tags:
+    - layer:util
+    - lang:typescript
+  referenced_by:
+    - domain: graph
+      type: module
+      id: module-src-aidoc-python-aidoc-generator
+    - domain: graph
+      type: class
+      id: class:src/extractors/base-extractor.ts:BaseExtractor
+    - domain: graph
+      type: module
+      id: module-src-recon-common
+    - domain: graph
+      type: module
+      id: module-src-extractors-python-python-extractor
+element:
+  id: module-src-extractors-base-extractor
+  path: src/extractors/base-extractor.ts
+  name: base-extractor
+  language: typescript
+  layer: util
+  exports:
+    classes:
+      - BaseExtractor
+    functions: []
+    constants: []
+    data_models: []
+  imports:
+    internal: []
+    external: []
+  api_endpoints: []
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/base-extractor.ts
+  line: 1
+  language: typescript
+  source_checksum: 2a2fd823683e4b3b96b3137f12e050305505ba6f3871298000a3de4b5ece4637

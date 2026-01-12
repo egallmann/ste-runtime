@@ -1,0 +1,28 @@
+_slice:
+  id: function:src/rss/graph-loader.ts:normalizeEdges:47
+  domain: graph
+  type: function
+  source_files:
+    - src/rss/graph-loader.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-loader
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/rss/graph-loader.ts:normalizeEdges:47
+  name: normalizeEdges
+  signature: 'function normalizeEdges(list: unknown): AidocEdge[]'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - list
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/graph-loader.ts
+  line: 47
+  language: typescript
+  source_checksum: 47069304a8c9898ce7c610b41dd5aa473bac6c951c160cfec3995652744e64a4

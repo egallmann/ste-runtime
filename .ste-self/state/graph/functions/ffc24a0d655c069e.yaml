@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:isKnownResourceType:221
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/cfn/cfn-spec-loader.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-cfn-cfn-spec-loader
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/extractors/cfn/cfn-spec-loader.ts:isKnownResourceType:221
+  name: isKnownResourceType
+  signature: 'function isKnownResourceType(spec: CloudFormationSpec, resourceType: string): boolean'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - spec
+    - resourceType
+  docstring: Check if a resource type exists in the spec
+  description: Check if a resource type exists in the spec
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/cfn/cfn-spec-loader.ts
+  line: 221
+  language: typescript
+  source_checksum: 193dfd70008e006c8aeffd0d0486f438af85d121d358e1995b1fb51d7396664d

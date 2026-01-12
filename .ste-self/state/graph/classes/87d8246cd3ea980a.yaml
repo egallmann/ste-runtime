@@ -1,0 +1,43 @@
+_slice:
+  id: class:src/watch/watchdog.ts:Watchdog
+  domain: graph
+  type: class
+  source_files:
+    - src/watch/watchdog.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-watch-watchdog
+  tags: []
+  referenced_by: []
+element:
+  id: class:src/watch/watchdog.ts:Watchdog
+  name: Watchdog
+  language: typescript
+  is_exported: true
+  methods:
+    - start
+    - stop
+    - handleFileChange
+    - handleStableChangeSet
+    - triggerIncrementalRecon
+    - triggerFullReconciliation
+    - handleError
+    - getStats
+    - isRunning
+  properties:
+    - options
+    - watcher
+    - editQueue
+    - transactionDetector
+    - stats
+    - fullReconciliationTimer
+  docstring: "Watchdog Orchestrator\r\n\r\nCoordinates file watching, edit queuing, transaction detection,\r\nand incremental RECON triggering."
+  description: "Watchdog Orchestrator\r\n\r\nCoordinates file watching, edit queuing, transaction detection,\r\nand incremental RECON triggering."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/watch/watchdog.ts
+  line: 37
+  language: typescript
+  source_checksum: d65f7978121c568ef16f84250f7c3f92c658953cff58a07f9d8ed961cd822b35

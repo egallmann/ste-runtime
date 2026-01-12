@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/validation/coverage-validator.ts:normalizePathForComparison:25
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/validation/coverage-validator.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-validation-coverage-validator
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/validation/coverage-validator.ts:normalizePathForComparison:25
+  name: normalizePathForComparison
+  signature: 'function normalizePathForComparison(filePath: string, projectRoot: string): string'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - filePath
+    - projectRoot
+  docstring: "Normalize a file path for comparison:\r\n- Convert backslashes to forward slashes\r\n- Remove any drive letter prefix (Windows absolute paths in AI-DOC)\r\n- Make relative to project root if possible"
+  description: "Normalize a file path for comparison:\r\n- Convert backslashes to forward slashes\r\n- Remove any drive letter prefix (Windows absolute paths in AI-DOC)\r\n- Make relative to project root if possible"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/validation/coverage-validator.ts
+  line: 25
+  language: typescript
+  source_checksum: 87a0405788a44b6391a632a3c82a416850f8207f8ffb05a1389a3fd3fb9e110f

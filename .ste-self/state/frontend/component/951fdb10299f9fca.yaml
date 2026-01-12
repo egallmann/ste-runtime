@@ -1,0 +1,41 @@
+_slice:
+  id: component:frontend/src/app/features/dashboard/dashboard.component.ts:DashboardComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/dashboard/dashboard.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/dashboard/dashboard.component.html
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-dashboard
+  referenced_by: []
+element:
+  id: component:frontend/src/app/features/dashboard/dashboard.component.ts:DashboardComponent
+  name: DashboardComponent
+  className: DashboardComponent
+  selector: app-dashboard
+  templateUrl: ./dashboard.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - RouterModule
+    - RouterOutlet
+  inputs: []
+  outputs: []
+  injectedServices:
+    - AuthService
+    - Router
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/dashboard/dashboard.component.ts
+  line: 8
+  language: angular
+  source_checksum: 03784f1aa071f63500c398e3d036634caf9e18bdf0e2d2afbdb19eee5d6412b4

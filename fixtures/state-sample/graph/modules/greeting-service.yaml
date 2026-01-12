@@ -1,0 +1,31 @@
+_slice:
+  id: module:app/services/greeting.py
+  domain: graph
+  type: module
+  source_files:
+    - app/services/greeting.py
+  references: []
+  referenced_by:
+    - domain: api
+      type: endpoint
+      id: greet
+  tags:
+    - backend:service
+    - python
+
+element:
+  path: app/services/greeting.py
+  layer: services
+  imports:
+    internal: []
+    external:
+      - dataclasses
+      - typing
+  exports:
+    classes:
+      - GreetingConfig
+      - GreetingService
+    functions:
+      - create_greeting_service
+
+

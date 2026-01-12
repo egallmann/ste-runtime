@@ -1,0 +1,32 @@
+_slice:
+  id: cfn_trigger:backend/cloudformation/spoke/spoke-config-ingestion.yaml:ConfigEventsForwardingRule-[object Object]
+  domain: infrastructure
+  type: trigger
+  source_files:
+    - backend/cloudformation/spoke/spoke-config-ingestion.yaml
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: cfn_trigger:backend/cloudformation/spoke/spoke-config-ingestion.yaml:ConfigEventsForwardingRule-[object Object]
+  logicalId: ConfigEventsForwardingRule
+  triggerType: event_pattern
+  sourceType: eventbridge
+  sourceRef: ConfigEventsForwardingRule
+  targetRef: ConfigEventForwarderLambda
+  targetArn: '!GetAtt ConfigEventForwarderLambda.Arn'
+  eventBusName: default
+  eventPattern: '{"source":["aws.config"],"detail-type":["Config Rules Compliance Change","Config Configuration Item Change"]}'
+  eventSources:
+    - aws.config
+  eventDetailTypes:
+    - Config Rules Compliance Change
+    - Config Configuration Item Change
+  state: ENABLED
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-cloudformation-extractor-v1
+  file: backend/cloudformation/spoke/spoke-config-ingestion.yaml
+  line: 0
+  language: cloudformation
+  source_checksum: ee13595fd9440f0c54f2a330f1297c2c20f966be51c03b367eb73594ac51bdfd

@@ -1,0 +1,35 @@
+_slice:
+  id: function:src/test/extractor-test-utils.ts:expectBidirectionalEdges:44
+  domain: graph
+  type: function
+  source_files:
+    - src/test/extractor-test-utils.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-test-extractor-test-utils
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/test/extractor-test-utils.ts:expectBidirectionalEdges:44
+  name: expectBidirectionalEdges
+  signature: 'function expectBidirectionalEdges(result: NormalizedAssertion[], nodeA: string, nodeB: string): void'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - result
+    - nodeA
+    - nodeB
+  docstring: "Assert that bidirectional edges exist between two nodes.\r\nVerifies both A->B (via references) and B->A (via referenced_by)."
+  description: "Assert that bidirectional edges exist between two nodes.\r\nVerifies both A->B (via references) and B->A (via referenced_by)."
+  examples:
+    - expectBidirectionalEdges(result, 'module-src-a', 'module-src-b');
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/test/extractor-test-utils.ts
+  line: 44
+  language: typescript
+  source_checksum: 191cee2609a3e6418b8a42af49006b5a4793ab1e7c748be0eb3149053461b79b

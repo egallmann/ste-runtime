@@ -1,0 +1,28 @@
+_slice:
+  id: function:src/extractors/angular/angular-extractor.ts:visit:422
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/angular/angular-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-angular-angular-extractor
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/extractors/angular/angular-extractor.ts:visit:422
+  name: visit
+  signature: 'function visit(node: ts.Node): void'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - node
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/angular/angular-extractor.ts
+  line: 422
+  language: typescript
+  source_checksum: 65f3b12d20bd7ea505eeceefb754266cec3d039fd32ee93e58a2cc2ce5a07c52

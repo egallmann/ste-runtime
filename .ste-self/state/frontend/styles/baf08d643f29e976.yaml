@@ -1,0 +1,23 @@
+_slice:
+  id: styles:C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/reports/shared/report-chart/report-chart.component.css
+  domain: frontend
+  type: styles
+  source_files:
+    - C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/reports/shared/report-chart/report-chart.component.css
+  references: []
+  tags:
+    - frontend:styles
+  referenced_by: []
+element:
+  id: styles:C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/reports/shared/report-chart/report-chart.component.css
+  cssVariablesUsed: []
+  scssVariablesUsed: []
+  mediaQueries: []
+  stateModifiers: []
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-css-extractor-v1
+  file: C:/Users/Erik.Gallmann/Documents/PycharmProjects/hack-a-thon-oops/oops-platform/frontend/src/app/features/reports/shared/report-chart/report-chart.component.css
+  line: 1
+  language: css
+  source_checksum: 417618805afe1558a9c15bb567d183e7cb63203e3cc566f94099d8944caa1b2b

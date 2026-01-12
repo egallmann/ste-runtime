@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractIntrinsicRefs:403
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction-cloudformation.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractIntrinsicRefs:403
+  name: extractIntrinsicRefs
+  signature: 'function extractIntrinsicRefs(obj: unknown, deps: Set<string>, allResources: Record<string, CfnResource>): void'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - obj
+    - deps
+    - allResources
+  docstring: Recursively extract Ref and GetAtt references
+  description: Recursively extract Ref and GetAtt references
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction-cloudformation.ts
+  line: 403
+  language: typescript
+  source_checksum: 68a7ed29dea36dde56b30b71689584ec5e353a78d23afa6dc814210d3c110329

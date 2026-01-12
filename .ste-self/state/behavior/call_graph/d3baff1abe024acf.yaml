@@ -1,0 +1,833 @@
+_slice:
+  id: function_calls:backend/lambda/api/controls.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/api/controls.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/api/controls.py:module
+  file: backend/lambda/api/controls.py
+  callGraph:
+    lambda_handler:
+      - name: get
+        type: method
+        target: event
+        lineno: 34
+      - name: get
+        type: method
+        target: event
+        lineno: 35
+      - name: get
+        type: method
+        target: event.get('requestContext', {}).get('authorizer', {})
+        lineno: 40
+      - name: get
+        type: method
+        target: authorizer_context
+        lineno: 41
+      - name: get
+        type: method
+        target: authorizer_context
+        lineno: 42
+      - name: print
+        type: direct
+        lineno: 44
+      - name: print
+        type: direct
+        lineno: 45
+      - name: print
+        type: direct
+        lineno: 46
+      - name: get
+        type: method
+        target: event
+        lineno: 36
+      - name: get
+        type: method
+        target: event
+        lineno: 37
+      - name: list_controls
+        type: direct
+        lineno: 50
+      - name: print
+        type: direct
+        lineno: 60
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 62
+      - name: response
+        type: direct
+        lineno: 63
+      - name: get
+        type: method
+        target: event.get('requestContext', {})
+        lineno: 40
+      - name: get
+        type: method
+        target: path_parameters
+        lineno: 53
+      - name: get_control
+        type: direct
+        lineno: 54
+      - name: response
+        type: direct
+        lineno: 57
+      - name: get
+        type: method
+        target: event
+        lineno: 40
+      - name: str
+        type: direct
+        lineno: 60
+    list_controls:
+      - name: lower
+        type: method
+        target: query_params.get('view', 'list')
+        lineno: 83
+      - name: print
+        type: direct
+        lineno: 84
+      - name: get
+        type: method
+        target: query_params
+        lineno: 90
+      - name: get
+        type: method
+        target: query_params
+        lineno: 125
+      - name: get
+        type: method
+        target: query_params
+        lineno: 131
+      - name: get
+        type: method
+        target: query_params
+        lineno: 137
+      - name: get
+        type: method
+        target: query_params
+        lineno: 143
+      - name: sort
+        type: method
+        target: formatted_controls
+        lineno: 164
+      - name: response
+        type: direct
+        lineno: 166
+      - name: query
+        type: method
+        target: controls_table
+        lineno: 93
+      - name: get
+        type: method
+        target: result
+        lineno: 97
+      - name: print
+        type: direct
+        lineno: 98
+      - name: print
+        type: direct
+        lineno: 102
+      - name: query
+        type: method
+        target: controls_table
+        lineno: 104
+      - name: get
+        type: method
+        target: result
+        lineno: 108
+      - name: print
+        type: direct
+        lineno: 119
+      - name: upper
+        type: method
+        target: query_params['severity']
+        lineno: 126
+      - name: print
+        type: direct
+        lineno: 128
+      - name: upper
+        type: method
+        target: query_params['remediationStatus']
+        lineno: 132
+      - name: print
+        type: direct
+        lineno: 134
+      - name: upper
+        type: method
+        target: query_params['servicePrefix']
+        lineno: 138
+      - name: print
+        type: direct
+        lineno: 140
+      - name: lower
+        type: method
+        target: query_params['search']
+        lineno: 144
+      - name: print
+        type: direct
+        lineno: 151
+      - name: print
+        type: direct
+        lineno: 158
+      - name: print
+        type: direct
+        lineno: 161
+      - name: print
+        type: direct
+        lineno: 179
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 181
+      - name: response
+        type: direct
+        lineno: 182
+      - name: get
+        type: method
+        target: query_params
+        lineno: 83
+      - name: query
+        type: method
+        target: controls_table
+        lineno: 112
+      - name: extend
+        type: method
+        target: all_controls
+        lineno: 117
+      - name: format_control
+        type: direct
+        lineno: 157
+      - name: format_control_list
+        type: direct
+        lineno: 160
+      - name: len
+        type: direct
+        lineno: 168
+      - name: eq
+        type: method
+        target: Key('servicePrefix')
+        lineno: 95
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 106
+      - name: get
+        type: method
+        target: result
+        lineno: 117
+      - name: get
+        type: method
+        target: x
+        lineno: 164
+      - name: get
+        type: method
+        target: query_params
+        lineno: 171
+      - name: get
+        type: method
+        target: query_params
+        lineno: 172
+      - name: get
+        type: method
+        target: query_params
+        lineno: 173
+      - name: get
+        type: method
+        target: query_params
+        lineno: 174
+      - name: str
+        type: direct
+        lineno: 184
+      - name: len
+        type: direct
+        lineno: 98
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 114
+      - name: len
+        type: direct
+        lineno: 119
+      - name: upper
+        type: method
+        target: c.get('severity', '')
+        lineno: 127
+      - name: len
+        type: direct
+        lineno: 128
+      - name: upper
+        type: method
+        target: c.get('remediationStatus', '')
+        lineno: 133
+      - name: len
+        type: direct
+        lineno: 134
+      - name: upper
+        type: method
+        target: c.get('servicePrefix', '')
+        lineno: 139
+      - name: len
+        type: direct
+        lineno: 140
+      - name: len
+        type: direct
+        lineno: 151
+      - name: len
+        type: direct
+        lineno: 158
+      - name: len
+        type: direct
+        lineno: 161
+      - name: str
+        type: direct
+        lineno: 179
+      - name: Key
+        type: direct
+        lineno: 95
+      - name: Key
+        type: direct
+        lineno: 106
+      - name: lower
+        type: method
+        target: c.get('title', '')
+        lineno: 147
+      - name: lower
+        type: method
+        target: c.get('description', '')
+        lineno: 148
+      - name: lower
+        type: method
+        target: c.get('controlId', '')
+        lineno: 149
+      - name: Key
+        type: direct
+        lineno: 114
+      - name: get
+        type: method
+        target: c
+        lineno: 127
+      - name: get
+        type: method
+        target: c
+        lineno: 133
+      - name: get
+        type: method
+        target: c
+        lineno: 139
+      - name: get
+        type: method
+        target: c
+        lineno: 147
+      - name: get
+        type: method
+        target: c
+        lineno: 148
+      - name: get
+        type: method
+        target: c
+        lineno: 149
+    get_control:
+      - name: query
+        type: method
+        target: controls_table
+        lineno: 203
+      - name: get
+        type: method
+        target: result
+        lineno: 209
+      - name: response
+        type: direct
+        lineno: 217
+      - name: response
+        type: direct
+        lineno: 197
+      - name: response
+        type: direct
+        lineno: 211
+      - name: format_control_detailed
+        type: direct
+        lineno: 217
+      - name: print
+        type: direct
+        lineno: 220
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 222
+      - name: response
+        type: direct
+        lineno: 223
+      - name: eq
+        type: method
+        target: Key('controlId')
+        lineno: 204
+      - name: str
+        type: direct
+        lineno: 225
+      - name: Key
+        type: direct
+        lineno: 204
+      - name: str
+        type: direct
+        lineno: 220
+    format_control_list:
+      - name: get
+        type: method
+        target: control
+        lineno: 239
+      - name: get
+        type: method
+        target: control
+        lineno: 240
+      - name: get
+        type: method
+        target: control
+        lineno: 241
+      - name: bool
+        type: direct
+        lineno: 244
+      - name: get
+        type: method
+        target: org_config
+        lineno: 245
+      - name: get
+        type: method
+        target: control
+        lineno: 250
+      - name: get
+        type: method
+        target: control
+        lineno: 251
+      - name: get
+        type: method
+        target: control
+        lineno: 252
+      - name: get
+        type: method
+        target: control
+        lineno: 253
+      - name: get
+        type: method
+        target: control
+        lineno: 254
+      - name: get
+        type: method
+        target: org_config
+        lineno: 255
+      - name: get
+        type: method
+        target: control
+        lineno: 257
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 244
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 246
+      - name: get
+        type: method
+        target: control
+        lineno: 255
+      - name: get
+        type: method
+        target: control
+        lineno: 247
+    flatten_compliance_frameworks:
+      - name: set
+        type: direct
+        lineno: 270
+      - name: sorted
+        type: direct
+        lineno: 292
+      - name: isinstance
+        type: direct
+        lineno: 272
+      - name: list
+        type: direct
+        lineno: 292
+      - name: get
+        type: method
+        target: fw
+        lineno: 274
+      - name: isinstance
+        type: direct
+        lineno: 288
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ').title().replace(' V', ' v').replace('Aws', 'AWS').replace('Cis', 'CIS').replace('Nist', 'NIST').replace('Pci', 'PCI')
+        lineno: 277
+      - name: add
+        type: method
+        target: unique_frameworks
+        lineno: 287
+      - name: add
+        type: method
+        target: unique_frameworks
+        lineno: 290
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ').title().replace(' V', ' v').replace('Aws', 'AWS').replace('Cis', 'CIS').replace('Nist', 'NIST')
+        lineno: 277
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ').title().replace(' V', ' v').replace('Aws', 'AWS').replace('Cis', 'CIS')
+        lineno: 277
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ').title().replace(' V', ' v').replace('Aws', 'AWS')
+        lineno: 277
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ').title().replace(' V', ' v')
+        lineno: 277
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ').title()
+        lineno: 277
+      - name: title
+        type: method
+        target: framework_name.replace('-', ' ').replace('_', ' ')
+        lineno: 277
+      - name: replace
+        type: method
+        target: framework_name.replace('-', ' ')
+        lineno: 277
+      - name: replace
+        type: method
+        target: framework_name
+        lineno: 277
+    format_control:
+      - name: get
+        type: method
+        target: control
+        lineno: 301
+      - name: get
+        type: method
+        target: control
+        lineno: 302
+      - name: get
+        type: method
+        target: control
+        lineno: 303
+      - name: get
+        type: method
+        target: control
+        lineno: 304
+      - name: print
+        type: direct
+        lineno: 315
+      - name: bool
+        type: direct
+        lineno: 309
+      - name: get
+        type: method
+        target: org_config
+        lineno: 310
+      - name: get
+        type: method
+        target: control
+        lineno: 320
+      - name: get
+        type: method
+        target: control
+        lineno: 321
+      - name: get
+        type: method
+        target: control
+        lineno: 322
+      - name: get
+        type: method
+        target: control
+        lineno: 323
+      - name: get
+        type: method
+        target: control
+        lineno: 324
+      - name: get
+        type: method
+        target: control
+        lineno: 325
+      - name: get
+        type: method
+        target: org_config
+        lineno: 327
+      - name: get
+        type: method
+        target: control
+        lineno: 328
+      - name: get
+        type: method
+        target: control
+        lineno: 329
+      - name: get
+        type: method
+        target: org_config
+        lineno: 332
+      - name: get
+        type: method
+        target: org_config
+        lineno: 333
+      - name: get
+        type: method
+        target: control
+        lineno: 335
+      - name: get
+        type: method
+        target: control
+        lineno: 336
+      - name: flatten_compliance_frameworks
+        type: direct
+        lineno: 338
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 309
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 311
+      - name: get
+        type: method
+        target: control
+        lineno: 327
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 332
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 333
+      - name: get
+        type: method
+        target: control
+        lineno: 337
+      - name: get
+        type: method
+        target: control
+        lineno: 337
+      - name: get
+        type: method
+        target: control
+        lineno: 338
+      - name: get
+        type: method
+        target: control
+        lineno: 312
+      - name: get
+        type: method
+        target: control
+        lineno: 315
+      - name: bool
+        type: direct
+        lineno: 316
+      - name: get
+        type: method
+        target: control
+        lineno: 332
+      - name: get
+        type: method
+        target: control
+        lineno: 333
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 316
+    format_control_detailed:
+      - name: get
+        type: method
+        target: control
+        lineno: 352
+      - name: get
+        type: method
+        target: control
+        lineno: 353
+      - name: get
+        type: method
+        target: control
+        lineno: 354
+      - name: get
+        type: method
+        target: control
+        lineno: 355
+      - name: bool
+        type: direct
+        lineno: 359
+      - name: get
+        type: method
+        target: org_config
+        lineno: 360
+      - name: get
+        type: method
+        target: control
+        lineno: 365
+      - name: get
+        type: method
+        target: control
+        lineno: 366
+      - name: get
+        type: method
+        target: control
+        lineno: 367
+      - name: get
+        type: method
+        target: control
+        lineno: 368
+      - name: get
+        type: method
+        target: control
+        lineno: 369
+      - name: get
+        type: method
+        target: control
+        lineno: 370
+      - name: get
+        type: method
+        target: control
+        lineno: 371
+      - name: get
+        type: method
+        target: control
+        lineno: 372
+      - name: get
+        type: method
+        target: org_config
+        lineno: 374
+      - name: get
+        type: method
+        target: control
+        lineno: 375
+      - name: get
+        type: method
+        target: control
+        lineno: 376
+      - name: get
+        type: method
+        target: control
+        lineno: 377
+      - name: get
+        type: method
+        target: control
+        lineno: 379
+      - name: flatten_compliance_frameworks
+        type: direct
+        lineno: 380
+      - name: get
+        type: method
+        target: org_config
+        lineno: 383
+      - name: get
+        type: method
+        target: org_config
+        lineno: 384
+      - name: get
+        type: method
+        target: control
+        lineno: 388
+      - name: get
+        type: method
+        target: org_config
+        lineno: 391
+      - name: get
+        type: method
+        target: org_config
+        lineno: 392
+      - name: get
+        type: method
+        target: org_config
+        lineno: 393
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 359
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 361
+      - name: get
+        type: method
+        target: control
+        lineno: 374
+      - name: get
+        type: method
+        target: control
+        lineno: 378
+      - name: get
+        type: method
+        target: control
+        lineno: 378
+      - name: get
+        type: method
+        target: control
+        lineno: 380
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 383
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 384
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 391
+      - name: get
+        type: method
+        target: control
+        lineno: 392
+      - name: get
+        type: method
+        target: control
+        lineno: 362
+      - name: get
+        type: method
+        target: control
+        lineno: 383
+      - name: get
+        type: method
+        target: control
+        lineno: 384
+    response:
+      - name: dumps
+        type: method
+        target: json
+        lineno: 411
+    default:
+      - name: isinstance
+        type: direct
+        lineno: 22
+      - name: default
+        type: method
+        target: super(DecimalEncoder, self)
+        lineno: 24
+      - name: float
+        type: direct
+        lineno: 23
+      - name: super
+        type: direct
+        lineno: 24
+  callers:
+    - lambda_handler
+    - list_controls
+    - get_control
+    - format_control_list
+    - flatten_compliance_frameworks
+    - format_control
+    - format_control_detailed
+    - response
+    - default
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/controls.py
+  line: 0
+  language: python
+  source_checksum: 983514181b5dea1c15185dc2b15cec8c4d7d6fea393a5cf862eda0336d58a6a9

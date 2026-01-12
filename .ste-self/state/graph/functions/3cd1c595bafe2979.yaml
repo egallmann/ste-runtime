@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/mcp/tools-structural.ts:getGraphStatsTool:282
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/tools-structural.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-structural
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/tools-structural.ts:getGraphStatsTool:282
+  name: getGraphStatsTool
+  signature: 'function getGraphStatsTool(ctx: RssContext): void'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - ctx
+  docstring: "Tool: get_graph_stats\r\n\r\nGet statistics about the semantic graph."
+  description: "Tool: get_graph_stats\r\n\r\nGet statistics about the semantic graph."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-structural.ts
+  line: 282
+  language: typescript
+  source_checksum: c0e3e56ae249d4ec69ace870d9c14d2dfcd05577bd843ad85b6c286c6bade102

@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/rss/conversational-query.ts:formatForAgent:823
+  domain: graph
+  type: function
+  source_files:
+    - src/rss/conversational-query.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-conversational-query
+  tags:
+    - exported
+  referenced_by: []
+element:
+  id: function:src/rss/conversational-query.ts:formatForAgent:823
+  name: formatForAgent
+  signature: 'function formatForAgent(response: ConversationalResponse): object'
+  language: typescript
+  is_exported: true
+  is_async: false
+  parameters:
+    - response
+  docstring: Format response for AI agent consumption (structured JSON)
+  description: Format response for AI agent consumption (structured JSON)
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/conversational-query.ts
+  line: 823
+  language: typescript
+  source_checksum: 4a3a1258dcbe133ef77373597cc9ac511be5ba216acbb7ff485861551c249663

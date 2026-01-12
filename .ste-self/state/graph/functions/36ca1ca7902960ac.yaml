@@ -1,0 +1,29 @@
+_slice:
+  id: function:src/rss/graph-traversal.ts:gatherNeighbors:101
+  domain: graph
+  type: function
+  source_files:
+    - src/rss/graph-traversal.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-rss-graph-traversal
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/rss/graph-traversal.ts:gatherNeighbors:101
+  name: gatherNeighbors
+  signature: 'function gatherNeighbors(key: string, graph: Awaited<ReturnType<typeof loadAidocGraph>>[''graph'']): Neighbor[]'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - key
+    - graph
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/rss/graph-traversal.ts
+  line: 101
+  language: typescript
+  source_checksum: 1170624fa08fa14f869c7605a210f1977c9cdac0ed5703b20ed6bd4dc432ef9d

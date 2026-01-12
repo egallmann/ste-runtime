@@ -1,0 +1,29 @@
+_slice:
+  id: function:src/recon/phases/extraction.ts:getPythonBinary:54
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction.ts:getPythonBinary:54
+  name: getPythonBinary
+  signature: 'function getPythonBinary(): string'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters: []
+  docstring: Get Python binary to use
+  description: Get Python binary to use
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction.ts
+  line: 54
+  language: typescript
+  source_checksum: 3191b585689c435636ba7407cecaa00368f7dc66de7e30a7543d97aa076d9522

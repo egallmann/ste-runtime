@@ -1,0 +1,44 @@
+_slice:
+  id: component:frontend/src/app/features/controls/controls-list/controls-list.component.ts:ControlsListComponent
+  domain: frontend
+  type: component
+  source_files:
+    - frontend/src/app/features/controls/controls-list/controls-list.component.ts
+  references:
+    - domain: frontend
+      type: template
+      id: template:frontend/src/app/features/controls/controls-list/controls-list.component.html
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/services/controls.service.ts:ControlsService
+    - domain: frontend
+      type: service
+      id: service:frontend/src/app/core/auth/auth.service.ts:AuthService
+  tags:
+    - frontend:angular
+    - frontend:component
+    - selector:app-controls-list
+  referenced_by: []
+element:
+  id: component:frontend/src/app/features/controls/controls-list/controls-list.component.ts:ControlsListComponent
+  name: ControlsListComponent
+  className: ControlsListComponent
+  selector: app-controls-list
+  templateUrl: ./controls-list.component.html
+  standalone: true
+  imports:
+    - CommonModule
+    - FormsModule
+    - ControlDetailModalComponent
+  inputs: []
+  outputs: []
+  injectedServices:
+    - ControlsService
+    - AuthService
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/controls/controls-list/controls-list.component.ts
+  line: 13
+  language: angular
+  source_checksum: 927d4f6486cf58d1cdfee3bee3ea4cf4650a9f0bc634c6827393bbf3a2df4577

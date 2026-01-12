@@ -1,0 +1,30 @@
+_slice:
+  id: template:frontend/src/app/features/reports/shared/report-chart/report-chart.component.html
+  domain: frontend
+  type: template
+  source_files:
+    - frontend/src/app/features/reports/shared/report-chart/report-chart.component.html
+  references: []
+  tags:
+    - frontend:angular
+    - frontend:template
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/reports/shared/report-chart/report-chart.component.ts:ReportChartComponent
+element:
+  id: template:frontend/src/app/features/reports/shared/report-chart/report-chart.component.html
+  parentComponent: ReportChartComponent
+  childComponents: []
+  directives: []
+  pipes:
+    - data
+  hasConditionals: false
+  hasLoops: false
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/features/reports/shared/report-chart/report-chart.component.html
+  line: 1
+  language: angular
+  source_checksum: 23bb33a4f046214161386b0a74e6f1471982c2bea6dd44682c2b79cadca354e8

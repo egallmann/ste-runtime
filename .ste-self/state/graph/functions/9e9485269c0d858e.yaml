@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractDataModels:944
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction-cloudformation.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction-cloudformation
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction-cloudformation.ts:extractDataModels:944
+  name: extractDataModels
+  signature: 'function extractDataModels(template: CfnTemplate, filePath: string): RawAssertion[]'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - template
+    - filePath
+  docstring: "Extract data models from DynamoDB tables in CloudFormation.\r\nDynamoDB tables define data schemas and belong in both infrastructure and data domains."
+  description: "Extract data models from DynamoDB tables in CloudFormation.\r\nDynamoDB tables define data schemas and belong in both infrastructure and data domains."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction-cloudformation.ts
+  line: 944
+  language: typescript
+  source_checksum: 68a7ed29dea36dde56b30b71689584ec5e353a78d23afa6dc814210d3c110329

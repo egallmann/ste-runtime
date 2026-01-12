@@ -1,0 +1,44 @@
+_slice:
+  id: data-Endpoint
+  domain: data
+  type: entity
+  source_files:
+    - python-scripts/task_analysis.py
+  references:
+    - domain: graph
+      type: module
+      id: module-python-scripts-task_analysis
+  referenced_by: []
+  tags:
+    - data
+    - entity
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+entity:
+  id: data-Endpoint
+  name: Endpoint
+  description: ''
+  source:
+    file: python-scripts/task_analysis.py
+    class: Endpoint
+    line: 33
+  persistence:
+    type: none
+  fields:
+    - name: domain_function
+      type: str
+    - name: handler_file
+      type: str
+    - name: id
+      type: str
+    - name: method
+      type: str
+    - name: path
+      type: str
+    - name: summary
+      type: str
+  relationships: []
+  indexes: []
+  validation_rules: []

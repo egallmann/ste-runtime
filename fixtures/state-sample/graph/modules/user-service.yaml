@@ -1,0 +1,41 @@
+_slice:
+  id: module:app/services/user_service.py
+  domain: graph
+  type: module
+  source_files:
+    - app/services/user_service.py
+  references:
+    - domain: data
+      type: entity
+      id: user
+  referenced_by:
+    - domain: api
+      type: endpoint
+      id: get-users
+    - domain: api
+      type: endpoint
+      id: create-user
+  tags:
+    - backend:service
+    - python
+
+element:
+  path: app/services/user_service.py
+  layer: services
+  imports:
+    internal: []
+    external:
+      - dataclasses
+      - typing
+      - datetime
+  exports:
+    classes:
+      - User
+      - UserService
+    functions:
+      - create_user
+      - get_user
+      - list_users
+      - delete_user
+
+

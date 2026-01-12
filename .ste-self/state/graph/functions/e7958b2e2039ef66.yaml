@@ -1,0 +1,30 @@
+_slice:
+  id: function:src/extractors/css/css-extractor.ts:categorizeStyleFile:53
+  domain: graph
+  type: function
+  source_files:
+    - src/extractors/css/css-extractor.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-extractors-css-css-extractor
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/extractors/css/css-extractor.ts:categorizeStyleFile:53
+  name: categorizeStyleFile
+  signature: 'function categorizeStyleFile(relativePath: string): ''design-tokens'' | ''styles'''
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - relativePath
+  docstring: Determine if file contains design tokens or component styles
+  description: Determine if file contains design tokens or component styles
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/extractors/css/css-extractor.ts
+  line: 53
+  language: typescript
+  source_checksum: 3d0b22efece9bd49467a1f2e92e0ee21c268d7ef1fa9da9a54dea448476db0b6

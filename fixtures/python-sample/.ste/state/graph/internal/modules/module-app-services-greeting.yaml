@@ -1,0 +1,44 @@
+_slice:
+  id: module-app-services-greeting
+  domain: graph
+  type: module
+  source_files:
+    - app/services/greeting.py
+  references: []
+  referenced_by:
+    - domain: data
+      type: entity
+      id: data-GreetingConfig
+    - domain: graph
+      type: module
+      id: module-app-api
+  tags:
+    - graph
+    - module
+    - util
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-12T02:14:45.530Z'
+module:
+  id: module-app-services-greeting
+  path: app/services/greeting.py
+  name: greeting
+  layer: util
+  exports:
+    classes:
+      - GreetingConfig
+      - GreetingService
+    functions:
+      - create_greeting_service
+    constants: []
+  imports:
+    internal: []
+    external:
+      - package: dataclasses
+        items:
+          - dataclass
+      - package: typing
+        items:
+          - Optional
+  metrics: {}

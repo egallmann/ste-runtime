@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/mcp/tools-context.ts:assembleContextTool:31
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/tools-context.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-tools-context
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/mcp/tools-context.ts:assembleContextTool:31
+  name: assembleContextTool
+  signature: "function assembleContextTool(ctx: RssContext, args: {\r\n    query: string;\r\n    includeSource?: boolean;\r\n    includeInvariants?: boolean;\r\n    depth?: number;\r\n    maxNodes?: number;\r\n    maxSourceLines?: number;\r\n  }): void"
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - ctx
+    - args
+  docstring: "Tool: assemble_context\r\n\r\nMain context assembly function for LLM reasoning (CEM Stage 2→3).\r\nStrategy:\r\n1. Query RSS for relevant keys (fast, structural)\r\n2. Load source code for those keys only (targeted I/O)\r\n3. Format for LLM consumption"
+  description: "Tool: assemble_context\r\n\r\nMain context assembly function for LLM reasoning (CEM Stage 2→3).\r\nStrategy:\r\n1. Query RSS for relevant keys (fast, structural)\r\n2. Load source code for those keys only (targeted I/O)\r\n3. Format for LLM consumption"
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/tools-context.ts
+  line: 31
+  language: typescript
+  source_checksum: b3fbfbd61f4f8854f831f2e9c5eca07e78c247d6e3afecc26342c950303b0bb6

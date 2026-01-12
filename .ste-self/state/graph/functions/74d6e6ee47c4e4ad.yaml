@@ -1,0 +1,33 @@
+_slice:
+  id: function:src/mcp/graph-topology-analyzer.ts:measureDepth:127
+  domain: graph
+  type: function
+  source_files:
+    - src/mcp/graph-topology-analyzer.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-mcp-graph-topology-analyzer
+  tags: []
+  referenced_by: []
+element:
+  id: function:src/mcp/graph-topology-analyzer.ts:measureDepth:127
+  name: measureDepth
+  signature: 'function measureDepth(graph: AidocGraph, startKey: string, direction: ''forward'' | ''backward'', visited: Set<string>): number'
+  language: typescript
+  is_exported: false
+  is_async: false
+  parameters:
+    - graph
+    - startKey
+    - direction
+    - visited
+  docstring: Measure depth from a node in a given direction
+  description: Measure depth from a node in a given direction
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/mcp/graph-topology-analyzer.ts
+  line: 127
+  language: typescript
+  source_checksum: a52f6b31ee3858c6637b536535e8d8d5f41fb7961465942e035ef7526a5582e2

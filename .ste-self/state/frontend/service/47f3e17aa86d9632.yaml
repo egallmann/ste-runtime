@@ -1,0 +1,51 @@
+_slice:
+  id: service:frontend/src/app/core/services/settings.service.ts:SettingsService
+  domain: frontend
+  type: service
+  source_files:
+    - frontend/src/app/core/services/settings.service.ts
+  references:
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/settings/risk-index
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/metrics/dashboard
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/reports/data
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/reports/filter-options
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/exclusions
+    - domain: api
+      type: endpoint
+      id: api_endpoint:backend/cloudformation/hub/oops-api.yaml:GET:/api/exclusions/{exclusionId}
+  tags:
+    - http:get
+    - frontend:angular
+    - frontend:service
+  referenced_by:
+    - domain: frontend
+      type: component
+      id: component:frontend/src/app/features/dashboard/dashboard-home.component.ts:DashboardHomeComponent
+element:
+  id: service:frontend/src/app/core/services/settings.service.ts:SettingsService
+  name: SettingsService
+  className: SettingsService
+  providedIn: root
+  httpCalls:
+    - method: GET
+      urlPattern: '{environment.apiUrl}/api/settings/risk-index'
+      functionName: loadRiskIndexConfig
+  injectedDependencies:
+    - HttpClient
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-angular-extractor-v1
+  file: frontend/src/app/core/services/settings.service.ts
+  line: 11
+  language: angular
+  source_checksum: bce9297c530691590022dccb3cf6bfc12d1edff5b3b21c91f41b15962be8dfe8

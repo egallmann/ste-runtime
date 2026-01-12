@@ -1,0 +1,40 @@
+_slice:
+  id: data-Entity
+  domain: data
+  type: entity
+  source_files:
+    - python-scripts/task_analysis.py
+  references:
+    - domain: graph
+      type: module
+      id: module-python-scripts-task_analysis
+  referenced_by: []
+  tags:
+    - data
+    - entity
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+entity:
+  id: data-Entity
+  name: Entity
+  description: ''
+  source:
+    file: python-scripts/task_analysis.py
+    class: Entity
+    line: 43
+  persistence:
+    type: none
+  fields:
+    - name: description
+      type: str
+    - name: id
+      type: str
+    - name: name
+      type: str
+    - name: source_file
+      type: str
+  relationships: []
+  indexes: []
+  validation_rules: []

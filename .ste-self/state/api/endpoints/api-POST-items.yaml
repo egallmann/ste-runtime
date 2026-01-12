@@ -1,0 +1,35 @@
+_slice:
+  id: api-POST-items
+  domain: api
+  type: endpoint
+  source_files:
+    - python-scripts/examples/flask_sample.py
+  references:
+    - domain: graph
+      type: module
+      id: module-python-scripts-examples-flask_sample
+  referenced_by: []
+  tags:
+    - api
+    - flask
+  extraction:
+    method: static
+    confidence: high
+    timestamp: '2026-01-11T21:25:53.192Z'
+endpoint:
+  id: api-POST-items
+  method: POST
+  path: /items
+  summary: Create item endpoint.
+  domain_function: ''
+  handler:
+    file: python-scripts/examples/flask_sample.py
+    function: create_item
+    class: ''
+    line: 14
+  authentication:
+    required: false
+    type: none
+    scopes: []
+    roles: []
+  responses: []

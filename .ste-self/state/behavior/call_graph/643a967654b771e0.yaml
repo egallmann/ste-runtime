@@ -1,0 +1,292 @@
+_slice:
+  id: function_calls:backend/lambda/api/report_generators/team_findings_reporter.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/api/report_generators/team_findings_reporter.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/api/report_generators/team_findings_reporter.py:module
+  file: backend/lambda/api/report_generators/team_findings_reporter.py
+  callGraph:
+    __init__:
+      - name: __init__
+        type: method
+        target: super()
+        lineno: 18
+      - name: Table
+        type: method
+        target: self.dynamodb
+        lineno: 19
+      - name: get
+        type: method
+        target: os.environ
+        lineno: 20
+      - name: super
+        type: direct
+        lineno: 18
+    query_data:
+      - name: validate_filters
+        type: method
+        target: self
+        lineno: 38
+      - name: paginate_query
+        type: method
+        target: self
+        lineno: 41
+      - name: get
+        type: method
+        target: filters
+        lineno: 48
+      - name: get
+        type: method
+        target: filters
+        lineno: 56
+      - name: get
+        type: method
+        target: filters
+        lineno: 62
+      - name: convert_decimals
+        type: method
+        target: self
+        lineno: 76
+      - name: isinstance
+        type: direct
+        lineno: 58
+      - name: filter_by_values
+        type: method
+        target: self
+        lineno: 60
+      - name: filter_by_values
+        type: method
+        target: self
+        lineno: 65
+      - name: get
+        type: method
+        target: filters
+        lineno: 68
+      - name: get
+        type: method
+        target: filters
+        lineno: 68
+      - name: filter_by_date_range
+        type: method
+        target: self
+        lineno: 69
+      - name: eq
+        type: method
+        target: Key('status')
+        lineno: 44
+      - name: strip
+        type: method
+        target: t
+        lineno: 50
+      - name: strip
+        type: method
+        target: a
+        lineno: 64
+      - name: get
+        type: method
+        target: filters
+        lineno: 72
+      - name: get
+        type: method
+        target: filters
+        lineno: 73
+      - name: split
+        type: method
+        target: filters['team']
+        lineno: 50
+      - name: split
+        type: method
+        target: filters['account']
+        lineno: 64
+      - name: Key
+        type: direct
+        lineno: 44
+      - name: extract_team_from_tags
+        type: method
+        target: self
+        lineno: 53
+      - name: get
+        type: method
+        target: f
+        lineno: 53
+    calculate_summary:
+      - name: defaultdict
+        type: direct
+        lineno: 89
+      - name: Counter
+        type: direct
+        lineno: 100
+      - name: extract_team_from_tags
+        type: method
+        target: self
+        lineno: 93
+      - name: max
+        type: direct
+        lineno: 106
+      - name: len
+        type: direct
+        lineno: 107
+      - name: len
+        type: direct
+        lineno: 111
+      - name: len
+        type: direct
+        lineno: 112
+      - name: get
+        type: method
+        target: severity_counts
+        lineno: 114
+      - name: get
+        type: method
+        target: severity_counts
+        lineno: 115
+      - name: get
+        type: method
+        target: severity_counts
+        lineno: 116
+      - name: get
+        type: method
+        target: severity_counts
+        lineno: 117
+      - name: get
+        type: method
+        target: item
+        lineno: 93
+      - name: append
+        type: method
+        target: team_groups[team]
+        lineno: 97
+      - name: get
+        type: method
+        target: item
+        lineno: 100
+      - name: items
+        type: method
+        target: team_groups
+        lineno: 106
+      - name: len
+        type: direct
+        lineno: 106
+    prepare_chart_data:
+      - name: defaultdict
+        type: direct
+        lineno: 133
+      - name: sorted
+        type: direct
+        lineno: 139
+      - name: defaultdict
+        type: direct
+        lineno: 146
+      - name: extract_team_from_tags
+        type: method
+        target: self
+        lineno: 135
+      - name: items
+        type: method
+        target: team_counts
+        lineno: 139
+      - name: extract_team_from_tags
+        type: method
+        target: self
+        lineno: 148
+      - name: get
+        type: method
+        target: item
+        lineno: 149
+      - name: append
+        type: method
+        target: team_severity_data
+        lineno: 156
+      - name: get
+        type: method
+        target: item
+        lineno: 135
+      - name: Counter
+        type: direct
+        lineno: 146
+      - name: get
+        type: method
+        target: item
+        lineno: 148
+    prepare_table_data:
+      - name: sort
+        type: method
+        target: table_data
+        lineno: 204
+      - name: get
+        type: method
+        target: finding
+        lineno: 185
+      - name: get
+        type: method
+        target: finding
+        lineno: 187
+      - name: append
+        type: method
+        target: table_data
+        lineno: 188
+      - name: get
+        type: method
+        target: finding
+        lineno: 187
+      - name: get
+        type: method
+        target: finding
+        lineno: 189
+      - name: extract_team_from_tags
+        type: method
+        target: self
+        lineno: 190
+      - name: get
+        type: method
+        target: finding
+        lineno: 191
+      - name: get
+        type: method
+        target: finding
+        lineno: 192
+      - name: get_account_name
+        type: direct
+        lineno: 194
+      - name: extract_service_from_arn
+        type: method
+        target: self
+        lineno: 195
+      - name: get
+        type: method
+        target: finding
+        lineno: 197
+      - name: get
+        type: method
+        target: finding
+        lineno: 198
+      - name: get
+        type: method
+        target: finding
+        lineno: 199
+      - name: get
+        type: method
+        target: finding
+        lineno: 190
+      - name: get
+        type: method
+        target: severity_order
+        lineno: 206
+  callers:
+    - __init__
+    - query_data
+    - calculate_summary
+    - prepare_chart_data
+    - prepare_table_data
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/report_generators/team_findings_reporter.py
+  line: 0
+  language: python
+  source_checksum: 79accd3f9b23d980c7f09ecc9fe99d15c5be9282c2591583b772058e442b6f8a

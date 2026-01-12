@@ -1,0 +1,1124 @@
+_slice:
+  id: function_calls:backend/lambda/api/accounts.py:module
+  domain: behavior
+  type: function_calls
+  source_files:
+    - backend/lambda/api/accounts.py
+  references: []
+  tags: []
+  referenced_by: []
+element:
+  id: function_calls:backend/lambda/api/accounts.py:module
+  file: backend/lambda/api/accounts.py
+  callGraph:
+    get_total_controls_count:
+      - name: print
+        type: direct
+        lineno: 42
+      - name: print
+        type: direct
+        lineno: 62
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 55
+      - name: get
+        type: method
+        target: response
+        lineno: 56
+      - name: get
+        type: method
+        target: response
+        lineno: 58
+      - name: print
+        type: direct
+        lineno: 65
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 67
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 49
+      - name: Key
+        type: direct
+        lineno: 49
+    _paginated_count_query:
+      - name: query
+        type: method
+        target: table
+        lineno: 95
+      - name: get
+        type: method
+        target: result
+        lineno: 96
+      - name: query
+        type: method
+        target: table
+        lineno: 101
+      - name: get
+        type: method
+        target: result
+        lineno: 102
+    get_account_control_stats:
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 139
+      - name: _paginated_count_query
+        type: direct
+        lineno: 142
+      - name: _paginated_count_query
+        type: direct
+        lineno: 150
+      - name: _paginated_count_query
+        type: direct
+        lineno: 157
+      - name: _paginated_count_query
+        type: direct
+        lineno: 164
+      - name: query
+        type: method
+        target: account_controls_table
+        lineno: 174
+      - name: extend
+        type: method
+        target: findings_items
+        lineno: 179
+      - name: sum
+        type: direct
+        lineno: 190
+      - name: get_total_controls_count
+        type: direct
+        lineno: 146
+      - name: eq
+        type: method
+        target: Attr('status')
+        lineno: 153
+      - name: eq
+        type: method
+        target: Attr('complianceStatus')
+        lineno: 160
+      - name: eq
+        type: method
+        target: Attr('complianceStatus')
+        lineno: 167
+      - name: get
+        type: method
+        target: findings_result
+        lineno: 179
+      - name: query
+        type: method
+        target: account_controls_table
+        lineno: 182
+      - name: extend
+        type: method
+        target: findings_items
+        lineno: 188
+      - name: print
+        type: direct
+        lineno: 198
+      - name: Key
+        type: direct
+        lineno: 139
+      - name: gt
+        type: method
+        target: Attr('activeFindings')
+        lineno: 176
+      - name: get
+        type: method
+        target: findings_result
+        lineno: 188
+      - name: get
+        type: method
+        target: item
+        lineno: 191
+      - name: Attr
+        type: direct
+        lineno: 153
+      - name: Attr
+        type: direct
+        lineno: 160
+      - name: Attr
+        type: direct
+        lineno: 167
+      - name: gt
+        type: method
+        target: Attr('activeFindings')
+        lineno: 184
+      - name: Attr
+        type: direct
+        lineno: 176
+      - name: Attr
+        type: direct
+        lineno: 184
+    lambda_handler:
+      - name: get
+        type: method
+        target: event
+        lineno: 205
+      - name: get
+        type: method
+        target: event
+        lineno: 206
+      - name: get
+        type: method
+        target: event.get('requestContext', {}).get('authorizer', {})
+        lineno: 211
+      - name: get
+        type: method
+        target: authorizer_context
+        lineno: 212
+      - name: get
+        type: method
+        target: authorizer_context
+        lineno: 213
+      - name: print
+        type: direct
+        lineno: 215
+      - name: print
+        type: direct
+        lineno: 216
+      - name: get
+        type: method
+        target: event
+        lineno: 207
+      - name: get
+        type: method
+        target: event
+        lineno: 208
+      - name: list_accounts
+        type: direct
+        lineno: 220
+      - name: print
+        type: direct
+        lineno: 243
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 245
+      - name: response
+        type: direct
+        lineno: 246
+      - name: get
+        type: method
+        target: event.get('requestContext', {})
+        lineno: 211
+      - name: endswith
+        type: method
+        target: path
+        lineno: 222
+      - name: get
+        type: method
+        target: path_parameters
+        lineno: 224
+      - name: get_account_controls
+        type: direct
+        lineno: 225
+      - name: get
+        type: method
+        target: path_parameters
+        lineno: 229
+      - name: get_account
+        type: direct
+        lineno: 230
+      - name: str
+        type: direct
+        lineno: 246
+      - name: get
+        type: method
+        target: event
+        lineno: 211
+      - name: endswith
+        type: method
+        target: path
+        lineno: 227
+      - name: get
+        type: method
+        target: path_parameters
+        lineno: 234
+      - name: get
+        type: method
+        target: path_parameters
+        lineno: 235
+      - name: loads
+        type: method
+        target: json
+        lineno: 236
+      - name: update_account_control
+        type: direct
+        lineno: 237
+      - name: response
+        type: direct
+        lineno: 240
+      - name: str
+        type: direct
+        lineno: 243
+      - name: get
+        type: method
+        target: event
+        lineno: 236
+    get_severity_breakdown_for_account:
+      - name: print
+        type: direct
+        lineno: 262
+      - name: print
+        type: direct
+        lineno: 266
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 268
+      - name: get
+        type: method
+        target: result
+        lineno: 273
+      - name: print
+        type: direct
+        lineno: 274
+      - name: print
+        type: direct
+        lineno: 296
+      - name: query
+        type: method
+        target: findings_table
+        lineno: 278
+      - name: extend
+        type: method
+        target: findings
+        lineno: 283
+      - name: print
+        type: direct
+        lineno: 284
+      - name: lower
+        type: method
+        target: str(finding.get('severity', ''))
+        lineno: 292
+      - name: print
+        type: direct
+        lineno: 299
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 301
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 270
+      - name: get
+        type: method
+        target: result
+        lineno: 283
+      - name: upper
+        type: method
+        target: finding.get('status', '')
+        lineno: 289
+      - name: len
+        type: direct
+        lineno: 274
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 280
+      - name: str
+        type: direct
+        lineno: 292
+      - name: Key
+        type: direct
+        lineno: 270
+      - name: len
+        type: direct
+        lineno: 284
+      - name: get
+        type: method
+        target: finding
+        lineno: 289
+      - name: get
+        type: method
+        target: finding
+        lineno: 292
+      - name: Key
+        type: direct
+        lineno: 280
+    list_accounts:
+      - name: query
+        type: method
+        target: accounts_table
+        lineno: 321
+      - name: get
+        type: method
+        target: result
+        lineno: 325
+      - name: print
+        type: direct
+        lineno: 327
+      - name: response
+        type: direct
+        lineno: 362
+      - name: print
+        type: direct
+        lineno: 368
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 370
+      - name: response
+        type: direct
+        lineno: 371
+      - name: eq
+        type: method
+        target: Key('entityType')
+        lineno: 323
+      - name: get_account_control_stats
+        type: direct
+        lineno: 335
+      - name: get_severity_breakdown_for_account
+        type: direct
+        lineno: 343
+      - name: len
+        type: direct
+        lineno: 364
+      - name: len
+        type: direct
+        lineno: 327
+      - name: print
+        type: direct
+        lineno: 350
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 352
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 353
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 354
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 355
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 356
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 357
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 358
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 359
+      - name: setdefault
+        type: method
+        target: account
+        lineno: 360
+      - name: str
+        type: direct
+        lineno: 371
+      - name: Key
+        type: direct
+        lineno: 323
+      - name: get
+        type: method
+        target: account
+        lineno: 350
+    get_account_from_ddb:
+      - name: get_item
+        type: method
+        target: accounts_table
+        lineno: 386
+      - name: get
+        type: method
+        target: result
+        lineno: 387
+      - name: print
+        type: direct
+        lineno: 383
+      - name: print
+        type: direct
+        lineno: 389
+    get_account:
+      - name: get_account_from_ddb
+        type: direct
+        lineno: 403
+      - name: get_account_control_stats
+        type: direct
+        lineno: 409
+      - name: get_severity_breakdown_for_account
+        type: direct
+        lineno: 412
+      - name: response
+        type: direct
+        lineno: 414
+      - name: response
+        type: direct
+        lineno: 406
+      - name: print
+        type: direct
+        lineno: 439
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 441
+      - name: response
+        type: direct
+        lineno: 442
+      - name: get
+        type: method
+        target: account
+        lineno: 416
+      - name: get
+        type: method
+        target: account
+        lineno: 417
+      - name: get
+        type: method
+        target: account
+        lineno: 418
+      - name: get
+        type: method
+        target: account
+        lineno: 419
+      - name: get
+        type: method
+        target: account
+        lineno: 420
+      - name: get
+        type: method
+        target: account
+        lineno: 421
+      - name: get
+        type: method
+        target: account
+        lineno: 422
+      - name: get
+        type: method
+        target: account
+        lineno: 423
+      - name: get
+        type: method
+        target: account
+        lineno: 424
+      - name: str
+        type: direct
+        lineno: 442
+    get_account_controls:
+      - name: lower
+        type: method
+        target: query_params.get('view', 'list')
+        lineno: 462
+      - name: print
+        type: direct
+        lineno: 463
+      - name: get_all_controls_from_catalog
+        type: direct
+        lineno: 466
+      - name: query
+        type: method
+        target: account_controls_table
+        lineno: 469
+      - name: sum
+        type: direct
+        lineno: 496
+      - name: sum
+        type: direct
+        lineno: 497
+      - name: sum
+        type: direct
+        lineno: 498
+      - name: sum
+        type: direct
+        lineno: 499
+      - name: sum
+        type: direct
+        lineno: 500
+      - name: response
+        type: direct
+        lineno: 502
+      - name: get
+        type: method
+        target: account_controls_map
+        lineno: 479
+      - name: append
+        type: method
+        target: joined_controls
+        lineno: 481
+      - name: print
+        type: direct
+        lineno: 519
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 521
+      - name: response
+        type: direct
+        lineno: 522
+      - name: get
+        type: method
+        target: query_params
+        lineno: 462
+      - name: eq
+        type: method
+        target: Key('accountId')
+        lineno: 470
+      - name: get
+        type: method
+        target: result
+        lineno: 473
+      - name: get_account_name
+        type: direct
+        lineno: 504
+      - name: len
+        type: direct
+        lineno: 506
+      - name: get
+        type: method
+        target: account_control
+        lineno: 484
+      - name: get
+        type: method
+        target: account_control
+        lineno: 485
+      - name: get
+        type: method
+        target: account_control
+        lineno: 486
+      - name: get
+        type: method
+        target: account_control
+        lineno: 487
+      - name: get
+        type: method
+        target: account_control
+        lineno: 488
+      - name: get
+        type: method
+        target: account_control
+        lineno: 489
+      - name: get
+        type: method
+        target: account_control
+        lineno: 490
+      - name: get
+        type: method
+        target: account_control
+        lineno: 491
+      - name: len
+        type: direct
+        lineno: 509
+      - name: str
+        type: direct
+        lineno: 522
+      - name: Key
+        type: direct
+        lineno: 470
+    update_account_control:
+      - name: get
+        type: method
+        target: body
+        lineno: 553
+      - name: get
+        type: method
+        target: body
+        lineno: 554
+      - name: get
+        type: method
+        target: body
+        lineno: 555
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 588
+      - name: replace
+        type: method
+        target: datetime.now(timezone.utc).isoformat()
+        lineno: 608
+      - name: getLogger
+        type: method
+        target: logging
+        lineno: 626
+      - name: setLevel
+        type: method
+        target: logger
+        lineno: 627
+      - name: info
+        type: method
+        target: logger
+        lineno: 629
+      - name: put_item
+        type: method
+        target: account_controls_table
+        lineno: 645
+      - name: print
+        type: direct
+        lineno: 647
+      - name: response
+        type: direct
+        lineno: 649
+      - name: response
+        type: direct
+        lineno: 547
+      - name: response
+        type: direct
+        lineno: 560
+      - name: response
+        type: direct
+        lineno: 568
+      - name: response
+        type: direct
+        lineno: 575
+      - name: response
+        type: direct
+        lineno: 582
+      - name: get
+        type: method
+        target: control_result
+        lineno: 593
+      - name: response
+        type: direct
+        lineno: 594
+      - name: get
+        type: method
+        target: 'account_controls_table.get_item(Key={''accountId'': account_id, ''controlId'': control_id})'
+        lineno: 600
+      - name: get
+        type: method
+        target: existing
+        lineno: 616
+      - name: get
+        type: method
+        target: existing
+        lineno: 617
+      - name: get
+        type: method
+        target: existing
+        lineno: 618
+      - name: get
+        type: method
+        target: existing
+        lineno: 619
+      - name: dumps
+        type: method
+        target: json
+        lineno: 629
+      - name: print
+        type: direct
+        lineno: 660
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 662
+      - name: response
+        type: direct
+        lineno: 663
+      - name: isinstance
+        type: direct
+        lineno: 574
+      - name: eq
+        type: method
+        target: Key('controlId')
+        lineno: 589
+      - name: isoformat
+        type: method
+        target: datetime.now(timezone.utc)
+        lineno: 608
+      - name: get
+        type: method
+        target: existing
+        lineno: 613
+      - name: get
+        type: method
+        target: existing
+        lineno: 614
+      - name: get
+        type: method
+        target: existing
+        lineno: 615
+      - name: get_item
+        type: method
+        target: account_controls_table
+        lineno: 600
+      - name: get
+        type: method
+        target: control_data
+        lineno: 633
+      - name: get
+        type: method
+        target: existing
+        lineno: 634
+      - name: get
+        type: method
+        target: existing
+        lineno: 636
+      - name: get
+        type: method
+        target: existing
+        lineno: 638
+      - name: str
+        type: direct
+        lineno: 663
+      - name: Key
+        type: direct
+        lineno: 589
+      - name: now
+        type: method
+        target: datetime
+        lineno: 608
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 562
+      - name: join
+        type: method
+        target: ''', '''
+        lineno: 570
+    get_all_controls_from_catalog:
+      - name: print
+        type: direct
+        lineno: 684
+      - name: print
+        type: direct
+        lineno: 706
+      - name: get
+        type: method
+        target: query_params
+        lineno: 711
+      - name: get
+        type: method
+        target: query_params
+        lineno: 715
+      - name: get
+        type: method
+        target: query_params
+        lineno: 719
+      - name: get
+        type: method
+        target: query_params
+        lineno: 723
+      - name: upper
+        type: method
+        target: query_params['severity']
+        lineno: 712
+      - name: upper
+        type: method
+        target: query_params['remediationStatus']
+        lineno: 716
+      - name: upper
+        type: method
+        target: query_params['servicePrefix']
+        lineno: 720
+      - name: lower
+        type: method
+        target: query_params['search']
+        lineno: 724
+      - name: print
+        type: direct
+        lineno: 734
+      - name: print
+        type: direct
+        lineno: 737
+      - name: eq
+        type: method
+        target: Key('version')
+        lineno: 688
+      - name: query
+        type: method
+        target: controls_catalog_table
+        lineno: 694
+      - name: extend
+        type: method
+        target: all_controls
+        lineno: 695
+      - name: get
+        type: method
+        target: result
+        lineno: 697
+      - name: format_control_summary
+        type: direct
+        lineno: 735
+      - name: format_control_minimal
+        type: direct
+        lineno: 738
+      - name: get
+        type: method
+        target: result
+        lineno: 695
+      - name: print
+        type: direct
+        lineno: 701
+      - name: print_exc
+        type: method
+        target: traceback
+        lineno: 703
+      - name: len
+        type: direct
+        lineno: 706
+      - name: Key
+        type: direct
+        lineno: 688
+      - name: upper
+        type: method
+        target: c.get('severity', '')
+        lineno: 713
+      - name: upper
+        type: method
+        target: c.get('remediationStatus', '')
+        lineno: 717
+      - name: upper
+        type: method
+        target: c.get('servicePrefix', '')
+        lineno: 721
+      - name: len
+        type: direct
+        lineno: 734
+      - name: len
+        type: direct
+        lineno: 737
+      - name: lower
+        type: method
+        target: c.get('title', '')
+        lineno: 727
+      - name: lower
+        type: method
+        target: c.get('description', '')
+        lineno: 728
+      - name: lower
+        type: method
+        target: c.get('controlId', '')
+        lineno: 729
+      - name: get
+        type: method
+        target: c
+        lineno: 713
+      - name: get
+        type: method
+        target: c
+        lineno: 717
+      - name: get
+        type: method
+        target: c
+        lineno: 721
+      - name: get
+        type: method
+        target: c
+        lineno: 727
+      - name: get
+        type: method
+        target: c
+        lineno: 728
+      - name: get
+        type: method
+        target: c
+        lineno: 729
+    format_control_minimal:
+      - name: get
+        type: method
+        target: control
+        lineno: 749
+      - name: get
+        type: method
+        target: control
+        lineno: 752
+      - name: get
+        type: method
+        target: control
+        lineno: 753
+      - name: get
+        type: method
+        target: control
+        lineno: 754
+      - name: get
+        type: method
+        target: control
+        lineno: 755
+      - name: get
+        type: method
+        target: org_config
+        lineno: 756
+      - name: get
+        type: method
+        target: control
+        lineno: 756
+    format_control_summary:
+      - name: get
+        type: method
+        target: control
+        lineno: 762
+      - name: get
+        type: method
+        target: control
+        lineno: 763
+      - name: get
+        type: method
+        target: control
+        lineno: 764
+      - name: bool
+        type: direct
+        lineno: 767
+      - name: get
+        type: method
+        target: org_config
+        lineno: 768
+      - name: get
+        type: method
+        target: control
+        lineno: 773
+      - name: get
+        type: method
+        target: control
+        lineno: 774
+      - name: get
+        type: method
+        target: control
+        lineno: 775
+      - name: get
+        type: method
+        target: control
+        lineno: 776
+      - name: get
+        type: method
+        target: control
+        lineno: 777
+      - name: get
+        type: method
+        target: control
+        lineno: 778
+      - name: get
+        type: method
+        target: org_config
+        lineno: 779
+      - name: get
+        type: method
+        target: control
+        lineno: 780
+      - name: get
+        type: method
+        target: control
+        lineno: 781
+      - name: get
+        type: method
+        target: org_config
+        lineno: 783
+      - name: get
+        type: method
+        target: org_config
+        lineno: 784
+      - name: get
+        type: method
+        target: control
+        lineno: 786
+      - name: get
+        type: method
+        target: control
+        lineno: 787
+      - name: get
+        type: method
+        target: control
+        lineno: 789
+      - name: get
+        type: method
+        target: control
+        lineno: 793
+      - name: get
+        type: method
+        target: remediation_metadata
+        lineno: 767
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 769
+      - name: get
+        type: method
+        target: control
+        lineno: 779
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 783
+      - name: get
+        type: method
+        target: impl_metadata
+        lineno: 784
+      - name: get
+        type: method
+        target: control
+        lineno: 788
+      - name: get
+        type: method
+        target: control
+        lineno: 788
+      - name: get
+        type: method
+        target: control
+        lineno: 770
+      - name: get
+        type: method
+        target: control
+        lineno: 783
+      - name: get
+        type: method
+        target: control
+        lineno: 784
+    get_account_name:
+      - name: get_account_from_ddb
+        type: direct
+        lineno: 805
+      - name: get
+        type: method
+        target: account
+        lineno: 806
+      - name: print
+        type: direct
+        lineno: 808
+    response:
+      - name: dumps
+        type: method
+        target: json
+        lineno: 823
+    default:
+      - name: isinstance
+        type: direct
+        lineno: 29
+      - name: default
+        type: method
+        target: super(DecimalEncoder, self)
+        lineno: 31
+      - name: float
+        type: direct
+        lineno: 30
+      - name: super
+        type: direct
+        lineno: 31
+  callers:
+    - get_total_controls_count
+    - _paginated_count_query
+    - get_account_control_stats
+    - lambda_handler
+    - get_severity_breakdown_for_account
+    - list_accounts
+    - get_account_from_ddb
+    - get_account
+    - get_account_controls
+    - update_account_control
+    - get_all_controls_from_catalog
+    - format_control_minimal
+    - format_control_summary
+    - get_account_name
+    - response
+    - default
+provenance:
+  extracted_at: '2026-01-09T19:38:15.075Z'
+  extractor: recon-python-extractor-v1
+  file: backend/lambda/api/accounts.py
+  line: 0
+  language: python
+  source_checksum: 8bb8edc3e00ea058f23d125f40345dd8d7e5dde3c8ee7f72244471f1d845145b

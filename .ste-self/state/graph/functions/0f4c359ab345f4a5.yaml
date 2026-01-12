@@ -1,0 +1,31 @@
+_slice:
+  id: function:src/task/task-analysis.ts:runTaskAnalyze:22
+  domain: graph
+  type: function
+  source_files:
+    - src/task/task-analysis.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-task-task-analysis
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/task/task-analysis.ts:runTaskAnalyze:22
+  name: runTaskAnalyze
+  signature: 'function runTaskAnalyze(task: string, options: TaskAnalyzeOptions): Promise<void>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - task
+    - options
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/task/task-analysis.ts
+  line: 22
+  language: typescript
+  source_checksum: 3503cb5f1fc5ab74269b29b3fb6b68cd3eb9566dcdb59569bbf4d60d6a651587

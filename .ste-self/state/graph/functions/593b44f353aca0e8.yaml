@@ -1,0 +1,32 @@
+_slice:
+  id: function:src/recon/phases/extraction.ts:extractAssertions:62
+  domain: graph
+  type: function
+  source_files:
+    - src/recon/phases/extraction.ts
+  references:
+    - domain: graph
+      type: module
+      id: module-src-recon-phases-extraction
+  tags:
+    - async
+    - exported
+  referenced_by: []
+element:
+  id: function:src/recon/phases/extraction.ts:extractAssertions:62
+  name: extractAssertions
+  signature: 'function extractAssertions(files: DiscoveredFile[]): Promise<RawAssertion[]>'
+  language: typescript
+  is_exported: true
+  is_async: true
+  parameters:
+    - files
+  docstring: "Extract semantic assertions from discovered files.\r\nDispatches to language-specific extractors."
+  description: "Extract semantic assertions from discovered files.\r\nDispatches to language-specific extractors."
+provenance:
+  extracted_at: '2026-01-11T22:10:38.872Z'
+  extractor: recon-typescript-extractor-v1
+  file: src/recon/phases/extraction.ts
+  line: 62
+  language: typescript
+  source_checksum: 3191b585689c435636ba7407cecaa00368f7dc66de7e30a7543d97aa076d9522
