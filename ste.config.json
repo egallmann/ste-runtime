@@ -1,13 +1,23 @@
 {
+  "projectRoot": "..",
   "languages": [
-    "typescript",
     "python"
   ],
   "sourceDirs": [
-    "src",
-    "lib"
+    "src/technical_communication_mcp"
   ],
-  "ignorePatterns": [],
+  "ignorePatterns": [
+    "**/__pycache__/**",
+    "**/*.egg-info/**",
+    "**/htmlcov/**",
+    "**/tests/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/ste-runtime-private/**"
+  ],
+  "stateDir": ".ste/state",
   "watchdog": {
     "enabled": false,
     "debounceMs": 500,
@@ -15,8 +25,8 @@
     "syntaxValidation": true,
     "transactionDetection": true,
     "stabilityCheckMs": 100,
-    "patterns": ["**/*.py", "**/*.ts", "**/*.js", "**/*.tsx", "**/*.jsx"],
-    "ignore": [".git", "node_modules", ".venv", "__pycache__", "dist", "build"],
+    "patterns": ["**/*.py"],
+    "ignore": [".git", "node_modules", ".venv", "__pycache__", "dist", "build", "ste-runtime-private"],
     "fullReconciliationInterval": 300000,
     "fallbackPolling": false,
     "pollingInterval": 5000
@@ -26,7 +36,6 @@
     "logLevel": "info"
   },
   "rss": {
-    "stateRoot": ".ste/state",
     "defaultDepth": 2,
     "maxResults": 50
   }

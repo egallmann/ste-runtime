@@ -59,6 +59,10 @@ export function inferRelationships(
   const byId = new Map<string, NormalizedAssertion>();
   const byFile = new Map<string, NormalizedAssertion[]>();
   const moduleByFile = new Map<string, NormalizedAssertion>();
+  // Map of exported function/class name -> assertions (for cross-file call resolution)
+  const exportedByName = new Map<string, NormalizedAssertion[]>();
+  // Map of module ID -> file path (for resolving imports to files)
+  const fileByModuleId = new Map<string, string>();
   
   // First pass: index all assertions
   for (const assertion of assertions) {
@@ -75,12 +79,28 @@ export function inferRelationships(
       // Track modules by file
       if (assertion._slice.type === 'module') {
         moduleByFile.set(file, assertion);
+        fileByModuleId.set(assertion._slice.id, file);
+      }
+      
+      // Track exported functions and classes by name for cross-file resolution
+      if ((assertion._slice.type === 'function' || assertion._slice.type === 'class') &&
+          assertion.element?.is_exported) {
+        const name = assertion.element.name as string;
+        if (name) {
+          if (!exportedByName.has(name)) {
+            exportedByName.set(name, []);
+          }
+          exportedByName.get(name)!.push(assertion);
+        }
       }
     }
   }
   
   // Build relationship map from raw assertions (imports and dependencies)
   const relationshipsByFile = buildRelationshipMap(rawAssertions);
+  
+  // Build map of imported names per file: file -> { importedName -> sourceModuleId }
+  const importedNamesPerFile = buildImportedNamesMap(relationshipsByFile, fileByModuleId);
   
   // Second pass: infer relationships
   const enriched = assertions.map(assertion => {
@@ -113,6 +133,84 @@ export function inferRelationships(
         }
       }
       
+      // Module-level constructor calls (new ClassName() in arrow functions, callbacks, top-level)
+      const functionCallsSlice = assertions.find(a =>
+        a._slice.type === 'function_calls' &&
+        a._slice.domain === 'behavior' &&
+        a._slice.source_files[0] === file
+      );
+      
+      if (functionCallsSlice) {
+        const constructorCallGraph = functionCallsSlice.element.constructorCallGraph as Record<string, string[]> | undefined;
+        if (constructorCallGraph && constructorCallGraph['__module__']) {
+          for (const className of constructorCallGraph['__module__']) {
+            // Find the class in same file first
+            let targetClasses = byFile.get(file)?.filter(a =>
+              a._slice.type === 'class' &&
+              a.element.name === className
+            ) ?? [];
+            
+            // If not found locally, check imports
+            if (targetClasses.length === 0) {
+              const importedNames = importedNamesPerFile.get(file);
+              if (importedNames) {
+                const sourceModuleId = importedNames.get(className);
+                if (sourceModuleId) {
+                  const sourceFile = fileByModuleId.get(sourceModuleId);
+                  if (sourceFile) {
+                    targetClasses = byFile.get(sourceFile)?.filter(a =>
+                      a._slice.type === 'class' &&
+                      a.element.name === className &&
+                      a.element.is_exported
+                    ) ?? [];
+                  }
+                }
+              }
+            }
+            
+            // If still not found, try all exported classes by name
+            if (targetClasses.length === 0) {
+              const exportedTargets = exportedByName.get(className);
+              if (exportedTargets && exportedTargets.length === 1 && 
+                  exportedTargets[0]._slice.type === 'class') {
+                targetClasses = exportedTargets;
+              }
+            }
+            
+            for (const targetClass of targetClasses) {
+              references.push({
+                domain: 'graph',
+                type: 'class',
+                id: targetClass._slice.id,
+              });
+            }
+          }
+        }
+        
+        // Module-level method calls
+        const methodCallGraph = functionCallsSlice.element.methodCallGraph as Record<string, string[]> | undefined;
+        if (methodCallGraph && methodCallGraph['__module__']) {
+          for (const methodName of methodCallGraph['__module__']) {
+            // Find methods with this name across all files
+            for (const [, assertionsInFile] of byFile.entries()) {
+              const methods = assertionsInFile.filter(a =>
+                a._slice.type === 'function' &&
+                a.element.isMethod === true &&
+                a.element.name === methodName &&
+                a.element.is_exported
+              );
+              for (const targetMethod of methods) {
+                references.push({
+                  domain: 'graph',
+                  type: 'function',
+                  id: targetMethod._slice.id,
+                });
+              }
+            }
+          }
+        }
+      }
+      
       // Tag by layer
       const layer = element.layer as string | undefined;
       if (layer) {
@@ -140,6 +238,88 @@ export function inferRelationships(
         });
       }
       
+      // Add function-level call edges based on function_calls behavior data
+      const functionName = element.name as string;
+      const isMethod = element.isMethod as boolean | undefined;
+      const className = element.className as string | undefined;
+      
+      // Find the function_calls slice for this file
+      const functionCallsSlice = assertions.find(a =>
+        a._slice.type === 'function_calls' &&
+        a._slice.domain === 'behavior' &&
+        a._slice.source_files[0] === file
+      );
+      
+      if (functionCallsSlice) {
+        const callGraph = functionCallsSlice.element.callGraph as Record<string, string[]> | undefined;
+        if (callGraph && functionName) {
+          // Get functions called by this function
+          const calledFunctions = callGraph[functionName] ?? [];
+          
+          for (const calledName of calledFunctions) {
+            // First: Find the called function in the same file
+            const targetFunctions = byFile.get(file)?.filter(a =>
+              a._slice.type === 'function' &&
+              (a.element.name === calledName || 
+               // Also match class methods
+               (a.element.isMethod && a.element.name === calledName))
+            ) ?? [];
+            
+            for (const targetFn of targetFunctions) {
+              references.push({
+                domain: 'graph',
+                type: 'function',
+                id: targetFn._slice.id,
+              });
+            }
+            
+            // Second: Cross-file resolution via imports
+            // If the called name is imported, resolve to the source module's function
+            if (targetFunctions.length === 0) {
+              const importedNames = importedNamesPerFile.get(file);
+              if (importedNames) {
+                const sourceModuleId = importedNames.get(calledName);
+                if (sourceModuleId) {
+                  // Find the file for the source module
+                  const sourceFile = fileByModuleId.get(sourceModuleId);
+                  if (sourceFile) {
+                    // Find the exported function in the source file
+                    const crossFileTargets = byFile.get(sourceFile)?.filter(a =>
+                      a._slice.type === 'function' &&
+                      a.element.name === calledName &&
+                      a.element.is_exported
+                    ) ?? [];
+                    
+                    for (const targetFn of crossFileTargets) {
+                      references.push({
+                        domain: 'graph',
+                        type: 'function',
+                        id: targetFn._slice.id,
+                      });
+                    }
+                  }
+                } else {
+                  // Name not explicitly imported - try to find by name in all exports
+                  // This handles cases like: import * as utils from './utils'
+                  // where utils.someFunction is called as 'someFunction' in call graph
+                  const exportedTargets = exportedByName.get(calledName);
+                  if (exportedTargets && exportedTargets.length > 0) {
+                    // If unique, create edge. If ambiguous, skip (need explicit import)
+                    if (exportedTargets.length === 1) {
+                      references.push({
+                        domain: 'graph',
+                        type: exportedTargets[0]._slice.type,
+                        id: exportedTargets[0]._slice.id,
+                      });
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      
       // Tag async functions
       if (element.is_async) {
         tags.push('async');
@@ -150,13 +330,20 @@ export function inferRelationships(
         tags.push('exported');
       }
       
+      // Tag methods
+      if (isMethod) {
+        tags.push('method');
+        if (className) {
+          tags.push(`class:${className}`);
+        }
+      }
+      
       // Tag by name patterns
-      const name = element.name as string;
-      if (name) {
-        if (name.startsWith('lambda_handler') || name === 'handler') {
+      if (functionName) {
+        if (functionName.startsWith('lambda_handler') || functionName === 'handler') {
           tags.push('handler:lambda');
         }
-        if (name.startsWith('test_') || name.startsWith('Test')) {
+        if (functionName.startsWith('test_') || functionName.startsWith('Test')) {
           tags.push('test');
         }
       }
@@ -170,6 +357,110 @@ export function inferRelationships(
           }
           if (dec.includes('pytest') || dec.includes('test')) {
             tags.push('test');
+          }
+        }
+      }
+      
+      // ============================================================
+      // Constructor call edges (new ClassName())
+      // ============================================================
+      if (functionCallsSlice && functionName) {
+        const constructorCallGraph = functionCallsSlice.element.constructorCallGraph as Record<string, string[]> | undefined;
+        if (constructorCallGraph) {
+          // Get classes instantiated by this function OR at module level (arrow functions, callbacks)
+          const instantiatedByFn = constructorCallGraph[functionName] ?? [];
+          const instantiatedByModule = constructorCallGraph['__module__'] ?? [];
+          const instantiatedClasses = [...new Set([...instantiatedByFn, ...instantiatedByModule])];
+          
+          for (const className of instantiatedClasses) {
+            // Find the class in same file first
+            let targetClasses = byFile.get(file)?.filter(a =>
+              a._slice.type === 'class' &&
+              a.element.name === className
+            ) ?? [];
+            
+            // If not found locally, check imports
+            if (targetClasses.length === 0) {
+              const importedNames = importedNamesPerFile.get(file);
+              if (importedNames) {
+                const sourceModuleId = importedNames.get(className);
+                if (sourceModuleId) {
+                  const sourceFile = fileByModuleId.get(sourceModuleId);
+                  if (sourceFile) {
+                    targetClasses = byFile.get(sourceFile)?.filter(a =>
+                      a._slice.type === 'class' &&
+                      a.element.name === className &&
+                      a.element.is_exported
+                    ) ?? [];
+                  }
+                }
+              }
+            }
+            
+            // If still not found, try all exported classes by name
+            if (targetClasses.length === 0) {
+              const exportedTargets = exportedByName.get(className);
+              if (exportedTargets && exportedTargets.length === 1 && 
+                  exportedTargets[0]._slice.type === 'class') {
+                targetClasses = exportedTargets;
+              }
+            }
+            
+            for (const targetClass of targetClasses) {
+              references.push({
+                domain: 'graph',
+                type: 'class',
+                id: targetClass._slice.id,
+              });
+            }
+          }
+        }
+      }
+      
+      // ============================================================
+      // Method call edges (obj.method())
+      // ============================================================
+      if (functionCallsSlice && functionName) {
+        const methodCallGraph = functionCallsSlice.element.methodCallGraph as Record<string, string[]> | undefined;
+        if (methodCallGraph) {
+          // Get methods called by this function OR at module level (arrow functions, callbacks)
+          const calledByFn = methodCallGraph[functionName] ?? [];
+          const calledByModule = methodCallGraph['__module__'] ?? [];
+          const calledMethods = [...new Set([...calledByFn, ...calledByModule])];
+          
+          for (const methodName of calledMethods) {
+            // Find methods with this name
+            // First: same file
+            let targetMethods = byFile.get(file)?.filter(a =>
+              a._slice.type === 'function' &&
+              a.element.isMethod === true &&
+              a.element.name === methodName
+            ) ?? [];
+            
+            // If not found, check imported classes' methods
+            if (targetMethods.length === 0) {
+              // Look for methods in any class that matches
+              for (const [, assertionsInFile] of byFile.entries()) {
+                const methods = assertionsInFile.filter(a =>
+                  a._slice.type === 'function' &&
+                  a.element.isMethod === true &&
+                  a.element.name === methodName &&
+                  a.element.is_exported
+                );
+                targetMethods.push(...methods);
+              }
+            }
+            
+            // Create edges for all matching methods
+            // Note: This may create multiple edges if method name is common
+            // A more sophisticated approach would track the object type
+            for (const targetMethod of targetMethods) {
+              references.push({
+                domain: 'graph',
+                type: 'function',
+                id: targetMethod._slice.id,
+              });
+            }
           }
         }
       }
@@ -850,6 +1141,85 @@ export function inferRelationships(
     }
     
     // ============================================================
+    // Behavior: function_calls relationships
+    // Connect function_calls slices to the functions they describe
+    // ============================================================
+    if (slice.type === 'function_calls' && slice.domain === 'behavior') {
+      const callGraph = element.callGraph as Record<string, string[]> | undefined;
+      
+      if (callGraph) {
+        // For each caller function, create a reference to it
+        for (const callerName of Object.keys(callGraph)) {
+          // Find the function in the same file
+          const functionsInFile = byFile.get(file)?.filter(a =>
+            a._slice.type === 'function' &&
+            a.element.name === callerName
+          ) ?? [];
+          
+          for (const fn of functionsInFile) {
+            references.push({
+              domain: 'graph',
+              type: 'function',
+              id: fn._slice.id,
+            });
+          }
+        }
+      }
+      
+      tags.push('behavior:function_calls');
+    }
+    
+    // ============================================================
+    // Behavior: env_var_access relationships
+    // ============================================================
+    if (slice.type === 'env_var_access' && slice.domain === 'behavior') {
+      // Link to the module that accesses these env vars
+      const module = moduleByFile.get(file);
+      if (module) {
+        references.push({
+          domain: 'graph',
+          type: 'module',
+          id: module._slice.id,
+        });
+      }
+      
+      tags.push('behavior:env_var_access');
+      
+      // Tag each env var name for discoverability
+      const variableNames = element.variableNames as string[] | undefined;
+      if (variableNames) {
+        for (const varName of variableNames) {
+          tags.push(`env:${varName}`);
+        }
+      }
+    }
+    
+    // ============================================================
+    // Behavior: aws_sdk_usage relationships
+    // ============================================================
+    if (slice.type === 'aws_sdk_usage' && slice.domain === 'behavior') {
+      // Link to the module that uses AWS SDK
+      const module = moduleByFile.get(file);
+      if (module) {
+        references.push({
+          domain: 'graph',
+          type: 'module',
+          id: module._slice.id,
+        });
+      }
+      
+      tags.push('behavior:aws_sdk_usage');
+      
+      // Tag each AWS service used
+      const services = element.services as string[] | undefined;
+      if (services) {
+        for (const service of services) {
+          tags.push(`aws:${service}`);
+        }
+      }
+    }
+    
+    // ============================================================
     // Angular Component/Service relationships
     // ============================================================
     if ((slice.type === 'angular-component' || slice.type === 'angular-service') && slice.domain === 'frontend') {
@@ -959,6 +1329,47 @@ function buildRelationshipMap(rawAssertions: RawAssertion[]): Map<string, Relati
         dependencyType: assertion.metadata.type as string,
         language: assertion.metadata.language as string | undefined,
       });
+    }
+  }
+  
+  return result;
+}
+
+/**
+ * Build a map of imported names per file: file -> Map<importedName, sourceModuleId>
+ * 
+ * This enables cross-file function call resolution by tracking which names
+ * are imported from which modules in each file.
+ * 
+ * For example:
+ *   import { search } from './rss-operations.js'
+ *   maps to: 'tools-structural.ts' -> { 'search' -> 'module:rss-operations.ts' }
+ */
+function buildImportedNamesMap(
+  relationshipsByFile: Map<string, Relationship[]>,
+  fileByModuleId: Map<string, string>
+): Map<string, Map<string, string>> {
+  const result = new Map<string, Map<string, string>>();
+  
+  for (const [file, relationships] of relationshipsByFile.entries()) {
+    const importedNames = new Map<string, string>();
+    
+    for (const rel of relationships) {
+      if (rel.type !== 'import' || !rel.module) continue;
+      
+      // Resolve the module path to a module ID
+      const targetModuleId = resolveModuleReference(rel.module, file, rel.language);
+      if (!targetModuleId) continue;
+      
+      // Track each imported name
+      const names = rel.names ?? [];
+      for (const name of names) {
+        importedNames.set(name, targetModuleId);
+      }
+    }
+    
+    if (importedNames.size > 0) {
+      result.set(file, importedNames);
     }
   }
   

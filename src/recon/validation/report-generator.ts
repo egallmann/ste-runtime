@@ -12,6 +12,7 @@ import path from 'node:path';
 import yaml from 'js-yaml';
 import type { ValidationFinding, ValidationReport } from './types.js';
 import { pruneOldReports } from './history-manager.js';
+import { log } from '../../utils/logger.js';
 
 export type ReportVerbosity = 'summary' | 'detailed' | 'silent';
 
@@ -69,13 +70,13 @@ export async function generateReport(
     
     // Console output based on verbosity
     if (verbosity !== 'silent') {
-      console.log('[RECON Validation] Report generated');
-      console.log(`[RECON Validation] Findings: ${summary.total_findings} total (${summary.errors} errors, ${summary.warnings} warnings, ${summary.info} info)`);
+      log('[RECON Validation] Report generated');
+      log(`[RECON Validation] Findings: ${summary.total_findings} total (${summary.errors} errors, ${summary.warnings} warnings, ${summary.info} info)`);
       
       if (verbosity === 'detailed') {
         // Print detailed findings
         if (findings.length > 0) {
-          console.log('[RECON Validation] Detailed findings:');
+          log('[RECON Validation] Detailed findings:');
           
           // Group by category
           const byCategory = {
@@ -86,16 +87,16 @@ export async function generateReport(
           
           for (const [category, categoryFindings] of Object.entries(byCategory)) {
             if (categoryFindings.length > 0) {
-              console.log(`\n  ${category}:`);
+              log(`\n  ${category}:`);
               for (const finding of categoryFindings) {
-                console.log(`    [${finding.validator}] ${finding.description}`);
+                log(`    [${finding.validator}] ${finding.description}`);
                 if (finding.affected_artifacts.length > 0 && finding.affected_artifacts.length <= 3) {
-                  console.log(`      Artifacts: ${finding.affected_artifacts.join(', ')}`);
+                  log(`      Artifacts: ${finding.affected_artifacts.join(', ')}`);
                 } else if (finding.affected_artifacts.length > 3) {
-                  console.log(`      Artifacts: ${finding.affected_artifacts.length} affected`);
+                  log(`      Artifacts: ${finding.affected_artifacts.length} affected`);
                 }
                 if (finding.suggested_investigation) {
-                  console.log(`      → ${finding.suggested_investigation}`);
+                  log(`      → ${finding.suggested_investigation}`);
                 }
               }
             }
@@ -103,9 +104,9 @@ export async function generateReport(
         }
       }
       
-      console.log(`[RECON Validation] Reports written to:`);
-      console.log(`  - ${path.relative(process.cwd(), latestPath)}`);
-      console.log(`  - ${path.relative(process.cwd(), runReportPath)}`);
+      log(`[RECON Validation] Reports written to:`);
+      log(`  - ${path.relative(process.cwd(), latestPath)}`);
+      log(`  - ${path.relative(process.cwd(), runReportPath)}`);
     }
   } catch (error) {
     // Non-blocking: log error but don't throw
@@ -124,10 +125,10 @@ export function printSummary(findings: ValidationFinding[]): void {
     info: findings.filter(f => f.category === 'INFO').length,
   };
   
-  console.log(`[RECON Validation] Summary: ${summary.total} findings (${summary.errors} ERROR, ${summary.warnings} WARNING, ${summary.info} INFO)`);
+  log(`[RECON Validation] Summary: ${summary.total} findings (${summary.errors} ERROR, ${summary.warnings} WARNING, ${summary.info} INFO)`);
   
   if (summary.errors > 0) {
-    console.log('[RECON Validation] Errors detected (non-blocking)');
+    log('[RECON Validation] Errors detected (non-blocking)');
   }
 }
 

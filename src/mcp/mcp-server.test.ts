@@ -2,12 +2,17 @@
  * MCP Server Integration Tests
  * 
  * Tests for MCP server functionality per E-ADR-011.
+ * 
+ * NOTE: These tests use a mock config instead of loadConfig because:
+ * - loadConfig has boundary validation that expects ste-runtime directory structure
+ * - Test fixtures are not structured as ste-runtime installations
+ * - Using a mock config allows testing MCP functionality in isolation
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { McpServer } from './mcp-server.js';
 import { Watchdog } from '../watch/watchdog.js';
-import { loadConfig } from '../config/index.js';
+import type { ResolvedConfig } from '../config/index.js';
 import { runFullRecon } from '../recon/full-recon.js';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -20,16 +25,62 @@ const __dirname = path.dirname(__filename);
 const FIXTURES_DIR = path.resolve(__dirname, '../../fixtures');
 const TEST_PROJECT = path.join(FIXTURES_DIR, 'python-sample');
 
+/**
+ * Create a mock config for testing.
+ * This avoids boundary validation issues with loadConfig.
+ */
+function createTestConfig(projectRoot: string): ResolvedConfig {
+  const stateDir = '.ste/state';
+  return {
+    projectRoot,
+    runtimeDir: projectRoot, // For tests, treat project as its own runtime
+    languages: ['python'],
+    sourceDirs: ['.'],
+    ignorePatterns: ['**/node_modules/**', '**/dist/**', '**/.ste/**'],
+    stateDir,
+    jsonPatterns: {},
+    angularPatterns: {},
+    cssPatterns: {},
+    watchdog: {
+      enabled: false,
+      debounceMs: 500,
+      aiEditDebounceMs: 2000,
+      syntaxValidation: true,
+      transactionDetection: true,
+      stabilityCheckMs: 100,
+      patterns: ['**/*.py'],
+      ignore: ['.git', 'node_modules', '.venv'],
+      fullReconciliationInterval: 0,
+      fallbackPolling: false,
+      pollingInterval: 5000,
+    },
+    mcp: {
+      transport: 'stdio',
+      logLevel: 'info',
+    },
+    rss: {
+      stateRoot: stateDir,
+      defaultDepth: 2,
+      maxResults: 50,
+    },
+  };
+}
+
 describe('MCP Server Integration', () => {
   let mcpServer: McpServer;
-  let config: any;
+  let config: ResolvedConfig;
+  let stateDir: string;
   
   beforeAll(async () => {
-    // Load config for test project
-    config = await loadConfig(TEST_PROJECT);
+    // Create mock config for test project
+    config = createTestConfig(TEST_PROJECT);
+    
+    // Resolve stateDir to absolute path
+    stateDir = path.resolve(TEST_PROJECT, config.stateDir);
     
     // Run initial RECON to ensure state exists
-    await runFullRecon(TEST_PROJECT);
+    // Pass stateDir to avoid boundary violations
+    await runFullRecon(TEST_PROJECT, stateDir);
     
     // Create MCP server
     mcpServer = new McpServer({
@@ -54,9 +105,8 @@ describe('MCP Server Integration', () => {
     });
     
     it('should load graph metrics', async () => {
-      // Use config.rss.stateRoot which is what the MCP server uses to save metrics
-      const stateRoot = path.resolve(TEST_PROJECT, config.rss.stateRoot);
-      const metricsPath = path.join(stateRoot, 'graph-metrics.json');
+      // Use stateDir which is what the MCP server uses to save metrics
+      const metricsPath = path.join(stateDir, 'graph-metrics.json');
       const exists = await fs.access(metricsPath).then(() => true).catch(() => false);
       expect(exists).toBe(true);
     });
@@ -72,11 +122,12 @@ describe('MCP Server Integration', () => {
 
 describe('Watchdog Integration', () => {
   let watchdog: Watchdog;
-  let config: any;
+  let config: ResolvedConfig;
   let reconCompleted = false;
   
   beforeAll(async () => {
-    config = await loadConfig(TEST_PROJECT);
+    // Create mock config for test project
+    config = createTestConfig(TEST_PROJECT);
     
     // Enable watchdog for testing
     config.watchdog.enabled = true;
@@ -151,6 +202,3 @@ describe('Graph Topology Analyzer', () => {
  * These tests verify the core components integrate correctly.
  * For full MCP protocol testing, consider using @modelcontextprotocol/sdk test utilities.
  */
-
-
-

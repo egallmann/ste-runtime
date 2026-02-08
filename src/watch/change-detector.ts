@@ -4,7 +4,18 @@ import path from 'node:path';
 
 import { globby } from 'globby';
 
-const MANIFEST_RELATIVE = path.join('.ste', 'state', 'manifest', 'recon-manifest.json');
+/**
+ * Get the manifest file path within a state directory.
+ * 
+ * CRITICAL: The manifest MUST be written inside the stateDir, not relative to projectRoot.
+ * This ensures state is always contained within the configured location.
+ * 
+ * @param stateDir - Resolved absolute path to state directory (e.g., /path/to/ste-runtime/.ste/state)
+ */
+function getManifestPath(stateDir: string): string {
+  return path.join(stateDir, 'manifest', 'recon-manifest.json');
+}
+
 const PYTHON_PATTERNS = [
   '**/*.py',
   '!**/venv/**',
@@ -12,6 +23,24 @@ const PYTHON_PATTERNS = [
   '!**/node_modules/**',
   '!**/.git/**',
   '!**/.ste/**',
+];
+
+const TYPESCRIPT_PATTERNS = [
+  '**/*.ts',
+  '**/*.tsx',
+  '**/*.js',
+  '**/*.jsx',
+  '!**/node_modules/**',
+  '!**/dist/**',
+  '!**/build/**',
+  '!**/.git/**',
+  '!**/.ste/**',
+  '!**/.ste-self/**',
+];
+
+const ALL_SOURCE_PATTERNS = [
+  ...PYTHON_PATTERNS,
+  ...TYPESCRIPT_PATTERNS.filter(p => !PYTHON_PATTERNS.includes(p)),
 ];
 
 export type FileFingerprint = {
@@ -56,10 +85,23 @@ async function listPythonFiles(projectRoot: string): Promise<string[]> {
   return globby(PYTHON_PATTERNS, { cwd: projectRoot, absolute: true, gitignore: true });
 }
 
-export async function loadReconManifest(projectRoot: string): Promise<ReconManifest | null> {
-  const manifestPath = path.resolve(projectRoot, MANIFEST_RELATIVE);
+async function listTypeScriptFiles(projectRoot: string): Promise<string[]> {
+  return globby(TYPESCRIPT_PATTERNS, { cwd: projectRoot, absolute: true, gitignore: true });
+}
+
+async function listAllSourceFiles(projectRoot: string): Promise<string[]> {
+  return globby(ALL_SOURCE_PATTERNS, { cwd: projectRoot, absolute: true, gitignore: true });
+}
+
+/**
+ * Load RECON manifest from the state directory.
+ * 
+ * @param stateDir - Resolved absolute path to state directory
+ */
+export async function loadReconManifest(stateDir: string): Promise<ReconManifest | null> {
+  const manifestFilePath = getManifestPath(stateDir);
   try {
-    const raw = await fs.readFile(manifestPath, 'utf8');
+    const raw = await fs.readFile(manifestFilePath, 'utf8');
     const parsed = JSON.parse(raw) as ReconManifest;
     if (!parsed?.files) return null;
     return parsed;
@@ -68,19 +110,48 @@ export async function loadReconManifest(projectRoot: string): Promise<ReconManif
   }
 }
 
-async function ensureManifestDir(projectRoot: string) {
-  const dir = path.dirname(path.resolve(projectRoot, MANIFEST_RELATIVE));
+/**
+ * Ensure the manifest directory exists within the state directory.
+ * 
+ * @param stateDir - Resolved absolute path to state directory
+ */
+async function ensureManifestDir(stateDir: string) {
+  const dir = path.dirname(getManifestPath(stateDir));
   await fs.mkdir(dir, { recursive: true });
 }
 
-export async function writeReconManifest(projectRoot: string, manifest: ReconManifest): Promise<void> {
-  await ensureManifestDir(projectRoot);
-  const manifestPath = path.resolve(projectRoot, MANIFEST_RELATIVE);
-  await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
+/**
+ * Write RECON manifest to the state directory.
+ * 
+ * @param stateDir - Resolved absolute path to state directory
+ * @param manifest - The manifest to write
+ */
+export async function writeReconManifest(stateDir: string, manifest: ReconManifest): Promise<void> {
+  await ensureManifestDir(stateDir);
+  const manifestFilePath = getManifestPath(stateDir);
+  await fs.writeFile(manifestFilePath, JSON.stringify(manifest, null, 2), 'utf8');
 }
 
-export async function buildFullManifest(projectRoot: string): Promise<ReconManifest> {
-  const files = await listPythonFiles(projectRoot);
+export type ManifestLanguage = 'python' | 'typescript' | 'all';
+
+export async function buildFullManifest(
+  projectRoot: string,
+  language: ManifestLanguage = 'python'
+): Promise<ReconManifest> {
+  let files: string[];
+  switch (language) {
+    case 'typescript':
+      files = await listTypeScriptFiles(projectRoot);
+      break;
+    case 'all':
+      files = await listAllSourceFiles(projectRoot);
+      break;
+    case 'python':
+    default:
+      files = await listPythonFiles(projectRoot);
+      break;
+  }
+  
   const entries: Record<string, FileFingerprint> = {};
   for (const abs of files) {
     const stat = await fs.stat(abs);
@@ -100,8 +171,19 @@ export async function buildFullManifest(projectRoot: string): Promise<ReconManif
   };
 }
 
-export async function detectFileChanges(projectRoot: string, previous?: ReconManifest | null): Promise<ChangeSet> {
-  const prevManifest = previous ?? (await loadReconManifest(projectRoot));
+/**
+ * Detect file changes by comparing current state to previous manifest.
+ * 
+ * @param projectRoot - Project root for scanning files
+ * @param stateDir - Resolved absolute path to state directory (for loading previous manifest)
+ * @param previous - Optional previous manifest (if already loaded)
+ */
+export async function detectFileChanges(
+  projectRoot: string,
+  stateDir: string,
+  previous?: ReconManifest | null
+): Promise<ChangeSet> {
+  const prevManifest = previous ?? (await loadReconManifest(stateDir));
   const prevFiles = prevManifest?.files ?? {};
 
   const absoluteFiles = await listPythonFiles(projectRoot);
@@ -161,8 +243,11 @@ export async function detectFileChanges(projectRoot: string, previous?: ReconMan
   };
 }
 
-export function manifestPath(projectRoot: string) {
-  return path.resolve(projectRoot, MANIFEST_RELATIVE);
+/**
+ * Get the manifest file path for a state directory.
+ * 
+ * @param stateDir - Resolved absolute path to state directory
+ */
+export function manifestPath(stateDir: string): string {
+  return getManifestPath(stateDir);
 }
-
-

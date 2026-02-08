@@ -489,10 +489,65 @@ export function search(
 }
 
 /**
+ * Compute score for a single search term against a node.
+ * Returns 0 if no match, higher scores for better matches.
+ */
+function scoreNodeForTerm(node: AidocNode, termLower: string): number {
+  // Exact ID match (highest score)
+  if (node.id.toLowerCase() === termLower) {
+    return 100;
+  }
+  // ID contains query
+  if (node.id.toLowerCase().includes(termLower)) {
+    return 80;
+  }
+  // Name field exact match (functions, classes have names separate from IDs)
+  if (node.element?.name && 
+      typeof node.element.name === 'string' &&
+      node.element.name.toLowerCase() === termLower) {
+    return 75;
+  }
+  // Name field contains query (partial match on function/class name)
+  if (node.element?.name && 
+      typeof node.element.name === 'string' &&
+      node.element.name.toLowerCase().includes(termLower)) {
+    return 72;
+  }
+  // Description match (high priority for semantic search)
+  if (node.element?.description && 
+      typeof node.element.description === 'string' &&
+      node.element.description.toLowerCase().includes(termLower)) {
+    return 70;
+  }
+  // Path contains query
+  if (node.path?.toLowerCase().includes(termLower)) {
+    return 60;
+  }
+  // Docstring match (medium priority)
+  if (node.element?.docstring && 
+      typeof node.element.docstring === 'string' &&
+      node.element.docstring.toLowerCase().includes(termLower)) {
+    return 50;
+  }
+  // Key contains query
+  if (node.key.toLowerCase().includes(termLower)) {
+    return 40;
+  }
+  // Tags match
+  if (node.tags.some(tag => tag.toLowerCase().includes(termLower))) {
+    return 35;
+  }
+  return 0;
+}
+
+/**
  * Exact/substring search (Tier 1).
  * 
  * This is the original search logic - fast substring matching.
- * Now enhanced to search through documentation fields (description, docstring).
+ * Now enhanced to:
+ * 1. Search through documentation fields (description, docstring)
+ * 2. Support multi-term queries (natural language)
+ * 3. Boost scores when multiple terms match the same node
  */
 function exactSearch(
   ctx: RssContext,
@@ -507,44 +562,50 @@ function exactSearch(
   // Score matches for relevance ranking
   const scored: Array<{ node: AidocNode; score: number }> = [];
   
-  for (const node of ctx.graph.values()) {
-    // Apply domain/type filters if specified
-    if (domain && node.domain !== domain) continue;
-    if (type && node.type !== type) continue;
+  // Check if this looks like a natural language query (contains spaces or question mark)
+  const isNaturalLanguage = query.includes(' ') || query.includes('?');
+  
+  if (isNaturalLanguage) {
+    // Multi-term search: extract keywords and score each term
+    const terms = extractNLSearchTerms(query);
     
-    let score = 0;
-    
-    // Exact ID match (highest score)
-    if (node.id.toLowerCase() === queryLower) {
-      score = 100;
-    }
-    // ID contains query
-    else if (node.id.toLowerCase().includes(queryLower)) {
-      score = 80;
-    }
-    // Description match (high priority for semantic search)
-    else if (node.element?.description && 
-             typeof node.element.description === 'string' &&
-             node.element.description.toLowerCase().includes(queryLower)) {
-      score = 70;
-    }
-    // Path contains query
-    else if (node.path?.toLowerCase().includes(queryLower)) {
-      score = 60;
-    }
-    // Docstring match (medium priority)
-    else if (node.element?.docstring && 
-             typeof node.element.docstring === 'string' &&
-             node.element.docstring.toLowerCase().includes(queryLower)) {
-      score = 50;
-    }
-    // Key contains query
-    else if (node.key.toLowerCase().includes(queryLower)) {
-      score = 40;
+    if (terms.length === 0) {
+      return { nodes: [], traversalDepth: 0, truncated: false, brokenEdges: [] };
     }
     
-    if (score > 0) {
-      scored.push({ node, score });
+    for (const node of ctx.graph.values()) {
+      // Apply domain/type filters if specified
+      if (domain && node.domain !== domain) continue;
+      if (type && node.type !== type) continue;
+      
+      let totalScore = 0;
+      let matchedTerms = 0;
+      
+      for (const term of terms) {
+        const termScore = scoreNodeForTerm(node, term);
+        if (termScore > 0) {
+          totalScore += termScore;
+          matchedTerms++;
+        }
+      }
+      
+      if (totalScore > 0) {
+        // Boost score for nodes matching multiple terms
+        const multiTermBonus = matchedTerms > 1 ? (matchedTerms - 1) * 20 : 0;
+        scored.push({ node, score: totalScore + multiTermBonus });
+      }
+    }
+  } else {
+    // Single term search: use exact substring matching
+    for (const node of ctx.graph.values()) {
+      // Apply domain/type filters if specified
+      if (domain && node.domain !== domain) continue;
+      if (type && node.type !== type) continue;
+      
+      const score = scoreNodeForTerm(node, queryLower);
+      if (score > 0) {
+        scored.push({ node, score });
+      }
     }
   }
   
@@ -566,6 +627,30 @@ function exactSearch(
     truncated,
     brokenEdges: [],
   };
+}
+
+/**
+ * Extract search terms from a natural language query.
+ * Removes stop words and question words, extracts meaningful keywords.
+ */
+function extractNLSearchTerms(query: string): string[] {
+  const stopWords = new Set([
+    'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+    'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should',
+    'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
+    'to', 'from', 'in', 'on', 'at', 'by', 'for', 'with', 'about',
+    'it', 'its', 'me', 'my', 'i', 'you', 'your', 'we', 'our', 'they', 'their',
+    'and', 'or', 'but', 'if', 'then', 'else', 'when', 'where', 'why', 'how',
+    'tell', 'explain', 'describe', 'show', 'list', 'find', 'get',
+  ]);
+  
+  // Split on whitespace and punctuation
+  const words = query.toLowerCase()
+    .replace(/[^\w\s-_]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 2 && !stopWords.has(w));
+  
+  return [...new Set(words)];
 }
 
 /**

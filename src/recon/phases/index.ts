@@ -22,6 +22,30 @@ import { populateAiDoc } from './population.js';
 import { detectDivergence, type ValidationResult } from './divergence.js';
 import { runSelfValidation } from './self-validation.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
+import { buildFullManifest, writeReconManifest, type ManifestLanguage } from '../../watch/change-detector.js';
+import { log } from '../../utils/logger.js';
+import path from 'node:path';
+
+/**
+ * Determine the manifest language from config languages.
+ * If multiple languages, use 'all'. Otherwise use the specific language.
+ */
+function determineManifestLanguage(languages?: SupportedLanguage[]): ManifestLanguage {
+  if (!languages || languages.length === 0) {
+    return 'python'; // Default for backwards compatibility
+  }
+  
+  const hasPython = languages.includes('python');
+  const hasTypeScript = languages.includes('typescript');
+  
+  if (hasPython && hasTypeScript) {
+    return 'all';
+  } else if (hasTypeScript) {
+    return 'typescript';
+  } else {
+    return 'python';
+  }
+}
 
 export interface DiscoveredFile {
   path: string;
@@ -65,9 +89,12 @@ export interface RawAssertion {
     | 'design_tokens';     // CSS variables, SCSS variables, animations
   file: string;
   line: number;
+  end_line?: number;
   language: SupportedLanguage;
   signature?: string;
   metadata: Record<string, unknown>;
+  /** Embedded source code for this element (Pillar 1: Rich Slices) */
+  source?: string;
 }
 
 /**
@@ -92,6 +119,8 @@ export interface NormalizedAssertion {
     referenced_by?: SliceReference[];
     /** Cross-domain tags for by_tag queries */
     tags?: string[];
+    /** Embedded source code (Pillar 1: Rich Slices) */
+    source?: string;
   };
   element: Record<string, unknown>;
   provenance: {
@@ -99,6 +128,7 @@ export interface NormalizedAssertion {
     extractor: string;
     file: string;
     line: number;
+    end_line?: number;
     language: SupportedLanguage;
     /** SHA-256 checksum of source file at extraction time (E-ADR-007) */
     source_checksum?: string;
@@ -117,21 +147,21 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   
   try {
     // Phase 0: Project Structure Discovery (E-ADR-009)
-    console.log('[RECON Phase 0] Discovering project structure...');
+    log('[RECON Phase 0] Discovering project structure...');
     const projectDiscovery = new ProjectDiscovery(options.projectRoot);
     const projectStructure = await projectDiscovery.discover();
     
-    console.log(`[RECON Phase 0] Architecture: ${projectStructure.architecture}`);
-    console.log(`[RECON Phase 0] Discovered ${projectStructure.domains.length} domains:`);
+    log(`[RECON Phase 0] Architecture: ${projectStructure.architecture}`);
+    log(`[RECON Phase 0] Discovered ${projectStructure.domains.length} domains:`);
     projectStructure.domains.slice(0, 10).forEach(d => {
-      console.log(`  - ${d.name} (${d.type}${d.framework ? `, ${d.framework}` : ''})`);
+      log(`  - ${d.name} (${d.type}${d.framework ? `, ${d.framework}` : ''})`);
     });
     if (projectStructure.domains.length > 10) {
-      console.log(`  ... and ${projectStructure.domains.length - 10} more`);
+      log(`  ... and ${projectStructure.domains.length - 10} more`);
     }
     
     // Phase 1: Discovery
-    console.log('[RECON Phase 1] Discovering files...');
+    log('[RECON Phase 1] Discovering files...');
     
     let discoveredFiles: DiscoveredFile[];
     
@@ -152,7 +182,7 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
       }));
     }
     
-    console.log(`[RECON Phase 1] Found ${discoveredFiles.length} files`);
+    log(`[RECON Phase 1] Found ${discoveredFiles.length} files`);
   
   if (discoveredFiles.length === 0) {
     warnings.push('No files discovered for processing');
@@ -173,21 +203,21 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   }
   
   // Phase 2: Extraction
-  console.log('[RECON Phase 2] Extracting assertions...');
+  log('[RECON Phase 2] Extracting assertions...');
   const rawAssertions = await extractAssertions(discoveredFiles);
-  console.log(`[RECON Phase 2] Extracted ${rawAssertions.length} assertions`);
+  log(`[RECON Phase 2] Extracted ${rawAssertions.length} assertions`);
   
   // Phase 4: Normalization (before inference to build lookup structures)
-  console.log('[RECON Phase 4] Normalizing assertions...');
+  log('[RECON Phase 4] Normalizing assertions...');
   const normalizedAssertions = await normalizeAssertions(rawAssertions, options.projectRoot);
-  console.log(`[RECON Phase 4] Normalized ${normalizedAssertions.length} assertions`);
+  log(`[RECON Phase 4] Normalized ${normalizedAssertions.length} assertions`);
   
   // Phase 3: Inference - Build relationships for RSS traversal
-  console.log('[RECON Phase 3] Inferring relationships for RSS graph...');
+  log('[RECON Phase 3] Inferring relationships for RSS graph...');
   const enrichedAssertions = inferRelationships(normalizedAssertions, rawAssertions);
   const totalRefs = enrichedAssertions.reduce((sum, a) => sum + (a._slice.references?.length ?? 0), 0);
   const totalTags = enrichedAssertions.reduce((sum, a) => sum + (a._slice.tags?.length ?? 0), 0);
-  console.log(`[RECON Phase 3] Inferred ${totalRefs} relationships, ${totalTags} tags`);
+  log(`[RECON Phase 3] Inferred ${totalRefs} relationships, ${totalTags} tags`);
   
   // Determine state root
   const stateRoot = options.config?.stateDir ?? options.stateRoot;
@@ -196,7 +226,7 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   const processedFiles = discoveredFiles.map(f => f.relativePath);
   
     // Phase 5: Population (with create/update/delete semantics)
-    console.log('[RECON Phase 5] Populating AI-DOC state...');
+    log('[RECON Phase 5] Populating AI-DOC state...');
     const populationResult = await populateAiDoc(
       enrichedAssertions,
       options.projectRoot,
@@ -207,10 +237,10 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
         generation, // E-ADR-007: Track writes for watchdog
       }
     );
-    console.log(`[RECON Phase 5] Created: ${populationResult.created}, Updated: ${populationResult.updated}, Deleted: ${populationResult.deleted}, Unchanged: ${populationResult.unchanged}`);
+    log(`[RECON Phase 5] Created: ${populationResult.created}, Updated: ${populationResult.updated}, Deleted: ${populationResult.deleted}, Unchanged: ${populationResult.unchanged}`);
   
   // Phase 6: State Validation & Self-Healing
-  console.log('[RECON Phase 6] State validation & self-healing...');
+  log('[RECON Phase 6] State validation & self-healing...');
   const validationResult = await detectDivergence(
     enrichedAssertions,
     populationResult.priorState,
@@ -220,18 +250,18 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   
   // Log semantic enrichments (informational)
   if (validationResult.semanticEnrichments.length > 0) {
-    console.log(`[RECON Phase 6] Semantic enrichment: ${validationResult.semanticEnrichments.length} elements refined`);
+    log(`[RECON Phase 6] Semantic enrichment: ${validationResult.semanticEnrichments.length} elements refined`);
   }
   
   // Log orphaned slices (source deleted)
   if (validationResult.orphanedSlices.length > 0) {
-    console.log(`[RECON Phase 6] Orphaned slices: ${validationResult.orphanedSlices.length} (source deleted)`);
+    log(`[RECON Phase 6] Orphaned slices: ${validationResult.orphanedSlices.length} (source deleted)`);
   }
   
-  console.log(`[RECON Phase 6] Conflicts: 0 (slices are pure derived artifacts)`);
+  log(`[RECON Phase 6] Conflicts: 0 (slices are pure derived artifacts)`);
   
   // Phase 7: Self-Validation (non-blocking)
-  console.log('[RECON Phase 7] Self-validation...');
+  log('[RECON Phase 7] Self-validation...');
   const selfValidationResult = await runSelfValidation(
     enrichedAssertions,
     options.projectRoot,
@@ -242,7 +272,17 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
       repeatabilityCheck: options.repeatabilityCheck,
     }
   );
-  console.log(`[RECON Phase 7] Validation complete: ${selfValidationResult.summary.total_findings} findings`);
+  log(`[RECON Phase 7] Validation complete: ${selfValidationResult.summary.total_findings} findings`);
+  
+  // Phase 8: Write manifest for freshness tracking
+  log('[RECON Phase 8] Writing manifest for freshness tracking...');
+  const resolvedStateDir = path.resolve(options.projectRoot, stateRoot);
+  
+  // Determine manifest language from config
+  const manifestLanguage: ManifestLanguage = determineManifestLanguage(options.config?.languages);
+  const manifest = await buildFullManifest(options.projectRoot, manifestLanguage);
+  await writeReconManifest(resolvedStateDir, manifest);
+  log(`[RECON Phase 8] Manifest written with ${Object.keys(manifest.files).length} file fingerprints (language: ${manifestLanguage})`);
   
   // Complete update batch (E-ADR-007)
   updateCoordinator.completeUpdate(generation);

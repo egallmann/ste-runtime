@@ -53,7 +53,8 @@ async function resolveStatePath(options: { state?: string; config?: string }): P
 program
   .command('recon')
   .description('Run RECON and emit AI-DOC state')
-  .option('--config <configFile>', 'Config file to use (default: ste.config.json, use ste-self.config.json for self-analysis)')
+  .option('--config <configFile>', 'Config file to use (default: ste.config.json)')
+  .option('--self', 'Self-analysis mode: analyze ste-runtime itself instead of parent project')
   .option('--mode <mode>', 'Recon mode: full | incremental', 'full')
   .action(async (options) => {
     const runtimeDir = path.resolve(__dirname, '../..');
@@ -64,8 +65,8 @@ program
       console.log(`[RECON] Using config: ${configPath}`);
       config = await loadConfigFromFile(configPath, path.dirname(configPath));
     } else {
-      // Default: load from project's ste.config.json
-      config = await loadConfig(runtimeDir);
+      // Load config with optional self-analysis mode
+      config = await loadConfig(runtimeDir, { selfMode: options.self });
     }
     
     console.log(`[RECON] Project root: ${config.projectRoot}`);
@@ -146,19 +147,22 @@ program
   .description('Start MCP server with optional file watching')
   .option('--mcp', 'Enable MCP mode (default)', true)
   .option('--no-watch', 'Disable file watching (MCP server only)')
+  .option('--self', 'Self-analysis mode: analyze ste-runtime itself instead of parent project')
   .option('--config <path>', 'Custom config file path')
   .action(async (options) => {
     // Import and run watch logic directly
     const { McpServer } = await import('../mcp/mcp-server.js');
     const { Watchdog } = await import('../watch/watchdog.js');
     const { loadConfig, loadConfigFromFile } = await import('../config/index.js');
-    const { runFullRecon } = await import('../recon/full-recon.js');
+    const { executeRecon } = await import('../recon/index.js');
     const { loadReconManifest } = await import('../watch/change-detector.js');
+    const { setMcpMode, log: globalLog } = await import('../utils/logger.js');
     const fs = await import('fs/promises');
     
-    // In MCP mode, redirect console.log to stderr (MCP uses stdout for JSON protocol)
+    // In MCP mode, redirect all logging to stderr (MCP uses stdout for JSON protocol)
     const isMcpMode = options.mcp !== false;
-    const log = isMcpMode ? (...args: any[]) => console.error(...args) : console.log;
+    setMcpMode(isMcpMode);
+    const log = globalLog;
     const logError = console.error;
     
     try {
@@ -211,47 +215,34 @@ program
           }
         }
       } else {
-        // No config specified, check for ste.config.json in cwd
-        const configPath = path.join(cwd, 'ste.config.json');
-        try {
-          await fs.access(configPath);
-          // Config exists, load it - use cwd as project root
-          config = await loadConfigFromFile(configPath, cwd);
-          projectRoot = config.projectRoot;
-        } catch {
-          // No config file found - auto-create one for zero-configuration experience
-          // Config search order (per loadConfigFile):
-          // 1. Project root (cwd) - authoritative, what we create here
-          // 2. Inside ste-runtime/ - fallback for portability
-          // This makes ste-runtime truly "drop in and run" per E-ADR-009
-          const runtimeDir = path.resolve(__dirname, '../..');
-          
-          // Always use loadConfig which has proper self-analysis detection
-          // This ensures correct project root detection regardless of cwd
-          config = await loadConfig(runtimeDir);
-          projectRoot = config.projectRoot;
-          
-          // CRITICAL: For self-analysis, projectRoot MUST equal runtimeDir
-          if (projectRoot !== runtimeDir) {
-            log(`[ste watch] WARNING: Self-analysis detected but project root was ${projectRoot}, correcting to ${runtimeDir}`);
-            projectRoot = runtimeDir;
-            config = {
-              ...config,
-              projectRoot: runtimeDir,
-              runtimeDir: runtimeDir,
-            };
-          }
-        }
+        // No explicit config specified - use loadConfig with optional self-mode flag
+        // This ensures stateDir is ALWAYS inside ste-runtime for self-containment
+        const runtimeDir = path.resolve(__dirname, '../..');
+        config = await loadConfig(runtimeDir, { selfMode: options.self });
+        projectRoot = config.projectRoot;
       }
       
       log(`[ste watch] Project root: ${projectRoot}`);
       log(`[ste watch] State directory: ${config.stateDir}`);
       
+      // CRITICAL: Resolve stateDir to absolute path for manifest operations
+      // The stateDir from config is relative to projectRoot, so resolve it properly
+      const resolvedStateDir = path.resolve(projectRoot, config.stateDir);
+      log(`[ste watch] Resolved state directory: ${resolvedStateDir}`);
+      
       // Check if manifest exists, run full RECON if not
-      const manifest = await loadReconManifest(projectRoot);
+      // CRITICAL: Use resolvedStateDir, NOT projectRoot - manifest lives INSIDE stateDir
+      const manifest = await loadReconManifest(resolvedStateDir);
       if (!manifest) {
         log('[ste watch] No manifest found, running initial RECON...');
-        await runFullRecon(projectRoot);
+        // Use executeRecon with proper config - this writes to config.stateDir (inside ste-runtime)
+        await executeRecon({
+          projectRoot: config.projectRoot,
+          sourceRoot: config.sourceDirs[0] ?? '.',
+          stateRoot: config.stateDir,
+          mode: 'full',
+          config: config,
+        });
         log('[ste watch] Initial RECON complete');
       }
       

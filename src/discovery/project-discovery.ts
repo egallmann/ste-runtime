@@ -12,6 +12,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+import { log } from '../utils/logger.js';
 
 // ============================================================================
 // Core Types
@@ -159,11 +160,11 @@ export class ProjectDiscovery {
       return this.cachedStructure;
     }
 
-    console.log(`[Discovery] Scanning project at: ${this.rootDir}`);
+    log(`[Discovery] Scanning project at: ${this.rootDir}`);
 
     // 1. Scan directory structure
     const directories = await this.scanDirectories(this.rootDir);
-    console.log(`[Discovery] Found ${directories.length} directories`);
+    log(`[Discovery] Found ${directories.length} directories`);
 
     // 2. Collect signals from directory names
     const directorySignals = this.analyzeDirectoryNames(directories);
@@ -189,9 +190,9 @@ export class ProjectDiscovery {
 
     this.cachedStructure = structure;
     
-    console.log(`[Discovery] Identified ${domains.length} domains:`);
+    log(`[Discovery] Identified ${domains.length} domains:`);
     domains.forEach(d => {
-      console.log(`  - ${d.name} (${d.type}, confidence: ${d.confidence.toFixed(2)}, framework: ${d.framework || 'unknown'})`);
+      log(`  - ${d.name} (${d.type}, confidence: ${d.confidence.toFixed(2)}, framework: ${d.framework || 'unknown'})`);
     });
 
     return structure;

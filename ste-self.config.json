@@ -10,9 +10,12 @@
   "ignorePatterns": [
     "node_modules",
     "dist",
+    "fixtures",
+    "python-scripts",
     "*.test.ts",
     "*.spec.ts",
-    ".ste-self"
+    ".ste-self",
+    ".ste"
   ]
 }
 

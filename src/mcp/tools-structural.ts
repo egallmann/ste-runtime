@@ -52,6 +52,7 @@ export async function searchSemanticGraph(
       path: node.path,
       tags: node.tags,
       sourceFiles: node.sourceFiles,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
       description: node.element?.description,
     })),
     truncated: result.truncated,
@@ -86,6 +87,7 @@ export async function getDependencies(
       id: node.id,
       path: node.path,
       tags: node.tags,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     depth,
     truncated: result.truncated,
@@ -120,6 +122,7 @@ export async function getDependents(
       id: node.id,
       path: node.path,
       tags: node.tags,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     depth,
     truncated: result.truncated,
@@ -154,6 +157,7 @@ export async function getBlastRadius(
       id: node.id,
       path: node.path,
       tags: node.tags,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     depth,
     truncated: result.truncated,
@@ -194,6 +198,7 @@ export async function lookupByKeyTool(
       path: node.path,
       tags: node.tags,
       sourceFiles: node.sourceFiles,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
       references: node.references,
       referencedBy: node.referencedBy,
       element: node.element,
@@ -235,6 +240,7 @@ export async function lookupTool(
       path: node.path,
       tags: node.tags,
       sourceFiles: node.sourceFiles,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
       references: node.references,
       referencedBy: node.referencedBy,
       element: node.element,
@@ -268,6 +274,7 @@ export async function byTagTool(
       id: node.id,
       path: node.path,
       tags: node.tags,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     truncated: result.truncated,
     totalFound: result.nodes.length,
@@ -278,6 +285,12 @@ export async function byTagTool(
  * Tool: get_graph_stats
  * 
  * Get statistics about the semantic graph.
+ * 
+ * Note on node counts: totalNodes represents the in-memory graph nodes loaded
+ * from YAML slice files. The slice file count may differ because:
+ * - Each slice file becomes one or more graph nodes
+ * - Some slice types expand into multiple relationship nodes
+ * - Inferred relationships may create additional edges but not nodes
  */
 export async function getGraphStatsTool(ctx: RssContext) {
   const stats = getGraphStats(ctx);
@@ -288,6 +301,7 @@ export async function getGraphStatsTool(ctx: RssContext) {
     byType: stats.byType,
     totalEdges: stats.totalEdges,
     graphVersion: ctx.graphVersion,
+    note: 'totalNodes reflects in-memory graph size. RECON slice file count may differ due to node expansion.',
   };
 }
 

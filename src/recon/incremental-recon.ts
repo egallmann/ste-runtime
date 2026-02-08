@@ -5,6 +5,7 @@ import yaml from 'js-yaml';
 import { globby } from 'globby';
 
 import { PythonExtractor } from '../extractors/python/python-extractor.js';
+import { log, warn } from '../utils/logger.js';
 import { loadAidocGraph } from '../rss/graph-loader.js';
 import {
   Aidoc,
@@ -34,13 +35,18 @@ import {
 
 type AidocKey = string;
 
-const STATE_ROOT = '.ste/state';
-
-const DOC_TYPE_TO_PATH: Record<string, (projectRoot: string, id: string) => string> = {
-  'api:endpoint': (root, id) => path.resolve(root, STATE_ROOT, 'api', 'endpoints', `${id}.yaml`),
-  'data:entity': (root, id) => path.resolve(root, STATE_ROOT, 'data', 'entities', `${id}.yaml`),
-  'graph:module': (root, id) => path.resolve(root, STATE_ROOT, 'graph', 'internal', 'modules', `${id}.yaml`),
-};
+/**
+ * Get path resolvers for different document types.
+ * 
+ * @param stateDir - Resolved absolute path to state directory
+ */
+function getDocTypeToPath(stateDir: string): Record<string, (id: string) => string> {
+  return {
+    'api:endpoint': (id) => path.resolve(stateDir, 'api', 'endpoints', `${id}.yaml`),
+    'data:entity': (id) => path.resolve(stateDir, 'data', 'entities', `${id}.yaml`),
+    'graph:module': (id) => path.resolve(stateDir, 'graph', 'internal', 'modules', `${id}.yaml`),
+  };
+}
 
 function aidocKey(doc: Aidoc): AidocKey {
   return `${doc._slice.domain}:${doc._slice.type}:${doc._slice.id}`;
@@ -53,10 +59,9 @@ async function readAidocFile(filePath: string): Promise<Aidoc | null> {
   return data as Aidoc;
 }
 
-async function loadExistingDocs(projectRoot: string): Promise<Aidoc[]> {
-  const stateRoot = path.resolve(projectRoot, STATE_ROOT);
+async function loadExistingDocs(stateDir: string): Promise<Aidoc[]> {
   const files = await globby(['api/**/*.yaml', 'data/**/*.yaml', 'graph/**/*.yaml'], {
-    cwd: stateRoot,
+    cwd: stateDir,
     absolute: true,
     dot: false,
   });
@@ -72,28 +77,28 @@ async function loadExistingDocs(projectRoot: string): Promise<Aidoc[]> {
   return docs;
 }
 
-function docTargetPath(projectRoot: string, doc: Aidoc): string {
-  const resolver = DOC_TYPE_TO_PATH[`${doc._slice.domain}:${doc._slice.type}`];
+function docTargetPath(stateDir: string, doc: Aidoc): string {
+  const docTypeToPath = getDocTypeToPath(stateDir);
+  const resolver = docTypeToPath[`${doc._slice.domain}:${doc._slice.type}`];
   if (!resolver) {
     throw new Error(`Unsupported doc type for incremental recon: ${doc._slice.domain}:${doc._slice.type}`);
   }
-  return resolver(projectRoot, doc._slice.id);
+  return resolver(doc._slice.id);
 }
 
 async function ensureParentDir(filePath: string) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
 }
 
-async function writeAidoc(projectRoot: string, doc: Aidoc) {
-  const target = docTargetPath(projectRoot, doc);
+async function writeAidoc(stateDir: string, doc: Aidoc) {
+  const target = docTargetPath(stateDir, doc);
   await ensureParentDir(target);
   await fs.writeFile(target, yamlDump(doc), 'utf8');
 }
 
-async function removeMissingDocs(projectRoot: string, expectedPaths: Set<string>) {
-  const stateRoot = path.resolve(projectRoot, STATE_ROOT);
+async function removeMissingDocs(stateDir: string, expectedPaths: Set<string>) {
   const files = await globby(['api/**/*.yaml', 'data/**/*.yaml', 'graph/**/*.yaml'], {
-    cwd: stateRoot,
+    cwd: stateDir,
     absolute: true,
     dot: false,
   });
@@ -269,11 +274,11 @@ function buildIndexes(docs: Aidoc[], timestamp: string) {
   return { apiIndex, dataIndex, graphIndex };
 }
 
-async function writeIndexes(projectRoot: string, timestamp: string, docs: Aidoc[]) {
+async function writeIndexes(stateDir: string, timestamp: string, docs: Aidoc[]) {
   const { apiIndex, dataIndex, graphIndex } = buildIndexes(docs, timestamp);
-  const apiIndexPath = path.resolve(projectRoot, STATE_ROOT, 'api', 'index.yaml');
-  const dataIndexPath = path.resolve(projectRoot, STATE_ROOT, 'data', 'index.yaml');
-  const graphIndexPath = path.resolve(projectRoot, STATE_ROOT, 'graph', 'internal', 'index.yaml');
+  const apiIndexPath = path.resolve(stateDir, 'api', 'index.yaml');
+  const dataIndexPath = path.resolve(stateDir, 'data', 'index.yaml');
+  const graphIndexPath = path.resolve(stateDir, 'graph', 'internal', 'index.yaml');
 
   await ensureParentDir(apiIndexPath);
   await fs.writeFile(apiIndexPath, yamlDump(apiIndex), 'utf8');
@@ -285,21 +290,20 @@ async function writeIndexes(projectRoot: string, timestamp: string, docs: Aidoc[
   await fs.writeFile(graphIndexPath, yamlDump(graphIndex), 'utf8');
 }
 
-async function writeDocs(projectRoot: string, docs: Aidoc[]) {
+async function writeDocs(stateDir: string, docs: Aidoc[]) {
   const expected = new Set<string>();
   for (const doc of docs) {
-    const target = docTargetPath(projectRoot, doc);
+    const target = docTargetPath(stateDir, doc);
     expected.add(target);
-    await writeAidoc(projectRoot, doc);
+    await writeAidoc(stateDir, doc);
   }
   if (expected.size > 0) {
-    await removeMissingDocs(projectRoot, expected);
+    await removeMissingDocs(stateDir, expected);
   }
 }
 
-async function ensureStateExists(projectRoot: string) {
-  const stateRoot = path.resolve(projectRoot, STATE_ROOT);
-  await fs.mkdir(stateRoot, { recursive: true });
+async function ensureStateExists(stateDir: string) {
+  await fs.mkdir(stateDir, { recursive: true });
 }
 
 async function buildModuleLookupForIncremental(
@@ -332,43 +336,80 @@ function collectNewDocs(
   return { modules: moduleDocs, entities: entityDocs, endpoints: endpointDocs };
 }
 
-async function fallbackToFullRecon(projectRoot: string): Promise<void> {
-  await runFullRecon(projectRoot);
-  const manifest = await buildFullManifest(projectRoot);
-  await writeReconManifest(projectRoot, manifest);
+/**
+ * Fallback to full recon.
+ * 
+ * @param projectRoot - Project root directory
+ * @param stateDir - Resolved absolute path to state directory
+ */
+async function fallbackToFullRecon(projectRoot: string, stateDir: string): Promise<void> {
+  await runFullRecon(projectRoot, stateDir);
+  // For fallback full recon, use 'all' to capture both Python and TypeScript
+  const manifest = await buildFullManifest(projectRoot, 'all');
+  await writeReconManifest(stateDir, manifest);
 }
 
-export async function runIncrementalRecon(projectRoot: string, opts?: { fallbackToFull?: boolean }): Promise<void> {
+export interface IncrementalReconOptions {
+  /** Whether to fall back to full recon if manifest is missing */
+  fallbackToFull?: boolean;
+  /** 
+   * State directory path. Can be relative (resolved against projectRoot) or absolute.
+   * Defaults to '.ste/state' for legacy compatibility but should always be provided.
+   */
+  stateDir?: string;
+}
+
+/**
+ * Run incremental RECON.
+ * 
+ * @param projectRoot - Project root directory
+ * @param opts - Options including stateDir
+ */
+export async function runIncrementalRecon(projectRoot: string, opts?: IncrementalReconOptions): Promise<void> {
   const resolvedRoot = path.resolve(projectRoot);
   const fallback = opts?.fallbackToFull ?? true;
+  
+  // CRITICAL: Resolve stateDir properly
+  // If not provided, warn and use legacy default (for backward compatibility)
+  let stateDir: string;
+  if (opts?.stateDir) {
+    stateDir = path.isAbsolute(opts.stateDir) 
+      ? opts.stateDir 
+      : path.resolve(resolvedRoot, opts.stateDir);
+  } else {
+    warn('[recon] WARNING: runIncrementalRecon called without stateDir option.');
+    warn('[recon] Using legacy default .ste/state which may cause boundary violations.');
+    warn('[recon] Please provide stateDir option from config.');
+    stateDir = path.resolve(resolvedRoot, '.ste', 'state');
+  }
 
-  const manifest = await loadReconManifest(resolvedRoot);
+  const manifest = await loadReconManifest(stateDir);
   if (!manifest) {
     if (fallback) {
-      console.log('[recon] No manifest found. Running full recon.');
-      await fallbackToFullRecon(resolvedRoot);
+      log('[recon] No manifest found. Running full recon.');
+      await fallbackToFullRecon(resolvedRoot, stateDir);
       return;
     }
     throw new Error('Recon manifest missing; run full recon first.');
   }
 
-  const changeSet = await detectFileChanges(resolvedRoot, manifest);
+  const changeSet = await detectFileChanges(resolvedRoot, stateDir, manifest);
   const hasChanges = changeSet.added.length + changeSet.modified.length + changeSet.deleted.length > 0;
   if (!hasChanges) {
-    console.log('[recon] No file changes detected. Skipping incremental recon.');
-    await writeReconManifest(resolvedRoot, changeSet.manifest);
+    log('[recon] No file changes detected. Skipping incremental recon.');
+    await writeReconManifest(stateDir, changeSet.manifest);
     return;
   }
 
-  await ensureStateExists(resolvedRoot);
+  await ensureStateExists(stateDir);
 
   let graphResult;
   try {
-    graphResult = await loadAidocGraph(path.resolve(resolvedRoot, STATE_ROOT));
+    graphResult = await loadAidocGraph(stateDir);
   } catch (error) {
     if (fallback) {
-      console.warn('[recon] Failed to load current AI-DOC graph. Falling back to full recon.');
-      await fallbackToFullRecon(resolvedRoot);
+      warn('[recon] Failed to load current AI-DOC graph. Falling back to full recon.');
+      await fallbackToFullRecon(resolvedRoot, stateDir);
       return;
     }
     throw error;
@@ -443,7 +484,7 @@ export async function runIncrementalRecon(projectRoot: string, opts?: { fallback
 
   const newDocs: Aidoc[] = [...modules, ...entities, ...endpoints];
 
-  const existingDocs = await loadExistingDocs(resolvedRoot);
+  const existingDocs = await loadExistingDocs(stateDir);
 
   const keysToRemove = new Set<AidocKey>();
   // Remove docs whose source files were deleted
@@ -459,13 +500,11 @@ export async function runIncrementalRecon(projectRoot: string, opts?: { fallback
   const mergedDocs = mergeDocs(existingDocs, newDocs, keysToRemove);
 
   finalizeBidirectionalRefs(mergedDocs);
-  await writeDocs(resolvedRoot, mergedDocs);
-  await writeIndexes(resolvedRoot, timestamp, mergedDocs);
-  await writeReconManifest(resolvedRoot, changeSet.manifest);
+  await writeDocs(stateDir, mergedDocs);
+  await writeIndexes(stateDir, timestamp, mergedDocs);
+  await writeReconManifest(stateDir, changeSet.manifest);
 
-  console.log(
+  log(
     `[recon] Incremental recon complete. Added: ${changeSet.added.length}, Modified: ${changeSet.modified.length}, Deleted: ${changeSet.deleted.length}`,
   );
 }
-
-

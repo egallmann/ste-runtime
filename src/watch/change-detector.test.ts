@@ -2,6 +2,10 @@
  * Tests for change-detector.ts
  * 
  * Tests manifest building, loading, and change detection.
+ * 
+ * IMPORTANT: The change-detector functions now take stateDir (absolute path to state directory)
+ * instead of projectRoot. This ensures manifest operations work correctly regardless of
+ * project structure.
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -19,9 +23,12 @@ import {
 } from './change-detector.js';
 
 let tempDir: string;
+let stateDir: string;
 
 beforeEach(async () => {
   tempDir = await mkdtemp(path.join(os.tmpdir(), 'change-detector-test-'));
+  // State directory is inside the temp directory
+  stateDir = path.join(tempDir, '.ste', 'state');
 });
 
 afterEach(async () => {
@@ -90,7 +97,7 @@ describe('buildFullManifest', () => {
 
 describe('loadReconManifest', () => {
   it('should load existing manifest', async () => {
-    const manifestDir = path.join(tempDir, '.ste', 'state', 'manifest');
+    const manifestDir = path.join(stateDir, 'manifest');
     await mkdir(manifestDir, { recursive: true });
     
     const existingManifest: ReconManifest = {
@@ -111,7 +118,8 @@ describe('loadReconManifest', () => {
       'utf8'
     );
 
-    const loaded = await loadReconManifest(tempDir);
+    // Pass stateDir, not tempDir
+    const loaded = await loadReconManifest(stateDir);
 
     expect(loaded).toBeDefined();
     expect(loaded?.version).toBe(1);
@@ -119,13 +127,13 @@ describe('loadReconManifest', () => {
   });
 
   it('should return null for missing manifest', async () => {
-    const loaded = await loadReconManifest(tempDir);
+    const loaded = await loadReconManifest(stateDir);
 
     expect(loaded).toBeNull();
   });
 
   it('should return null for invalid manifest', async () => {
-    const manifestDir = path.join(tempDir, '.ste', 'state', 'manifest');
+    const manifestDir = path.join(stateDir, 'manifest');
     await mkdir(manifestDir, { recursive: true });
     await writeFile(
       path.join(manifestDir, 'recon-manifest.json'),
@@ -133,7 +141,7 @@ describe('loadReconManifest', () => {
       'utf8'
     );
 
-    const loaded = await loadReconManifest(tempDir);
+    const loaded = await loadReconManifest(stateDir);
 
     expect(loaded).toBeNull();
   });
@@ -147,9 +155,10 @@ describe('writeReconManifest', () => {
       files: {},
     };
 
-    await writeReconManifest(tempDir, manifest);
+    // Pass stateDir, not tempDir
+    await writeReconManifest(stateDir, manifest);
 
-    const written = await readFile(manifestPath(tempDir), 'utf8');
+    const written = await readFile(manifestPath(stateDir), 'utf8');
     const parsed = JSON.parse(written);
     expect(parsed.version).toBe(1);
   });
@@ -162,9 +171,9 @@ describe('writeReconManifest', () => {
     };
 
     // Directory doesn't exist yet
-    await writeReconManifest(tempDir, manifest);
+    await writeReconManifest(stateDir, manifest);
 
-    const loaded = await loadReconManifest(tempDir);
+    const loaded = await loadReconManifest(stateDir);
     expect(loaded).toBeDefined();
   });
 });
@@ -175,7 +184,8 @@ describe('detectFileChanges', () => {
       await createPythonFile('src/new1.py', 'content1');
       await createPythonFile('src/new2.py', 'content2');
 
-      const changes = await detectFileChanges(tempDir, null);
+      // Pass both projectRoot (tempDir) and stateDir
+      const changes = await detectFileChanges(tempDir, stateDir, null);
 
       expect(changes.added).toHaveLength(2);
       expect(changes.modified).toHaveLength(0);
@@ -191,7 +201,7 @@ describe('detectFileChanges', () => {
 
       await createPythonFile('src/new.py', 'new content');
 
-      const changes = await detectFileChanges(tempDir, previousManifest);
+      const changes = await detectFileChanges(tempDir, stateDir, previousManifest);
 
       expect(changes.added).toContain('src/new.py');
       expect(changes.unchanged).toContain('src/existing.py');
@@ -204,7 +214,7 @@ describe('detectFileChanges', () => {
       // Modify the file
       await createPythonFile('src/module.py', 'modified content');
 
-      const changes = await detectFileChanges(tempDir, previousManifest);
+      const changes = await detectFileChanges(tempDir, stateDir, previousManifest);
 
       expect(changes.modified).toContain('src/module.py');
     });
@@ -217,7 +227,7 @@ describe('detectFileChanges', () => {
       // Delete one file
       await rm(path.join(tempDir, 'src/to-delete.py'));
 
-      const changes = await detectFileChanges(tempDir, previousManifest);
+      const changes = await detectFileChanges(tempDir, stateDir, previousManifest);
 
       expect(changes.deleted).toContain('src/to-delete.py');
       expect(changes.unchanged).toContain('src/to-keep.py');
@@ -227,7 +237,7 @@ describe('detectFileChanges', () => {
       await createPythonFile('src/stable.py', 'stable content');
       const previousManifest = await buildFullManifest(tempDir);
 
-      const changes = await detectFileChanges(tempDir, previousManifest);
+      const changes = await detectFileChanges(tempDir, stateDir, previousManifest);
 
       expect(changes.unchanged).toContain('src/stable.py');
       expect(changes.added).not.toContain('src/stable.py');
@@ -242,7 +252,7 @@ describe('detectFileChanges', () => {
       await new Promise(resolve => setTimeout(resolve, 10));
       await createPythonFile('src/tricky.py', 'different');
 
-      const changes = await detectFileChanges(tempDir, previousManifest);
+      const changes = await detectFileChanges(tempDir, stateDir, previousManifest);
 
       expect(changes.modified).toContain('src/tricky.py');
     });
@@ -252,7 +262,7 @@ describe('detectFileChanges', () => {
     it('should return updated manifest in change set', async () => {
       await createPythonFile('src/module.py', 'content');
 
-      const changes = await detectFileChanges(tempDir, null);
+      const changes = await detectFileChanges(tempDir, stateDir, null);
 
       expect(changes.manifest).toBeDefined();
       expect(changes.manifest.version).toBe(1);
@@ -262,7 +272,7 @@ describe('detectFileChanges', () => {
     it('should return fingerprints for current files', async () => {
       await createPythonFile('src/module.py', 'content');
 
-      const changes = await detectFileChanges(tempDir, null);
+      const changes = await detectFileChanges(tempDir, stateDir, null);
 
       expect(changes.fingerprints['src/module.py']).toBeDefined();
       expect(changes.fingerprints['src/module.py'].hash).toHaveLength(64);
@@ -271,11 +281,9 @@ describe('detectFileChanges', () => {
 });
 
 describe('manifestPath', () => {
-  it('should return correct manifest path', () => {
-    const expected = path.join(tempDir, '.ste', 'state', 'manifest', 'recon-manifest.json');
+  it('should return correct manifest path within stateDir', () => {
+    const expected = path.join(stateDir, 'manifest', 'recon-manifest.json');
     
-    expect(manifestPath(tempDir)).toBe(expected);
+    expect(manifestPath(stateDir)).toBe(expected);
   });
 });
-
-

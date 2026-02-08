@@ -191,6 +191,7 @@ function normalizeElement(
         domain: 'graph',
         type: 'function',
         source_files: [assertion.file],
+        source: assertion.source,  // Pillar 1: Rich Slices
       },
       element: {
         id: assertion.elementId,
@@ -208,12 +209,16 @@ function normalizeElement(
         deprecated: assertion.metadata.deprecated,
         tags: assertion.metadata.tags,
         decorators: assertion.metadata.decorators,
+        // Method-specific properties (for class methods)
+        isMethod: assertion.metadata.isMethod as boolean | undefined,
+        className: assertion.metadata.className as string | undefined,
       },
       provenance: {
         extracted_at: timestamp,
         extractor,
         file: assertion.file,
         line: assertion.line,
+        end_line: assertion.end_line,
         language: assertion.language,
       },
     };
@@ -226,6 +231,7 @@ function normalizeElement(
         domain: 'graph',
         type: 'class',
         source_files: [assertion.file],
+        source: assertion.source,  // Pillar 1: Rich Slices
       },
       element: {
         id: assertion.elementId,
@@ -246,6 +252,7 @@ function normalizeElement(
         extractor,
         file: assertion.file,
         line: assertion.line,
+        end_line: assertion.end_line,
         language: assertion.language,
       },
     };
@@ -258,6 +265,7 @@ function normalizeElement(
         domain: 'api',
         type: 'endpoint',
         source_files: [assertion.file],
+        source: assertion.source,  // Pillar 1: Rich Slices
       },
       element: {
         id: assertion.elementId,
@@ -625,6 +633,14 @@ function normalizeElement(
         callGraph: assertion.metadata.callGraph,
         // Functions that call other functions
         callers: assertion.metadata.callers,
+        // Constructor call graph: function name -> classes instantiated
+        constructorCallGraph: assertion.metadata.constructorCallGraph,
+        // Method call graph: function name -> methods called
+        methodCallGraph: assertion.metadata.methodCallGraph,
+        // Summary: all instantiated classes in the file
+        instantiatedClasses: assertion.metadata.instantiatedClasses,
+        // Summary: all methods called in the file
+        calledMethods: assertion.metadata.calledMethods,
       },
       provenance: {
         extracted_at: timestamp,

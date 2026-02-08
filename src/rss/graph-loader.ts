@@ -24,6 +24,10 @@ export type AidocNode = {
   path?: string;
   slice?: Slice;
   element?: Record<string, unknown>;
+  /** Embedded source code from the slice (Pillar 1: Rich Slices) */
+  source?: string;
+  /** Optional description/docstring for this component */
+  description?: string;
 };
 
 export type AidocGraph = Map<string, AidocNode>;
@@ -136,14 +140,22 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
       const provenance = data.provenance as Record<string, unknown> | undefined;
       if (provenance && typeof provenance.line === 'number') {
         const startLine = provenance.line;
-        // For functions/classes, estimate end line based on element structure if available
-        // For now, set start only - end can be determined by next slice or EOF
-        sliceRange = { start: startLine };
+        const endLine = typeof provenance.end_line === 'number' ? provenance.end_line : undefined;
+        sliceRange = { start: startLine, end: endLine };
       }
     }
     
     // Extract element metadata (contains function/class details including docstrings)
     const element = data.element as Record<string, unknown> | undefined;
+    
+    // Extract embedded source code (Pillar 1: Rich Slices)
+    const source = typeof sliceObj.source === 'string' ? sliceObj.source : undefined;
+    
+    // Extract description from element or docstring
+    const description = 
+      (element?.docstring as string) || 
+      (element?.description as string) || 
+      undefined;
 
     graph.set(key, {
       key,
@@ -157,6 +169,8 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
       path: nodePath,
       slice: sliceRange,
       element: element || undefined,
+      source,
+      description,
     });
   }
 

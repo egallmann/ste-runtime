@@ -10,7 +10,7 @@ import { Command } from 'commander';
 import { loadConfig } from '../config/index.js';
 import { McpServer } from '../mcp/mcp-server.js';
 import { Watchdog } from '../watch/watchdog.js';
-import { runFullRecon } from '../recon/full-recon.js';
+import { executeRecon } from '../recon/index.js';
 import { loadReconManifest } from '../watch/change-detector.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,6 +26,7 @@ export async function main() {
     .description('Start MCP server with optional file watching')
     .option('--mcp', 'Enable MCP mode (default when run by Cursor)', true)
     .option('--no-watch', 'Disable file watching (MCP server only)')
+    .option('--self', 'Self-analysis mode: analyze ste-runtime itself instead of parent project')
     .option('--config <path>', 'Custom config file path')
     .parse(process.argv);
 
@@ -33,16 +34,29 @@ export async function main() {
   try {
     // Load configuration
     const runtimeDir = path.resolve(__dirname, '../..');
-    const config = await loadConfig(runtimeDir);
+    const config = await loadConfig(runtimeDir, { selfMode: options.self });
     
     console.log(`[ste watch] Project root: ${config.projectRoot}`);
     console.log(`[ste watch] State directory: ${config.stateDir}`);
     
+    // CRITICAL: Resolve stateDir to absolute path for manifest operations
+    // The stateDir from config is relative to projectRoot, so resolve it properly
+    const resolvedStateDir = path.resolve(config.projectRoot, config.stateDir);
+    console.log(`[ste watch] Resolved state directory: ${resolvedStateDir}`);
+    
     // Check if manifest exists, run full RECON if not
-    const manifest = await loadReconManifest(config.projectRoot);
+    // CRITICAL: Use resolvedStateDir, NOT projectRoot - manifest lives INSIDE stateDir
+    const manifest = await loadReconManifest(resolvedStateDir);
     if (!manifest) {
       console.log('[ste watch] No manifest found, running initial RECON...');
-      await runFullRecon(config.projectRoot);
+      // Use executeRecon with proper config - this writes to config.stateDir (inside ste-runtime)
+      await executeRecon({
+        projectRoot: config.projectRoot,
+        sourceRoot: config.sourceDirs[0] ?? '.',
+        stateRoot: config.stateDir,
+        mode: 'full',
+        config: config,
+      });
       console.log('[ste watch] Initial RECON complete');
     }
     

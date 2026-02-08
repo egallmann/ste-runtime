@@ -55,24 +55,27 @@ async function hashState(stateRoot: string) {
 describe('incremental recon', () => {
   it('matches full recon after single-file change', async () => {
     const projectRoot = await copyFixture();
-    const stateRoot = path.join(projectRoot, '.ste', 'state');
+    // State directory is inside the project root
+    const stateDir = path.join(projectRoot, '.ste', 'state');
 
-    await runFullRecon(projectRoot);
+    // Run full recon with stateDir parameter
+    await runFullRecon(projectRoot, stateDir);
     const manifest = await buildFullManifest(projectRoot);
-    await writeReconManifest(projectRoot, manifest);
+    // Write manifest to stateDir, not projectRoot
+    await writeReconManifest(stateDir, manifest);
 
     const greetingPath = path.join(projectRoot, 'app', 'services', 'greeting.py');
     const original = await readFile(greetingPath, 'utf8');
     await writeFile(greetingPath, `${original}\n\n# tweak\n`);
 
-    await runIncrementalRecon(projectRoot, { fallbackToFull: false });
-    const incrementalState = await hashState(stateRoot);
+    // Run incremental recon with stateDir option
+    await runIncrementalRecon(projectRoot, { fallbackToFull: false, stateDir });
+    const incrementalState = await hashState(stateDir);
 
-    await runFullRecon(projectRoot);
-    const fullState = await hashState(stateRoot);
+    // Run full recon again with stateDir parameter
+    await runFullRecon(projectRoot, stateDir);
+    const fullState = await hashState(stateDir);
 
     expect(incrementalState).toEqual(fullState);
   });
 });
-
-

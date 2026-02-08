@@ -23,6 +23,7 @@ import type { NormalizedAssertion } from './index.js';
 import { computeFileChecksum } from '../../watch/full-reconciliation.js';
 import { writeTracker } from '../../watch/write-tracker.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
+import { log } from '../../utils/logger.js';
 
 export interface PopulationResult {
   created: number;
@@ -65,7 +66,7 @@ export async function populateAiDoc(
   const priorStateStart = performance.now();
   const priorState = await loadPriorState(stateDir);
   const priorStateTime = performance.now() - priorStateStart;
-  console.log(`[RECON Population] Loaded prior state (${priorState.size} slices) in ${priorStateTime.toFixed(2)}ms`);
+  log(`[RECON Population] Loaded prior state (${priorState.size} slices) in ${priorStateTime.toFixed(2)}ms`);
   
   // Track stats
   let created = 0;
@@ -85,7 +86,7 @@ export async function populateAiDoc(
         try {
           await fs.unlink(targetPath);
           deleted++;
-          console.log(`[RECON Population] Deleted orphan: ${priorId}`);
+          log(`[RECON Population] Deleted orphan: ${priorId}`);
         } catch (error) {
           // File might not exist, ignore
         }
@@ -131,7 +132,7 @@ export async function populateAiDoc(
             try {
               await fs.unlink(targetPath);
               deleted++;
-              console.log(`[RECON Population] Deleted orphan: ${priorId}`);
+              log(`[RECON Population] Deleted orphan: ${priorId}`);
             } catch (error) {
               // File might not exist (already deleted or misnamed), log but continue
               console.warn(`[RECON Population] Could not delete orphan ${priorId}: file not found`);
@@ -168,7 +169,17 @@ export async function populateAiDoc(
     }
     checksumTime += performance.now() - checksumStart;
     
-    const yamlContent = yaml.dump(assertion, {
+    // Build slice line range for graph-loader (start/end)
+    const sliceWithLineRange: Record<string, unknown> = {
+      ...assertion,
+      // Add explicit slice line range for graph-loader
+      slice: {
+        start: assertion.provenance?.line,
+        end: assertion.provenance?.end_line,
+      },
+    };
+    
+    const yamlContent = yaml.dump(sliceWithLineRange, {
         noRefs: true,
         lineWidth: -1,
         sortKeys: false,
@@ -208,14 +219,14 @@ export async function populateAiDoc(
   const totalTime = performance.now() - startTime;
   const writePhaseTime = performance.now() - writeStart;
   
-  console.log(`[RECON Population] Timing breakdown:`);
-  console.log(`  Prior state load: ${priorStateTime.toFixed(2)}ms`);
-  console.log(`  Checksum computation: ${checksumTime.toFixed(2)}ms`);
-  console.log(`  File writes: ${writeTime.toFixed(2)}ms`);
-  console.log(`  Write tracking: ${trackerTime.toFixed(2)}ms`);
-  console.log(`  Write phase total: ${writePhaseTime.toFixed(2)}ms`);
-  console.log(`  Population total: ${totalTime.toFixed(2)}ms`);
-  console.log(`  Throughput: ${(assertions.length / (totalTime / 1000)).toFixed(0)} slices/sec`);
+  log(`[RECON Population] Timing breakdown:`);
+  log(`  Prior state load: ${priorStateTime.toFixed(2)}ms`);
+  log(`  Checksum computation: ${checksumTime.toFixed(2)}ms`);
+  log(`  File writes: ${writeTime.toFixed(2)}ms`);
+  log(`  Write tracking: ${trackerTime.toFixed(2)}ms`);
+  log(`  Write phase total: ${writePhaseTime.toFixed(2)}ms`);
+  log(`  Population total: ${totalTime.toFixed(2)}ms`);
+  log(`  Throughput: ${(assertions.length / (totalTime / 1000)).toFixed(0)} slices/sec`);
   
   return {
     created,

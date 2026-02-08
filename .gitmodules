@@ -1,3 +1,6 @@
 [submodule "spec"]
 	path = spec
 	url = https://github.com/egallmann/ste-spec.git
+[submodule "ste-runtime"]
+	path = ste-runtime
+	url = https://github.com/egallmann/ste-runtime.git

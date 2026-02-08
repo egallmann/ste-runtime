@@ -20,6 +20,14 @@ import {
 } from './context-source-loader.js';
 
 /**
+ * Options passed from MCP server for source loading
+ */
+export interface ContextToolOptions {
+  /** Project root for resolving source file paths */
+  projectRoot?: string;
+}
+
+/**
  * Tool: assemble_context
  * 
  * Main context assembly function for LLM reasoning (CEM Stage 2→3).
@@ -37,7 +45,8 @@ export async function assembleContextTool(
     depth?: number;
     maxNodes?: number;
     maxSourceLines?: number;
-  }
+  },
+  options: ContextToolOptions = {}
 ) {
   const {
     query,
@@ -79,6 +88,7 @@ export async function assembleContextTool(
   if (includeSource) {
     const loadOptions: LoadSourceOptions = {
       maxLines: maxSourceLines,
+      projectRoot: options.projectRoot,
     };
     
     sourceContexts = await loadSourceForSlices(context.nodes, loadOptions);
@@ -104,6 +114,7 @@ export async function assembleContextTool(
       type: ep.type,
       id: ep.id,
       path: ep.path,
+      lineRange: ep.slice ? { start: ep.slice.start, end: ep.slice.end } : undefined,
     })),
     nodes: context.nodes.map(node => ({
       key: node.key,
@@ -112,6 +123,7 @@ export async function assembleContextTool(
       id: node.id,
       path: node.path,
       tags: node.tags,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     sourceContexts: sourceContexts.map(sc => ({
       key: sc.key,
@@ -144,7 +156,8 @@ export async function getImplementationContext(
     includeDependencies?: boolean;
     depth?: number;
     maxSourceLines?: number;
-  }
+  },
+  options: ContextToolOptions = {}
 ) {
   const {
     key,
@@ -180,6 +193,7 @@ export async function getImplementationContext(
   if (includeSource) {
     const loadOptions: LoadSourceOptions = {
       maxLines: maxSourceLines,
+      projectRoot: options.projectRoot,
     };
     
     sourceContexts = await loadSourceForSlices(nodesToLoad, loadOptions);
@@ -198,6 +212,7 @@ export async function getImplementationContext(
       id: targetNode.id,
       path: targetNode.path,
       tags: targetNode.tags,
+      lineRange: targetNode.slice ? { start: targetNode.slice.start, end: targetNode.slice.end } : undefined,
       element: targetNode.element,
     },
     dependencies: nodesToLoad.slice(1).map(node => ({
@@ -206,6 +221,7 @@ export async function getImplementationContext(
       type: node.type,
       id: node.id,
       path: node.path,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     sourceContexts: sourceContexts.map(sc => ({
       key: sc.key,
@@ -230,7 +246,8 @@ export async function getRelatedImplementations(
     includeSource?: boolean;
     maxResults?: number;
     maxSourceLines?: number;
-  }
+  },
+  options: ContextToolOptions = {}
 ) {
   const {
     key,
@@ -264,6 +281,7 @@ export async function getRelatedImplementations(
   if (includeSource && relatedNodes.length > 0) {
     const loadOptions: LoadSourceOptions = {
       maxLines: maxSourceLines,
+      projectRoot: options.projectRoot,
     };
     
     sourceContexts = await loadSourceForSlices(relatedNodes, loadOptions);
@@ -280,6 +298,7 @@ export async function getRelatedImplementations(
       domain: targetNode.domain,
       type: targetNode.type,
       id: targetNode.id,
+      lineRange: targetNode.slice ? { start: targetNode.slice.start, end: targetNode.slice.end } : undefined,
     },
     relatedNodes: relatedNodes.map(node => ({
       key: node.key,
@@ -288,6 +307,7 @@ export async function getRelatedImplementations(
       id: node.id,
       path: node.path,
       tags: node.tags,
+      lineRange: node.slice ? { start: node.slice.start, end: node.slice.end } : undefined,
     })),
     sourceContexts: sourceContexts.map(sc => ({
       key: sc.key,

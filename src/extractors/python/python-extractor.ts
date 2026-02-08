@@ -1,10 +1,39 @@
+import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execa } from 'execa';
 import { globby, globbySync } from 'globby';
 import { BaseExtractor, type ExtractedStructure } from '../base-extractor.js';
 
 const DEFAULT_TIMEOUT_MS = 10_000;
-const SCRIPT_PATH = path.resolve(process.cwd(), 'python-scripts', 'ast_parser.py');
+
+// Get runtime directory from this file's location
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// This file is in dist/extractors/python/ or src/extractors/python/, so go up 3 levels to runtime root
+const RUNTIME_DIR = path.resolve(__dirname, '../../..');
+
+/**
+ * Resolve path to Python AST parser script.
+ * Uses the runtime directory rather than process.cwd() for MCP compatibility.
+ */
+function getScriptPath(): string {
+  // Primary: look in the runtime directory
+  const runtimeScript = path.resolve(RUNTIME_DIR, 'python-scripts', 'ast_parser.py');
+  if (fs.existsSync(runtimeScript)) {
+    return runtimeScript;
+  }
+  
+  // Fallback for development
+  const cwdScript = path.resolve(process.cwd(), 'python-scripts', 'ast_parser.py');
+  if (fs.existsSync(cwdScript)) {
+    return cwdScript;
+  }
+  
+  return runtimeScript;
+}
+
+const SCRIPT_PATH = getScriptPath();
 const PY_CANDIDATES = [
   process.env.PYTHON_BIN,
   process.platform === 'win32' ? 'python' : 'python3',

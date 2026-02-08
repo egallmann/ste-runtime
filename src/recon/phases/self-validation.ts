@@ -16,6 +16,7 @@ import { validateGraph } from '../validation/graph-validator.js';
 import { validateIdentity } from '../validation/identity-validator.js';
 import { validateCoverage } from '../validation/coverage-validator.js';
 import { generateReport, type ReportVerbosity } from '../validation/report-generator.js';
+import { log } from '../../utils/logger.js';
 
 export interface SelfValidationOptions {
   validationVerbosity?: ReportVerbosity;
@@ -43,7 +44,7 @@ export async function runSelfValidation(
   const verbosity = options.validationVerbosity ?? 'summary';
   const repeatabilityCheck = options.repeatabilityCheck ?? false;
   
-  console.log('[RECON Phase 7] Self-validation (non-blocking)...');
+  log('[RECON Phase 7] Self-validation (non-blocking)...');
   
   // Generate run ID for this validation
   const runId = `recon-${Date.now()}`;
@@ -66,7 +67,7 @@ export async function runSelfValidation(
     // 1. Schema Integrity
     try {
       if (verbosity !== 'silent') {
-        console.log('[RECON Phase 7] Running schema validation...');
+        log('[RECON Phase 7] Running schema validation...');
       }
       const schemaFindings = await validateSchema(context);
       allFindings.push(...schemaFindings);
@@ -83,7 +84,7 @@ export async function runSelfValidation(
     // 2. Repeatability
     try {
       if (verbosity !== 'silent') {
-        console.log('[RECON Phase 7] Running repeatability validation...');
+        log('[RECON Phase 7] Running repeatability validation...');
       }
       const repeatabilityFindings = await validateRepeatability(context, runId);
       allFindings.push(...repeatabilityFindings);
@@ -100,7 +101,7 @@ export async function runSelfValidation(
     // 3. Graph Consistency
     try {
       if (verbosity !== 'silent') {
-        console.log('[RECON Phase 7] Running graph validation...');
+        log('[RECON Phase 7] Running graph validation...');
       }
       const graphFindings = await validateGraph(context);
       allFindings.push(...graphFindings);
@@ -117,7 +118,7 @@ export async function runSelfValidation(
     // 4. Identity Stability
     try {
       if (verbosity !== 'silent') {
-        console.log('[RECON Phase 7] Running identity validation...');
+        log('[RECON Phase 7] Running identity validation...');
       }
       const identityFindings = await validateIdentity(context);
       allFindings.push(...identityFindings);
@@ -134,7 +135,7 @@ export async function runSelfValidation(
     // 5. Extraction Coverage
     try {
       if (verbosity !== 'silent') {
-        console.log('[RECON Phase 7] Running coverage validation...');
+        log('[RECON Phase 7] Running coverage validation...');
       }
       const coverageFindings = await validateCoverage(context);
       allFindings.push(...coverageFindings);
@@ -159,7 +160,7 @@ export async function runSelfValidation(
     // Generate report
     await generateReport(stateDir, runId, allFindings, verbosity);
     
-    console.log(`[RECON Phase 7] Validation complete: ${summary.total_findings} findings (${summary.errors} errors, ${summary.warnings} warnings, ${summary.info} info)`);
+    log(`[RECON Phase 7] Validation complete: ${summary.total_findings} findings (${summary.errors} errors, ${summary.warnings} warnings, ${summary.info} info)`);
     
     // Return result (success = true even with errors, non-blocking)
     return {

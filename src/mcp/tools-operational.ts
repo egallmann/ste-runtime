@@ -207,6 +207,7 @@ export async function triggerFullRecon(
     // If user provided a projectRoot, we'll validate it by loading config from that location
     let config;
     let finalProjectRoot;
+    let finalStateDir: string;
     
     if (args.projectRoot) {
       // User provided a project root - we need to find where ste-runtime is relative to it
@@ -222,10 +223,17 @@ export async function triggerFullRecon(
       }
       
       finalProjectRoot = providedRoot;
+      
+      // CRITICAL FIX: When custom projectRoot is provided, config.stateDir is relative to 
+      // config.projectRoot, NOT the provided root. Compute absolute path to avoid doubling.
+      // The stateDir should always resolve to runtimeDir/.ste/state for external projects.
+      finalStateDir = path.resolve(runtimeDir, '.ste', 'state');
     } else {
       // No project root provided - use the one detected by loadConfig
       config = await loadConfig(runtimeDir);
       finalProjectRoot = config.projectRoot;
+      // stateDir from config is already correct relative to projectRoot
+      finalStateDir = path.resolve(config.projectRoot, config.stateDir);
     }
     
     const isSelfAnalysis = config.projectRoot === config.runtimeDir;
@@ -279,12 +287,13 @@ export async function triggerFullRecon(
     }
     
     // Run RECON for the detected project (external or self-analysis)
+    // Use finalStateDir (absolute path) to avoid path doubling when custom projectRoot is provided
     const result = await executeRecon({
       projectRoot: finalProjectRoot,
       sourceRoot: config.sourceDirs[0] ?? '.',
-      stateRoot: config.stateDir,
+      stateRoot: finalStateDir,  // Use absolute path computed above
       mode: 'full',
-      config: config,
+      config: { ...config, stateDir: finalStateDir },  // Override stateDir in config too
     });
     
     // If we're not in self-analysis mode, also run self-analysis
@@ -325,17 +334,20 @@ export async function triggerFullRecon(
     const allSuccess = result.success && (!selfResult || selfResult.success);
     
     // Build descriptive message
+    // Note: "slice files" refers to YAML files on disk. Each file contains one slice definition,
+    // but the in-memory graph may have more nodes due to inferred relationships and expanded references.
     let message: string;
     if (allSuccess) {
       if (isSelfAnalysis) {
         message = `Full RECON completed successfully. ` +
-          `Populated .ste-self/state with ${result.aiDocCreated + result.aiDocModified} slices. ` +
-          (cleanupCount > 0 ? `Cleaned up ${cleanupCount} orphaned slices from .ste/state. ` : '') +
+          `Populated .ste-self/state with ${result.aiDocCreated + result.aiDocModified} slice files (graph may contain additional inferred nodes). ` +
+          (cleanupCount > 0 ? `Cleaned up ${cleanupCount} orphaned slice files from .ste/state. ` : '') +
           `State directories are now accurate to the reconciled project.`;
       } else {
         message = `Full RECON completed successfully. ` +
-          `External project: ${result.aiDocCreated + result.aiDocModified} slices in .ste/state. ` +
-          `Self-analysis: ${selfResult ? selfResult.aiDocCreated + selfResult.aiDocModified : 0} slices in .ste-self/state. ` +
+          `External project: ${result.aiDocCreated + result.aiDocModified} slice files in .ste/state. ` +
+          `Self-analysis: ${selfResult ? selfResult.aiDocCreated + selfResult.aiDocModified : 0} slice files in .ste-self/state. ` +
+          `Note: Graph node count may differ from slice file count due to inferred relationships. ` +
           `Both state directories are now accurate to the reconciled projects.`;
       }
     } else {

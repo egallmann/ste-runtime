@@ -16,6 +16,7 @@ import { globby } from 'globby';
 import type { DiscoveredFile } from './index.js';
 import type { SupportedLanguage, ResolvedConfig } from '../../config/index.js';
 import { toPosixPath } from '../../utils/paths.js';
+import { log } from '../../utils/logger.js';
 
 /**
  * Language-specific file patterns
@@ -353,8 +354,8 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
     }
   }
   
-  console.log(`[RECON Discovery] Found ${discoveredFiles.length} files`);
-  console.log(`[RECON Discovery] Languages: ${languages.join(', ')}`);
+  log(`[RECON Discovery] Found ${discoveredFiles.length} files`);
+  log(`[RECON Discovery] Languages: ${languages.join(', ')}`);
   
   // Log breakdown by language
   const byLanguage = new Map<SupportedLanguage, number>();
@@ -363,7 +364,7 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
     byLanguage.set(file.language, count + 1);
   }
   for (const [lang, count] of byLanguage) {
-    console.log(`[RECON Discovery]   ${lang}: ${count} files`);
+    log(`[RECON Discovery]   ${lang}: ${count} files`);
   }
   
   return discoveredFiles;

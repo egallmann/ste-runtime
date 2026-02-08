@@ -1,7 +1,18 @@
+/**
+ * Legacy Full RECON
+ * 
+ * @deprecated Use executeRecon from './index.js' instead.
+ * This file is kept for backward compatibility but should not be used directly.
+ * 
+ * CRITICAL: This legacy implementation had hardcoded paths that caused boundary violations.
+ * The new implementation uses config.stateDir to ensure state is written to the correct location.
+ */
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { PythonExtractor } from '../extractors/python/python-extractor.js';
+import { log, warn } from '../utils/logger.js';
 import { buildFullManifest, writeReconManifest } from '../watch/change-detector.js';
 import {
   Aidoc,
@@ -18,13 +29,14 @@ import {
   yamlDump,
 } from './common.js';
 
-const STATE_ROOT = '.ste/state';
-const API_DIR = 'api';
-const DATA_DIR = 'data';
-const GRAPH_INTERNAL_DIR = 'graph/internal';
-
-async function resetDomainDir(projectRoot: string, relativeDir: string) {
-  const absolute = path.resolve(projectRoot, '.ste', 'state', relativeDir);
+/**
+ * Reset a domain directory within the state directory.
+ * 
+ * @param stateDir - Resolved absolute path to state directory
+ * @param relativeDir - Relative path within state directory (e.g., 'api', 'data')
+ */
+async function resetDomainDir(stateDir: string, relativeDir: string) {
+  const absolute = path.resolve(stateDir, relativeDir);
   await fs.rm(absolute, { recursive: true, force: true });
   await fs.mkdir(absolute, { recursive: true });
   return absolute;
@@ -34,8 +46,8 @@ async function writeYaml(targetPath: string, data: unknown) {
   await fs.writeFile(targetPath, yamlDump(data), 'utf8');
 }
 
-async function writeApiDomain(projectRoot: string, endpoints: EndpointDoc[], timestamp: string) {
-  const apiDir = await resetDomainDir(projectRoot, API_DIR);
+async function writeApiDomain(stateDir: string, endpoints: EndpointDoc[], timestamp: string) {
+  const apiDir = await resetDomainDir(stateDir, 'api');
   const endpointsDir = path.join(apiDir, 'endpoints');
   await fs.mkdir(endpointsDir, { recursive: true });
 
@@ -60,8 +72,8 @@ async function writeApiDomain(projectRoot: string, endpoints: EndpointDoc[], tim
   await writeYaml(path.join(apiDir, 'index.yaml'), index);
 }
 
-async function writeDataDomain(projectRoot: string, entities: EntityDoc[], timestamp: string) {
-  const dataDir = await resetDomainDir(projectRoot, DATA_DIR);
+async function writeDataDomain(stateDir: string, entities: EntityDoc[], timestamp: string) {
+  const dataDir = await resetDomainDir(stateDir, 'data');
   const entitiesDir = path.join(dataDir, 'entities');
   await fs.mkdir(entitiesDir, { recursive: true });
 
@@ -87,8 +99,8 @@ async function writeDataDomain(projectRoot: string, entities: EntityDoc[], times
   await writeYaml(path.join(dataDir, 'index.yaml'), index);
 }
 
-async function writeInternalGraphDomain(projectRoot: string, modules: ModuleDoc[], timestamp: string) {
-  const graphDir = await resetDomainDir(projectRoot, GRAPH_INTERNAL_DIR);
+async function writeInternalGraphDomain(stateDir: string, modules: ModuleDoc[], timestamp: string) {
+  const graphDir = await resetDomainDir(stateDir, 'graph/internal');
   const modulesDir = path.join(graphDir, 'modules');
   await fs.mkdir(modulesDir, { recursive: true });
 
@@ -112,8 +124,30 @@ async function writeInternalGraphDomain(projectRoot: string, modules: ModuleDoc[
   await writeYaml(path.join(graphDir, 'index.yaml'), index);
 }
 
-export async function runFullRecon(projectRoot: string): Promise<void> {
+/**
+ * Run full RECON.
+ * 
+ * @deprecated Use executeRecon from './index.js' instead.
+ * 
+ * @param projectRoot - Project root directory
+ * @param stateDir - Optional resolved absolute path to state directory. 
+ *                   If not provided, defaults to projectRoot/.ste/state (LEGACY BEHAVIOR - AVOID).
+ */
+export async function runFullRecon(projectRoot: string, stateDir?: string): Promise<void> {
   const resolvedRoot = path.resolve(projectRoot);
+  
+  // CRITICAL: If stateDir is not provided, use legacy behavior but warn
+  // This maintains backward compatibility while encouraging migration to new API
+  const resolvedStateDir = stateDir 
+    ? path.resolve(stateDir) 
+    : path.resolve(resolvedRoot, '.ste', 'state');
+  
+  if (!stateDir) {
+    warn('[RECON] WARNING: runFullRecon called without stateDir parameter.');
+    warn('[RECON] Using legacy path resolution which may cause boundary violations.');
+    warn('[RECON] Please use executeRecon from ./index.js with proper config instead.');
+  }
+  
   const extractor = new PythonExtractor();
   const timestamp = new Date().toISOString();
 
@@ -132,16 +166,17 @@ export async function runFullRecon(projectRoot: string): Promise<void> {
   const allDocs: Aidoc[] = [...moduleDocs, ...entityDocs, ...endpointDocs];
   finalizeBidirectionalRefs(allDocs);
 
-  await writeApiDomain(resolvedRoot, endpointDocs, timestamp);
-  await writeDataDomain(resolvedRoot, entityDocs, timestamp);
-  await writeInternalGraphDomain(resolvedRoot, moduleDocs, timestamp);
+  // Write to resolvedStateDir, NOT projectRoot
+  await writeApiDomain(resolvedStateDir, endpointDocs, timestamp);
+  await writeDataDomain(resolvedStateDir, entityDocs, timestamp);
+  await writeInternalGraphDomain(resolvedStateDir, moduleDocs, timestamp);
 
-  const manifest = await buildFullManifest(resolvedRoot);
-  await writeReconManifest(resolvedRoot, manifest);
+  // For legacy full recon, use 'all' to capture both Python and TypeScript
+  const manifest = await buildFullManifest(resolvedRoot, 'all');
+  // Write manifest to state directory
+  await writeReconManifest(resolvedStateDir, manifest);
 
-  console.log(
+  log(
     `RECON complete. Modules: ${moduleDocs.length}, Entities: ${entityDocs.length}, Endpoints: ${endpointDocs.length}`,
   );
 }
-
-

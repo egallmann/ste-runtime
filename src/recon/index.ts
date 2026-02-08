@@ -14,6 +14,7 @@ import type { ResolvedConfig } from '../config/index.js';
 import { runReconPhases } from './phases/index.js';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { log, error as logError } from '../utils/logger.js';
 
 export interface ReconOptions {
   projectRoot: string;
@@ -60,32 +61,32 @@ export interface ReconResult {
  * - MUST NOT halt development workflows
  */
 export async function executeRecon(options: ReconOptions): Promise<ReconResult> {
-  console.log('[RECON] Starting reconciliation...');
-  console.log(`[RECON] Mode: ${options.mode ?? 'incremental'}`);
-  console.log(`[RECON] Project root: ${options.projectRoot}`);
+  log('[RECON] Starting reconciliation...');
+  log(`[RECON] Mode: ${options.mode ?? 'incremental'}`);
+  log(`[RECON] Project root: ${options.projectRoot}`);
   
   if (options.config) {
-    console.log(`[RECON] Config mode: scanning ${options.config.languages.join(', ')}`);
+    log(`[RECON] Config mode: scanning ${options.config.languages.join(', ')}`);
   } else {
-    console.log(`[RECON] Legacy mode: source root: ${options.sourceRoot}`);
+    log(`[RECON] Legacy mode: source root: ${options.sourceRoot}`);
   }
   
-  console.log(`[RECON] State root: ${options.stateRoot}`);
+  log(`[RECON] State root: ${options.stateRoot}`);
   
   try {
     const result = await runReconPhases(options);
     
-    console.log('[RECON] Reconciliation complete');
-    console.log(`[RECON] AI-DOC updates: ${result.aiDocUpdated}`);
-    console.log(`[RECON] Conflicts detected: ${result.conflictsDetected}`);
+    log('[RECON] Reconciliation complete');
+    log(`[RECON] AI-DOC updates: ${result.aiDocUpdated}`);
+    log(`[RECON] Conflicts detected: ${result.conflictsDetected}`);
     
     if (result.conflictsDetected > 0) {
-      console.log(`[RECON] Conflicts surfaced. Review: ${options.stateRoot}/conflicts/`);
+      log(`[RECON] Conflicts surfaced. Review: ${options.stateRoot}/conflicts/`);
     }
     
     return result;
-  } catch (error) {
-    console.error('[RECON] Execution failed:', error);
+  } catch (err) {
+    logError('[RECON] Execution failed:', err);
     return {
       success: false,
       conflictsDetected: 0,
@@ -97,7 +98,7 @@ export async function executeRecon(options: ReconOptions): Promise<ReconResult> 
       validationErrors: 0,
       validationWarnings: 0,
       validationInfo: 0,
-      errors: [error instanceof Error ? error.message : String(error)],
+      errors: [err instanceof Error ? err.message : String(err)],
       warnings: [],
     };
   }
