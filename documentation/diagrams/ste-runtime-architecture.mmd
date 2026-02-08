@@ -1,6 +1,6 @@
 flowchart TB
     %% External Interface
-    Cursor[Cursor IDE] -->|MCP Protocol<br/>stdio transport| MCPServer[MCP Server<br/>15 Tools Exposed]
+    Cursor[Cursor IDE] -->|MCP Protocol<br/>stdio transport| MCPServer[MCP Server<br/>8 Tools Exposed]
     
     %% MCP Server Layer 1: Structural Queries
     MCPServer --> Layer1[Layer 1: Structural Queries<br/>Fast graph operations<br/>&lt;100ms response]

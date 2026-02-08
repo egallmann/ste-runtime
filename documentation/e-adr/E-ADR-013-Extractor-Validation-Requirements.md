@@ -94,8 +94,8 @@ it('should create bidirectional edges (referenced_by)', () => {
 it('should resolve relative imports correctly', () => {
   // Given: Complex relative imports
   const tests = [
-    { from: 'src/mcp/mcp-server.ts', import: './tools.js', expect: 'module-src-mcp-tools' },
-    { from: 'src/mcp/server.ts', import: '../rss/ops.js', expect: 'module-src-rss-ops' },
+    { from: 'src/mcp/mcp-server.ts', import: './tools-optimized.js', expect: 'module-src-mcp-tools-optimized' },
+    { from: 'src/mcp/mcp-server.ts', import: '../rss/rss-operations.js', expect: 'module-src-rss-rss-operations' },
     { from: 'src/a/b/c.ts', import: '../../x/y.js', expect: 'module-src-x-y' },
   ];
   
@@ -225,7 +225,7 @@ describe('Graph Traversal Post-RECON', () => {
     // Then: Should find all dependencies
     expect(result.nodes.length).toBeGreaterThan(10);
     expect(result.nodes).toContainEqual(
-      expect.objectContaining({ key: 'module-src-mcp-tools-structural' })
+      expect.objectContaining({ key: 'module-src-mcp-tools-optimized' })
     );
   });
   
@@ -526,7 +526,7 @@ ste fuzz-extractor --language typescript --iterations 1000
 ### What Went Wrong
 
 1. **Inference bug:** `resolveImportToModuleId()` used `generateModuleId(importPath)` directly instead of resolving relative paths first
-2. **Result:** Import `./tools.js` from `src/mcp/server.ts` generated ID `module-.-tools` instead of `module-src-mcp-tools`
+2. **Result:** Import `./tools-optimized.js` from `src/mcp/mcp-server.ts` generated ID `module-.-tools` instead of `module-src-mcp-tools-optimized`
 3. **Impact:** Graph lookups failed, no edges created, traversal crippled
 
 ### Why Tests Didn't Catch It
@@ -618,3 +618,7 @@ describe('YOURLANG Extractor - Integration', () => {
 ---
 
 **End of E-ADR-013**
+
+
+
+

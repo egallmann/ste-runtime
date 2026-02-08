@@ -283,7 +283,7 @@ ste recon
 **MCP** (Model Context Protocol) server exposes ste-runtime tools to Cursor IDE.
 
 **Features:**
-- 15 tools available
+- 8 tools available
 - Auto-discovery in Cursor
 - File watching (optional)
 - Always-fresh semantic state

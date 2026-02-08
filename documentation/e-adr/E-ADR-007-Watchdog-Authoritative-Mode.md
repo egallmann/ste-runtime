@@ -8,6 +8,8 @@
 
 > **Updated 2026-01-11:** Clarified that ste-runtime operates in Workspace Development Boundary (STE Architecture Section 3.1), not as "Authoritative Mode". Integrated with MCP protocol for Cursor integration.
 
+> **Implementation Note (2026-02-08):** The current MCP server exposes 8 AI-optimized tools (`find`, `show`, `usages`, `impact`, `similar`, `overview`, `diagnose`, `refresh`). Tool names listed below reflect the original layered tool plan.
+
 ---
 
 ## Context

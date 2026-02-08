@@ -46,7 +46,7 @@ flowchart TB
         AIDoc[AI-DOC State]
         RSS[RSS Graph]
         Watchdog[File Watcher<br/>Watchdog]
-        MCP[MCP Server<br/>15 Tools]
+        MCP[MCP Server<br/>8 Tools]
     end
     
     Cursor[Cursor IDE]
@@ -147,31 +147,18 @@ flowchart TB
 
 **Implementation:** `src/mcp/`
 
-**Tools Exposed (15 total):**
-
-**Layer 1: Structural Queries (8 tools)**
-- `search_semantic_graph` — Entry point discovery
-- `lookup_by_key` — Direct component lookup
-- `get_dependencies` — Forward traversal
-- `get_dependents` — Backward traversal
-- `get_blast_radius` — Impact analysis
-- `by_tag` — Cross-domain queries
-- `get_graph_stats` — Graph metrics
-- `get_graph_health` — Health checks
-
-**Layer 2: Context Assembly (3 tools)**
-- `assemble_context` — Main context assembly (MVC)
-- `get_implementation_context` — Full implementation context
-- `get_related_implementations` — Similar code patterns
-
-**Layer 3: Operational (4 tools)**
-- `get_dependencies` (operational) — Dependency analysis
-- `get_dependents` (operational) — Dependent analysis
-- `get_blast_radius` (operational) — Impact analysis
-- `trigger_full_recon` — Manual RECON trigger
+**Tools Exposed (8 total):**
+- `find` — Semantic search by meaning/name
+- `show` — Full implementation with dependencies
+- `usages` — Usage sites with snippets
+- `impact` — Change impact analysis
+- `similar` — Find similar code patterns
+- `overview` — Codebase structure overview
+- `diagnose` — Graph health/coverage checks
+- `refresh` — Trigger graph refresh
 
 **Key Design Decisions:**
-- **MCP over HTTP** — Native Cursor integration, stdio transport
+- **MCP over stdio** — Native Cursor integration
 - **Auto-discovery** — Cursor automatically finds tools
 - **Context reload** — Automatic RSS graph reload after RECON
 
@@ -568,4 +555,5 @@ MCP query received
 
 **Last Updated:** 2026-01-11  
 **Maintainer:** ste-runtime contributors
+
 

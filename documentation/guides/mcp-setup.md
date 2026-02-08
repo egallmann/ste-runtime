@@ -125,78 +125,44 @@ Once configured, ste-runtime tools are available in Cursor's AI assistant. The a
 
 ### Available Tools
 
-#### Layer 1: Structural Queries (Fast)
-
-**`search_semantic_graph`** - Find components by query
+**`find`** - Semantic search by meaning/name
 ```
-Query: "search for authentication handlers"
+Query: "find authentication handlers"
 ```
 
-**`get_dependencies`** - What does this component depend on?
+**`show`** - Full implementation with dependencies
 ```
-Query: "what does api/function/login-handler depend on?"
-```
-
-**`get_dependents`** - What depends on this component?
-```
-Query: "what depends on data/entity/User?"
+Query: "show src/api/auth.ts"
 ```
 
-**`get_blast_radius`** - Full impact analysis
+**`usages`** - Where a symbol is used
 ```
-Query: "what's the blast radius of changing the User entity?"
-```
-
-**`lookup_by_key`** - Direct component lookup
-```
-Query: "show me graph/module/auth-service"
+Query: "where is UserService used?"
 ```
 
-**`by_tag`** - Find all components with a tag
+**`impact`** - Change impact analysis
 ```
-Query: "find all lambda handlers"
-```
-
-**`get_graph_stats`** - Graph statistics
-```
-Query: "show graph stats"
+Query: "impact of changing data/entity/User"
 ```
 
-#### Layer 2: Context Assembly (Rich)
-
-**`assemble_context`** - Main context assembly
+**`similar`** - Find similar code patterns
 ```
-Query: "assemble context for fixing the login bug"
-Returns: Relevant slices + source code + metadata
+Query: "find similar patterns to UserService"
 ```
 
-**`get_implementation_context`** - Component + dependencies
+**`overview`** - Codebase structure overview
 ```
-Query: "get implementation of api/function/authenticate"
-Returns: Function source + dependency source
-```
-
-**`get_related_implementations`** - Similar patterns
-```
-Query: "find implementations similar to UserService"
-Returns: Related components with source
+Query: "overview of the auth domain"
 ```
 
-#### Operational Tools
-
-**`detect_missing_extractors`** - Language support analysis
+**`diagnose`** - Graph health/coverage checks
 ```
-Query: "detect missing extractors"
+Query: "diagnose graph health"
 ```
 
-**`get_graph_health`** - Validation metrics
+**`refresh`** - Force graph refresh
 ```
-Query: "check graph health"
-```
-
-**`trigger_full_recon`** - Manual full RECON
-```
-Query: "run full recon"
+Query: "refresh graph"
 ```
 
 ## Example Workflows
@@ -207,9 +173,9 @@ Query: "run full recon"
 You: "Tell me how authentication works in this codebase"
 
 Cursor uses:
-1. search_semantic_graph("authentication")
-2. get_dependencies("api/function/authenticate")
-3. assemble_context("authentication flow")
+1. find("authentication")
+2. show("api/function/authenticate")
+3. show("authentication flow")
 
 Result: Full context with source code
 ```
@@ -220,8 +186,8 @@ Result: Full context with source code
 You: "What would break if I change the User entity?"
 
 Cursor uses:
-1. lookup_by_key("data/entity/User")
-2. get_blast_radius("data/entity/User")
+1. show("data/entity/User")
+2. impact("data/entity/User")
 
 Result: List of affected components
 ```
@@ -232,8 +198,8 @@ Result: List of affected components
 You: "Show me other services similar to UserService"
 
 Cursor uses:
-1. search_semantic_graph("UserService")
-2. get_related_implementations("graph/module/user-service")
+1. find("UserService")
+2. similar("UserService")
 
 Result: Similar patterns with source
 ```
@@ -494,7 +460,7 @@ This design minimizes token usage while providing rich context.
 1. **Run RECON regularly** - Keep graph fresh
 2. **Use specific queries** - Better results, faster
 3. **Enable file watching** - Automatic updates
-4. **Monitor graph health** - Use `get_graph_health`
+4. **Monitor graph health** - Use `diagnose`
 5. **Start with structural queries** - Then load source if needed
 
 ## Support
@@ -508,6 +474,8 @@ This design minimizes token usage while providing rich context.
 - [E-ADR-011: MCP Server Implementation](../e-adr/E-ADR-011-ste-runtime-MCP-Server.md)
 - [RSS Usage Guide](../instructions/RSS-USAGE-GUIDE.md)
 - [RECON README](../instructions/RECON-README.md)
+
+
 
 
 

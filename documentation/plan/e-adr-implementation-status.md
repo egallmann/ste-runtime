@@ -146,50 +146,23 @@ Both E-ADR-007 and E-ADR-011 are **SUBSTANTIALLY COMPLETE** with all core compon
   - Context initialization and hot-reloading
   - Graceful shutdown handling
 
-#### ✅ Layer 1: RSS Operations (Pure Semantic Graph)
-**File:** `src/mcp/tools-structural.ts`
+#### ✅ AI-Optimized MCP Tools (8)
+**File:** `src/mcp/tools-optimized.ts`
 
 Implemented Tools:
-- `search_semantic_graph` - Entry point discovery
-- `get_dependencies` - Forward traversal
-- `get_dependents` - Backward traversal  
-- `get_blast_radius` - Impact analysis
-- `lookup_by_key` - Direct key lookup
-- `lookup` - Domain + ID lookup
-- `by_tag` - Tag-based filtering
-- `get_graph_stats` - Graph statistics
+- `find` - Semantic search by meaning/name
+- `show` - Full implementation with dependencies
+- `usages` - Usage sites with snippets
+- `impact` - Change impact analysis
+- `similar` - Similar code patterns
+- `overview` - Codebase structure overview
+- `diagnose` - Graph health/coverage checks
+- `refresh` - Trigger graph refresh (reloads context)
 
-**Performance:** All queries <100ms (in-memory graph)
+**Operational Helpers (internal):**
+- `src/mcp/tools-operational.ts` (recon triggers, health utilities)
 
-#### ✅ Layer 2: Context Assembly Operations
-**File:** `src/mcp/tools-context.ts`
-
-Implemented Tools:
-- `assemble_context` - Full CEM Stage 2→3 integration
-- `get_implementation_context` - Component with source code
-- `get_related_implementations` - Similar code patterns
-
-**Features:**
-- Source code loading (targeted, not entire codebase)
-- Token budget optimization
-- LLM-friendly formatting
-- Chunking for large files
-
-**Source Loader:** `src/mcp/context-source-loader.ts`
-- Reads source files for specific slices
-- Formats for LLM consumption
-- Handles line ranges and truncation
-- Max source lines configurable (default: 100 per file)
-
-#### ✅ Layer 3: Operational Tools
-**File:** `src/mcp/tools-operational.ts`
-
-Implemented Tools:
-- `detect_missing_extractors` - Language coverage analysis
-- `get_graph_health` - Validation status
-- `trigger_full_recon` - Manual reconciliation fallback
-
-#### ✅ Adaptive Tool Parameters (§3 of E-ADR-011)
+#### ✅ Adaptive Tool Parameters (§3 of E-ADR-011) (§3 of E-ADR-011)
 **File:** `src/mcp/graph-topology-analyzer.ts`
 
 **Implemented:**
@@ -243,7 +216,7 @@ Implemented Tools:
 ### What's Working
 
 1. **Cursor Integration Ready** - MCP protocol implemented correctly
-2. **Tool Discovery** - Cursor can see all 13 MCP tools automatically
+2. **Tool Discovery** - Cursor can see all 8 MCP tools automatically
 3. **Fast Queries** - RSS operations <100ms (in-memory)
 4. **Rich Context** - Source code loading for targeted files only
 5. **Adaptive Defaults** - Graph analysis tunes depth automatically
@@ -289,15 +262,15 @@ Implemented Tools:
 **Integration Pattern:**
 ```typescript
 // Step 1: Fast structural query (RSS Layer)
-search_semantic_graph({ query: "authentication handlers" })
+find({ query: "authentication handlers" })
 → Returns 12 slice keys in 45ms
 
 // Step 2: LLM narrows down
-get_dependents({ key: "api/function/authenticate" })
+usages({ target: "api/function/authenticate" })
 → Returns 3 slice keys in 23ms
 
 // Step 3: Rich context (Context Assembly Layer)
-assemble_context({ query: "show auth handler implementations" })
+show({ target: "api/function/authenticate" })
 → Loads source for 3 files (240 lines) in 180ms
 → Total: 248ms, precise context
 ```
@@ -459,6 +432,8 @@ assemble_context({ query: "show auth handler implementations" })
 
 **Last Updated:** 2026-01-11  
 **Next Review:** After Cursor integration testing
+
+
 
 
 

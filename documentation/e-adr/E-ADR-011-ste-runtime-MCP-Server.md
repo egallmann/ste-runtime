@@ -8,6 +8,8 @@
 
 > **Purpose:** Define comprehensive architecture for ste-runtime as a unified MCP server with file watching capabilities, enabling governed cognition in the Workspace Development Boundary.
 
+> **Implementation Note (2026-02-08):** The current MCP server exposes 8 AI-optimized tools (`find`, `show`, `usages`, `impact`, `similar`, `overview`, `diagnose`, `refresh`). The detailed tool specifications below reflect the original layered design and serve as historical/roadmap context.
+
 ---
 
 ## Context

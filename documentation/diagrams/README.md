@@ -21,17 +21,15 @@ ste-runtime is a **single long-running process** that combines file watching, se
 #### **Cursor IDE**
 - The AI-powered code editor that uses ste-runtime
 - Communicates via **MCP (Model Context Protocol)** over stdio
-- Automatically discovers and uses ste-runtime's 15 tools
+- Automatically discovers and uses ste-runtime's 8 tools
 - No manual configuration needed once MCP is set up
 
 #### **MCP Server**
 - Exposes ste-runtime functionality as MCP tools
-- **15 tools total** organized into 3 layers:
-  - **Layer 1 (8 tools):** Fast structural queries
-  - **Layer 2 (3 tools):** Rich context assembly with source code
-  - **Layer 3 (4 tools):** Operational tools (health, extractors, RECON triggers)
+- **8 tools total** (AI-optimized):
+  - `find`, `show`, `usages`, `impact`
+  - `similar`, `overview`, `diagnose`, `refresh`
 - Reloads RSS context automatically after RECON completes
-- Analyzes graph topology to optimize query parameters
 
 ---
 
@@ -159,7 +157,7 @@ ste-runtime is a **single long-running process** that combines file watching, se
 ### Example 1: User Queries "Find authentication handlers"
 
 ```
-1. Cursor → MCP Server: search_semantic_graph("authentication handlers")
+1. Cursor → MCP Server: find("authentication handlers")
 2. MCP Server → Layer 1: Query in-memory RSS Graph
 3. Layer 1 → RSS Graph: Search metadata (no file I/O)
 4. RSS Graph → Layer 1: Returns 12 component keys
@@ -170,7 +168,7 @@ ste-runtime is a **single long-running process** that combines file watching, se
 ### Example 2: User Queries "Assemble context for fixing login bug"
 
 ```
-1. Cursor → MCP Server: assemble_context("fixing login bug")
+1. Cursor → MCP Server: show("src/api/auth.ts")
 2. MCP Server → Layer 2: Assemble context
 3. Layer 2 → Layer 1: Find relevant components (12 keys)
 4. Layer 2 → File System: Load source for 3 most relevant files
@@ -343,6 +341,7 @@ See: https://mermaid.js.org/syntax/flowchart.html
    ```markdown
    ![Diagram Title](./new-diagram.svg)
    ```
+
 
 
 

@@ -169,27 +169,27 @@ describe('MyExtractor - Graph Edge Validation', () => {
 
   it('should resolve relative imports correctly', () => {
     // Test ./path
-    const a1 = createModuleAssertion('src/mcp/server.ts', 'module-src-mcp-server');
-    const b1 = createModuleAssertion('src/mcp/tools.ts', 'module-src-mcp-tools');
-    const raw1 = createRawImportAssertion('src/mcp/server.ts', './tools', []);
+    const a1 = createModuleAssertion('src/mcp/mcp-server.ts', 'module-src-mcp-mcp-server');
+    const b1 = createModuleAssertion('src/mcp/tools-optimized.ts', 'module-src-mcp-tools-optimized');
+    const raw1 = createRawImportAssertion('src/mcp/mcp-server.ts', './tools-optimized', []);
     
     const result1 = assertInferenceCreatesEdges(
       [a1, b1],
       [raw1],
-      'module-src-mcp-server',
-      ['module-src-mcp-tools']
+      'module-src-mcp-mcp-server',
+      ['module-src-mcp-tools-optimized']
     );
 
     // Test ../path
-    const a2 = createModuleAssertion('src/mcp/server.ts', 'module-src-mcp-server');
-    const b2 = createModuleAssertion('src/rss/ops.ts', 'module-src-rss-ops');
-    const raw2 = createRawImportAssertion('src/mcp/server.ts', '../rss/ops', []);
+    const a2 = createModuleAssertion('src/mcp/mcp-server.ts', 'module-src-mcp-mcp-server');
+    const b2 = createModuleAssertion('src/rss/rss-operations.ts', 'module-src-rss-rss-operations');
+    const raw2 = createRawImportAssertion('src/mcp/mcp-server.ts', '../rss/rss-operations', []);
     
     const result2 = assertInferenceCreatesEdges(
       [a2, b2],
       [raw2],
-      'module-src-mcp-server',
-      ['module-src-rss-ops']
+      'module-src-mcp-mcp-server',
+      ['module-src-rss-rss-operations']
     );
   });
 
@@ -310,3 +310,5 @@ Add to your CI workflow:
 ---
 
 **Status:** ✅ Active requirement for all extractors (as of 2026-01-11)
+
+
