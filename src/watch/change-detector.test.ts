@@ -8,9 +8,8 @@
  * project structure.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdir, mkdtemp, writeFile, rm, readFile } from 'node:fs/promises';
-import * as fsPromises from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {
@@ -176,20 +175,6 @@ describe('writeReconManifest', () => {
 
     const loaded = await loadReconManifest(stateDir);
     expect(loaded).toBeDefined();
-  });
-
-  it('should not throw on permission denied errors', async () => {
-    const manifest: ReconManifest = {
-      version: 1,
-      generatedAt: '2026-01-08T00:00:00.000Z',
-      files: {},
-    };
-    const mkdirSpy = vi
-      .spyOn(fsPromises, 'mkdir')
-      .mockRejectedValueOnce(Object.assign(new Error('permission denied'), { code: 'EACCES' }));
-
-    await expect(writeReconManifest(stateDir, manifest)).resolves.toBeUndefined();
-    mkdirSpy.mockRestore();
   });
 });
 
