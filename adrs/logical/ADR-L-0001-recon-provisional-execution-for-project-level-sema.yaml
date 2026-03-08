@@ -1,0 +1,252 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0001
+title: RECON Provisional Execution for Project-Level Semantic State
+status: accepted
+created_date: '2026-01-07'
+authors:
+- erik.gallmann
+domains:
+- recon
+- architecture
+- governance
+tags:
+- recon
+- provisional-execution
+- semantic-state
+- ste-compliance
+related_adrs:
+- ADR-L-0002
+- ADR-L-0003
+supersedes: []
+context: 'The STE Architecture Specification defines RECON (Reconciliation Engine)
+  as the mechanism for extracting semantic state from source code and populating AI-DOC.
+  The question arose: How should RECON operate during the exploratory development
+  phase when foundational components are still being built?
+
+
+  Key tensions:
+
+
+  1. **Canonical vs. Provisional State:** Should RECON produce canonical state that
+  is authoritative for downstream systems?
+
+  2. **Automatic Resolution vs. Conflict Surfacing:** Should RECON automatically resolve
+  conflicts or surface them for human judgment?
+
+  3. **Blocking vs. Non-Blocking:** Should RECON block development workflows when
+  conflicts are detected?
+
+  4. **Single Repository vs. Multi-Repository:** What is the scope of RECON''s reconciliation?
+
+
+  ---'
+capabilities: []
+architectural_boundaries: []
+interaction_contracts: []
+constraints: []
+invariants:
+- id: INV-0001
+  statement: 'Single repository only: RECON discovers files within the current repository.
+    Cross-repository reconciliation is out of scope.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0002
+  statement: 'Incremental reconciliation: Only files that have changed since the last
+    run are re-extracted (when timestamp detection is available).'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0003
+  statement: 'Configurable source directories: Specified via `ste.config.json` or
+    auto-detected.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0004
+  statement: 'Shallow extraction: Extract structural elements (functions, classes,
+    imports, exports) without deep semantic analysis.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0005
+  statement: 'No deep semantic analysis: Do not attempt to understand function behavior,
+    side effects, or complex type flows.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0006
+  statement: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
+    E-ADR-005), Angular, CSS/SCSS (see E-ADR-006).'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0007
+  statement: 'Portable execution: RECON must work when dropped into any project.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0008
+  statement: 'Provisional mapping: Normalization to AI-DOC schema is best-effort,
+    not canonical.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0009
+  statement: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization
+    will change.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0010
+  statement: 'ID stability: Element IDs should be stable across runs for the same
+    source element.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0011
+  statement: 'State is authoritative, not historical: Each run produces the current
+    truth, not a delta.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0012
+  statement: 'Create/Update/Delete semantics: New slices are created, changed slices
+    are updated, orphaned slices are deleted.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+- id: INV-0013
+  statement: 'Orphan detection: Slices from processed source files that no longer
+    exist in code are removed.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Extracted from ADR-L-0001 specification
+  compliance_frameworks: []
+  exceptions: []
+non_functional_requirements: []
+decisions:
+- id: DEC-0001
+  summary: RECON executes provisionally, generating semantic pressure without assuming
+    correctness.
+  rationale: '### 1. Semantic Pressure Over Semantic Truth
+
+
+    RECON exists to **observe how semantic truth breaks under change**, not to declare
+    what truth is. During exploratory development, the extraction algorithms, normalization
+    schemas, and conflict detection heuristics are all evolving. Declaring any output
+    as "canonical" would be premature.
+
+
+    By generating pressure without claiming correctness, RECON:
+
+    - Forces execution of incomplete implementations
+
+    - Surfaces edge cases and extraction gaps
+
+    - Generates learning evidence for future refinement
+
+    - Avoids false confidence in evolving algorithms
+
+
+    ### 2. Conflicts Require Human Judgment
+
+
+    Automatic conflict resolution assumes the system understands developer intent.
+    During this phase, RECON cannot reliably determine:
+
+    - Was a function renamed or deleted?
+
+    - Is a signature change intentional or accidental?
+
+    - Which version of a conflicting definition is correct?
+
+
+    All conflicts are written to disk as YAML files in `.ste/state/conflicts/active/`
+    for human review. RECON surfaces evidence; humans render judgment.
+
+
+    ### 3. Development Must Not Be Blocked
+
+
+    RECON is a learning tool, not an enforcement mechanism. Blocking commits would:
+
+    - Create friction disproportionate to RECON''s maturity
+
+    - Force developers to work around false positives
+
+    - Reduce willingness to run RECON frequently
+
+
+    By remaining non-blocking, RECON encourages frequent execution and generates more
+    learning data.
+
+
+    ---'
+  alternatives_considered: []
+  consequences:
+    positive:
+    - RECON can execute immediately, generating learning pressure
+    - Conflicts surface early, before they become entrenched
+    - Developers maintain full control over semantic state acceptance
+    - Extraction algorithms can evolve without breaking workflows
+    negative:
+    - No automated enforcement of semantic consistency
+    - Conflicts may accumulate if not reviewed
+    - Provisional state cannot be used for authoritative downstream systems
+    - Document all conflicts for periodic human review
+    - Track conflict patterns to improve extraction algorithms
+    - Plan transition to canonical execution once algorithms stabilize
+  related_invariants: []
+gaps: []

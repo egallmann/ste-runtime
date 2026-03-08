@@ -3,7 +3,10 @@
  * Tests the main runReconPhases function that orchestrates all 7 phases
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
 import { runReconPhases, type ReconOptions } from './index.js';
 import * as discovery from './discovery.js';
 import * as extraction from './extraction.js';
@@ -21,12 +24,35 @@ vi.mock('./inference.js');
 vi.mock('./population.js');
 vi.mock('./divergence.js');
 vi.mock('./self-validation.js');
+const mockBuildFullManifest = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ version: 1, generatedAt: '2024-01-01T00:00:00Z', files: {} })
+);
+const mockWriteReconManifest = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+vi.mock('../../watch/change-detector.js', () => ({
+  buildFullManifest: mockBuildFullManifest,
+  writeReconManifest: mockWriteReconManifest,
+  loadReconManifest: vi.fn(),
+  manifestPath: vi.fn(),
+}));
 vi.mock('../../discovery/index.js');
 
 describe('runReconPhases', () => {
-  const projectRoot = '/test/project';
+  let projectRoot: string;
   const sourceRoot = 'src';
   const stateRoot = '.ste';
+
+  beforeAll(async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'recon-phases-test-'));
+    projectRoot = path.join(tempDir, 'project');
+    await fs.mkdir(projectRoot, { recursive: true });
+  });
+
+  afterAll(async () => {
+    if (projectRoot) {
+      const tempDir = path.dirname(projectRoot);
+      await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+    }
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -50,7 +76,7 @@ describe('runReconPhases', () => {
     // Mock all phases
     vi.mocked(discovery.discoverFiles).mockResolvedValue([
       {
-        path: '/test/project/src/test.ts',
+        path: path.join(projectRoot, 'src', 'test.ts'),
         relativePath: '/src/test.ts',
         language: 'typescript',
         changeType: 'unchanged',
@@ -59,7 +85,7 @@ describe('runReconPhases', () => {
 
     vi.mocked(discovery.discoverFilesLegacy).mockResolvedValue([
       {
-        path: '/test/project/src/test.ts',
+        path: path.join(projectRoot, 'src', 'test.ts'),
         relativePath: '/src/test.ts',
         changeType: 'unchanged',
       },
@@ -188,6 +214,57 @@ describe('runReconPhases', () => {
         languages: ['typescript', 'python'],
         ignorePatterns: ['**/node_modules/**'],
       });
+    });
+
+    it('should normalize absolute config stateDir to project-relative path', async () => {
+      const options: ReconOptions = {
+        projectRoot,
+        sourceRoot,
+        stateRoot,
+        config: {
+          projectRoot,
+          sourceDirs: ['src'],
+          languages: ['typescript'],
+          ignorePatterns: [],
+          stateDir: '/test',
+        },
+      };
+
+      const result = await runReconPhases(options);
+
+      expect(result.success).toBe(true);
+      expect(result.warnings).toContain("Absolute state root '/test' normalized to 'test'");
+      expect(population.populateAiDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        projectRoot,
+        'test',
+        expect.anything(),
+        expect.anything()
+      );
+      expect(selfValidation.runSelfValidation).toHaveBeenCalledWith(
+        expect.anything(),
+        projectRoot,
+        'test',
+        sourceRoot,
+        expect.anything()
+      );
+    });
+
+    it('should continue successfully when manifest write fails', async () => {
+      mockWriteReconManifest.mockRejectedValueOnce(
+        new Error("EACCES: permission denied, mkdir '/test'")
+      );
+
+      const options: ReconOptions = {
+        projectRoot,
+        sourceRoot,
+        stateRoot,
+      };
+
+      const result = await runReconPhases(options);
+
+      expect(result.success).toBe(true);
+      expect(result.warnings.some(w => w.includes('Manifest write skipped:'))).toBe(true);
     });
   });
 
