@@ -4,7 +4,7 @@
     "python"
   ],
   "sourceDirs": [
-    "src/technical_communication_mcp"
+    "src"
   ],
   "ignorePatterns": [
     "**/__pycache__/**",

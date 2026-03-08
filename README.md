@@ -110,6 +110,19 @@ node dist/cli/rss-cli.js blast-radius data/entity/UsersTable
 
 ## Why ste-runtime?
 
+### How is this different from tree-sitter, LSP, or Kythe?
+
+**Short answer:** ste-runtime is purpose-built for **AI context assembly**, not human code navigation.
+
+| Tool | Purpose | ste-runtime Difference |
+|------|---------|----------------------|
+| **tree-sitter** | Fast syntax parsing | ste-runtime extracts **semantic relationships** (imports, dependencies, call graphs) |
+| **LSP** | Real-time editor features | ste-runtime provides **persistent graphs** for bulk context assembly |
+| **Kythe** | Enterprise code navigation | ste-runtime optimizes for **AI token efficiency**, not human point queries |
+| **Sourcegraph** | Platform-scale search | ste-runtime is **portable** (drop into project, no infrastructure) |
+
+**See:** [Alternatives Comparison](documentation/reference/alternatives-comparison.md) for detailed technical comparison and potential integrations.
+
 ### Traditional Approach (grep/text search)
 ```bash
 $ grep -r "validateUser"
@@ -305,6 +318,7 @@ const impact = blastRadius(ctx, 'data/entity/UsersTable');
 
 ### Architecture & Design
 - [System Architecture](documentation/architecture.md) - Complete technical architecture of ste-runtime
+- [Alternatives Comparison](documentation/reference/alternatives-comparison.md) - How ste-runtime compares to tree-sitter, LSP, Kythe, Sourcegraph
 - [E-ADRs](documentation/e-adr/) - Architectural decision records
 - [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
 - [Reference Documentation](documentation/reference/) - Technical deep-dives
