@@ -25,7 +25,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: ste-runtime/package-lock.json
+        cache-dependency-path: package-lock.json
     
     - name: Setup Python
       uses: actions/setup-python@v5
@@ -33,19 +33,15 @@ jobs:
         python-version: '3.x'
     
     - name: Install dependencies
-      working-directory: ./ste-runtime
       run: npm ci
     
     - name: Build TypeScript
-      working-directory: ./ste-runtime
       run: npm run build
     
     - name: Run tests
-      working-directory: ./ste-runtime
       run: npm test
     
     - name: Verify RECON self-documentation
-      working-directory: ./ste-runtime
       run: |
         npm run recon:self
         echo "RECON self-documentation completed successfully"

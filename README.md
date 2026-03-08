@@ -48,7 +48,7 @@ The complete STE Runtime system (per [STE Architecture Specification](https://gi
 - **AI-DOC Fabric** — Attestation authority and canonical state resolution
 - **STE Gateway** — Enforcement service for eligibility verification
 - **Trust Registry** — Public key distribution and signature verification
-- **CEM** (Cognitive Execution Model) — 9-stage execution lifecycle (deferred per [E-ADR-003](documentation/e-adr/E-ADR-003-CEM-Deferral.md))
+- **CEM** (Cognitive Execution Model) — 9-stage execution lifecycle (deferred per [ADR-L-0003](adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml))
 - **Task Analysis Protocol** — Full natural language to entry point resolution (basic implementation exists, full protocol not implemented)
 - **Validation Stack** — CEM self-validation, static analysis, MCP validators
 
@@ -292,6 +292,12 @@ const impact = blastRadius(ctx, 'data/entity/UsersTable');
 
 ## Documentation
 
+### Architecture Decision Records
+- [Architecture Decisions](adrs/) - Machine-verifiable ADRs in ADR Kit format
+- [ADR Manifest](adrs/manifest.yaml) - Discovery index (11 ADRs, 13 invariants)
+- [Migration History](adrs/MIGRATION.md) - E-ADR to ADR Kit migration details
+- [Archived E-ADRs](documentation/e-adr-archived/) - Original exploratory ADRs (deprecated)
+
 ### Architecture
 - [System Architecture](documentation/architecture.md) - Complete technical architecture of ste-runtime
 - [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
@@ -319,14 +325,14 @@ const impact = blastRadius(ctx, 'data/entity/UsersTable');
 ### Architecture & Design
 - [System Architecture](documentation/architecture.md) - Complete technical architecture of ste-runtime
 - [Alternatives Comparison](documentation/reference/alternatives-comparison.md) - How ste-runtime compares to tree-sitter, LSP, Kythe, Sourcegraph
-- [E-ADRs](documentation/e-adr/) - Architectural decision records
+- [Architecture Decision Records](adrs/) - ADR Kit format (machine-verifiable)
 - [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
 - [Reference Documentation](documentation/reference/) - Technical deep-dives
 
 ### Contributing
 - [Contributing Guide](CONTRIBUTING.md) - Development standards and future contribution process
   - **Note:** External contributions are not currently being accepted. This guide is for future reference.
-- [Extractor Development Guide](documentation/e-adr/E-ADR-008-Extractor-Development-Guide.md) - Create custom extractors
+- [Extractor Development Guide](documentation/e-adr-archived/E-ADR-008-Extractor-Development-Guide.md) - Create custom extractors
 
 ---
 
@@ -431,7 +437,7 @@ ste-runtime/
 │   └── config/             # Configuration loader
 ├── python-scripts/         # Python AST parser
 ├── instructions/           # Usage guides
-├── documentation/          # E-ADRs and reference materials
+├── documentation/          # Reference materials and archived E-ADRs
 ├── fixtures/               # Test fixtures
 ├── .ste/                   # Example: Semantic state for parent project
 ├── .ste-self/              # Self-documentation (npm run recon:self)
@@ -527,7 +533,7 @@ ste-runtime is **designed to be forked and extended**. Expected use cases:
 5. **Run `npm run recon:self`** to document your changes
 6. **Use RSS** to query and validate your implementation
 
-See [documentation/e-adr/E-ADR-008-Extractor-Development-Guide.md](documentation/e-adr/E-ADR-008-Extractor-Development-Guide.md) for detailed guidance.
+See [documentation/e-adr-archived/E-ADR-008-Extractor-Development-Guide.md](documentation/e-adr-archived/E-ADR-008-Extractor-Development-Guide.md) for detailed guidance.
 
 ### Contributions to Main Repository
 
