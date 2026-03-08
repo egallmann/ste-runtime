@@ -15,7 +15,6 @@ import * as inference from './inference.js';
 import * as population from './population.js';
 import * as divergence from './divergence.js';
 import * as selfValidation from './self-validation.js';
-import * as changeDetector from '../../watch/change-detector.js';
 import { ProjectDiscovery } from '../../discovery/index.js';
 
 vi.mock('./discovery.js');
@@ -25,13 +24,13 @@ vi.mock('./inference.js');
 vi.mock('./population.js');
 vi.mock('./divergence.js');
 vi.mock('./self-validation.js');
+const mockBuildFullManifest = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ version: 1, generatedAt: '2024-01-01T00:00:00Z', files: {} })
+);
+const mockWriteReconManifest = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 vi.mock('../../watch/change-detector.js', () => ({
-  buildFullManifest: vi.fn().mockResolvedValue({
-    version: 1,
-    generatedAt: '2024-01-01T00:00:00Z',
-    files: {},
-  }),
-  writeReconManifest: vi.fn().mockResolvedValue(undefined),
+  buildFullManifest: mockBuildFullManifest,
+  writeReconManifest: mockWriteReconManifest,
   loadReconManifest: vi.fn(),
   manifestPath: vi.fn(),
 }));
@@ -252,7 +251,7 @@ describe('runReconPhases', () => {
     });
 
     it('should continue successfully when manifest write fails', async () => {
-      vi.mocked(changeDetector.writeReconManifest).mockRejectedValueOnce(
+      mockWriteReconManifest.mockRejectedValueOnce(
         new Error("EACCES: permission denied, mkdir '/test'")
       );
 
