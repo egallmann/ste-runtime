@@ -15,6 +15,7 @@ import * as inference from './inference.js';
 import * as population from './population.js';
 import * as divergence from './divergence.js';
 import * as selfValidation from './self-validation.js';
+import * as changeDetector from '../../watch/change-detector.js';
 import { ProjectDiscovery } from '../../discovery/index.js';
 
 vi.mock('./discovery.js');
@@ -248,6 +249,23 @@ describe('runReconPhases', () => {
         sourceRoot,
         expect.anything()
       );
+    });
+
+    it('should continue successfully when manifest write fails', async () => {
+      vi.mocked(changeDetector.writeReconManifest).mockRejectedValueOnce(
+        new Error("EACCES: permission denied, mkdir '/test'")
+      );
+
+      const options: ReconOptions = {
+        projectRoot,
+        sourceRoot,
+        stateRoot,
+      };
+
+      const result = await runReconPhases(options);
+
+      expect(result.success).toBe(true);
+      expect(result.warnings.some(w => w.includes('Manifest write skipped:'))).toBe(true);
     });
   });
 

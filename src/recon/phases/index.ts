@@ -47,6 +47,18 @@ function determineManifestLanguage(languages?: SupportedLanguage[]): ManifestLan
   }
 }
 
+/**
+ * Normalize state root to avoid accidental filesystem-root writes.
+ * RECON state paths are expected to be project-relative.
+ */
+function normalizeStateRoot(stateRoot: string): string {
+  if (!path.isAbsolute(stateRoot)) {
+    return stateRoot;
+  }
+  // Convert "/foo" or "\foo" style absolute roots to relative "foo".
+  return stateRoot.replace(/^[\\/]+/, '');
+}
+
 export interface DiscoveredFile {
   path: string;
   relativePath: string;
@@ -220,7 +232,11 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   log(`[RECON Phase 3] Inferred ${totalRefs} relationships, ${totalTags} tags`);
   
   // Determine state root
-  const stateRoot = options.config?.stateDir ?? options.stateRoot;
+  const rawStateRoot = options.config?.stateDir ?? options.stateRoot;
+  const stateRoot = normalizeStateRoot(rawStateRoot);
+  if (rawStateRoot !== stateRoot) {
+    warnings.push(`Absolute state root '${rawStateRoot}' normalized to '${stateRoot}'`);
+  }
   
   // Collect list of processed source files for orphan detection
   const processedFiles = discoveredFiles.map(f => f.relativePath);
@@ -274,15 +290,21 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   );
   log(`[RECON Phase 7] Validation complete: ${selfValidationResult.summary.total_findings} findings`);
   
-  // Phase 8: Write manifest for freshness tracking
+  // Phase 8: Write manifest for freshness tracking (non-blocking)
   log('[RECON Phase 8] Writing manifest for freshness tracking...');
   const resolvedStateDir = path.resolve(options.projectRoot, stateRoot);
   
-  // Determine manifest language from config
-  const manifestLanguage: ManifestLanguage = determineManifestLanguage(options.config?.languages);
-  const manifest = await buildFullManifest(options.projectRoot, manifestLanguage);
-  await writeReconManifest(resolvedStateDir, manifest);
-  log(`[RECON Phase 8] Manifest written with ${Object.keys(manifest.files).length} file fingerprints (language: ${manifestLanguage})`);
+  try {
+    // Determine manifest language from config
+    const manifestLanguage: ManifestLanguage = determineManifestLanguage(options.config?.languages);
+    const manifest = await buildFullManifest(options.projectRoot, manifestLanguage);
+    await writeReconManifest(resolvedStateDir, manifest);
+    log(`[RECON Phase 8] Manifest written with ${Object.keys(manifest.files).length} file fingerprints (language: ${manifestLanguage})`);
+  } catch (manifestError) {
+    const detail = manifestError instanceof Error ? manifestError.message : String(manifestError);
+    warnings.push(`Manifest write skipped: ${detail}`);
+    log(`[RECON Phase 8] Manifest write skipped: ${detail}`);
+  }
   
   // Complete update batch (E-ADR-007)
   updateCoordinator.completeUpdate(generation);
