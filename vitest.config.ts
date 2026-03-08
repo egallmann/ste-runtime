@@ -42,11 +42,12 @@ export default defineConfig({
       '@/': new URL('./src/', import.meta.url).pathname,
     },
     
-    // Pool configuration for parallel test execution
-    pool: 'threads',
+    // Pool configuration: use 'forks' for reliable ESM mocking on Linux CI
+    // (threads pool can fail to apply vi.hoisted mocks to change-detector)
+    pool: 'forks',
     poolOptions: {
-      threads: {
-        singleThread: false,
+      forks: {
+        singleFork: false,
       },
     },
     

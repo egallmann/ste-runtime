@@ -1,0 +1,76 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0004
+title: Watchdog Authoritative Mode for Workspace Boundary
+status: accepted
+created_date: '2026-03-08'
+authors:
+- erik.gallmann
+domains:
+- watchdog
+- governance
+- workspace-boundary
+tags:
+- watchdog
+- file-watching
+- workspace-boundary
+- ste-compliance
+related_adrs:
+- ADR-L-0001
+supersedes: []
+context: "Per STE Architecture (Section 3.1), STE operates across two distinct governance\
+  \ boundaries:\n1. **Workspace Development Boundary** - Provisional state, soft +\
+  \ hard enforcement, post-reasoning validation\n2. **Runtime Execution Boundary**\
+  \ - Canonical state, cryptographic enforcement, pre-reasoning admission control\n\
+  \nThis E-ADR defines ste-runtime's operation within the **Workspace Development\
+  \ Boundary**, where developers need a **live semantic graph** that stays fresh automatically\
+  \ during local development.\n\n### Workspace Development Boundary (STE Architecture\
+  \ Section 3.1)\n\n```\n┌─────────────────────────────────────────────────────────────────┐\n\
+  │              WORKSPACE DEVELOPMENT BOUNDARY                     │\n│         \
+  \                                                        │\n│   ┌─────────────────────────────────────────────────────────┐\
+  \   │\n│   │                    CURSOR (Governed)                    │   │\n│  \
+  \ │  • MCP client                                           │   │\n│   │  • Context\
+  \ assembly via RSS (ste-runtime MCP)           │   │\n│   └────────────────────┬────────────────────────────────────┘\
+  \   │\n│                        │ MCP Protocol (stdio)                   │\n│  \
+  \                      ▼                                        │\n│   ┌─────────────────────────────────────────────────────────┐\
+  \   │\n│   │              ste-runtime MCP Server                     │   │\n│  \
+  \ │  • File Watcher → Incremental RECON                     │   │\n│   │  • In-Memory\
+  \ RSS Context                                │   │\n│   │  • MCP Tools (RSS operations)\
+  \                           │   │\n│   └─────────────────────────────────────────────────────────┘\
+  \   │\n│                        │                                        │\n│  \
+  \                      ▼                                        │\n│   ┌─────────────────────────────────────────────────────────┐\
+  \   │\n│   │              .ste/state/ (AI-DOC)                       │   │\n│  \
+  \ │  • Provisional state (pre-merge)                        │   │\n│   │  • Updated\
+  \ by incremental RECON                         │   │\n│   └─────────────────────────────────────────────────────────┘\
+  \   │\n└─────────────────────────────────────────────────────────────────┘\n```\n\
+  \n**State Type:** Provisional, experimental (uncommitted, feature branches)  \n\
+  **Authority:** Source code is truth → RECON extracts → AI-DOC (local, pre-merge)\
+  \  \n**Enforcement:** Soft (LLM) + Hard (validation tools + human approval)  \n\
+  **Validation:** Post-reasoning (toolchain catches violations)\n\n---"
+capabilities: []
+architectural_boundaries: []
+interaction_contracts: []
+constraints: []
+invariants: []
+non_functional_requirements: []
+decisions:
+- id: DEC-0001
+  summary: 'ste-runtime is a single process that combines:'
+  rationale: "### The Watchdog IS the Conflict Resolution Process\n\nWhen a file moves:\n\
+    1. Watchdog detects the move (authoritative: it observed the file system event)\n\
+    2. Migration detection scores confidence (1.0 = certain same element)\n3. High\
+    \ confidence → Watchdog resolves automatically (correct resolution)\n4. Low confidence\
+    \ → Surfaces to human (ambiguous, needs judgment)\n\nThis is correct because:\n\
+    -  Watchdog has ground truth (observed actual file system changes)\n-  Migration\
+    \ detection is deterministic (same inputs → same decision)\n-  Confidence thresholds\
+    \ ensure safety (humans review ambiguous cases)\n-  Developer opts in (explicit\
+    \ choice to delegate authority)\n\n### Slice Files Are Derived Artifacts\n\n```\n\
+    Source of Truth:\n  user-panel.component.ts (source code)\n  \nDerived Artifact:\n\
+    \  .ste/state/frontend/component/component-abc123.yaml (slice)\n  \nRelationship:\n\
+    \  Source → RECON → Slice (one-way)\n```\n\n**Like:** `src/app.ts` → `dist/app.js`\
+    \ (compiled)\n\nIf you manually edit `dist/app.js`, the compiler overwrites it\
+    \ on next build.  \nIf you manually edit a slice file, watchdog overwrites it\
+    \ on next RECON (self-healing).\n\n---"
+  alternatives_considered: []
+  related_invariants: []
+gaps: []
