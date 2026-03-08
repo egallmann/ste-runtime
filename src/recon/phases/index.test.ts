@@ -3,7 +3,10 @@
  * Tests the main runReconPhases function that orchestrates all 7 phases
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
 import { runReconPhases, type ReconOptions } from './index.js';
 import * as discovery from './discovery.js';
 import * as extraction from './extraction.js';
@@ -24,9 +27,22 @@ vi.mock('./self-validation.js');
 vi.mock('../../discovery/index.js');
 
 describe('runReconPhases', () => {
-  const projectRoot = '/test/project';
+  let projectRoot: string;
   const sourceRoot = 'src';
   const stateRoot = '.ste';
+
+  beforeAll(async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'recon-phases-test-'));
+    projectRoot = path.join(tempDir, 'project');
+    await fs.mkdir(projectRoot, { recursive: true });
+  });
+
+  afterAll(async () => {
+    if (projectRoot) {
+      const tempDir = path.dirname(projectRoot);
+      await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+    }
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -50,7 +66,7 @@ describe('runReconPhases', () => {
     // Mock all phases
     vi.mocked(discovery.discoverFiles).mockResolvedValue([
       {
-        path: '/test/project/src/test.ts',
+        path: path.join(projectRoot, 'src', 'test.ts'),
         relativePath: '/src/test.ts',
         language: 'typescript',
         changeType: 'unchanged',
@@ -59,7 +75,7 @@ describe('runReconPhases', () => {
 
     vi.mocked(discovery.discoverFilesLegacy).mockResolvedValue([
       {
-        path: '/test/project/src/test.ts',
+        path: path.join(projectRoot, 'src', 'test.ts'),
         relativePath: '/src/test.ts',
         changeType: 'unchanged',
       },
