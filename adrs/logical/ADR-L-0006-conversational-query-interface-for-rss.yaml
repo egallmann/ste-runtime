@@ -1,0 +1,112 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0006
+title: Conversational Query Interface for RSS
+status: proposed
+created_date: '2026-01-09'
+authors:
+- erik.gallmann
+domains:
+- rss
+- interface
+- architecture
+tags:
+- rss
+- conversational
+- query-interface
+- natural-language
+related_adrs: []
+supersedes: []
+context: 'E-ADR-004 established the RSS CLI and TypeScript API as the foundation for
+  graph traversal and context assembly. However, a gap exists between:
+
+
+  1. **Raw RSS operations** (search, dependencies, blast-radius) - require knowing
+  the API
+
+  2. **Natural language queries** ("Tell me about X") - how humans and AI agents actually
+  communicate
+
+
+  The challenge: **How do we make RSS consumption as seamless as natural conversation?**
+
+
+  Observations from usage patterns:
+
+
+  | Pattern | Example Query | Current RSS Approach |
+
+  |---------|---------------|---------------------|
+
+  | Describe | "Tell me about X" | `search X` → `blast-radius` → manual assembly |
+
+  | Explain | "How does X work?" | Same as above |
+
+  | Impact | "What would change affect?" | `blast-radius X --depth=3` |
+
+  | List | "Show all Lambda handlers" | `by-tag handler:lambda` |
+
+  | Locate | "Where is X?" | `search X` |
+
+
+  Each pattern requires the caller to:
+
+  1. Know which RSS operation to use
+
+  2. Compose operations correctly
+
+  3. Parse unstructured output
+
+  4. Generate follow-up queries
+
+
+  This friction degrades both human UX and AI agent efficiency.
+
+
+  ---'
+capabilities: []
+architectural_boundaries: []
+interaction_contracts: []
+constraints: []
+invariants: []
+non_functional_requirements: []
+decisions:
+- id: DEC-0001
+  summary: 'Implement a Conversational Query Interface (CQI) as a layer above RSS
+    that:'
+  rationale: "### 1. Reduces Cognitive Load for Both Humans and AI\n\nWithout CQI:\n\
+    ```\nHuman: \"What would be affected by changing the auth service?\"\n→ Human\
+    \ must know: use blast-radius, specify key format, parse output\n→ AI must know:\
+    \ compose RSS calls, format results, generate follow-ups\n```\n\nWith CQI:\n```\n\
+    Human: \"What would be affected by changing the auth service?\"\n→ CQI: intent=impact,\
+    \ blastRadius(depth=3), structured response with files\n```\n\n### 2. Intent Classification\
+    \ Enables Optimization\n\nDifferent intents have different optimal strategies:\n\
+    \n| Intent | Optimization |\n|--------|-------------|\n| `list` | Use tag query\
+    \ if applicable (O(n) scan vs O(1) tag lookup) |\n| `impact` | Increase depth,\
+    \ cap nodes |\n| `relationship` | Traverse both, compute intersection |\n| `describe`\
+    \ | Get context + suggested follow-ups |\n\n### 3. Caching Amortizes Graph Load\
+    \ Cost\n\nBenchmark results:\n\n| Metric | Value |\n|--------|-------|\n| Graph\
+    \ load (cold) | ~300-400ms |\n| Uncached query | ~2-4ms |\n| Cached query | **~0.2-0.3ms**\
+    \ |\n\nFor interactive sessions, caching provides ~10x speedup on repeated patterns.\n\
+    \n### 4. Suggested Queries Enable Exploration\n\nCQI generates contextual follow-ups:\n\
+    \n```\nQuery: \"Tell me about the auth service\"\nSuggested:\n  → What does AuthService\
+    \ depend on?\n  → What depends on AuthService?\n  → Impact of changing AuthService\n\
+    ```\n\nThis guides both humans and AI agents toward productive exploration.\n\n\
+    ---"
+  alternatives_considered: []
+  consequences:
+    positive:
+    - '**Seamless UX**: Both humans and AI agents use natural language'
+    - '**Performance**: Sub-5ms queries, <0.3ms cached'
+    - '**Discoverability**: Suggested queries guide exploration'
+    - '**Dual output**: Same engine serves terminal and programmatic use'
+    - '**Foundation for MCP**: CQI becomes the MCP tool interface'
+    negative:
+    - '**Pattern maintenance**: New intent patterns require code changes'
+    - '**Cache staleness**: Risk of stale results if cache not invalidated'
+    - '**Abstraction cost**: Hides RSS complexity (may hinder advanced use)'
+    - Expose raw RSS API for power users
+    - Document intent patterns explicitly
+    - Integrate with Watchdog for automatic cache invalidation
+  related_invariants: []
+gaps: []

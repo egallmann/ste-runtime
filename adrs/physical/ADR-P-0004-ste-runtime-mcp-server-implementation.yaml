@@ -1,0 +1,129 @@
+schema_version: '1.0'
+adr_type: physical
+id: ADR-P-0004
+title: ste-runtime MCP Server Implementation
+status: accepted
+created_date: '2026-01-11'
+modified_date: '2026-01-11'
+authors:
+- erik.gallmann
+domains:
+- mcp
+- integration
+- implementation
+tags:
+- mcp
+- server
+- cursor-integration
+- file-watching
+related_adrs:
+- ADR-P-0001
+supersedes: []
+implements_logical:
+- ADR-L-0004
+- ADR-L-0006
+technologies:
+- cli
+- file-discovery
+- file-watching
+- incremental-recon
+- mcp
+- node.js
+- schema-validation
+- stdio
+- testing
+- typescript
+- yaml
+context: 'Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
+
+  - **Provisional state** maintenance (pre-merge, feature branches)
+
+  - **Soft + hard enforcement** (LLM instruction-following + validation tools)
+
+  - **Post-reasoning validation** (catch violations after generation)
+
+  - **Context assembly via RSS** (CEM Stage 2: State Loading)
+
+
+  Currently, ste-runtime provides:
+
+  - ✅ Incremental RECON (maintains fresh AI-DOC)
+
+  - ✅ RSS operations (semantic graph traversal)
+
+  - ✅ CLI interface (human-friendly commands)
+
+  - ❌ No long-running process (graph reloaded on every query)
+
+  - ❌ No MCP interface (Cursor can''t discover tools automatically)
+
+  - ❌ No automatic file watching (manual RECON invocation required)
+
+
+  **Gap:** Cursor (and other AI assistants) need:
+
+  1. **Always-fresh semantic state** (automatic updates on file changes)
+
+  2. **Fast queries** (in-memory graph, <100ms response)
+
+  3. **Tool auto-discovery** (MCP protocol for semantic operations)
+
+  4. **Deterministic context** (RSS graph traversal, not probabilistic search)
+
+
+  ---'
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Type safety, excellent Node.js ecosystem, maintainability
+- category: framework
+  name: Node.js
+  version: 18.0+
+  rationale: JavaScript runtime for CLI and server applications
+- category: library
+  name: '@modelcontextprotocol/sdk'
+  version: 1.25.3
+  rationale: Standard MCP protocol implementation for AI assistant integration
+- category: library
+  name: chokidar
+  version: ^3.5.3
+  rationale: Cross-platform file watching with robust event handling
+architecture_patterns: []
+component_specifications:
+- id: COMP-0001
+  name: MCP Server
+  type: service
+  responsibilities: Model Context Protocol server exposing 8 RSS tools for AI assistants
+  interfaces: []
+  dependencies: []
+  upstream_services: []
+  downstream_services: []
+  implementation_identifiers:
+    module_path: src/mcp/mcp-server.ts
+- id: COMP-0002
+  name: File Watcher
+  type: service
+  responsibilities: Monitor project files and trigger incremental RECON on changes
+  interfaces: []
+  dependencies: []
+  upstream_services: []
+  downstream_services: []
+  implementation_identifiers:
+    module_path: src/watch/watchdog.ts
+data_architecture: []
+implementation_decisions: []
+integration_points: []
+gaps:
+- id: GAP-0001
+  question: '** Cursor (and other AI assistants) need:'
+  impact: medium
+  blocking: false
+  affects: []
+  options: []
+- id: GAP-0002
+  question: 'Cursor (and other AI assistants) need:'
+  impact: medium
+  blocking: false
+  affects: []
+  options: []
