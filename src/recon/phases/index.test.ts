@@ -24,6 +24,16 @@ vi.mock('./inference.js');
 vi.mock('./population.js');
 vi.mock('./divergence.js');
 vi.mock('./self-validation.js');
+vi.mock('../../watch/change-detector.js', () => ({
+  buildFullManifest: vi.fn().mockResolvedValue({
+    version: 1,
+    generatedAt: '2024-01-01T00:00:00Z',
+    files: {},
+  }),
+  writeReconManifest: vi.fn().mockResolvedValue(undefined),
+  loadReconManifest: vi.fn(),
+  manifestPath: vi.fn(),
+}));
 vi.mock('../../discovery/index.js');
 
 describe('runReconPhases', () => {
@@ -204,6 +214,40 @@ describe('runReconPhases', () => {
         languages: ['typescript', 'python'],
         ignorePatterns: ['**/node_modules/**'],
       });
+    });
+
+    it('should normalize absolute config stateDir to project-relative path', async () => {
+      const options: ReconOptions = {
+        projectRoot,
+        sourceRoot,
+        stateRoot,
+        config: {
+          projectRoot,
+          sourceDirs: ['src'],
+          languages: ['typescript'],
+          ignorePatterns: [],
+          stateDir: '/test',
+        },
+      };
+
+      const result = await runReconPhases(options);
+
+      expect(result.success).toBe(true);
+      expect(result.warnings).toContain("Absolute state root '/test' normalized to 'test'");
+      expect(population.populateAiDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        projectRoot,
+        'test',
+        expect.anything(),
+        expect.anything()
+      );
+      expect(selfValidation.runSelfValidation).toHaveBeenCalledWith(
+        expect.anything(),
+        projectRoot,
+        'test',
+        sourceRoot,
+        expect.anything()
+      );
     });
   });
 
