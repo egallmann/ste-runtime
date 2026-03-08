@@ -4,7 +4,7 @@
 
 schema_version: '1.0'
 type: manifest
-generated_date: '2026-03-08T06:07:18.955896Z'
+generated_date: '2026-03-08T07:38:42.165256Z'
 generated_from: adrs/**/*.yaml
 adrs:
 - id: ADR-L-0001
