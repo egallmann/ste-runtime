@@ -1,0 +1,69 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0005
+title: Self-Configuring Domain Discovery
+status: proposed
+created_date: '2026-01-07'
+authors:
+- erik.gallmann
+domains:
+- recon
+- domain-discovery
+- architecture
+tags:
+- domain-discovery
+- self-configuring
+- ai-doc
+related_adrs: []
+supersedes: []
+context: ''
+capabilities: []
+architectural_boundaries: []
+interaction_contracts: []
+constraints: []
+invariants: []
+non_functional_requirements: []
+decisions:
+- id: DEC-0001
+  summary: ''
+  rationale: ''
+  alternatives_considered: []
+  consequences:
+    positive:
+    - Drop into any project and run immediately
+    - No setup time, no learning curve
+    - Immediate value delivery
+    - Works with any project structure
+    - Works with any naming convention
+    - Works with any framework combination
+    - Understands project context automatically
+    - Tags and relationships use actual project names
+    - Output reflects real architecture
+    - Reduces barrier to entry dramatically
+    - Eliminates configuration errors
+    - Enables rapid experimentation
+    - Discovery output shows what was found
+    - Users understand what runtime sees
+    - Transparent behavior
+    negative:
+    - Discovery engine requires careful design
+    - Edge cases need handling
+    - More code to maintain
+    - 4 weeks vs 2 weeks for manual config
+    - Delays other features
+    - Higher upfront investment
+    - Heuristics may fail for unusual structures
+    - Need robust fallback mechanisms
+    - Requires extensive testing
+    - Clear abstractions and interfaces
+    - Comprehensive unit test coverage
+    - Well-documented heuristics
+    - Investment justified by adoption gains
+    - Phased implementation with validation gates
+    - Early user testing
+    - Confidence scoring system
+    - Graceful fallback to safe defaults
+    - Optional configuration override for edge cases
+    - Clear discovery debugging output
+  related_invariants: []
+gaps: []

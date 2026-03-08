@@ -1,0 +1,136 @@
+schema_version: '1.0'
+adr_type: physical
+id: ADR-P-0003
+title: Angular and CSS/SCSS Semantic Extraction
+status: proposed
+created_date: '2026-01-07'
+modified_date: '2026-01-07'
+authors:
+- erik.gallmann
+domains:
+- extraction
+- frontend
+- implementation
+tags:
+- angular
+- css
+- scss
+- extractor
+- frontend
+related_adrs:
+- ADR-P-0002
+- ADR-P-0005
+supersedes: []
+implements_logical:
+- ADR-L-0001
+technologies:
+- angular
+- ast-parsing
+- cli
+- css
+- file-discovery
+- file-watching
+- mcp
+- node.js
+- schema-validation
+- scss
+- testing
+- typescript
+- yaml
+context: 'The TypeScript extractor currently processes Angular files as standard TypeScript,
+  capturing:
+
+  - Functions and their signatures
+
+  - Classes and their methods
+
+  - Import/export relationships
+
+  - Module structure
+
+
+  However, Angular-specific semantics are not captured:
+
+
+  | Pattern | Current Extraction | Semantic Gap |
+
+  |---------|-------------------|--------------|
+
+  | `@Component({ selector: ''app-dashboard'' })` | Class with decorator | Selector,
+  templateUrl, styleUrls missing |
+
+  | `@Injectable({ providedIn: ''root'' })` | Class with decorator | Dependency injection
+  scope missing |
+
+  | Route definitions | Array of objects | Navigation structure, guards, lazy loading
+  missing |
+
+  | HTML templates | Not extracted | Template bindings, component usage, directives
+  missing |
+
+
+  Additionally, CSS/SCSS files contain semantic information valuable for **any** frontend
+  project:
+
+  - Design tokens (CSS variables, SCSS variables)
+
+  - Responsive breakpoints
+
+  - Animation definitions
+
+  - Component styling patterns
+
+
+  **Impact**: Frontend components cannot be linked to:
+
+  - Their templates (component ↔ template relationship)
+
+  - Their styles (component ↔ styles relationship)
+
+  - Backend services they consume (HTTP calls → API endpoints)
+
+  - Other components they render (parent → child relationships)
+
+  - Routes that load them (route → component mapping)
+
+
+  The question arose: Should RECON extract Angular-specific semantics and CSS/SCSS
+  beyond basic TypeScript?
+
+
+  ---'
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Type safety, excellent Node.js ecosystem, maintainability
+- category: framework
+  name: Node.js
+  version: 18.0+
+  rationale: JavaScript runtime for CLI and server applications
+architecture_patterns: []
+component_specifications:
+- id: COMP-0001
+  name: Angular Semantic Extractor
+  type: library
+  responsibilities: Extract components, services, routes, templates from Angular applications
+  interfaces: []
+  dependencies: []
+  upstream_services: []
+  downstream_services: []
+  implementation_identifiers:
+    module_path: src/extractors/angular/
+- id: COMP-0002
+  name: CSS/SCSS Extractor
+  type: library
+  responsibilities: Extract styles, design tokens, and CSS entities
+  interfaces: []
+  dependencies: []
+  upstream_services: []
+  downstream_services: []
+  implementation_identifiers:
+    module_path: src/extractors/css/
+data_architecture: []
+implementation_decisions: []
+integration_points: []
+gaps: []

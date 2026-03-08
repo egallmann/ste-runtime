@@ -120,6 +120,12 @@ async function ensureManifestDir(stateDir: string) {
   await fs.mkdir(dir, { recursive: true });
 }
 
+function isPermissionDeniedError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const code = (error as NodeJS.ErrnoException).code;
+  return code === 'EACCES' || code === 'EPERM';
+}
+
 /**
  * Write RECON manifest to the state directory.
  * 
@@ -127,9 +133,17 @@ async function ensureManifestDir(stateDir: string) {
  * @param manifest - The manifest to write
  */
 export async function writeReconManifest(stateDir: string, manifest: ReconManifest): Promise<void> {
-  await ensureManifestDir(stateDir);
-  const manifestFilePath = getManifestPath(stateDir);
-  await fs.writeFile(manifestFilePath, JSON.stringify(manifest, null, 2), 'utf8');
+  try {
+    await ensureManifestDir(stateDir);
+    const manifestFilePath = getManifestPath(stateDir);
+    await fs.writeFile(manifestFilePath, JSON.stringify(manifest, null, 2), 'utf8');
+  } catch (error) {
+    // Non-fatal: manifest persistence improves incremental performance but must not break RECON.
+    if (isPermissionDeniedError(error)) {
+      return;
+    }
+    throw error;
+  }
 }
 
 export type ManifestLanguage = 'python' | 'typescript' | 'all';

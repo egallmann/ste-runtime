@@ -1,0 +1,60 @@
+schema_version: '1.0'
+adr_type: physical
+id: ADR-P-0005
+title: Extractor Validation Requirements
+status: accepted
+created_date: '2026-01-11'
+modified_date: '2026-01-11'
+authors:
+- system
+domains:
+- validation
+- extraction
+- implementation
+tags:
+- validation
+- extractors
+- quality-assurance
+related_adrs:
+- ADR-P-0002
+- ADR-P-0003
+supersedes: []
+implements_logical:
+- ADR-L-0002
+technologies:
+- cli
+- file-discovery
+- file-watching
+- mcp
+- node.js
+- schema-validation
+- testing
+- typescript
+- validation
+- yaml
+context: ''
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Type safety, excellent Node.js ecosystem, maintainability
+- category: framework
+  name: Node.js
+  version: 18.0+
+  rationale: JavaScript runtime for CLI and server applications
+architecture_patterns: []
+component_specifications:
+- id: COMP-0001
+  name: Extractor Validation Framework
+  type: library
+  responsibilities: Validate extractor output quality and correctness
+  interfaces: []
+  dependencies: []
+  upstream_services: []
+  downstream_services: []
+  implementation_identifiers:
+    module_path: src/recon/validation/
+data_architecture: []
+implementation_decisions: []
+integration_points: []
+gaps: []
