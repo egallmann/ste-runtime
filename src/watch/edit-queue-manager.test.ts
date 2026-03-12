@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { EditQueueManager, type FileChange } from './edit-queue-manager.js';
+import { EditQueueManager } from './edit-queue-manager.js';
 
 describe('EditQueueManager', () => {
   let manager: EditQueueManager;

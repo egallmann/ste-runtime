@@ -13,7 +13,6 @@ import {
   loadSourceForSlices,
   loadSourceGroupedByFile,
   formatSourceForLLM,
-  type LoadSourceOptions,
 } from './context-source-loader.js';
 import type { AidocNode } from '../rss/graph-loader.js';
 

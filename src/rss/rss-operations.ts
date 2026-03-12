@@ -12,7 +12,7 @@
  * - assemble_context(task) — Main context assembly function
  */
 
-import { loadAidocGraph, AidocNode, AidocGraph, AidocEdge } from './graph-loader.js';
+import { loadAidocGraph, AidocNode, AidocGraph } from './graph-loader.js';
 import path from 'node:path';
 
 /**
@@ -70,7 +70,7 @@ export async function initRssContext(stateRoot: string = '.ste/state'): Promise<
  */
 export function lookup(ctx: RssContext, domain: string, id: string): AidocNode | null {
   // Try direct lookup
-  for (const [key, node] of ctx.graph.entries()) {
+  for (const [, node] of ctx.graph.entries()) {
     if (node.domain === domain && node.id === id) {
       return node;
     }

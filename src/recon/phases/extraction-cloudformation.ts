@@ -29,7 +29,7 @@ import {
   getReferenceProperties,
   type CloudFormationSpec 
 } from '../../extractors/cfn/cfn-spec-loader.js';
-import { parseResourceType, getCategoryForService } from '../../extractors/cfn/cfn-types.js';
+import { parseResourceType } from '../../extractors/cfn/cfn-types.js';
 
 // Cached spec (loaded once per RECON run)
 let cachedSpec: CloudFormationSpec | null = null;
@@ -1212,4 +1212,3 @@ function extractRefFromIntrinsic(value: unknown): string | undefined {
   
   return undefined;
 }
-

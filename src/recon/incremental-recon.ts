@@ -26,7 +26,6 @@ import {
 import { runFullRecon } from './full-recon.js';
 import {
   ChangeSet,
-  ReconManifest,
   buildFullManifest,
   detectFileChanges,
   loadReconManifest,

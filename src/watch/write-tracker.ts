@@ -69,7 +69,7 @@ export class WriteTracker {
 
       // If content matches our recorded write, it's our write
       return currentHash === record.contentHash;
-    } catch (error) {
+    } catch {
       // File read error - assume not our write
       return false;
     }
@@ -103,4 +103,3 @@ export class WriteTracker {
 
 // Singleton instance
 export const writeTracker = new WriteTracker();
-

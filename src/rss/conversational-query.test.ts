@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { ConversationalQueryEngine, type QueryIntent } from './conversational-query.js';
+import { ConversationalQueryEngine } from './conversational-query.js';
 
 describe('Conversational Query Engine', () => {
   describe('initialization', () => {

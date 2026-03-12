@@ -7,7 +7,6 @@
  * Avoids premature semantics and deep bidirectional validation.
  */
 
-import type { NormalizedAssertion } from '../phases/index.js';
 import type { ValidationFinding, ValidatorContext } from './types.js';
 
 export async function validateGraph(

@@ -2,8 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { inferRelationships } from './inference.js';
 import type { NormalizedAssertion, RawAssertion } from './index.js';
 import {
-  expectGraphEdges,
-  expectBidirectionalEdges,
   createRawImportAssertion,
   createModuleAssertion,
   assertInferenceCreatesEdges,

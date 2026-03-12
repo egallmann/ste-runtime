@@ -125,21 +125,6 @@ const INFRA_FILE_PATTERNS = [
   /\.k8s\.yaml$/
 ];
 
-/** Framework detection patterns */
-const FRAMEWORK_INDICATORS = {
-  angular: ['angular.json', 'src/app/app.module.ts', '.component.ts'],
-  react: ['package.json', '.jsx', '.tsx'],
-  vue: ['vue.config.js', '.vue'],
-  svelte: ['svelte.config.js', '.svelte'],
-  next: ['next.config.js', 'pages/'],
-  express: ['package.json', '.route.js', '.controller.js'],
-  fastapi: ['requirements.txt', 'main.py', '@app.'],
-  flask: ['requirements.txt', 'app.py', '@app.route'],
-  lambda: ['handler.py', 'lambda_handler', 'handler.js'],
-  cloudformation: ['.yaml', 'Resources:', 'AWSTemplateFormatVersion'],
-  terraform: ['.tf', 'provider "aws"', 'resource "aws_']
-};
-
 // ============================================================================
 // Discovery Engine
 // ============================================================================
@@ -291,7 +276,7 @@ export class ProjectDiscovery {
           directories.push(...subdirs);
         }
       }
-    } catch (error) {
+    } catch {
       // Ignore permission errors or invalid directories
     }
 
@@ -410,7 +395,7 @@ export class ProjectDiscovery {
             });
           }
         }
-      } catch (error) {
+      } catch {
         // Ignore errors
       }
     }
@@ -525,7 +510,7 @@ export class ProjectDiscovery {
             weight: 0.4
           });
         }
-      } catch (error) {
+      } catch {
         // Ignore JSON parse errors
       }
     }
@@ -559,7 +544,7 @@ export class ProjectDiscovery {
               weight: 0.4
             });
           }
-        } catch (error) {
+        } catch {
           // Ignore read errors
         }
       }
@@ -576,7 +561,7 @@ export class ProjectDiscovery {
             weight: 0.4
           });
         }
-      } catch (error) {
+      } catch {
         // Ignore errors
       }
     }

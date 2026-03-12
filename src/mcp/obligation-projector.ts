@@ -10,24 +10,20 @@
  */
 
 import type { AidocNode } from '../rss/graph-loader.js';
-import type { RssContext } from '../rss/rss-operations.js';
 import { 
-  blastRadius, 
+  type RssContext,
   dependencies, 
   dependents, 
   lookupByKey,
-  search,
 } from '../rss/rss-operations.js';
 import type {
   ChangeIntent,
   ChangeIntentType,
   Obligation,
   ObligationType,
-  ObligationStatus,
   SliceReference,
   InvalidatedValidation,
   SliceValidation,
-  ValidationClaim,
   Advisory,
 } from '../rss/schema.js';
 import { resolveIntentScope, type ScopeResolutionResult } from './preflight.js';
@@ -370,8 +366,6 @@ function generateAdvisory(
   
   // Generate review recommendation
   const dependentCount = impactedSlices.dependents.length;
-  const dependencyCount = impactedSlices.dependencies.length;
-  
   let reviewRecommendation = '';
   if (intentType === 'delete') {
     reviewRecommendation = `Deletion of ${targetNode.id}. Ensure ${dependentCount} dependent(s) are updated.`;
