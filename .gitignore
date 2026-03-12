@@ -1,3 +1,6 @@
+# Cursor IDE workspace and plans
+.cursor/
+
 # Dependencies
 node_modules/
 
