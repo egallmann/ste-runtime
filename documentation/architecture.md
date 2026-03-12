@@ -17,8 +17,8 @@ This document describes the **actual architecture of ste-runtime** — what has 
 - Reference for contributors and users
 
 **Related Documents:**
-- [STE Architecture Specification](../../spec/ste-spec/architecture/STE-Architecture.md) — Complete STE Runtime architecture
-- [E-ADRs](../e-adr/) — Component-level architectural decisions
+- [STE Architecture Specification](https://github.com/egallmann/ste-spec/tree/main/ste-spec/architecture) — Complete STE Runtime architecture
+- [ADR Kit Records](../adrs/) — Component-level architectural decisions
 - [Architecture Diagrams](../diagrams/README.md) — Visual architecture diagrams
 
 ---
@@ -108,7 +108,7 @@ flowchart TB
 - **Content-addressable** — Deterministic, reproducible state
 - **Self-validating** — 6-phase pipeline with validation
 
-**See:** [E-ADR-001: RECON Provisional Execution](../e-adr/E-ADR-001-RECON-Provisional-Execution.md)
+**See:** [ADR-L-0001: RECON Provisional Execution](../adrs/rendered/ADR-L-0001.md)
 
 ---
 
@@ -135,9 +135,7 @@ flowchart TB
 - **Two-layer architecture** — Token efficiency + precision
 - **Deterministic traversal** — Same entry points → same context
 
-**See:** 
-- [E-ADR-004: RSS CLI Implementation](../e-adr/E-ADR-004-RSS-CLI-Implementation.md)
-- [Two-Layer Context Assembly](../innovations/Two-Layer-Context-Assembly.md)
+**See:** [ADR-P-0001: RSS CLI Implementation](../adrs/rendered/ADR-P-0001.md)
 
 ---
 
@@ -162,7 +160,7 @@ flowchart TB
 - **Auto-discovery** — Cursor automatically finds tools
 - **Context reload** — Automatic RSS graph reload after RECON
 
-**See:** [E-ADR-011: ste-runtime MCP Server](../e-adr/E-ADR-011-ste-runtime-MCP-Server.md)
+**See:** [ADR-P-0004: ste-runtime MCP Server](../adrs/rendered/ADR-P-0004.md)
 
 ---
 
@@ -204,7 +202,7 @@ flowchart TB
 - **Smart debouncing** — Handles Cursor's streaming edits
 - **Transaction awareness** — Batches multi-file refactors
 
-**See:** [E-ADR-007: Watchdog Authoritative Mode](../e-adr/E-ADR-007-Watchdog-Authoritative-Mode.md)
+**See:** [ADR-L-0004: Watchdog Authoritative Mode](../adrs/rendered/ADR-L-0004.md)
 
 ---
 
@@ -435,7 +433,7 @@ MCP query received
 
 ### 2. CEM Not Implemented
 
-**Status:** Deferred per [E-ADR-003](../e-adr/E-ADR-003-CEM-Deferral.md).
+**Status:** Deferred per [ADR-L-0003](../adrs/rendered/ADR-L-0003.md).
 
 **Impact:** No formal 9-stage execution lifecycle.
 
@@ -512,7 +510,7 @@ MCP query received
 3. Register in language detection
 4. Add to normalization phase
 
-**See:** [E-ADR-008: Extractor Development Guide](../e-adr/E-ADR-008-Extractor-Development-Guide.md)
+**See:** [SYSTEM-OVERVIEW](../SYSTEM-OVERVIEW.md)
 
 ### Adding New RSS Operations
 
@@ -526,21 +524,21 @@ MCP query received
 
 ## References
 
-### E-ADRs (Exploratory Architectural Decision Records)
+### ADR Kit Records
 
-- [E-ADR-001: RECON Provisional Execution](../e-adr/E-ADR-001-RECON-Provisional-Execution.md)
-- [E-ADR-002: RECON Self-Validation](../e-adr/E-ADR-002-RECON-Self-Validation.md)
-- [E-ADR-003: CEM Deferral](../e-adr/E-ADR-003-CEM-Deferral.md)
-- [E-ADR-004: RSS CLI Implementation](../e-adr/E-ADR-004-RSS-CLI-Implementation.md)
-- [E-ADR-007: Watchdog Authoritative Mode](../e-adr/E-ADR-007-Watchdog-Authoritative-Mode.md)
-- [E-ADR-011: ste-runtime MCP Server](../e-adr/E-ADR-011-ste-runtime-MCP-Server.md)
+- [ADR-L-0001: RECON Provisional Execution](../adrs/rendered/ADR-L-0001.md)
+- [ADR-L-0002: RECON Self-Validation](../adrs/rendered/ADR-L-0002.md)
+- [ADR-L-0003: CEM Deferral](../adrs/rendered/ADR-L-0003.md)
+- [ADR-P-0001: RSS CLI Implementation](../adrs/rendered/ADR-P-0001.md)
+- [ADR-L-0004: Watchdog Authoritative Mode](../adrs/rendered/ADR-L-0004.md)
+- [ADR-P-0004: ste-runtime MCP Server](../adrs/rendered/ADR-P-0004.md)
 
 ### Related Documentation
 
 - [Architecture Diagrams](../diagrams/README.md) — Visual architecture
-- [Getting Started Guide](../guides/getting-started.md) — User onboarding
+- [SYSTEM-OVERVIEW](../SYSTEM-OVERVIEW.md) — User onboarding
 - [Configuration Reference](../guides/configuration-reference.md) — Configuration options
-- [STE Specification Architecture](../../spec/ste-spec/architecture/STE-Architecture.md) — Complete STE Runtime architecture
+- [STE Specification Architecture](https://github.com/egallmann/ste-spec/tree/main/ste-spec/architecture) — Complete STE Runtime architecture
 
 ---
 
@@ -555,5 +553,9 @@ MCP query received
 
 **Last Updated:** 2026-01-11  
 **Maintainer:** ste-runtime contributors
+
+
+
+
 
 

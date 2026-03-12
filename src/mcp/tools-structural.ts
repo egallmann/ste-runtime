@@ -5,8 +5,8 @@
  * Per E-ADR-011: RSS Pure Semantic Graph operations (<100ms, metadata only)
  */
 
-import type { RssContext } from '../rss/rss-operations.js';
 import {
+  type RssContext,
   search,
   lookupByKey,
   lookup,

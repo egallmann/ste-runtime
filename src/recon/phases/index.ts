@@ -19,7 +19,7 @@ import { extractAssertions } from './extraction.js';
 import { inferRelationships } from './inference.js';
 import { normalizeAssertions } from './normalization.js';
 import { populateAiDoc } from './population.js';
-import { detectDivergence, type ValidationResult } from './divergence.js';
+import { detectDivergence } from './divergence.js';
 import { runSelfValidation } from './self-validation.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
 import { buildFullManifest, writeReconManifest, type ManifestLanguage } from '../../watch/change-detector.js';

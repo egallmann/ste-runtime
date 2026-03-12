@@ -12,17 +12,13 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { RssContext } from '../rss/rss-operations.js';
-import { blastRadius, search, lookupByKey } from '../rss/rss-operations.js';
-import { loadReconManifest, type ReconManifest, type FileFingerprint } from '../watch/change-detector.js';
+import { type RssContext, blastRadius, search, lookupByKey } from '../rss/rss-operations.js';
+import { loadReconManifest, type ReconManifest } from '../watch/change-detector.js';
 import { runIncrementalRecon } from '../recon/incremental-recon.js';
-import { initRssContext } from '../rss/rss-operations.js';
 import type { 
   FreshnessIndicator, 
   FreshnessStatus,
   ChangeIntent,
-  ChangeIntentType,
-  ChangeTargetType,
 } from '../rss/schema.js';
 
 // ─────────────────────────────────────────────────────────────────

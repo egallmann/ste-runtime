@@ -16,9 +16,9 @@
  * - refresh: Force re-extraction
  */
 
-import type { RssContext, RssQueryResult } from '../rss/rss-operations.js';
 import type { AidocNode } from '../rss/graph-loader.js';
 import { 
+  type RssContext,
   search, 
   lookupByKey, 
   dependencies, 
@@ -797,7 +797,6 @@ export async function refresh(
   triggerRecon: () => Promise<{ success: boolean; message: string }>
 ): Promise<RefreshResult> {
   const startTime = performance.now();
-  const { scope = 'full' } = args;
   
   try {
     const result = await triggerRecon();

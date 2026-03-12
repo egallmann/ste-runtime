@@ -188,8 +188,6 @@ function extractSignalInputsOutputs(
     if (!member.initializer) continue;
     
     const propName = member.name.text;
-    const initText = member.initializer.getText(sourceFile);
-    
     // Check for input() or input.required() pattern
     if (ts.isCallExpression(member.initializer)) {
       const callExpr = member.initializer;
@@ -519,7 +517,7 @@ function extractInjectableDecorator(
  */
 function extractPipeDecorator(
   node: ts.ClassDeclaration,
-  sourceFile: ts.SourceFile
+  _sourceFile: ts.SourceFile
 ): AngularPipe | null {
   const decorators = ts.getDecorators(node);
   if (!decorators) return null;
@@ -624,7 +622,7 @@ async function extractComponent(file: DiscoveredFile, projectRoot?: string): Pro
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -707,7 +705,7 @@ async function extractComponent(file: DiscoveredFile, projectRoot?: string): Pro
               },
             });
           }
-        } catch (error) {
+        } catch {
           // Style file doesn't exist or can't be read - that's ok
           continue;
         }
@@ -727,7 +725,7 @@ async function extractService(file: DiscoveredFile): Promise<RawAssertion[]> {
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -771,7 +769,7 @@ async function extractPipe(file: DiscoveredFile): Promise<RawAssertion[]> {
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -815,7 +813,7 @@ async function extractDirective(file: DiscoveredFile): Promise<RawAssertion[]> {
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -859,7 +857,7 @@ async function extractGuard(file: DiscoveredFile): Promise<RawAssertion[]> {
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -918,7 +916,7 @@ async function extractRoutes(file: DiscoveredFile): Promise<RawAssertion[]> {
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -974,7 +972,7 @@ async function extractTemplate(file: DiscoveredFile): Promise<RawAssertion[]> {
   let content: string;
   try {
     content = await fs.readFile(file.path, 'utf-8');
-  } catch (error) {
+  } catch {
     return assertions;
   }
   
@@ -1055,7 +1053,7 @@ async function extractTemplate(file: DiscoveredFile): Promise<RawAssertion[]> {
 export async function extractFromAngular(
   file: DiscoveredFile,
   projectRoot?: string,
-  patterns?: AngularPatterns
+  _patterns?: AngularPatterns
 ): Promise<RawAssertion[]> {
   const fileType = getAngularFileType(file.relativePath);
   
@@ -1100,4 +1098,3 @@ export async function extract(
   
   return allAssertions;
 }
-

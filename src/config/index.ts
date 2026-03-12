@@ -268,61 +268,6 @@ const BUILTIN_IGNORE_PATTERNS = [
  * 
  * Strategy:
  * 1. Start from ste-runtime's PARENT directory (not ste-runtime itself)
- * 2. FIRST: Look for ste.config.json - this is the authoritative project marker
- * 3. THEN: Look for standard project markers (package.json, pyproject.toml, .git, etc.)
- * 4. Stop at the FIRST match - do not traverse further up
- * 
- * This ensures that if a project has ste.config.json at its root, we use that
- * as the definitive project boundary, even if parent directories also have markers.
- */
-async function findProjectRoot(startDir: string): Promise<string> {
-  // Start from parent of ste-runtime, not ste-runtime itself
-  let currentDir = path.resolve(startDir, '..');
-  const root = path.parse(currentDir).root;
-  
-  // Priority 1: ste.config.json is the authoritative project marker
-  // Check immediate parent first before traversing
-  const steConfigPath = path.join(currentDir, 'ste.config.json');
-  try {
-    await fs.access(steConfigPath);
-    return currentDir; // Found ste.config.json in immediate parent
-  } catch {
-    // Continue with standard marker search
-  }
-  
-  // Priority 2: Look for standard project markers
-  // But STOP at the first directory that has ANY marker
-  const markers = [
-    'ste.config.json',  // Check again in case it's higher up
-    'pyproject.toml',
-    'requirements.txt',
-    'setup.py',
-    'package.json',
-    '.git',
-  ];
-  
-  let searchDir = currentDir;
-  while (searchDir !== root) {
-    for (const marker of markers) {
-      const markerPath = path.join(searchDir, marker);
-      try {
-        await fs.access(markerPath);
-        return searchDir;
-      } catch {
-        // Continue searching
-      }
-    }
-    
-    const parentDir = path.dirname(searchDir);
-    if (parentDir === searchDir) break;
-    searchDir = parentDir;
-  }
-  
-  // Fallback: use startDir's parent (assuming ste-runtime is in project)
-  return currentDir;
-}
-
-/**
  * Auto-detect languages based on file presence in project
  */
 async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]> {
@@ -335,7 +280,7 @@ async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]
       // Not a directory, return defaults
       return ['typescript', 'python'];
     }
-  } catch (error) {
+  } catch {
     // Can't access project root (permission error, doesn't exist, etc.)
     // Return defaults instead of crashing
     return ['typescript', 'python'];
@@ -448,29 +393,6 @@ async function loadConfigFromPath(configPath: string): Promise<SteConfig | null>
 }
 
 /**
- * Load configuration from ste.config.json if present.
- * 
- * Search order:
- * 1. Project root (parent directory) - authoritative project config
- * 2. Inside ste-runtime/ - self-contained config for portability
- * 
- * This allows projects to have their own ste.config.json at the root,
- * while still supporting self-contained configs inside ste-runtime/.
- */
-async function loadConfigFile(runtimeDir: string, projectRoot: string): Promise<SteConfig | null> {
-  // Priority 1: Check project root for ste.config.json
-  const projectConfigPath = path.join(projectRoot, 'ste.config.json');
-  const projectConfig = await loadConfigFromPath(projectConfigPath);
-  if (projectConfig) {
-    return projectConfig;
-  }
-  
-  // Priority 2: Check inside ste-runtime for self-contained config
-  const runtimeConfigPath = path.join(runtimeDir, 'ste.config.json');
-  return loadConfigFromPath(runtimeConfigPath);
-}
-
-/**
  * Validate that sourceDirs exist relative to project root.
  * Returns only the valid directories, or ['.'] if none are valid.
  */
@@ -499,121 +421,6 @@ async function validateSourceDirs(
 }
 
 /**
- * Detect if ste-runtime is analyzing itself (self-analysis mode)
- */
-/**
- * Check if the parent directory has a ste.config.json file.
- * This is the AUTHORITATIVE signal that ste-runtime is embedded in a parent project.
- * When present, this OVERRIDES internal self-analysis heuristics.
- */
-async function hasParentProjectConfig(runtimeDir: string): Promise<boolean> {
-  const resolvedRuntimeDir = path.resolve(runtimeDir);
-  const parentDir = path.dirname(resolvedRuntimeDir);
-  const parentConfigPath = path.join(parentDir, 'ste.config.json');
-  
-  try {
-    await fs.access(parentConfigPath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Check if the parent directory has standard project markers.
- * These indicate ste-runtime is embedded in a real project, not standalone.
- */
-async function hasParentProjectMarkers(runtimeDir: string): Promise<boolean> {
-  const resolvedRuntimeDir = path.resolve(runtimeDir);
-  const parentDir = path.dirname(resolvedRuntimeDir);
-  
-  // Standard project markers (excluding ste-runtime's own markers)
-  const projectMarkers = [
-    'pyproject.toml',      // Python project
-    'requirements.txt',    // Python project
-    'setup.py',            // Python project
-    'Cargo.toml',          // Rust project
-    'go.mod',              // Go project
-    'pom.xml',             // Java/Maven project
-    'build.gradle',        // Java/Gradle project
-  ];
-  
-  // Check for package.json but ensure it's NOT another ste-runtime
-  const parentPackageJson = path.join(parentDir, 'package.json');
-  try {
-    const content = await fs.readFile(parentPackageJson, 'utf-8');
-    const pkg = JSON.parse(content);
-    if (pkg.name && pkg.name !== 'ste-runtime') {
-      return true;
-    }
-  } catch {
-    // No package.json or can't read it
-  }
-  
-  // Check for other markers
-  for (const marker of projectMarkers) {
-    const markerPath = path.join(parentDir, marker);
-    try {
-      await fs.access(markerPath);
-      return true;
-    } catch {
-      // Continue checking
-    }
-  }
-  
-  return false;
-}
-
-async function detectSelfAnalysis(runtimeDir: string): Promise<boolean> {
-  const resolvedRuntimeDir = path.resolve(runtimeDir);
-
-  // PRIORITY 1: If parent has ste.config.json, this is ALWAYS external project mode
-  // This is the authoritative signal that overrides all other heuristics
-  if (await hasParentProjectConfig(resolvedRuntimeDir)) {
-    console.error('[STE Config] Parent project config found - external project mode');
-    return false;
-  }
-  
-  // PRIORITY 2: If parent has standard project markers, treat as external project
-  if (await hasParentProjectMarkers(resolvedRuntimeDir)) {
-    console.error('[STE Config] Parent project markers found - external project mode');
-    return false;
-  }
-
-  // FALLBACK: Check if this looks like ste-runtime for self-analysis
-  
-  // Heuristic 1: Check package.json for name "ste-runtime"
-  try {
-    const packageJsonPath = path.join(resolvedRuntimeDir, 'package.json');
-    const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
-    const packageJson = JSON.parse(packageJsonContent);
-    if (packageJson.name === 'ste-runtime') {
-      return true;
-    }
-  } catch {
-    // Ignore error, continue to next heuristic
-  }
-
-  // Heuristic 2: Check if directory name is "ste-runtime"
-  if (path.basename(resolvedRuntimeDir) === 'ste-runtime') {
-    return true;
-  }
-
-  // Heuristic 3: Check for ste-runtime specific structure (e.g., src/cli/index.ts, dist/)
-  const cliIndexPath = path.join(resolvedRuntimeDir, 'src', 'cli', 'index.ts');
-  const distDirPath = path.join(resolvedRuntimeDir, 'dist');
-  try {
-    await fs.access(cliIndexPath);
-    await fs.access(distDirPath);
-    return true;
-  } catch {
-    // Ignore error
-  }
-
-  return false;
-}
-
-/**
  * Check if a directory appears to be a user home directory or system directory.
  */
 function isSystemOrHomeDirectory(dirPath: string): boolean {
@@ -634,69 +441,6 @@ function isSystemOrHomeDirectory(dirPath: string): boolean {
   ];
   
   return systemRoots.some(root => normalized.startsWith(root));
-}
-
-/**
- * Validate that project root is within the allowed scope.
- * For ste-runtime self-analysis, the project root MUST be exactly the runtime directory.
- * 
- * @param projectRoot - The detected project root
- * @param runtimeDir - The ste-runtime directory
- * @param isSelfAnalysis - Whether we're in self-analysis mode
- * @throws Error if project root is outside allowed scope
- */
-function validateProjectScope(
-  projectRoot: string,
-  runtimeDir: string,
-  isSelfAnalysis: boolean
-): void {
-  const resolvedProjectRoot = path.resolve(projectRoot);
-  const resolvedRuntimeDir = path.resolve(runtimeDir);
-  
-  if (isSelfAnalysis) {
-    // For self-analysis: project root MUST be exactly the runtime directory
-    if (resolvedProjectRoot !== resolvedRuntimeDir) {
-      throw new Error(
-        `CRITICAL BOUNDARY VIOLATION: For self-analysis, project root must equal runtime directory.\n` +
-        `  Project root: ${resolvedProjectRoot}\n` +
-        `  Runtime dir:  ${resolvedRuntimeDir}\n` +
-        `  This would allow scanning outside the ste-runtime directory, which is FORBIDDEN.\n` +
-        `  Allowed scope: ${resolvedRuntimeDir}`
-      );
-    }
-  } else {
-    // For external projects: project root should be the immediate parent of runtime dir
-    // This is the intended use case: ste-runtime dropped into a project folder
-    const runtimeParent = path.dirname(resolvedRuntimeDir);
-    
-    // ALLOWED: Project root is the immediate parent of ste-runtime
-    // This is the PRIMARY use case - ste-runtime embedded in a project
-    if (resolvedProjectRoot === runtimeParent) {
-      // This is the expected case - validation passes
-      return;
-    }
-    
-    // ALLOWED: Project root is a subdirectory of runtime's parent (sibling or deeper)
-    if (resolvedProjectRoot.startsWith(runtimeParent + path.sep)) {
-      // This is also valid - project is a sibling or child directory
-      return;
-    }
-    
-    // REJECT: Project root is higher than the immediate parent (grandparent or beyond)
-    const relativePath = path.relative(runtimeParent, resolvedProjectRoot);
-    if (relativePath.startsWith('..')) {
-      const upLevels = relativePath.split(path.sep).filter(p => p === '..').length;
-      if (upLevels >= 1) {
-        throw new Error(
-          `CRITICAL BOUNDARY VIOLATION: Project root is outside the allowed scope.\n` +
-          `  Project root: ${resolvedProjectRoot}\n` +
-          `  Runtime dir:  ${resolvedRuntimeDir}\n` +
-          `  Expected: Project root should be the immediate parent of ste-runtime.\n` +
-          `  This would scan outside the intended project scope.`
-        );
-      }
-    }
-  }
 }
 
 /**
@@ -730,32 +474,6 @@ async function validateProjectRootBounds(
         `This may indicate incorrect project root detection that could scan outside project scope.`
       );
     }
-  }
-}
-
-/**
- * Enforce hard boundary that project root never exceeds the runtime directory for self-analysis.
- */
-async function enforceProjectBoundary(
-  projectRoot: string,
-  runtimeDir: string,
-  isSelfAnalysis: boolean
-): Promise<void> {
-  const resolvedProjectRoot = path.resolve(projectRoot);
-  const resolvedRuntimeDir = path.resolve(runtimeDir);
-  
-  if (isSelfAnalysis) {
-    // For self-analysis: project root MUST equal runtime directory
-    if (resolvedProjectRoot !== resolvedRuntimeDir) {
-      throw new Error(
-        `CRITICAL: For self-analysis, project root must equal runtime directory. ` +
-        `Project root: ${resolvedProjectRoot}, Runtime dir: ${resolvedRuntimeDir}. ` +
-        `This would allow scanning outside the ste-runtime directory, which is forbidden.`
-      );
-    }
-  } else {
-    // For external projects: validate bounds
-    await validateProjectRootBounds(projectRoot, runtimeDir);
   }
 }
 

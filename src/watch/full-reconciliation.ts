@@ -41,7 +41,7 @@ export async function computeFileChecksum(filepath: string): Promise<string> {
   try {
     const content = await fs.readFile(filepath, 'utf-8');
     return createHash('sha256').update(content, 'utf-8').digest('hex');
-  } catch (error) {
+  } catch {
     // File doesn't exist or can't be read
     return '';
   }
@@ -225,4 +225,3 @@ export function scheduleFullReconciliation(
     console.log('[Full Reconciliation] Stopped');
   };
 }
-
