@@ -206,10 +206,10 @@ Validation tests have been created for all extractors per E-ADR-013. These tests
 
 ## References
 
-- **E-ADR-013:** Extractor Validation Requirements (specification)
-- **E-ADR-008:** Extractor Development Guide (how to build extractors)
+- **ADR-P-0005:** Extractor Validation Requirements (specification)
+- **PROJECT Metadata:** `PROJECT.yaml`
 - **Test Utilities:** `src/test/extractor-test-utils.ts`
-- **Quick Start:** `documentation/guides/extractor-validation-quickstart.md`
+- **System Overview:** `SYSTEM-OVERVIEW.md`
 
 ---
 

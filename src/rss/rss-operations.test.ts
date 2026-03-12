@@ -25,8 +25,6 @@ import {
   findAllBrokenEdges,
   validateGraphHealth,
   type RssContext,
-  type BrokenEdge,
-  type BidirectionalInconsistency,
 } from './rss-operations.js';
 
 let tempDir: string;

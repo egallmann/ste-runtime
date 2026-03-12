@@ -12,8 +12,6 @@
 
 import type { ResolvedConfig } from '../config/index.js';
 import { runReconPhases } from './phases/index.js';
-import path from 'node:path';
-import fs from 'node:fs/promises';
 import { log, error as logError } from '../utils/logger.js';
 
 export interface ReconOptions {

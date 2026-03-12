@@ -1,0 +1,18 @@
+{
+  "totalComponents": 0,
+  "componentsByDomain": {},
+  "componentsByType": {},
+  "avgDependencyDepth": 0,
+  "maxDependencyDepth": 0,
+  "p95DependencyDepth": 0,
+  "avgDependentDepth": 0,
+  "maxDependentDepth": 0,
+  "avgDependenciesPerComponent": 0,
+  "avgDependentsPerComponent": 0,
+  "detectedPattern": "mixed",
+  "hasDeepTrees": false,
+  "hasWideNetwork": false,
+  "recommendedDepth": 2,
+  "reasoning": "Empty graph, using default depth=2",
+  "lastAnalyzed": "2026-03-12T05:50:06.662Z"
+}

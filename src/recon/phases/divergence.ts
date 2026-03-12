@@ -22,7 +22,6 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import yaml from 'js-yaml';
 import type { NormalizedAssertion } from './index.js';
 
 export interface ValidationResult {
@@ -75,7 +74,7 @@ export async function detectDivergence(
   
   // Identify orphaned slices (source file deleted or element removed)
   const newIds = new Set(newAssertions.map(a => a._slice.id));
-  for (const [id, priorAssertion] of priorState.entries()) {
+  for (const [id] of priorState.entries()) {
     if (!newIds.has(id)) {
       orphanedSlices.push(id);
     }

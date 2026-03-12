@@ -5,8 +5,8 @@
  * Per E-ADR-011: Context Assembly operations that combine graph metadata with source code.
  */
 
-import type { RssContext } from '../rss/rss-operations.js';
 import {
+  type RssContext,
   findEntryPoints,
   assembleContext,
   blastRadius,
@@ -51,7 +51,6 @@ export async function assembleContextTool(
   const {
     query,
     includeSource = true,
-    includeInvariants = true,
     depth = 2,
     maxNodes = 50,
     maxSourceLines = 100,

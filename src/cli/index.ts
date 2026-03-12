@@ -18,7 +18,6 @@ import {
   assembleContext
 } from '../rss/rss-operations.js';
 import { runTaskAnalyze } from '../task/task-analysis.js';
-import { startWatch } from '../watch/file-watcher.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

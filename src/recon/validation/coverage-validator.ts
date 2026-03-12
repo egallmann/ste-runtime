@@ -13,7 +13,6 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import type { NormalizedAssertion } from '../phases/index.js';
 import type { ValidationFinding, ValidatorContext } from './types.js';
 
 /**
@@ -125,4 +124,3 @@ export async function validateCoverage(
   
   return findings;
 }
-

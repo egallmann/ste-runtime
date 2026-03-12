@@ -13,7 +13,6 @@ import path from 'node:path';
 const runtimeDir = path.resolve('C:/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime');
 const parentDir = path.resolve('C:/Users/Erik.Gallmann/Documents/PycharmProjects');
 const homeDir = path.resolve('C:/Users/Erik.Gallmann');
-const allowedScope = runtimeDir;
 
 describe('Boundary Validation Logic', () => {
   describe('Project Root Validation', () => {
@@ -43,8 +42,6 @@ describe('Boundary Validation Logic', () => {
       const runtimeDir = path.resolve(homeDir, 'Documents/PycharmProjects/ste-runtime');
       
       const runtimeParent = path.dirname(runtimeDir);
-      const projectParent = path.dirname(projectRoot);
-      
       // Check if project root is higher up the tree
       const relativePath = path.relative(runtimeParent, projectRoot);
       const isTooHigh = relativePath.startsWith('..') && relativePath.split(path.sep).filter(p => p === '..').length > 1;

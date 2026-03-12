@@ -35,7 +35,7 @@ ste-runtime is a **component implementation and research prototype** of the [STE
 
 ### Why No Autonomy?
 
-Per [E-ADR-003: CEM Implementation Deferral](documentation/e-adr/E-ADR-003-CEM-Deferral.md):
+Per [E-ADR-003: CEM Implementation Deferral](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md):
 
 - **CEM (domain invariants) not implemented** — No definitions of valid software engineering semantics
 - **RSS invariant mapping missing** — RSS outputs graph + source, but not the invariants that bound LLM reasoning
@@ -85,7 +85,7 @@ ste-runtime lacks critical components for robust local tool:
 
 **Impact:** RSS currently outputs semantic graph + source code, but not the invariants that constrain what the LLM can reason over. This is the critical missing piece for governed AI assistance.
 
-**Blocker:** CEM deferred per [E-ADR-003](documentation/e-adr/E-ADR-003-CEM-Deferral.md)
+**Blocker:** CEM deferred per [E-ADR-003](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md)
 
 #### 2. Robustness and Performance
 
@@ -228,7 +228,7 @@ To make ste-runtime production-ready **as a local developer tool** would require
 
 **Why critical:** RSS currently outputs semantic graph + source code. Without invariants, the LLM has no constraints on what it can reason over. CEM provides the domain knowledge that bounds AI cognition.
 
-**Blocker:** CEM deferred per [E-ADR-003](documentation/e-adr/E-ADR-003-CEM-Deferral.md)
+**Blocker:** CEM deferred per [E-ADR-003](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md)
 
 ### 2. Robustness and Error Handling
 
@@ -351,7 +351,7 @@ Production-readiness would require significant additional work (see "Path to Pro
 
 ## Related Documentation
 
-- [E-ADR-003: CEM Implementation Deferral](documentation/e-adr/E-ADR-003-CEM-Deferral.md) — Why autonomy is not supported
+- [E-ADR-003: CEM Implementation Deferral](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md) — Why autonomy is not supported
 - [CONTRIBUTING.md](CONTRIBUTING.md) — Development status and future contribution process
 - [Architecture Documentation](documentation/architecture.md) — Technical architecture (current implementation)
 - [STE Specification](https://github.com/egallmann/ste-spec) — Complete STE Runtime architecture
@@ -361,4 +361,6 @@ Production-readiness would require significant additional work (see "Path to Pro
 **This document establishes the narrative boundary for ste-runtime.**
 
 All claims about capabilities, maturity, and production-readiness should reference this document.
+
+
 
