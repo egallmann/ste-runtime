@@ -263,11 +263,6 @@ describe('MCP Tools - Obligation Projection', () => {
       const result = await projectChangeObligationsTool(ctx, args, config);
 
       // Should be bounded by maxSlices
-      const totalSlices = 
-        result.impactedSlices.direct.length +
-        result.impactedSlices.dependents.length +
-        result.impactedSlices.dependencies.length;
-      
       // Note: The implementation may still return the direct target plus some dependents
       // The exact behavior depends on implementation details
       expect(result.meta.slicesAnalyzed).toBeDefined();

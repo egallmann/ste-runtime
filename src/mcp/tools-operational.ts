@@ -5,14 +5,13 @@
  * Per E-ADR-011: Operational tools for graph health and extractor detection.
  */
 
-import type { RssContext } from '../rss/rss-operations.js';
 import {
+  type RssContext,
   validateGraphHealth,
   findOrphanedNodes,
   findAllBrokenEdges,
   validateBidirectionalEdges,
 } from '../rss/rss-operations.js';
-import { runFullRecon } from '../recon/full-recon.js';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile, type ResolvedConfig } from '../config/index.js';
 import { globby } from 'globby';
@@ -271,15 +270,21 @@ export async function triggerFullRecon(
           // Also clean up manifest and validation directories
           try {
             await fs.rm(path.join(steStateDir, 'manifest'), { recursive: true, force: true });
-          } catch {}
+          } catch {
+            // Best-effort cleanup: process may have already exited.
+          }
           try {
             await fs.rm(path.join(steStateDir, 'validation'), { recursive: true, force: true });
-          } catch {}
+          } catch {
+            // Best-effort cleanup: process may have already exited.
+          }
           
           // Remove graph-metrics.json if it exists
           try {
             await fs.unlink(path.join(steStateDir, 'graph-metrics.json'));
-          } catch {}
+          } catch {
+            // Best-effort cleanup: process may have already exited.
+          }
         }
       } catch {
         // .ste/state doesn't exist, which is fine - nothing to clean up

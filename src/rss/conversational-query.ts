@@ -17,17 +17,15 @@
  */
 
 import {
-  RssContext,
+  type RssContext,
   initRssContext,
   search,
-  lookupByKey,
   dependencies,
   dependents,
   blastRadius,
   byTag,
   findEntryPoints,
   assembleContext,
-  getGraphStats,
   extractFilePaths,
   type RssQueryResult,
 } from './rss-operations.js';
@@ -302,7 +300,7 @@ export class ConversationalQueryEngine {
     startTime: number
   ): Promise<ConversationalResponse> {
     const searchStart = performance.now();
-    const { entryPoints, searchTerms } = findEntryPoints(this.ctx, query, 5);
+    const { entryPoints } = findEntryPoints(this.ctx, query, 5);
     const searchTime = performance.now() - searchStart;
     
     if (entryPoints.length === 0) {
@@ -316,7 +314,7 @@ export class ConversationalQueryEngine {
     
     const filePaths = extractFilePaths([primary, ...impact.nodes]);
     
-    const summary = this.buildDescriptionSummary(primary, impact.nodes, searchTerms);
+    const summary = this.buildDescriptionSummary(primary, impact.nodes);
     
     return {
       query,
@@ -597,7 +595,7 @@ export class ConversationalQueryEngine {
     startTime: number
   ): Promise<ConversationalResponse> {
     const searchStart = performance.now();
-    const { entryPoints, searchTerms } = findEntryPoints(this.ctx, query, 10);
+    const { entryPoints } = findEntryPoints(this.ctx, query, 10);
     const searchTime = performance.now() - searchStart;
     
     if (entryPoints.length === 0) {
@@ -677,8 +675,7 @@ export class ConversationalQueryEngine {
   
   private buildDescriptionSummary(
     primary: AidocNode,
-    related: AidocNode[],
-    searchTerms: string[]
+    related: AidocNode[]
   ): string {
     const typeLabel = primary.type.replace(/_/g, ' ');
     const connectionCount = primary.references.length + primary.referencedBy.length;

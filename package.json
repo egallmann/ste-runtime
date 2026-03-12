@@ -4,6 +4,12 @@
   "description": "STE Runtime [EXPERIMENTAL] - Component implementation of RECON and RSS for AI-assisted development. NOT production-ready.",
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "ste": "dist/cli/index.js",
     "recon": "dist/cli/recon-cli.js",
@@ -17,9 +23,11 @@
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:unit": "vitest run --testPathPattern='\\.(test|spec)\\.ts$' --exclude='**/integration/**'",
-    "test:integration": "vitest run --testPathPattern='integration'",
+    "test:unit": "vitest run",
+    "test:integration": "node -e \"console.log('No integration tests are currently defined for ste-runtime.')\"",
     "test:coverage": "vitest run --coverage",
+    "lint": "eslint src vitest.config.ts",
+    "lint:fix": "eslint src vitest.config.ts --fix",
     "recon": "node dist/cli/recon-cli.js",
     "recon:full": "node dist/cli/recon-cli.js --mode=full",
     "recon:self": "node dist/cli/recon-cli.js --self",
@@ -33,7 +41,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.25.3",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "chokidar": "^3.5.3",
     "commander": "^14.0.2",
     "execa": "^8.0.1",
@@ -48,12 +56,17 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
     "@vitest/coverage-v8": "^3.2.0",
+    "@eslint/js": "^9.22.0",
+    "eslint": "^9.22.0",
+    "globals": "^16.0.0",
     "husky": "9.1.7",
+    "typescript-eslint": "^8.26.1",
     "vitest": "^3.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
   },
+  "packageManager": "npm@10.9.4",
   "keywords": [
     "ste",
     "recon",
@@ -63,5 +76,13 @@
     "context-assembly",
     "ai-agent"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egallmann/ste-runtime.git"
+  },
+  "bugs": {
+    "url": "https://github.com/egallmann/ste-runtime/issues"
+  },
+  "homepage": "https://github.com/egallmann/ste-runtime#readme"
 }

@@ -123,7 +123,6 @@ describe('MCP Server Integration', () => {
 describe('Watchdog Integration', () => {
   let watchdog: Watchdog;
   let config: ResolvedConfig;
-  let reconCompleted = false;
   
   beforeAll(async () => {
     // Create mock config for test project
@@ -137,9 +136,7 @@ describe('Watchdog Integration', () => {
     watchdog = new Watchdog({
       projectRoot: TEST_PROJECT,
       config,
-      onReconComplete: async () => {
-        reconCompleted = true;
-      },
+      onReconComplete: async () => {},
       onError: (error) => {
         console.error('Watchdog error:', error);
       },

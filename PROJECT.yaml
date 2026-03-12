@@ -1,0 +1,59 @@
+schema_version: "1.0"
+type: project_metadata
+
+project:
+  name: "ste-runtime"
+  description: "STE Runtime experimental component implementing RECON, RSS, MCP integration, and self-documenting semantic extraction workflows."
+  type: "tool"
+
+ownership:
+  team: "architecture-systems"
+  tech_lead: "@egallmann"
+
+repository:
+  url: "github.com/egallmann/ste-runtime"
+  primary_branch: "develop"
+
+implementation_identifiers:
+  package_name: "ste-runtime"
+  module_path: "src/"
+
+automation:
+  auto_merge_allowed: false
+  requires_human_review: true
+  comfort_level: "conservative"
+
+development_methodology:
+  approach: "test-after"
+  testing_framework: "vitest"
+  quality_gates:
+    - type_checking
+    - test_suite_passing
+    - linting
+    - dependency_security_audit
+  rationale: |
+    The repository currently enforces compilation, automated tests, and RECON
+    self-documentation through CI. Linting is part of local and contributor
+    hygiene expectations.
+  authority: "README.md, .github/workflows/test.yml, package.json"
+
+integrations:
+  scm:
+    type: github
+    required_approvers: ["@egallmann"]
+  ci:
+    type: github_actions
+    workflow_path: ".github/workflows/test.yml"
+    required_checks:
+      - build
+      - test
+      - recon-self-documentation
+
+compliance:
+  security_level: medium
+  data_classification: public
+  license: "Apache-2.0"
+
+architecture_documentation:
+  adr_directory: "adrs/"
+  manifest_path: "adrs/manifest.yaml"

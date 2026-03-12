@@ -386,8 +386,8 @@ $ ste rss blast-radius graph/function/myFunction
    ```
 
 3. **Verify extractor created edges:**
-   - See [Extractor Validation Guide](./extractor-validation-quickstart.md)
-   - Run validation tests
+   - Review extractor tests
+   - See [PROJECT metadata](../../PROJECT.yaml)
 
 4. **Check inference phase:**
    - Ensure imports/dependencies are extracted
@@ -940,7 +940,8 @@ Components exist but no relationships/edges
    - See [Inference Phase Enhancements](../implementation/inference-phase-enhancements.md)
 
 3. **Verify extractor emits relationships:**
-   - See [Extractor Development Guide](../e-adr/E-ADR-008-Extractor-Development-Guide.md)
+   - See [Inference Phase Enhancements](../implementation/inference-phase-enhancements.md)
+   - See [PROJECT metadata](../../PROJECT.yaml)
 
 ---
 
@@ -1018,8 +1019,9 @@ If you encounter an issue not covered here:
    - [MCP Setup Guide](./mcp-setup.md)
    - [RECON README](../instructions/RECON-README.md)
 
-3. **Check E-ADRs:**
-   - [E-ADR Directory](../e-adr/)
+3. **Check ADRs:**
+   - [ADR Directory](../../adrs/)
+   - [Rendered ADR Docs](../../adrs/rendered/)
 
 4. **Report issues:**
    - Include full error messages
@@ -1055,4 +1057,5 @@ If you encounter an issue not covered here:
 ---
 
 **Last Updated:** 2026-01-11
+
 

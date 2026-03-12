@@ -87,7 +87,7 @@ export async function populateAiDoc(
           await fs.unlink(targetPath);
           deleted++;
           log(`[RECON Population] Deleted orphan: ${priorId}`);
-        } catch (error) {
+        } catch (_error) {
           // File might not exist, ignore
         }
       }
@@ -133,7 +133,7 @@ export async function populateAiDoc(
               await fs.unlink(targetPath);
               deleted++;
               log(`[RECON Population] Deleted orphan: ${priorId}`);
-            } catch (error) {
+            } catch (_error) {
               // File might not exist (already deleted or misnamed), log but continue
               console.warn(`[RECON Population] Could not delete orphan ${priorId}: file not found`);
             }
@@ -308,7 +308,7 @@ async function loadPriorState(stateDir: string): Promise<Map<string, NormalizedA
           console.warn(`[RECON Population] Failed to load prior state from ${file}:`, error);
         }
       }
-    } catch (error) {
+    } catch {
       // Directory doesn't exist yet, no prior state
     }
   }

@@ -471,9 +471,10 @@ This design minimizes token usage while providing rich context.
 
 ## See Also
 
-- [E-ADR-011: MCP Server Implementation](../e-adr/E-ADR-011-ste-runtime-MCP-Server.md)
+- [ADR-P-0004: ste-runtime MCP Server Implementation](../../adrs/rendered/ADR-P-0004.md)
 - [RSS Usage Guide](../instructions/RSS-USAGE-GUIDE.md)
 - [RECON README](../instructions/RECON-README.md)
+
 
 
 

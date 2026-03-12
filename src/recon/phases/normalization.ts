@@ -14,7 +14,7 @@
 import path from 'node:path';
 import type { RawAssertion, NormalizedAssertion } from './index.js';
 import type { SupportedLanguage } from '../../config/index.js';
-import { generateModuleId, toPosixPath } from '../../utils/paths.js';
+import { generateModuleId } from '../../utils/paths.js';
 
 /**
  * Get extractor name for a language
@@ -72,7 +72,7 @@ function getFileExtension(language: SupportedLanguage): string {
  */
 export async function normalizeAssertions(
   rawAssertions: RawAssertion[],
-  projectRoot: string
+  _projectRoot: string
 ): Promise<NormalizedAssertion[]> {
   const normalized: NormalizedAssertion[] = [];
   const timestamp = new Date().toISOString();
