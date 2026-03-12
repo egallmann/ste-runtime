@@ -303,9 +303,9 @@ ste rss-context "mcp server implementation" --depth 3 --max 100
 
 ## Documentation Updates
 
-1. **E-ADR-013:** Extractor Validation Requirements (created)
+1. **ADR-P-0005:** Extractor Validation Requirements (created)
 2. **extractor-validation-status.md:** Updated with all tests passing
-3. **extractor-validation-quickstart.md:** Developer guide (created)
+3. **PROJECT.yaml / SYSTEM-OVERVIEW.md:** Current contributor orientation and repo metadata
 4. **inference-phase-enhancements.md:** This document (created)
 
 ---

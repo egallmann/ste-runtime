@@ -87,7 +87,7 @@ export async function loadSourceForSlice(
       lines,
       truncated,
     };
-  } catch (error) {
+  } catch (_error) {
     // File might not exist or not readable
     return null;
   }
@@ -147,7 +147,7 @@ export async function loadSourceGroupedByFile(
           contexts.push(ctx);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Skip file if not readable
       continue;
     }

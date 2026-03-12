@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { detectDivergence, type ValidationResult, type SemanticEnrichment } from './divergence.js';
+import { detectDivergence } from './divergence.js';
 import type { NormalizedAssertion } from './index.js';
 import * as fs from 'node:fs/promises';
 

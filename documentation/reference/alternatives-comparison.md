@@ -298,4 +298,5 @@ ste-runtime is **complementary** to existing tools, not competitive:
 **Related Documentation:**
 - [Architecture](../architecture.md) — ste-runtime technical architecture
 - [MATURITY.md](../../MATURITY.md) — Production readiness assessment
-- [E-ADR-001](../e-adr/E-ADR-001-RECON-Provisional-Execution.md) — RECON design decisions
+- [ADR-L-0001](../../adrs/rendered/ADR-L-0001.md) — RECON design decisions
+

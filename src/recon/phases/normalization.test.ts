@@ -8,7 +8,6 @@ import type { RawAssertion } from './index.js';
 
 describe('normalizeAssertions', () => {
   const projectRoot = '/test/project';
-  const timestamp = new Date('2024-01-01T00:00:00Z').toISOString();
 
   describe('Function normalization', () => {
     it('should normalize TypeScript functions', async () => {
@@ -616,4 +615,3 @@ describe('normalizeAssertions', () => {
     });
   });
 });
-

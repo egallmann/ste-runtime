@@ -86,7 +86,6 @@ describe('Python Extractor - Graph Edge Validation', () => {
     expect(app).toBeDefined();
 
     // For now, we verify the import was processed (even if edge creation needs work)
-    const refs = app!._slice.references || [];
     // This test documents current behavior - may need enhancement
   });
 
@@ -168,7 +167,6 @@ describe('Python Extractor - Graph Edge Validation', () => {
 
     // Note: Relative Python imports (. and ..) require special resolution logic
     // This test documents expected behavior for future implementation
-    const refs = auth!._slice.references || [];
     // May need enhancement in inference phase to handle Python relative imports
   });
 

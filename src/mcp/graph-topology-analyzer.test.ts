@@ -13,7 +13,6 @@ import {
   saveGraphMetrics,
   loadGraphMetrics,
   type GraphMetrics,
-  type ArchitecturePattern,
 } from './graph-topology-analyzer.js';
 import type { AidocGraph, AidocNode } from '../rss/graph-loader.js';
 

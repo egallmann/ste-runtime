@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import * as ts from 'typescript';
 import { execa } from 'execa';
 import type { DiscoveredFile, RawAssertion } from './index.js';
-import type { SupportedLanguage, JsonPatterns } from '../../config/index.js';
+import type { SupportedLanguage } from '../../config/index.js';
 import { generateSliceId, toPosixPath } from '../../utils/paths.js';
 import { extractFromCloudFormation } from './extraction-cloudformation.js';
 import { extractFromJson } from '../../extractors/json/index.js';
@@ -1018,7 +1018,7 @@ function extractClassProperties(node: ts.ClassDeclaration, sourceFile: ts.Source
   return properties;
 }
 
-function extractImportedNames(node: ts.ImportDeclaration, sourceFile: ts.SourceFile): string[] {
+function extractImportedNames(node: ts.ImportDeclaration, _sourceFile: ts.SourceFile): string[] {
   const names: string[] = [];
   
   if (node.importClause) {

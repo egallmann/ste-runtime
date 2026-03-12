@@ -7,7 +7,6 @@
  * Avoids brittle markdown parsing becoming fake pressure.
  */
 
-import type { NormalizedAssertion } from '../phases/index.js';
 import type { ValidationFinding, ValidatorContext } from './types.js';
 
 // Minimal required fields based on current AI-DOC structure
@@ -153,4 +152,3 @@ export async function validateSchema(
   
   return findings;
 }
-

@@ -261,8 +261,7 @@ export async function loadGraphMetrics(
   try {
     const content = await fs.readFile(metricsPath, 'utf-8');
     return JSON.parse(content) as GraphMetrics;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
-

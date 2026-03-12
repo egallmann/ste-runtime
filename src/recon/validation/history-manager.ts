@@ -32,7 +32,7 @@ export async function loadChecksumHistory(stateDir: string): Promise<ChecksumHis
     }
     
     return history;
-  } catch (error) {
+  } catch {
     // File doesn't exist or is malformed, return empty history
     return { runs: [] };
   }
