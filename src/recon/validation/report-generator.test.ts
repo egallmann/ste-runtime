@@ -9,7 +9,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import yaml from 'js-yaml';
-import { generateReport, type ReportVerbosity } from './report-generator.js';
+import { generateReport } from './report-generator.js';
 import type { ValidationFinding, ValidationReport } from './types.js';
 
 describe('Report Generator', () => {

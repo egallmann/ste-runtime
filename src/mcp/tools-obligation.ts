@@ -7,7 +7,6 @@
  */
 
 import type { RssContext } from '../rss/rss-operations.js';
-import { initRssContext } from '../rss/rss-operations.js';
 import { 
   preflightReconciliation, 
   checkFreshness,
@@ -17,13 +16,11 @@ import {
 import { 
   projectObligations,
   countObligations,
-  type ObligationProjectionOptions,
 } from './obligation-projector.js';
 import type {
   ChangeIntent,
   ChangeIntentType,
   ChangeTargetType,
-  ObligationProjectionResponse,
   FreshnessIndicator,
 } from '../rss/schema.js';
 

@@ -7,7 +7,6 @@
  * Tracks extractor version changes.
  */
 
-import type { NormalizedAssertion } from '../phases/index.js';
 import type { ValidationFinding, ValidatorContext } from './types.js';
 import { loadChecksumHistory } from './history-manager.js';
 
@@ -155,5 +154,4 @@ export async function validateIdentity(
   
   return findings;
 }
-
 

@@ -13,7 +13,6 @@
  */
 
 import type { RawAssertion, NormalizedAssertion } from './index.js';
-import type { SupportedLanguage } from '../../config/index.js';
 import { generateModuleId } from '../../utils/paths.js';
 
 /**
@@ -431,7 +430,7 @@ export function inferRelationships(
           for (const methodName of calledMethods) {
             // Find methods with this name
             // First: same file
-            let targetMethods = byFile.get(file)?.filter(a =>
+            const targetMethods = byFile.get(file)?.filter(a =>
               a._slice.type === 'function' &&
               a.element.isMethod === true &&
               a.element.name === methodName
@@ -1347,7 +1346,7 @@ function buildRelationshipMap(rawAssertions: RawAssertion[]): Map<string, Relati
  */
 function buildImportedNamesMap(
   relationshipsByFile: Map<string, Relationship[]>,
-  fileByModuleId: Map<string, string>
+  _fileByModuleId: Map<string, string>
 ): Map<string, Map<string, string>> {
   const result = new Map<string, Map<string, string>>();
   
@@ -1370,30 +1369,6 @@ function buildImportedNamesMap(
     
     if (importedNames.size > 0) {
       result.set(file, importedNames);
-    }
-  }
-  
-  return result;
-}
-
-/**
- * Legacy function for backward compatibility
- * Converts relationship map to old import map format
- */
-function buildImportMap(rawAssertions: RawAssertion[]): Map<string, Array<{ module: string; names: string[] }>> {
-  const relationshipMap = buildRelationshipMap(rawAssertions);
-  const result = new Map<string, Array<{ module: string; names: string[] }>>();
-  
-  for (const [file, relationships] of relationshipMap.entries()) {
-    const imports = relationships
-      .filter((r) => r.type === 'import' && r.module)
-      .map((r) => ({
-        module: r.module!,
-        names: r.names ?? [],
-      }));
-    
-    if (imports.length > 0) {
-      result.set(file, imports);
     }
   }
   
@@ -1517,7 +1492,7 @@ function resolveAngularDependency(
   byFile: Map<string, NormalizedAssertion[]>
 ): string | null {
   // Search for the target component or service across all files
-  for (const [file, assertions] of byFile.entries()) {
+  for (const [, assertions] of byFile.entries()) {
     for (const assertion of assertions) {
       const element = assertion.element;
       

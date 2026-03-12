@@ -19,7 +19,6 @@ import {
   detectFileChanges,
   manifestPath,
   type ReconManifest,
-  type FileFingerprint,
 } from './change-detector.js';
 
 let tempDir: string;

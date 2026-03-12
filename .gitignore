@@ -1,3 +1,6 @@
+# Cursor IDE workspace and plans
+.cursor/
+
 # Dependencies
 node_modules/
 
@@ -8,8 +11,9 @@ dist/
 # .ste/state/ - Only track README.md (ignore all other files)
 .ste/state/*
 !.ste/state/README.md
-# .ste-self/ - Track everything (example for reviewers)
-!.ste-self/
+# .ste-self/state/ - Only track README.md (ignore all other files)
+.ste-self/state/*
+!.ste-self/state/README.md
 
 # Runtime cache (downloaded specs, auto-regenerated)
 .ste/cache/
@@ -45,7 +49,8 @@ test-output.txt
 *.tmp
 .tmp/
 
-# Internal development issues (pre-release)
-# Remove this line once project is public and issues should be tracked
-documentation/issues/
+# Legacy archived docs kept locally only
+documentation/e-adr-archived/
+documentation/plan/
+
 

@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { loadAidocGraph, type AidocNode, type AidocEdge } from './graph-loader.js';
+import { loadAidocGraph } from './graph-loader.js';
 
 let tempDir: string;
 

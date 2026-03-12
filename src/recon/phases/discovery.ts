@@ -96,7 +96,7 @@ const LANGUAGE_IGNORES: Record<SupportedLanguage, string[]> = {
 /**
  * Get file extension to language mapping
  */
-function getLanguageForFile(filePath: string, content?: string): SupportedLanguage | null {
+function getLanguageForFile(filePath: string, _content?: string): SupportedLanguage | null {
   const ext = path.extname(filePath).toLowerCase();
   const posixPath = toPosixPath(filePath);
   

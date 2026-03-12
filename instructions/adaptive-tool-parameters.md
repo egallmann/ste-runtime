@@ -461,9 +461,10 @@ if (usageStats.get('get_dependencies').avgDepth > recommendedDepth) {
 
 ## References
 
-- [E-ADR-011 §3: Adaptive Tool Parameters](documentation/e-adr/E-ADR-011-ste-runtime-MCP-Server.md)
+- [ADR-P-0004 §3: Adaptive Tool Parameters](../adrs/rendered/ADR-P-0004.md)
 - [Graph Topology Analyzer Implementation](../src/rss/graph-topology-analyzer.ts)
 - [RSS Programmatic API](./RSS-PROGRAMMATIC-API.md)
+
 
 
 
