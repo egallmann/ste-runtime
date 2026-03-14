@@ -21,6 +21,7 @@ import { normalizeAssertions } from './normalization.js';
 import { populateAiDoc } from './population.js';
 import { detectDivergence } from './divergence.js';
 import { runSelfValidation } from './self-validation.js';
+import { writeImplementationAttributionEvidence } from '../implementation-intent.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
 import { buildFullManifest, writeReconManifest, type ManifestLanguage } from '../../watch/change-detector.js';
 import { log } from '../../utils/logger.js';
@@ -254,6 +255,17 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
       }
     );
     log(`[RECON Phase 5] Created: ${populationResult.created}, Updated: ${populationResult.updated}, Deleted: ${populationResult.deleted}, Unchanged: ${populationResult.unchanged}`);
+
+    try {
+      await writeImplementationAttributionEvidence(
+        path.resolve(options.projectRoot, stateRoot),
+        Array.from(populationResult.currentState.values()),
+      );
+    } catch (error) {
+      warnings.push(
+        `Implementation attribution evidence write failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   
   // Phase 6: State Validation & Self-Healing
   log('[RECON Phase 6] State validation & self-healing...');

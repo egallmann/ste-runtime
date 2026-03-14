@@ -108,6 +108,7 @@ def function_to_dict(node: ast.FunctionDef | ast.AsyncFunctionDef) -> Dict[str, 
         "args": collect_args(node),
         "returns": safe_unparse(node.returns),
         "decorators": decorators,
+        "implementation_intent": extract_implementation_intent(node.decorator_list),
         "docstring": ast.get_docstring(node),
         "async": isinstance(node, ast.AsyncFunctionDef),
     }
@@ -115,6 +116,9 @@ def function_to_dict(node: ast.FunctionDef | ast.AsyncFunctionDef) -> Dict[str, 
 
 def class_to_dict(node: ast.ClassDef) -> Dict[str, Any]:
     bases = [base for base in (safe_unparse(base) for base in node.bases) if base]
+    decorators = [
+        dec for dec in (safe_unparse(dec) for dec in node.decorator_list) if dec
+    ]
     methods = [
         function_to_dict(stmt)
         for stmt in node.body
@@ -125,6 +129,8 @@ def class_to_dict(node: ast.ClassDef) -> Dict[str, Any]:
         "lineno": getattr(node, "lineno", 0),
         "end_lineno": getattr(node, "end_lineno", getattr(node, "lineno", 0)),
         "bases": bases,
+        "decorators": decorators,
+        "implementation_intent": extract_implementation_intent(node.decorator_list),
         "methods": methods,
         "docstring": ast.get_docstring(node),
     }
@@ -157,6 +163,64 @@ def extract_imports(tree: ast.AST) -> List[Dict[str, Any]]:
 
 def decorator_call(node: ast.AST) -> Optional[ast.Call]:
     return node if isinstance(node, ast.Call) else None
+
+
+def _decorator_name(node: ast.AST) -> Optional[str]:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    return None
+
+
+def _string_arguments(call: ast.Call) -> List[str]:
+    values: List[str] = []
+
+    for arg in call.args:
+        value = literal_string(arg)
+        if value is not None:
+            values.append(value)
+            continue
+        values.extend(strings_from_iterable(arg))
+
+    for kw in call.keywords:
+        if kw.arg not in {"adr_id", "adr_ids", "adr", "adrs", "invariant", "invariants"}:
+            continue
+        value = literal_string(kw.value)
+        if value is not None:
+            values.append(value)
+            continue
+        values.extend(strings_from_iterable(kw.value))
+
+    return values
+
+
+def extract_implementation_intent(decorators: Iterable[ast.AST]) -> Optional[Dict[str, Any]]:
+    attributed_adrs: List[str] = []
+    enforced_invariants: List[str] = []
+
+    for decorator in decorators:
+        call = decorator_call(decorator)
+        if not call:
+            continue
+        name = _decorator_name(call.func)
+        if name in {"implements_adr", "implements_adrs"}:
+            attributed_adrs.extend(_string_arguments(call))
+        elif name in {"enforces_invariant", "enforces_invariants"}:
+            enforced_invariants.extend(_string_arguments(call))
+
+    attributed_adrs = list(dict.fromkeys(attributed_adrs))
+    enforced_invariants = list(dict.fromkeys(enforced_invariants))
+
+    if not attributed_adrs and not enforced_invariants:
+        return None
+
+    return {
+        "implements_adrs": attributed_adrs,
+        "enforced_invariants": enforced_invariants,
+        "confidence": "declared",
+        "source": "decorator",
+    }
 
 
 def extract_api_endpoints(
@@ -544,4 +608,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -15,6 +15,7 @@ import path from 'node:path';
 import type { RawAssertion, NormalizedAssertion } from './index.js';
 import type { SupportedLanguage } from '../../config/index.js';
 import { generateModuleId } from '../../utils/paths.js';
+import { normalizeImplementationIntent } from '../implementation-intent.js';
 
 /**
  * Get extractor name for a language
@@ -183,6 +184,7 @@ function normalizeElement(
   timestamp: string
 ): NormalizedAssertion | null {
   const extractor = getExtractorName(assertion.language);
+  const implementationIntent = normalizeImplementationIntent(assertion.metadata.implementationIntent);
   
   if (assertion.elementType === 'function') {
     return {
@@ -209,6 +211,7 @@ function normalizeElement(
         deprecated: assertion.metadata.deprecated,
         tags: assertion.metadata.tags,
         decorators: assertion.metadata.decorators,
+        implementation_intent: implementationIntent,
         // Method-specific properties (for class methods)
         isMethod: assertion.metadata.isMethod as boolean | undefined,
         className: assertion.metadata.className as string | undefined,
@@ -246,6 +249,8 @@ function normalizeElement(
         examples: assertion.metadata.examples,
         deprecated: assertion.metadata.deprecated,
         tags: assertion.metadata.tags,
+        decorators: assertion.metadata.decorators,
+        implementation_intent: implementationIntent,
       },
       provenance: {
         extracted_at: timestamp,
@@ -397,6 +402,7 @@ function normalizeElement(
         resourceCount: assertion.metadata.resourceCount,
         parameterCount: assertion.metadata.parameterCount,
         outputCount: assertion.metadata.outputCount,
+        implementation_intent: implementationIntent,
       },
       provenance: {
         extracted_at: timestamp,

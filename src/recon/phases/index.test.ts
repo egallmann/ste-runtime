@@ -15,6 +15,7 @@ import * as inference from './inference.js';
 import * as population from './population.js';
 import * as divergence from './divergence.js';
 import * as selfValidation from './self-validation.js';
+import * as implementationIntent from '../implementation-intent.js';
 import { ProjectDiscovery } from '../../discovery/index.js';
 
 vi.mock('./discovery.js');
@@ -24,6 +25,7 @@ vi.mock('./inference.js');
 vi.mock('./population.js');
 vi.mock('./divergence.js');
 vi.mock('./self-validation.js');
+vi.mock('../implementation-intent.js');
 const mockBuildFullManifest = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ version: 1, generatedAt: '2024-01-01T00:00:00Z', files: {} })
 );
@@ -141,12 +143,35 @@ describe('runReconPhases', () => {
     ]);
 
     vi.mocked(population.populateAiDoc).mockResolvedValue({
-      slicesWritten: 1,
-      createCount: 1,
-      updateCount: 0,
-      deleteCount: 0,
-      unchangedCount: 0,
+      created: 1,
+      updated: 0,
+      deleted: 0,
+      unchanged: 0,
+      priorState: new Map(),
+      currentState: new Map([
+        [
+          'function:test.ts:test:1',
+          {
+            _slice: {
+              id: 'function:test.ts:test:1',
+              domain: 'graph',
+              type: 'function',
+              source_files: ['test.ts'],
+            },
+            element: { id: 'function:test.ts:test:1', name: 'test' },
+            provenance: {
+              extracted_at: '2024-01-01T00:00:00Z',
+              extractor: 'typescript-v1',
+              file: 'test.ts',
+              line: 1,
+              language: 'typescript',
+            },
+          },
+        ],
+      ]),
     });
+
+    vi.mocked(implementationIntent.writeImplementationAttributionEvidence).mockResolvedValue(undefined);
 
     vi.mocked(divergence.detectDivergence).mockResolvedValue({
       orphanedSlices: [],
@@ -188,6 +213,7 @@ describe('runReconPhases', () => {
       expect(normalization.normalizeAssertions).toHaveBeenCalled();
       expect(inference.inferRelationships).toHaveBeenCalled();
       expect(population.populateAiDoc).toHaveBeenCalled();
+      expect(implementationIntent.writeImplementationAttributionEvidence).toHaveBeenCalled();
       expect(divergence.detectDivergence).toHaveBeenCalled();
       expect(selfValidation.runSelfValidation).toHaveBeenCalled();
     });
@@ -349,11 +375,12 @@ describe('runReconPhases', () => {
   describe('Result construction', () => {
     it('should return correct statistics', async () => {
       vi.mocked(population.populateAiDoc).mockResolvedValue({
-        slicesWritten: 10,
-        createCount: 5,
-        updateCount: 3,
-        deleteCount: 1,
-        unchangedCount: 1,
+        created: 5,
+        updated: 3,
+        deleted: 1,
+        unchanged: 1,
+        priorState: new Map(),
+        currentState: new Map(),
       });
 
       const options: ReconOptions = {

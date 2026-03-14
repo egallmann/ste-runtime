@@ -121,6 +121,40 @@ interface CfnOutput {
   Condition?: string;
 }
 
+function stringListFromMetadata(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter((item): item is string => typeof item === 'string' && item.length > 0);
+}
+
+function extractTemplateImplementationIntent(
+  metadata: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!metadata) {
+    return undefined;
+  }
+
+  const implementsAdrs = stringListFromMetadata(
+    metadata['implements-adrs'] ?? metadata.implements_adrs,
+  );
+  const enforcedInvariants = stringListFromMetadata(
+    metadata['enforces-invariants'] ?? metadata.enforces_invariants,
+  );
+
+  if (implementsAdrs.length === 0 && enforcedInvariants.length === 0) {
+    return undefined;
+  }
+
+  return {
+    implements_adrs: implementsAdrs,
+    enforced_invariants: enforcedInvariants,
+    confidence: 'declared',
+    source: 'metadata',
+  };
+}
+
 /**
  * Extract assertions from a CloudFormation template file.
  * 
@@ -184,6 +218,7 @@ export async function extractFromCloudFormation(file: DiscoveredFile): Promise<R
         resourceCount: template.Resources ? Object.keys(template.Resources).length : 0,
         parameterCount: template.Parameters ? Object.keys(template.Parameters).length : 0,
         outputCount: template.Outputs ? Object.keys(template.Outputs).length : 0,
+        implementationIntent: extractTemplateImplementationIntent(template.Metadata),
       },
     });
     
