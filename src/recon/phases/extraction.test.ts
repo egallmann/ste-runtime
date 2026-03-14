@@ -90,6 +90,108 @@ describe('extractAssertions', () => {
       expect(userClass.metadata.methods).toContain('getUsers');
     });
 
+    it('should extract implementation intent from TypeScript function decorators', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/intent.ts',
+        relativePath: 'intent.ts',
+        language: 'typescript'
+      };
+
+      const tsContent = `
+        @implements_adr('ADR-L-0004')
+        @enforces_invariant(['INV-0006'])
+        export function processClaim(id: string): string {
+          return id;
+        }
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const func = assertions.find(a => a.elementType === 'function' && a.metadata.name === 'processClaim');
+
+      expect(func).toBeDefined();
+      expect(func?.metadata.decorators).toEqual([
+        "@implements_adr('ADR-L-0004')",
+        "@enforces_invariant(['INV-0006'])",
+      ]);
+      expect(func?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: ['INV-0006'],
+        confidence: 'declared',
+        source: 'decorator',
+      });
+    });
+
+    it('should extract implementation intent from TypeScript class and method decorators', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/decorated-class.ts',
+        relativePath: 'decorated-class.ts',
+        language: 'typescript'
+      };
+
+      const tsContent = `
+        @implements_adrs(['ADR-L-0004', 'ADR-PC-0006'])
+        export class ClaimService {
+          @enforces_invariant('INV-0006')
+          validateClaim(claimId: string) {
+            return claimId;
+          }
+        }
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const claimClass = assertions.find(a => a.elementType === 'class' && a.metadata.name === 'ClaimService');
+      const validateMethod = assertions.find(
+        a => a.elementType === 'function' && a.metadata.name === 'validateClaim'
+      );
+
+      expect(claimClass?.metadata.decorators).toEqual([
+        "@implements_adrs(['ADR-L-0004', 'ADR-PC-0006'])",
+      ]);
+      expect(claimClass?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004', 'ADR-PC-0006'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'decorator',
+      });
+
+      expect(validateMethod?.metadata.decorators).toEqual(["@enforces_invariant('INV-0006')"]);
+      expect(validateMethod?.metadata.implementationIntent).toEqual({
+        implements_adrs: [],
+        enforced_invariants: ['INV-0006'],
+        confidence: 'declared',
+        source: 'decorator',
+      });
+    });
+
+    it('should ignore non-literal TypeScript decorator arguments for implementation intent', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/nonliteral.ts',
+        relativePath: 'nonliteral.ts',
+        language: 'typescript'
+      };
+
+      const tsContent = `
+        const ADR_ID = 'ADR-L-0004';
+        @implements_adr(ADR_ID)
+        export function processClaim(id: string): string {
+          return id;
+        }
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const func = assertions.find(a => a.elementType === 'function' && a.metadata.name === 'processClaim');
+
+      expect(func).toBeDefined();
+      expect(func?.metadata.decorators).toEqual(["@implements_adr(ADR_ID)"]);
+      expect(func?.metadata.implementationIntent).toBeUndefined();
+    });
+
     it('should extract imports from TypeScript files', async () => {
       const tsFile: DiscoveredFile = {
         path: '/test/app.ts',
@@ -449,6 +551,12 @@ describe('extractAssertions', () => {
             args: ['name'],
             returns: 'str',
             decorators: [],
+            implementation_intent: {
+              implements_adrs: ['ADR-L-0004'],
+              enforced_invariants: [],
+              confidence: 'declared',
+              source: 'decorator',
+            },
             docstring: 'Greet a user',
             async: false
           },
@@ -487,6 +595,12 @@ describe('extractAssertions', () => {
       expect(greetFunc).toBeDefined();
       expect(greetFunc?.metadata.args).toEqual(['name']);
       expect(greetFunc?.metadata.docstring).toBe('Greet a user');
+      expect(greetFunc?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'decorator',
+      });
       expect(greetFunc?.metadata.async).toBe(false);
       expect(greetFunc?.signature).toContain('def greet');
 
@@ -509,6 +623,13 @@ describe('extractAssertions', () => {
             name: 'User',
             lineno: 1,
             bases: ['BaseModel'],
+            decorators: ['implements_adr("ADR-L-0004")'],
+            implementation_intent: {
+              implements_adrs: ['ADR-L-0004'],
+              enforced_invariants: ['INV-0006'],
+              confidence: 'declared',
+              source: 'decorator',
+            },
             methods: [
               { name: '__init__' },
               { name: 'save' },
@@ -534,6 +655,13 @@ describe('extractAssertions', () => {
       const userClass = classAssertions[0];
       expect(userClass.metadata.name).toBe('User');
       expect(userClass.metadata.bases).toEqual(['BaseModel']);
+      expect(userClass.metadata.decorators).toEqual(['implements_adr("ADR-L-0004")']);
+      expect(userClass.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: ['INV-0006'],
+        confidence: 'declared',
+        source: 'decorator',
+      });
       expect(userClass.metadata.methods).toEqual(['__init__', 'save', 'delete']);
       expect(userClass.metadata.docstring).toBe('User model class');
     });
@@ -749,4 +877,3 @@ describe('extractAssertions', () => {
     });
   });
 });
-
