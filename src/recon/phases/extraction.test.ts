@@ -449,6 +449,12 @@ describe('extractAssertions', () => {
             args: ['name'],
             returns: 'str',
             decorators: [],
+            implementation_intent: {
+              implements_adrs: ['ADR-L-0004'],
+              enforced_invariants: [],
+              confidence: 'declared',
+              source: 'decorator',
+            },
             docstring: 'Greet a user',
             async: false
           },
@@ -487,6 +493,12 @@ describe('extractAssertions', () => {
       expect(greetFunc).toBeDefined();
       expect(greetFunc?.metadata.args).toEqual(['name']);
       expect(greetFunc?.metadata.docstring).toBe('Greet a user');
+      expect(greetFunc?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'decorator',
+      });
       expect(greetFunc?.metadata.async).toBe(false);
       expect(greetFunc?.signature).toContain('def greet');
 
@@ -509,6 +521,13 @@ describe('extractAssertions', () => {
             name: 'User',
             lineno: 1,
             bases: ['BaseModel'],
+            decorators: ['implements_adr("ADR-L-0004")'],
+            implementation_intent: {
+              implements_adrs: ['ADR-L-0004'],
+              enforced_invariants: ['INV-0006'],
+              confidence: 'declared',
+              source: 'decorator',
+            },
             methods: [
               { name: '__init__' },
               { name: 'save' },
@@ -534,6 +553,13 @@ describe('extractAssertions', () => {
       const userClass = classAssertions[0];
       expect(userClass.metadata.name).toBe('User');
       expect(userClass.metadata.bases).toEqual(['BaseModel']);
+      expect(userClass.metadata.decorators).toEqual(['implements_adr("ADR-L-0004")']);
+      expect(userClass.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: ['INV-0006'],
+        confidence: 'declared',
+        source: 'decorator',
+      });
       expect(userClass.metadata.methods).toEqual(['__init__', 'save', 'delete']);
       expect(userClass.metadata.docstring).toBe('User model class');
     });
@@ -749,4 +775,3 @@ describe('extractAssertions', () => {
     });
   });
 });
-

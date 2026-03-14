@@ -45,6 +45,39 @@ Resources:
       expect(resources[0].metadata.type).toBe('AWS::S3::Bucket');
     });
 
+    it('should extract template-level implementation intent from metadata', async () => {
+      const cfnFile: DiscoveredFile = {
+        path: '/test/template-intent.yaml',
+        relativePath: 'template-intent.yaml',
+        language: 'cloudformation',
+        changeType: 'added'
+      };
+
+      const template = `
+AWSTemplateFormatVersion: '2010-09-09'
+Metadata:
+  implements-adrs:
+    - ADR-L-0004
+    - ADR-PS-0004
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+`;
+
+      vi.mocked(fs.readFile).mockResolvedValue(template);
+
+      const assertions = await extractFromCloudFormation(cfnFile);
+      const cfnTemplate = assertions.find(a => a.elementType === 'cfn_template');
+
+      expect(cfnTemplate).toBeDefined();
+      expect(cfnTemplate?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004', 'ADR-PS-0004'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'metadata',
+      });
+    });
+
     it('should parse JSON CloudFormation template', async () => {
       const cfnFile: DiscoveredFile = {
         path: '/test/template.json',
@@ -606,4 +639,3 @@ Resources:
     });
   });
 });
-
