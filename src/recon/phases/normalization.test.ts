@@ -24,6 +24,13 @@ describe('normalizeAssertions', () => {
             isExported: true,
             isAsync: false,
             parameters: ['name'],
+            decorators: ["@implements_adr('ADR-L-0004')"],
+            implementationIntent: {
+              implements_adrs: ['ADR-L-0004'],
+              enforced_invariants: [],
+              confidence: 'declared',
+              source: 'decorator',
+            },
           },
         },
       ];
@@ -41,6 +48,13 @@ describe('normalizeAssertions', () => {
       expect(funcSlice?.element.is_exported).toBe(true);
       expect(funcSlice?.element.is_async).toBe(false);
       expect(funcSlice?.element.parameters).toEqual(['name']);
+      expect(funcSlice?.element.decorators).toEqual(["@implements_adr('ADR-L-0004')"]);
+      expect(funcSlice?.element.implementation_intent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'decorator',
+      });
       expect(funcSlice?.provenance.file).toBe('app.ts');
       expect(funcSlice?.provenance.line).toBe(5);
       expect(funcSlice?.provenance.language).toBe('typescript');
@@ -128,6 +142,13 @@ describe('normalizeAssertions', () => {
             isExported: true,
             methods: ['constructor', 'getUser', 'saveUser'],
             properties: ['users', 'cache'],
+            decorators: ["@implements_adrs(['ADR-L-0004', 'ADR-PC-0006'])"],
+            implementationIntent: {
+              implements_adrs: ['ADR-L-0004', 'ADR-PC-0006'],
+              enforced_invariants: [],
+              confidence: 'declared',
+              source: 'decorator',
+            },
           },
         },
       ];
@@ -141,6 +162,13 @@ describe('normalizeAssertions', () => {
       expect(classSlice?.element.is_exported).toBe(true);
       expect(classSlice?.element.methods).toEqual(['constructor', 'getUser', 'saveUser']);
       expect(classSlice?.element.properties).toEqual(['users', 'cache']);
+      expect(classSlice?.element.decorators).toEqual(["@implements_adrs(['ADR-L-0004', 'ADR-PC-0006'])"]);
+      expect(classSlice?.element.implementation_intent).toEqual({
+        implements_adrs: ['ADR-L-0004', 'ADR-PC-0006'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'decorator',
+      });
     });
 
     it('should normalize Python classes with inheritance', async () => {

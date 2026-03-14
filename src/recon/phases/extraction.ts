@@ -428,25 +428,25 @@ function extractJsDoc(node: ts.Node, sourceFile: ts.SourceFile): JsDocInfo {
   if (!jsDocNodes || jsDocNodes.length === 0) {
     return {};
   }
-  
+
   const jsDoc = jsDocNodes[0]; // Get first JSDoc block
   const info: JsDocInfo = {};
-  
+
   // Extract full comment text
   if (jsDoc.comment) {
-    const fullText = typeof jsDoc.comment === 'string' 
-      ? jsDoc.comment 
+    const fullText = typeof jsDoc.comment === 'string'
+      ? jsDoc.comment
       : jsDoc.comment.map((part: any) => part.text).join('');
-    
+
     info.docstring = fullText.trim();
-    
+
     // Extract description (first paragraph/line)
     const firstParagraph = fullText.split('\n\n')[0].trim();
     if (firstParagraph) {
       info.description = firstParagraph;
     }
   }
-  
+
   // Extract JSDoc tags
   if (jsDoc.tags && Array.isArray(jsDoc.tags)) {
     const params: Array<{ name: string; type?: string; description?: string }> = [];
@@ -523,8 +523,98 @@ function extractJsDoc(node: ts.Node, sourceFile: ts.SourceFile): JsDocInfo {
       info.tags = customTags;
     }
   }
-  
+
   return info;
+}
+
+function getDecoratorName(expression: ts.LeftHandSideExpression): string | null {
+  if (ts.isIdentifier(expression)) {
+    return expression.text;
+  }
+
+  if (ts.isPropertyAccessExpression(expression)) {
+    return expression.name.text;
+  }
+
+  return null;
+}
+
+function extractStringLiteralValues(node: ts.Expression): string[] {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return [node.text];
+  }
+
+  if (ts.isArrayLiteralExpression(node)) {
+    const values: string[] = [];
+    for (const element of node.elements) {
+      if (!ts.isStringLiteral(element) && !ts.isNoSubstitutionTemplateLiteral(element)) {
+        return [];
+      }
+      values.push(element.text);
+    }
+    return values;
+  }
+
+  return [];
+}
+
+function extractRawDecorators(node: ts.Node, sourceFile: ts.SourceFile): string[] {
+  const decorators = ts.getDecorators(node as ts.HasDecorators);
+  if (!decorators) {
+    return [];
+  }
+
+  return decorators.map(decorator => decorator.getText(sourceFile));
+}
+
+function extractTypeScriptImplementationIntent(
+  node: ts.Node,
+): Record<string, unknown> | undefined {
+  const decorators = ts.getDecorators(node as ts.HasDecorators);
+  if (!decorators) {
+    return undefined;
+  }
+
+  const implementsAdrs: string[] = [];
+  const enforcedInvariants: string[] = [];
+
+  for (const decorator of decorators) {
+    if (!ts.isCallExpression(decorator.expression)) {
+      continue;
+    }
+
+    const decoratorName = getDecoratorName(decorator.expression.expression);
+    if (!decoratorName) {
+      continue;
+    }
+
+    const args = decorator.expression.arguments.flatMap(extractStringLiteralValues);
+    if (args.length === 0) {
+      continue;
+    }
+
+    if (decoratorName === 'implements_adr' || decoratorName === 'implements_adrs') {
+      implementsAdrs.push(...args);
+    }
+
+    if (decoratorName === 'enforces_invariant' || decoratorName === 'enforces_invariants') {
+      enforcedInvariants.push(...args);
+    }
+  }
+
+  const uniqueAdrs = [...new Set(implementsAdrs)];
+  const uniqueInvariants = [...new Set(enforcedInvariants)];
+
+  if (uniqueAdrs.length === 0 && uniqueInvariants.length === 0) {
+    return undefined;
+  }
+
+  return {
+    implements_adrs: uniqueAdrs,
+    enforced_invariants: uniqueInvariants,
+    confidence: 'declared',
+    source: 'decorator',
+  };
 }
 
 /**
@@ -565,6 +655,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
       const lineNumber = getLineNumber(sourceFile, node);
       const endLineNumber = getEndLineNumber(sourceFile, node);
       const jsDocInfo = extractJsDoc(node, sourceFile);
+      const decorators = extractRawDecorators(node, sourceFile);
+      const implementationIntent = extractTypeScriptImplementationIntent(node);
       
       // Pillar 1: Rich Slices - capture source code
       const source = extractSourceLines(content, lineNumber, endLineNumber);
@@ -583,6 +675,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
           isExported: hasExportModifier(node),
           isAsync: !!(node.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword)),
           parameters: node.parameters.map(p => p.name.getText(sourceFile)),
+          decorators,
+          implementationIntent,
           ...jsDocInfo,
         },
       });
@@ -602,6 +696,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
       const methods = extractClassMethods(node, sourceFile);
       const classStartLine = getLineNumber(sourceFile, node);
       const classEndLine = getEndLineNumber(sourceFile, node);
+      const decorators = extractRawDecorators(node, sourceFile);
+      const implementationIntent = extractTypeScriptImplementationIntent(node);
       
       // Pillar 1: Rich Slices - capture source code
       const source = extractSourceLines(content, classStartLine, classEndLine);
@@ -619,6 +715,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
           isExported: hasExportModifier(node),
           methods,
           properties: extractClassProperties(node, sourceFile),
+          decorators,
+          implementationIntent,
           ...jsDocInfo,
         },
       });
@@ -630,6 +728,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
           const lineNumber = getLineNumber(sourceFile, member);
           const methodEndLine = getEndLineNumber(sourceFile, member);
           const methodJsDoc = extractJsDoc(member, sourceFile);
+          const methodDecorators = extractRawDecorators(member, sourceFile);
+          const methodImplementationIntent = extractTypeScriptImplementationIntent(member);
           
           // Pillar 1: Rich Slices - capture method source
           const methodSource = extractSourceLines(content, lineNumber, methodEndLine);
@@ -651,6 +751,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
               isAsync: !!(member.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword)),
               isStatic: !!(member.modifiers?.some(m => m.kind === ts.SyntaxKind.StaticKeyword)),
               parameters: member.parameters.map(p => p.name.getText(sourceFile)),
+              decorators: methodDecorators,
+              implementationIntent: methodImplementationIntent,
               ...methodJsDoc,
             },
           });
