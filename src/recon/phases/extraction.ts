@@ -230,6 +230,7 @@ async function extractFromPython(file: DiscoveredFile): Promise<RawAssertion[]> 
             args: fn.args ?? [],
             returns: fn.returns,
             decorators: fn.decorators ?? [],
+            implementationIntent: fn.implementation_intent,
             docstring: fn.docstring,
             async: fn.async ?? false,
           },
@@ -255,6 +256,8 @@ async function extractFromPython(file: DiscoveredFile): Promise<RawAssertion[]> 
           metadata: {
             name: cls.name,
             bases: cls.bases ?? [],
+            decorators: cls.decorators ?? [],
+            implementationIntent: cls.implementation_intent,
             methods: (cls.methods ?? []).map((m: any) => m.name),
             docstring: cls.docstring,
           },

@@ -61,6 +61,12 @@ describe('normalizeAssertions', () => {
             returns: 'dict',
             async: true,
             decorators: ['@cache'],
+            implementationIntent: {
+              implements_adrs: ['ADR-L-0004'],
+              enforced_invariants: ['INV-0006'],
+              confidence: 'declared',
+              source: 'decorator',
+            },
             docstring: 'Fetch data from URL',
           },
         },
@@ -75,6 +81,12 @@ describe('normalizeAssertions', () => {
       expect(funcSlice?.element.parameters).toEqual(['url']);
       expect(funcSlice?.element.docstring).toBe('Fetch data from URL');
       expect(funcSlice?.element.decorators).toEqual(['@cache']);
+      expect(funcSlice?.element.implementation_intent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: ['INV-0006'],
+        confidence: 'declared',
+        source: 'decorator',
+      });
       expect(funcSlice?.provenance.language).toBe('python');
     });
 
@@ -305,6 +317,44 @@ describe('normalizeAssertions', () => {
       expect(endpoints).toHaveLength(2);
       expect(endpoints[0].method).toBe('GET');
       expect(endpoints[1].method).toBe('POST');
+    });
+  });
+
+  describe('CloudFormation normalization', () => {
+    it('should carry template implementation intent into normalized slices', async () => {
+      const rawAssertions: RawAssertion[] = [
+        {
+          elementId: 'cfn_template:infra/template.yaml:template',
+          elementType: 'cfn_template',
+          file: 'infra/template.yaml',
+          line: 1,
+          language: 'cloudformation',
+          metadata: {
+            name: 'template',
+            description: 'stack',
+            resourceCount: 1,
+            parameterCount: 0,
+            outputCount: 0,
+            implementationIntent: {
+              implements_adrs: ['ADR-L-0004', 'ADR-PS-0004'],
+              enforced_invariants: [],
+              confidence: 'declared',
+              source: 'metadata',
+            },
+          },
+        },
+      ];
+
+      const normalized = await normalizeAssertions(rawAssertions, projectRoot);
+      const templateSlice = normalized.find(n => n._slice.type === 'template');
+
+      expect(templateSlice).toBeDefined();
+      expect(templateSlice?.element.implementation_intent).toEqual({
+        implements_adrs: ['ADR-L-0004', 'ADR-PS-0004'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'metadata',
+      });
     });
   });
 

@@ -31,6 +31,7 @@ export interface PopulationResult {
   deleted: number;
   unchanged: number;
   priorState: Map<string, NormalizedAssertion>;
+  currentState: Map<string, NormalizedAssertion>;
 }
 
 export interface PopulationOptions {
@@ -73,6 +74,7 @@ export async function populateAiDoc(
   let updated = 0;
   let deleted = 0;
   let unchanged = 0;
+  const currentState = new Map(priorState);
   
   // If full reconciliation, we'll delete everything not in the new assertions
   if (options.fullReconciliation) {
@@ -86,6 +88,7 @@ export async function populateAiDoc(
         try {
           await fs.unlink(targetPath);
           deleted++;
+          currentState.delete(priorId);
           log(`[RECON Population] Deleted orphan: ${priorId}`);
         } catch (_error) {
           // File might not exist, ignore
@@ -132,6 +135,7 @@ export async function populateAiDoc(
             try {
               await fs.unlink(targetPath);
               deleted++;
+              currentState.delete(priorId);
               log(`[RECON Population] Deleted orphan: ${priorId}`);
             } catch (_error) {
               // File might not exist (already deleted or misnamed), log but continue
@@ -201,6 +205,7 @@ export async function populateAiDoc(
       const writeFileStart = performance.now();
       await fs.writeFile(targetPath, yamlContent, 'utf-8');
       writeTime += performance.now() - writeFileStart;
+      currentState.set(assertion._slice.id, assertion);
       
       // Track write for watchdog (E-ADR-007)
       const trackerStart = performance.now();
@@ -234,6 +239,7 @@ export async function populateAiDoc(
     deleted,
     unchanged,
     priorState,
+    currentState,
   };
 }
 
