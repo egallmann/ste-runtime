@@ -1,0 +1,82 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0002
+title: Watchdog and Update Coordination
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- watch
+- runtime
+- reconciliation
+implements_system:
+- ADR-PS-0001
+implements_logical:
+- ADR-L-0004
+technologies:
+- typescript
+- node.js
+- chokidar
+context: |
+  This component monitors changes, detects transactions, coordinates update
+  batches, and safeguards write-triggered reconciliation behavior for the
+  runtime boundary.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+- category: library
+  name: chokidar
+  version: 3.x
+  rationale: File watching implementation.
+component_specifications:
+- id: COMP-0002
+  name: Watchdog and Update Coordination
+  type: worker
+  responsibilities: |
+    - Watch source and state changes
+    - Detect coherent edit transactions
+    - Coordinate update batches and reconciliation triggers
+    - Protect runtime behavior from unsafe write loops
+  generation_context:
+    purpose: Keep runtime graph state current without unsafe write churn.
+    key_responsibilities:
+    - File watching
+    - Transaction detection
+    - Update coordination
+    constraints:
+    - Runtime updates must avoid self-triggered reconciliation loops
+    success_criteria:
+    - File changes are batched and coordinated safely
+  interfaces:
+  - id: IFACE-0002
+    type: library_api
+    specification: |
+      Public surfaces:
+      - Watchdog
+      - UpdateCoordinator
+      - TransactionDetector
+      - WriteTracker
+  implementation_identifiers:
+    module_path: src/watch/watchdog.ts
+    test_path: src/watch/file-watcher.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Degrade safely and suppress unsafe re-entrant update behavior.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: watchdog_events_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - File watcher change handling
+        - Transaction detection
+        - Safeguard behavior
+implementation_decisions: []
+gaps: []

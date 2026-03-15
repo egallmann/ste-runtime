@@ -33,33 +33,21 @@ technologies:
 - testing
 - typescript
 - yaml
-context: 'The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing)
-  as the component responsible for graph traversal and context assembly from AI-DOC
-  state. RSS provides six core operations:
-
+context: |-
+  The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing) as the component responsible for graph traversal and context assembly from AI-DOC state. RSS provides six core operations:
 
   | Operation | Description |
-
   |-----------|-------------|
-
   | `lookup(domain, id)` | Direct item retrieval |
-
   | `dependencies(item, depth)` | Forward traversal (what does this depend on?) |
-
   | `dependents(item, depth)` | Backward traversal (what depends on this?) |
-
   | `blast_radius(item, depth)` | Bidirectional traversal (full impact surface) |
-
   | `by_tag(tag)` | Cross-domain query |
-
   | `assemble_context(task)` | Main context assembly function |
 
+  The question arose: How should RSS be exposed for developer use during the exploratory phase?
 
-  The question arose: How should RSS be exposed for developer use during the exploratory
-  phase?
-
-
-  ---'
+  ---
 technology_stack:
 - category: language
   name: TypeScript

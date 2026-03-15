@@ -1,0 +1,113 @@
+schema_version: '1.0'
+adr_type: physical-system
+id: ADR-PS-0001
+title: Runtime Orchestration and Assistant Integration
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- runtime
+- mcp
+- rss
+- watch
+tags:
+- runtime
+- mcp
+- watchdog
+- obligations
+implements_logical:
+- ADR-L-0004
+- ADR-L-0006
+- ADR-L-0007
+references_components:
+- ADR-PC-0001
+- ADR-PC-0002
+- ADR-PC-0003
+- ADR-PC-0004
+related_adrs:
+- ADR-P-0004
+supersedes:
+- ADR-P-0004
+technologies:
+- typescript
+- node.js
+- mcp
+- chokidar
+- zod
+context: |
+  ste-runtime now contains a runtime orchestration boundary that keeps semantic
+  state fresh, exposes assistant-facing MCP tools, performs reconciliation
+  gating and freshness checks, and assembles implementation context and
+  obligation projections for agents and operators.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing runtime implementation language.
+- category: framework
+  name: Node.js
+  version: 18.x+
+  rationale: Existing runtime execution environment.
+- category: library
+  name: '@modelcontextprotocol/sdk'
+  version: 1.x
+  rationale: MCP protocol implementation.
+- category: library
+  name: chokidar
+  version: 3.x
+  rationale: Cross-platform file watching.
+system_boundaries:
+- id: SYSBOUND-0001
+  name: Runtime Orchestration Boundary
+  description: |
+    Encapsulates assistant-facing runtime operations over fresh semantic graph
+    state, including MCP tools, update coordination, preflight freshness, and
+    obligation/context assembly.
+  external_dependencies:
+  - RECON semantic state under `.ste/state`
+  - Canonical project sources
+  exposed_interfaces:
+  - MCP stdio server
+  - RSS query operations
+  - watchdog-triggered reconciliation
+component_topology:
+  components:
+  - name: MCP Server and Tool Registry
+    type: service
+    purpose: Expose assistant-facing tools over the semantic graph.
+    implements_adr: ADR-PC-0001
+  - name: Watchdog and Update Coordination
+    type: worker
+    purpose: Detect changes and coordinate safe runtime updates.
+    implements_adr: ADR-PC-0002
+  - name: Preflight Freshness and Reconciliation Gate
+    type: service
+    purpose: Evaluate freshness and decide when reconciliation is required.
+    implements_adr: ADR-PC-0003
+  - name: Obligation Projection and Context Assembly
+    type: service
+    purpose: Project obligations and build source-backed implementation context.
+    implements_adr: ADR-PC-0004
+  relationships:
+  - from: Watchdog and Update Coordination
+    to: Preflight Freshness and Reconciliation Gate
+    type: depends_on
+    description: Runtime updates require freshness and reconciliation decisions.
+  - from: Preflight Freshness and Reconciliation Gate
+    to: Obligation Projection and Context Assembly
+    type: depends_on
+    description: Obligation and context responses rely on current freshness state.
+  - from: MCP Server and Tool Registry
+    to: Preflight Freshness and Reconciliation Gate
+    type: depends_on
+    description: MCP operations invoke freshness-aware behavior.
+  - from: MCP Server and Tool Registry
+    to: Obligation Projection and Context Assembly
+    type: depends_on
+    description: Assistant-facing tools expose context and obligation projections.
+operational_requirements:
+  monitoring: Track freshness status, invalidated validations, and runtime health
+    metrics.
+  logging: Structured runtime logs for reconciliation and tool invocation flows.
+gaps: []

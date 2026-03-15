@@ -1,0 +1,2184 @@
+schema_version: '1.1'
+type: normalized_entity_registry
+entities:
+- id: ADR-L-0001
+  entity_type: adr
+  name: RECON Provisional Execution for Project-Level Semantic State
+  summary: 'The STE Architecture Specification defines RECON (Reconciliation Engine)
+    as the mechanism for extracting semantic state from source code and populating
+    AI-DOC. The question arose: How should RECON operate during the expl'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    status: accepted
+    domains:
+    - recon
+    - architecture
+    - governance
+    tags:
+    - recon
+    - provisional-execution
+    - semantic-state
+    - ste-compliance
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0002
+    - ADR-L-0003
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0002
+  entity_type: adr
+  name: RECON Self-Validation Strategy
+  summary: 'RECON generates AI-DOC state from source code extraction. The question
+    arose: How should RECON validate its own output to ensure consistency and quality?
+    Key tensions: 1. **Blocking vs. Non-Blocking:** Should validation '
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0002
+    artifact_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+  source_refs: []
+  metadata:
+    status: accepted
+    domains:
+    - recon
+    - validation
+    - governance
+    tags:
+    - recon
+    - validation
+    - self-validation
+    - ste-compliance
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0001
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0002
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0003
+  entity_type: adr
+  name: CEM Implementation Deferral
+  summary: 'The STE Architecture Specification (ste-spec) defines a 9-stage Cognitive
+    Execution Model (CEM): ``` Perception → Orientation → Analysis → Deliberation
+    → Planning → Execution → Observation → Reflection → Adaptation ``` C'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0003
+    artifact_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+  source_refs: []
+  metadata:
+    status: accepted
+    domains:
+    - architecture
+    - governance
+    - cem
+    tags:
+    - cem
+    - deferral
+    - meta-decision
+    - build-order
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0001
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0003
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0004
+  entity_type: adr
+  name: Watchdog Authoritative Mode for Workspace Boundary
+  summary: 'Per STE Architecture (Section 3.1), STE operates across two distinct governance
+    boundaries: 1. **Workspace Development Boundary** - Provisional state, soft +
+    hard enforcement, post-reasoning validation 2. **Runtime Execu'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0004
+    artifact_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+  source_refs: []
+  metadata:
+    status: accepted
+    domains:
+    - watchdog
+    - governance
+    - workspace-boundary
+    tags:
+    - watchdog
+    - file-watching
+    - workspace-boundary
+    - ste-compliance
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0001
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0004
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0005
+  entity_type: adr
+  name: Self-Configuring Domain Discovery
+  summary: ''
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0005
+    artifact_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - recon
+    - domain-discovery
+    - architecture
+    tags:
+    - domain-discovery
+    - self-configuring
+    - ai-doc
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0005
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0006
+  entity_type: adr
+  name: Conversational Query Interface for RSS
+  summary: 'E-ADR-004 established the RSS CLI and TypeScript API as the foundation
+    for graph traversal and context assembly. However, a gap exists between: 1. **Raw
+    RSS operations** (search, dependencies, blast-radius) - require kno'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0006
+    artifact_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - rss
+    - interface
+    - architecture
+    tags:
+    - rss
+    - conversational
+    - query-interface
+    - natural-language
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0006
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0007
+  entity_type: adr
+  name: Graph Freshness and Obligation Projection Semantics
+  summary: ste-runtime now exposes graph freshness checks, invalidated validation
+    signals, change intent handling, and obligation projection behavior through RSS
+    and MCP tooling. These semantics are broader than implementation deta
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0007
+    artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - rss
+    - obligations
+    - freshness
+    tags:
+    - freshness
+    - obligations
+    - preflight
+    - validation
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0004
+    - ADR-L-0006
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0007
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-P-0001
+  entity_type: adr
+  name: RSS CLI Implementation for Developer-Invoked Graph Traversal
+  summary: 'The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing)
+    as the component responsible for graph traversal and context assembly from AI-DOC
+    state. RSS provides six core operations: | Operation | '
+  canonical_source:
+    source_type: physical_adr
+    source_ref: ADR-P-0001
+    artifact_path: adrs/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph.yaml
+  source_refs: []
+  metadata:
+    status: accepted
+    domains:
+    - rss
+    - cli
+    - implementation
+    tags:
+    - rss
+    - cli
+    - graph-traversal
+    - developer-tools
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_adr
+    source_ref: ADR-P-0001
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-P-0002
+  entity_type: adr
+  name: JSON Data Extraction for Compliance Controls and Schemas
+  summary: 'Many enterprise codebases contain JSON files with semantic value beyond
+    simple configuration: | Category | Examples | Semantic Value | |----------|----------|----------------|
+    | Controls/Rules Catalog | Security controls'
+  canonical_source:
+    source_type: physical_adr
+    source_ref: ADR-P-0002
+    artifact_path: adrs/physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-s.yaml
+  source_refs: []
+  metadata:
+    status: superseded
+    domains:
+    - extraction
+    - data
+    - implementation
+    tags:
+    - json
+    - extractor
+    - compliance
+    - schemas
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_adr
+    source_ref: ADR-P-0002
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-P-0003
+  entity_type: adr
+  name: Angular and CSS/SCSS Semantic Extraction
+  summary: 'The TypeScript extractor currently processes Angular files as standard
+    TypeScript, capturing: - Functions and their signatures - Classes and their methods
+    - Import/export relationships - Module structure However, Angular'
+  canonical_source:
+    source_type: physical_adr
+    source_ref: ADR-P-0003
+    artifact_path: adrs/physical/ADR-P-0003-angular-and-cssscss-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    status: superseded
+    domains:
+    - extraction
+    - frontend
+    - implementation
+    tags:
+    - angular
+    - css
+    - scss
+    - extractor
+    - frontend
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_adr
+    source_ref: ADR-P-0003
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-P-0004
+  entity_type: adr
+  name: ste-runtime MCP Server Implementation
+  summary: 'Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
+    - **Provisional state** maintenance (pre-merge, feature branches) - **Soft + hard
+    enforcement** (LLM instruction-following + validation tools'
+  canonical_source:
+    source_type: physical_adr
+    source_ref: ADR-P-0004
+    artifact_path: adrs/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.yaml
+  source_refs: []
+  metadata:
+    status: superseded
+    domains:
+    - mcp
+    - integration
+    - implementation
+    tags:
+    - mcp
+    - server
+    - cursor-integration
+    - file-watching
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_adr
+    source_ref: ADR-P-0004
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-P-0005
+  entity_type: adr
+  name: Extractor Validation Requirements
+  summary: ''
+  canonical_source:
+    source_type: physical_adr
+    source_ref: ADR-P-0005
+    artifact_path: adrs/physical/ADR-P-0005-extractor-validation-requirements.yaml
+  source_refs: []
+  metadata:
+    status: accepted
+    domains:
+    - validation
+    - extraction
+    - implementation
+    tags:
+    - validation
+    - extractors
+    - quality-assurance
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_adr
+    source_ref: ADR-P-0005
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0001
+  entity_type: adr
+  name: MCP Server and Tool Registry
+  summary: This component exposes assistant-facing runtime tools over MCP and binds
+    structural, operational, context, optimized, and obligation-oriented tool surfaces
+    into one discoverable server boundary.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0001
+    artifact_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - mcp
+    - integration
+    - runtime
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0001
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0002
+  entity_type: adr
+  name: Watchdog and Update Coordination
+  summary: This component monitors changes, detects transactions, coordinates update
+    batches, and safeguards write-triggered reconciliation behavior for the runtime
+    boundary.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0002
+    artifact_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - watch
+    - runtime
+    - reconciliation
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0002
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0003
+  entity_type: adr
+  name: Preflight Freshness and Reconciliation Gating
+  summary: This component evaluates file freshness, intent scope, and reconciliation
+    requirements before runtime actions rely on semantic graph state.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0003
+    artifact_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - preflight
+    - freshness
+    - reconciliation
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0003
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0004
+  entity_type: adr
+  name: Obligation Projection and Context Assembly
+  summary: This component projects invalidated validations and change-driven obligations,
+    assembles implementation context, and loads source-backed evidence for assistant-facing
+    reasoning.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0004
+    artifact_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - obligations
+    - context
+    - rss
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0004
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0005
+  entity_type: adr
+  name: JSON Semantic Extraction
+  summary: JSON semantic extraction captures controls, schemas, and configuration
+    semantics from JSON sources and feeds them into RECON normalization.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0005
+    artifact_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - extraction
+    - json
+    - recon
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0005
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0006
+  entity_type: adr
+  name: Frontend Semantic Extraction
+  summary: Frontend semantic extraction captures Angular and CSS/SCSS-specific semantics
+    beyond generic TypeScript structure and feeds them into RECON normalization.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0006
+    artifact_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - extraction
+    - frontend
+    - recon
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0006
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0007
+  entity_type: adr
+  name: CloudFormation Semantic Extraction
+  summary: CloudFormation semantic extraction captures templates, resources, outputs,
+    parameters, infrastructure relationships, and template-level implementation intent
+    from CloudFormation sources.
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0007
+    artifact_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - extraction
+    - cloudformation
+    - recon
+    tags: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0007
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PS-0001
+  entity_type: adr
+  name: Runtime Orchestration and Assistant Integration
+  summary: ste-runtime now contains a runtime orchestration boundary that keeps semantic
+    state fresh, exposes assistant-facing MCP tools, performs reconciliation gating
+    and freshness checks, and assembles implementation context and
+  canonical_source:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0001
+    artifact_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - runtime
+    - mcp
+    - rss
+    - watch
+    tags:
+    - runtime
+    - mcp
+    - watchdog
+    - obligations
+  relationships:
+    declared_in: []
+    references: []
+    related_to:
+    - ADR-PC-0001
+    - ADR-PC-0002
+    - ADR-PC-0003
+    - ADR-PC-0004
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0001
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PS-0002
+  entity_type: adr
+  name: Semantic Extraction Subsystem
+  summary: ste-runtime extraction is now a subsystem containing multiple first-class
+    extractors and normalization flows rather than a pair of isolated physical slices.
+    This ADR groups the implemented extractor estate under a concre
+  canonical_source:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0002
+    artifact_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - extraction
+    - recon
+    - normalization
+    tags:
+    - extraction
+    - recon
+    - semantic-state
+  relationships:
+    declared_in: []
+    references: []
+    related_to:
+    - ADR-PC-0005
+    - ADR-PC-0006
+    - ADR-PC-0007
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0002
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0007
+  entity_type: capability
+  name: Surface graph freshness and obligation projection semantics
+  summary: Provide canonical freshness, invalidation, and obligation semantics for
+    runtime consumers.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0007#CAP-0007
+    artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0007
+    domains:
+    - rss
+    - obligations
+    - freshness
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0007
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0007#CAP-0007
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0001
+  entity_type: component
+  name: MCP Server and Tool Registry
+  summary: '- Serve MCP stdio runtime for assistant integration - Register structural,
+    operational, context, optimized, and obligation tools - Route tool requests onto
+    runtime graph and context services'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0001#COMP-0001
+    artifact_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0001
+    legacy_component_id: COMP-0001
+    technologies:
+    - typescript
+    - node.js
+    - mcp
+    - zod
+    module_path: src/mcp/mcp-server.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0001#COMP-0001
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0002
+  entity_type: component
+  name: Watchdog and Update Coordination
+  summary: '- Watch source and state changes - Detect coherent edit transactions -
+    Coordinate update batches and reconciliation triggers - Protect runtime behavior
+    from unsafe write loops'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0002#COMP-0002
+    artifact_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0002
+    legacy_component_id: COMP-0002
+    technologies:
+    - typescript
+    - node.js
+    - chokidar
+    module_path: src/watch/watchdog.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0002
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0002#COMP-0002
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0003
+  entity_type: component
+  name: Preflight Freshness and Reconciliation Gate
+  summary: '- Resolve intent scope - Evaluate graph freshness - Determine whether
+    reconciliation is required - Surface freshness status for downstream tools'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0003#COMP-0003
+    artifact_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0003
+    legacy_component_id: COMP-0003
+    technologies:
+    - typescript
+    - node.js
+    - zod
+    module_path: src/mcp/preflight.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0003
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0003#COMP-0003
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0004
+  entity_type: component
+  name: Obligation Projection and Context Assembly
+  summary: '- Project obligations from change intent and graph state - Surface invalidated
+    validations and advisories - Load source-backed implementation context - Format
+    runtime context for assistant consumption'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0004#COMP-0004
+    artifact_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0004
+    legacy_component_id: COMP-0004
+    technologies:
+    - typescript
+    - node.js
+    - zod
+    module_path: src/mcp/obligation-projector.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0004
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0004#COMP-0004
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0005
+  entity_type: component
+  name: JSON Semantic Extractor
+  summary: '- Detect semantically relevant JSON files - Extract controls, schemas,
+    and configuration semantics - Provide RECON-ready assertions for normalization'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0005#COMP-0005
+    artifact_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0005
+    legacy_component_id: COMP-0005
+    technologies:
+    - typescript
+    - json
+    - node.js
+    module_path: src/extractors/json/json-extractor.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0005
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0005#COMP-0005
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0006
+  entity_type: component
+  name: Frontend Semantic Extractor
+  summary: '- Extract Angular component, service, route, and template semantics -
+    Extract CSS/SCSS tokens, styles, and related frontend semantics - Provide frontend
+    assertions for RECON normalization'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0006#COMP-0006
+    artifact_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0006
+    legacy_component_id: COMP-0006
+    technologies:
+    - typescript
+    - angular
+    - css
+    - scss
+    module_path: src/extractors/angular/angular-extractor.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0006
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0006#COMP-0006
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0007
+  entity_type: component
+  name: CloudFormation Semantic Extractor
+  summary: '- Extract template, parameter, resource, and output semantics - Derive
+    infrastructure relationships and API/data model evidence - Preserve template-level
+    implementation intent metadata'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0007#COMP-0007
+    artifact_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0007
+    legacy_component_id: COMP-0007
+    technologies:
+    - typescript
+    - cloudformation
+    - yaml
+    - json
+    module_path: src/recon/phases/extraction-cloudformation.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0007
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0007#COMP-0007
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0001
+  entity_type: decision
+  name: RECON executes provisionally, generating semantic pressure without assuming
+    correctness.
+  summary: '### 1. Semantic Pressure Over Semantic Truth RECON exists to **observe
+    how semantic truth breaks under change**, not to declare what truth is. During
+    exploratory development, the extraction algorithms, normalization sche'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#DEC-0001
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#DEC-0001
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0002
+  entity_type: decision
+  name: RECON self-validation is non-blocking, report-only, and exploratory.
+  summary: '### 1. Non-Blocking Preserves Learning If validation blocked execution
+    on every finding, RECON would become unusable during exploratory development.
+    Many validation findings are informational or represent known limitatio'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0002#DEC-0002
+    artifact_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0002
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0002
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0002#DEC-0002
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0003
+  entity_type: decision
+  name: CEM implementation is intentionally deferred.
+  summary: '### 1. CEM Orchestrates Components That Must Exist First CEM''s stages
+    call into foundational components: - **Orientation** calls RSS for context assembly
+    - **Analysis** reads AI-DOC semantic state - **Deliberation** invo'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0003#DEC-0003
+    artifact_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0003
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0003
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0003#DEC-0003
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0004
+  entity_type: decision
+  name: 'ste-runtime is a single process that combines:'
+  summary: '### The Watchdog IS the Conflict Resolution Process When a file moves:
+    1. Watchdog detects the move (authoritative: it observed the file system event)
+    2. Migration detection scores confidence (1.0 = certain same element)'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0004#DEC-0004
+    artifact_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0004
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0004
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0004#DEC-0004
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0005
+  entity_type: decision
+  name: ''
+  summary: ''
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0005#DEC-0005
+    artifact_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0005
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0005
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0005#DEC-0005
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0006
+  entity_type: decision
+  name: 'Implement a Conversational Query Interface (CQI) as a layer above RSS that:'
+  summary: '### 1. Reduces Cognitive Load for Both Humans and AI Without CQI: ```
+    Human: "What would be affected by changing the auth service?" → Human must know:
+    use blast-radius, specify key format, parse output → AI must know: co'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0006#DEC-0006
+    artifact_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0006
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0006
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0006#DEC-0006
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0007
+  entity_type: decision
+  name: Freshness and obligation projection are logical runtime semantics
+  summary: The current runtime models freshness and obligation data in public schemas
+    and assistant-facing responses, so these semantics require canonical documentation
+    above the component layer.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0007#DEC-0007
+    artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0007
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0007
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0007#DEC-0007
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0001
+  entity_type: invariant
+  name: INV-0001
+  summary: 'Single repository only: RECON discovers files within the current repository.
+    Cross-repository reconciliation is out of scope.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0001
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Single repository only: RECON discovers files within the current repository.
+      Cross-repository reconciliation is out of scope.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0001
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0002
+  entity_type: invariant
+  name: INV-0002
+  summary: 'Incremental reconciliation: Only files that have changed since the last
+    run are re-extracted (when timestamp detection is available).'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0002
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Incremental reconciliation: Only files that have changed since the
+      last run are re-extracted (when timestamp detection is available).'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0002
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0003
+  entity_type: invariant
+  name: INV-0003
+  summary: 'Configurable source directories: Specified via `ste.config.json` or auto-detected.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0003
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Configurable source directories: Specified via `ste.config.json` or
+      auto-detected.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0003
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0004
+  entity_type: invariant
+  name: INV-0004
+  summary: 'Shallow extraction: Extract structural elements (functions, classes, imports,
+    exports) without deep semantic analysis.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0004
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Shallow extraction: Extract structural elements (functions, classes,
+      imports, exports) without deep semantic analysis.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0004
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0005
+  entity_type: invariant
+  name: INV-0005
+  summary: 'No deep semantic analysis: Do not attempt to understand function behavior,
+    side effects, or complex type flows.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0005
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'No deep semantic analysis: Do not attempt to understand function behavior,
+      side effects, or complex type flows.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0005
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0006
+  entity_type: invariant
+  name: INV-0006
+  summary: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
+    E-ADR-005), Angular, CSS/SCSS (see E-ADR-006).'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0006
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
+      E-ADR-005), Angular, CSS/SCSS (see E-ADR-006).'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0006
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0007
+  entity_type: invariant
+  name: INV-0007
+  summary: 'Portable execution: RECON must work when dropped into any project.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0007
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Portable execution: RECON must work when dropped into any project.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0007
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0008
+  entity_type: invariant
+  name: INV-0008
+  summary: 'Provisional mapping: Normalization to AI-DOC schema is best-effort, not
+    canonical.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0008
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Provisional mapping: Normalization to AI-DOC schema is best-effort,
+      not canonical.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0008
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0009
+  entity_type: invariant
+  name: INV-0009
+  summary: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization
+    will change.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0009
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization
+      will change.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0009
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0010
+  entity_type: invariant
+  name: INV-0010
+  summary: 'ID stability: Element IDs should be stable across runs for the same source
+    element.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0010
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'ID stability: Element IDs should be stable across runs for the same
+      source element.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0010
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0011
+  entity_type: invariant
+  name: INV-0011
+  summary: 'State is authoritative, not historical: Each run produces the current
+    truth, not a delta.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0011
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'State is authoritative, not historical: Each run produces the current
+      truth, not a delta.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0011
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0012
+  entity_type: invariant
+  name: INV-0012
+  summary: 'Create/Update/Delete semantics: New slices are created, changed slices
+    are updated, orphaned slices are deleted.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0012
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Create/Update/Delete semantics: New slices are created, changed slices
+      are updated, orphaned slices are deleted.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0012
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0013
+  entity_type: invariant
+  name: INV-0013
+  summary: 'Orphan detection: Slices from processed source files that no longer exist
+    in code are removed.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0013
+    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0001
+    scope: global
+    statement: 'Orphan detection: Slices from processed source files that no longer
+      exist in code are removed.'
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0001#INV-0013
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: SYS-0001
+  entity_type: system
+  name: Runtime Orchestration and Assistant Integration
+  summary: ste-runtime now contains a runtime orchestration boundary that keeps semantic
+    state fresh, exposes assistant-facing MCP tools, performs reconciliation gating
+    and freshness checks, and assembles implementation context and
+  canonical_source:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0001
+    artifact_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PS-0001
+    implements_logical:
+    - ADR-L-0004
+    - ADR-L-0006
+    - ADR-L-0007
+    technologies:
+    - typescript
+    - node.js
+    - mcp
+    - chokidar
+    - zod
+  relationships:
+    declared_in:
+    - ADR-PS-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0001
+    extraction_phase: extract_system
+    classification: explicit
+    generator: adr-architecture-index
+- id: SYS-0002
+  entity_type: system
+  name: Semantic Extraction Subsystem
+  summary: ste-runtime extraction is now a subsystem containing multiple first-class
+    extractors and normalization flows rather than a pair of isolated physical slices.
+    This ADR groups the implemented extractor estate under a concre
+  canonical_source:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0002
+    artifact_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PS-0002
+    implements_logical:
+    - ADR-L-0001
+    - ADR-L-0005
+    technologies:
+    - typescript
+    - node.js
+    - json
+    - angular
+    - css
+    - cloudformation
+  relationships:
+    declared_in:
+    - ADR-PS-0002
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0002
+    extraction_phase: extract_system
+    classification: explicit
+    generator: adr-architecture-index

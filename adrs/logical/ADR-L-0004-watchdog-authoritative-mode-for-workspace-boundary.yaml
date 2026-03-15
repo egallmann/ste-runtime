@@ -54,7 +54,7 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0001
+- id: DEC-0004
   summary: 'ste-runtime is a single process that combines:'
   rationale: "### The Watchdog IS the Conflict Resolution Process\n\nWhen a file moves:\n\
     1. Watchdog detects the move (authoritative: it observed the file system event)\n\
@@ -74,3 +74,8 @@ decisions:
   alternatives_considered: []
   related_invariants: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: decision
+    from: DEC-0001
+    to: DEC-0004

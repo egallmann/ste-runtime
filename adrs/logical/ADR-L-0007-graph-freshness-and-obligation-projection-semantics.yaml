@@ -1,0 +1,59 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0007
+title: Graph Freshness and Obligation Projection Semantics
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- rss
+- obligations
+- freshness
+tags:
+- freshness
+- obligations
+- preflight
+- validation
+related_adrs:
+- ADR-L-0004
+- ADR-L-0006
+supersedes: []
+superseded_by: null
+context: |
+  ste-runtime now exposes graph freshness checks, invalidated validation
+  signals, change intent handling, and obligation projection behavior through
+  RSS and MCP tooling. These semantics are broader than implementation detail
+  and require an explicit logical authority.
+decision: |
+  ste-runtime SHALL treat graph freshness and obligation projection as
+  first-class logical semantics. Freshness status, invalidated validations,
+  declared obligations, and derived obligations SHALL be modeled explicitly and
+  surfaced consistently across preflight checks, obligation projection, and
+  assistant-facing tool responses.
+consequences:
+  positive:
+  - Freshness and obligation behavior gains canonical semantics instead of living
+    only in code.
+  - MCP and RSS consumers can rely on a consistent semantic contract.
+  negative:
+  - Additional physical ADR decomposition is required to align runtime tooling with
+    this authority.
+decisions:
+- id: DEC-0007
+  summary: Freshness and obligation projection are logical runtime semantics
+  rationale: |
+    The current runtime models freshness and obligation data in public schemas
+    and assistant-facing responses, so these semantics require canonical
+    documentation above the component layer.
+invariants: []
+capabilities:
+- id: CAP-0007
+  name: Surface graph freshness and obligation projection semantics
+  description: Provide canonical freshness, invalidation, and obligation semantics
+    for runtime consumers.
+constraints: []
+boundaries: []
+nfrs: []
+contracts: []
+gaps: []

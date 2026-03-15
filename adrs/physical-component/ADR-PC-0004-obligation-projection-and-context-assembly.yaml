@@ -1,0 +1,79 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0004
+title: Obligation Projection and Context Assembly
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- obligations
+- context
+- rss
+implements_system:
+- ADR-PS-0001
+implements_logical:
+- ADR-L-0006
+- ADR-L-0007
+technologies:
+- typescript
+- node.js
+- zod
+context: |
+  This component projects invalidated validations and change-driven obligations,
+  assembles implementation context, and loads source-backed evidence for
+  assistant-facing reasoning.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+component_specifications:
+- id: COMP-0004
+  name: Obligation Projection and Context Assembly
+  type: service
+  responsibilities: |
+    - Project obligations from change intent and graph state
+    - Surface invalidated validations and advisories
+    - Load source-backed implementation context
+    - Format runtime context for assistant consumption
+  generation_context:
+    purpose: Build freshness-aware implementation context and obligation guidance.
+    key_responsibilities:
+    - Obligation projection
+    - Context assembly
+    constraints:
+    - Responses must stay aligned with runtime freshness semantics
+    success_criteria:
+    - Obligation and context tools produce source-backed, deterministic responses
+  interfaces:
+  - id: IFACE-0004
+    type: library_api
+    specification: |
+      Public surfaces:
+      - projectObligations
+      - assembleContextTool
+      - getImplementationContext
+      - loadSourceGroupedByFile
+  implementation_identifiers:
+    module_path: src/mcp/obligation-projector.ts
+    test_path: src/mcp/tools-obligation.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Return explicit advisories and empty safe defaults when source or
+        graph evidence is missing.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: obligation_projections_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - Obligation projection flows
+        - Context assembly flows
+        - Source loading and formatting
+implementation_decisions: []
+gaps: []

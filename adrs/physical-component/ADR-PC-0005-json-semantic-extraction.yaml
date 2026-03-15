@@ -1,0 +1,76 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0005
+title: JSON Semantic Extraction
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- extraction
+- json
+- recon
+implements_system:
+- ADR-PS-0002
+implements_logical:
+- ADR-L-0001
+related_adrs:
+- ADR-P-0002
+supersedes:
+- ADR-P-0002
+technologies:
+- typescript
+- json
+- node.js
+context: |
+  JSON semantic extraction captures controls, schemas, and configuration
+  semantics from JSON sources and feeds them into RECON normalization.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+component_specifications:
+- id: COMP-0005
+  name: JSON Semantic Extractor
+  type: library
+  responsibilities: |
+    - Detect semantically relevant JSON files
+    - Extract controls, schemas, and configuration semantics
+    - Provide RECON-ready assertions for normalization
+  generation_context:
+    purpose: Extract semantic data from JSON artifacts for RECON.
+    key_responsibilities:
+    - JSON semantic discovery
+    - JSON assertion extraction
+    constraints:
+    - Extraction remains deterministic and path-driven
+    success_criteria:
+    - JSON semantic artifacts are represented in RECON output
+  interfaces:
+  - id: IFACE-0005
+    type: library_api
+    specification: |
+      Public surfaces:
+      - src/extractors/json/index.ts
+      - src/extractors/json/json-extractor.ts
+  implementation_identifiers:
+    module_path: src/extractors/json/json-extractor.ts
+    test_path: src/extractors/json/json-extractor.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Ignore unsupported JSON while surfacing deterministic extraction failures.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: json_extractions_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - JSON semantic extraction
+        - JSON validation extraction coverage
+implementation_decisions: []
+gaps: []
