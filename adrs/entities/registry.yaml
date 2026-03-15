@@ -1,0 +1,433 @@
+# integrity_schema_version: 1
+# generated: deterministic_projection_v1
+# artifact_kind: legacy_entity_registry
+# generator_id: adr-compiler
+# generator_version: 1
+# hash_algorithm: sha256
+# source_hash: 0380cca483a764c23b6ef00e0471bf9f8c9e02a23567075372bca8784d0fb670
+# rendered_hash: 835aa38984ba9d78ac6d8ed07c0529c41448956de4ee1e6b914ca3e34e4016d2
+
+schema_version: '1.1'
+type: entity_registry
+entities:
+- entity_id: CAP-0007
+  entity_type: capability
+  name: Surface graph freshness and obligation projection semantics
+  introduced_by: ADR-L-0007
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0001
+  entity_type: component
+  name: MCP Server and Tool Registry
+  introduced_by: ADR-PC-0001
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0002
+  entity_type: component
+  name: Watchdog and Update Coordination
+  introduced_by: ADR-PC-0002
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0003
+  entity_type: component
+  name: Preflight Freshness and Reconciliation Gate
+  introduced_by: ADR-PC-0003
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0004
+  entity_type: component
+  name: Obligation Projection and Context Assembly
+  introduced_by: ADR-PC-0004
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0005
+  entity_type: component
+  name: JSON Semantic Extractor
+  introduced_by: ADR-PC-0005
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0006
+  entity_type: component
+  name: Frontend Semantic Extractor
+  introduced_by: ADR-PC-0006
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0007
+  entity_type: component
+  name: CloudFormation Semantic Extractor
+  introduced_by: ADR-PC-0007
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0001
+  entity_type: decision
+  name: RECON executes provisionally, generating semantic pressure without assuming
+    correctness.
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0002
+  entity_type: decision
+  name: RECON self-validation is non-blocking, report-only, and exploratory.
+  introduced_by: ADR-L-0002
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0003
+  entity_type: decision
+  name: CEM implementation is intentionally deferred.
+  introduced_by: ADR-L-0003
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0004
+  entity_type: decision
+  name: 'ste-runtime is a single process that combines:'
+  introduced_by: ADR-L-0004
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0005
+  entity_type: decision
+  name: ''
+  introduced_by: ADR-L-0005
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0006
+  entity_type: decision
+  name: 'Implement a Conversational Query Interface (CQI) as a layer above RSS that:'
+  introduced_by: ADR-L-0006
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0007
+  entity_type: decision
+  name: Freshness and obligation projection are logical runtime semantics
+  introduced_by: ADR-L-0007
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0001
+  entity_type: invariant
+  name: INV-0001
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0002
+  entity_type: invariant
+  name: INV-0002
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0003
+  entity_type: invariant
+  name: INV-0003
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0004
+  entity_type: invariant
+  name: INV-0004
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0005
+  entity_type: invariant
+  name: INV-0005
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0006
+  entity_type: invariant
+  name: INV-0006
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0007
+  entity_type: invariant
+  name: INV-0007
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0008
+  entity_type: invariant
+  name: INV-0008
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0009
+  entity_type: invariant
+  name: INV-0009
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0010
+  entity_type: invariant
+  name: INV-0010
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0011
+  entity_type: invariant
+  name: INV-0011
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0012
+  entity_type: invariant
+  name: INV-0012
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0013
+  entity_type: invariant
+  name: INV-0013
+  introduced_by: ADR-L-0001
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []

@@ -1,0 +1,84 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0001
+title: MCP Server and Tool Registry
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- mcp
+- integration
+- runtime
+implements_system:
+- ADR-PS-0001
+implements_logical:
+- ADR-L-0004
+- ADR-L-0006
+- ADR-L-0007
+technologies:
+- typescript
+- node.js
+- mcp
+- zod
+context: |
+  This component exposes assistant-facing runtime tools over MCP and binds
+  structural, operational, context, optimized, and obligation-oriented tool
+  surfaces into one discoverable server boundary.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+- category: library
+  name: '@modelcontextprotocol/sdk'
+  version: 1.x
+  rationale: MCP protocol implementation.
+component_specifications:
+- id: COMP-0001
+  name: MCP Server and Tool Registry
+  type: service
+  responsibilities: |
+    - Serve MCP stdio runtime for assistant integration
+    - Register structural, operational, context, optimized, and obligation tools
+    - Route tool requests onto runtime graph and context services
+  generation_context:
+    purpose: Expose runtime semantic capabilities to assistants through MCP.
+    key_responsibilities:
+    - Register tools deterministically
+    - Provide assistant-facing tool responses
+    constraints:
+    - Tool behavior must remain freshness-aware
+    - Assistant-facing responses must use canonical runtime semantics
+    success_criteria:
+    - MCP server advertises the implemented tool surfaces
+    - Tool responses remain aligned with runtime freshness and obligation logic
+  interfaces:
+  - id: IFACE-0001
+    type: CLI
+    specification: |
+      Entry surfaces:
+      - src/mcp/mcp-server.ts
+      - MCP stdio tool registration for structural, operational, context, optimized, and obligation tools
+  implementation_identifiers:
+    module_path: src/mcp/mcp-server.ts
+    entry_point: src/mcp/mcp-server.ts
+    test_path: src/mcp/mcp-server.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Return explicit tool failures for invalid input, missing graph state,
+        or runtime errors.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: mcp_tool_invocations_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - MCP server startup
+        - Tool registration and execution
+implementation_decisions: []
+gaps: []

@@ -1,0 +1,77 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0003
+title: Preflight Freshness and Reconciliation Gating
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- preflight
+- freshness
+- reconciliation
+implements_system:
+- ADR-PS-0001
+implements_logical:
+- ADR-L-0004
+- ADR-L-0007
+technologies:
+- typescript
+- node.js
+- zod
+context: |
+  This component evaluates file freshness, intent scope, and reconciliation
+  requirements before runtime actions rely on semantic graph state.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+component_specifications:
+- id: COMP-0003
+  name: Preflight Freshness and Reconciliation Gate
+  type: service
+  responsibilities: |
+    - Resolve intent scope
+    - Evaluate graph freshness
+    - Determine whether reconciliation is required
+    - Surface freshness status for downstream tools
+  generation_context:
+    purpose: Prevent stale runtime state from driving assistant or operator behavior.
+    key_responsibilities:
+    - Freshness checks
+    - Reconciliation gating
+    constraints:
+    - Freshness semantics must align with ADR-L-0007
+    success_criteria:
+    - Preflight results consistently reflect runtime freshness state
+  interfaces:
+  - id: IFACE-0003
+    type: library_api
+    specification: |
+      Public surfaces:
+      - preflightReconciliation
+      - checkFreshness
+      - resolveIntentScope
+  implementation_identifiers:
+    module_path: src/mcp/preflight.ts
+    test_path: src/mcp/preflight.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Return explicit unknown or stale freshness states rather than silently
+        assuming freshness.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: preflight_checks_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - Scope resolution
+        - Freshness status checks
+        - Reconciliation gate outcomes
+implementation_decisions: []
+gaps: []

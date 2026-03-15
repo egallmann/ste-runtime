@@ -1,0 +1,44 @@
+schema_version: '1.1'
+type: normalized_entity_registry
+entities:
+- id: CAP-0007
+  entity_type: capability
+  name: Surface graph freshness and obligation projection semantics
+  summary: Provide canonical freshness, invalidation, and obligation semantics for
+    runtime consumers.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0007#CAP-0007
+    artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0007
+    domains:
+    - rss
+    - obligations
+    - freshness
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0007
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0007#CAP-0007
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index

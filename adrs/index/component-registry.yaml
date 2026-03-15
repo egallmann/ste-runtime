@@ -1,0 +1,326 @@
+schema_version: '1.1'
+type: normalized_entity_registry
+entities:
+- id: COMP-0001
+  entity_type: component
+  name: MCP Server and Tool Registry
+  summary: '- Serve MCP stdio runtime for assistant integration - Register structural,
+    operational, context, optimized, and obligation tools - Route tool requests onto
+    runtime graph and context services'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0001#COMP-0001
+    artifact_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0001
+    legacy_component_id: COMP-0001
+    technologies:
+    - typescript
+    - node.js
+    - mcp
+    - zod
+    module_path: src/mcp/mcp-server.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0001#COMP-0001
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0002
+  entity_type: component
+  name: Watchdog and Update Coordination
+  summary: '- Watch source and state changes - Detect coherent edit transactions -
+    Coordinate update batches and reconciliation triggers - Protect runtime behavior
+    from unsafe write loops'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0002#COMP-0002
+    artifact_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0002
+    legacy_component_id: COMP-0002
+    technologies:
+    - typescript
+    - node.js
+    - chokidar
+    module_path: src/watch/watchdog.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0002
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0002#COMP-0002
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0003
+  entity_type: component
+  name: Preflight Freshness and Reconciliation Gate
+  summary: '- Resolve intent scope - Evaluate graph freshness - Determine whether
+    reconciliation is required - Surface freshness status for downstream tools'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0003#COMP-0003
+    artifact_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0003
+    legacy_component_id: COMP-0003
+    technologies:
+    - typescript
+    - node.js
+    - zod
+    module_path: src/mcp/preflight.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0003
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0003#COMP-0003
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0004
+  entity_type: component
+  name: Obligation Projection and Context Assembly
+  summary: '- Project obligations from change intent and graph state - Surface invalidated
+    validations and advisories - Load source-backed implementation context - Format
+    runtime context for assistant consumption'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0004#COMP-0004
+    artifact_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0004
+    legacy_component_id: COMP-0004
+    technologies:
+    - typescript
+    - node.js
+    - zod
+    module_path: src/mcp/obligation-projector.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0001
+  relationships:
+    declared_in:
+    - ADR-PC-0004
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0001
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0004#COMP-0004
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0005
+  entity_type: component
+  name: JSON Semantic Extractor
+  summary: '- Detect semantically relevant JSON files - Extract controls, schemas,
+    and configuration semantics - Provide RECON-ready assertions for normalization'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0005#COMP-0005
+    artifact_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0005
+    legacy_component_id: COMP-0005
+    technologies:
+    - typescript
+    - json
+    - node.js
+    module_path: src/extractors/json/json-extractor.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0005
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0005#COMP-0005
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0006
+  entity_type: component
+  name: Frontend Semantic Extractor
+  summary: '- Extract Angular component, service, route, and template semantics -
+    Extract CSS/SCSS tokens, styles, and related frontend semantics - Provide frontend
+    assertions for RECON normalization'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0006#COMP-0006
+    artifact_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0006
+    legacy_component_id: COMP-0006
+    technologies:
+    - typescript
+    - angular
+    - css
+    - scss
+    module_path: src/extractors/angular/angular-extractor.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0006
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0006#COMP-0006
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0007
+  entity_type: component
+  name: CloudFormation Semantic Extractor
+  summary: '- Extract template, parameter, resource, and output semantics - Derive
+    infrastructure relationships and API/data model evidence - Preserve template-level
+    implementation intent metadata'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0007#COMP-0007
+    artifact_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0007
+    legacy_component_id: COMP-0007
+    technologies:
+    - typescript
+    - cloudformation
+    - yaml
+    - json
+    module_path: src/recon/phases/extraction-cloudformation.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0007
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0007#COMP-0007
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
