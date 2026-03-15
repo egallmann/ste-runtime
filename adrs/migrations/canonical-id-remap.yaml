@@ -1,0 +1,28 @@
+schema_version: '1.0'
+type: canonical_id_remap
+entries:
+- entity_type: decision
+  adr_id: ADR-L-0002
+  file_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+  from: DEC-0001
+  to: DEC-0002
+- entity_type: decision
+  adr_id: ADR-L-0003
+  file_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+  from: DEC-0001
+  to: DEC-0003
+- entity_type: decision
+  adr_id: ADR-L-0004
+  file_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+  from: DEC-0001
+  to: DEC-0004
+- entity_type: decision
+  adr_id: ADR-L-0005
+  file_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+  from: DEC-0001
+  to: DEC-0005
+- entity_type: decision
+  adr_id: ADR-L-0006
+  file_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
+  from: DEC-0001
+  to: DEC-0006

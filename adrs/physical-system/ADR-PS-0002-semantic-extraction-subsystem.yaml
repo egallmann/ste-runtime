@@ -1,0 +1,83 @@
+schema_version: '1.0'
+adr_type: physical-system
+id: ADR-PS-0002
+title: Semantic Extraction Subsystem
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- extraction
+- recon
+- normalization
+tags:
+- extraction
+- recon
+- semantic-state
+implements_logical:
+- ADR-L-0001
+- ADR-L-0005
+references_components:
+- ADR-PC-0005
+- ADR-PC-0006
+- ADR-PC-0007
+related_adrs:
+- ADR-P-0002
+- ADR-P-0003
+technologies:
+- typescript
+- node.js
+- json
+- angular
+- css
+- cloudformation
+context: |
+  ste-runtime extraction is now a subsystem containing multiple first-class
+  extractors and normalization flows rather than a pair of isolated physical
+  slices. This ADR groups the implemented extractor estate under a concrete
+  system boundary.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+- category: framework
+  name: Node.js
+  version: 18.x+
+  rationale: Existing execution environment.
+system_boundaries:
+- id: SYSBOUND-0002
+  name: Semantic Extraction Boundary
+  description: |
+    Encapsulates domain-specific extraction of semantic assertions and related
+    normalization inputs for RECON.
+  external_dependencies:
+  - Source files discovered by RECON
+  - CloudFormation resource specifications
+  exposed_interfaces:
+  - extractor modules invoked by RECON phases
+component_topology:
+  components:
+  - name: JSON Semantic Extractor
+    type: service
+    purpose: Extract semantic entities from JSON control, schema, and config files.
+    implements_adr: ADR-PC-0005
+  - name: Frontend Semantic Extractor
+    type: service
+    purpose: Extract Angular and CSS/SCSS semantics.
+    implements_adr: ADR-PC-0006
+  - name: CloudFormation Semantic Extractor
+    type: service
+    purpose: Extract CloudFormation resources, relations, and implementation intent.
+    implements_adr: ADR-PC-0007
+  relationships:
+  - from: JSON Semantic Extractor
+    to: Frontend Semantic Extractor
+    type: depends_on
+    description: Shared normalization and discovery patterns remain aligned across
+      extractor types.
+  - from: Frontend Semantic Extractor
+    to: CloudFormation Semantic Extractor
+    type: depends_on
+    description: All extractor outputs feed the same RECON normalization pipeline.
+gaps: []

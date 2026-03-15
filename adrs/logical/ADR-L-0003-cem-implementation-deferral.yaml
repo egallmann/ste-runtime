@@ -18,28 +18,19 @@ tags:
 related_adrs:
 - ADR-L-0001
 supersedes: []
-context: 'The STE Architecture Specification (ste-spec) defines a 9-stage Cognitive
-  Execution Model (CEM):
-
+context: |-
+  The STE Architecture Specification (ste-spec) defines a 9-stage Cognitive Execution Model (CEM):
 
   ```
-
   Perception → Orientation → Analysis → Deliberation →
-
   Planning → Execution → Observation → Reflection → Adaptation
-
   ```
 
+  CEM is intended to orchestrate governed AI cognition, calling RSS for context assembly, enforcing DAP for human-in-the-loop decisions, and maintaining audit trails.
 
-  CEM is intended to orchestrate governed AI cognition, calling RSS for context assembly,
-  enforcing DAP for human-in-the-loop decisions, and maintaining audit trails.
+  The question arose: Should CEM be implemented early in ste-runtime development, or deferred until foundational components are stable?
 
-
-  The question arose: Should CEM be implemented early in ste-runtime development,
-  or deferred until foundational components are stable?
-
-
-  ---'
+  ---
 capabilities: []
 architectural_boundaries: []
 interaction_contracts: []
@@ -47,85 +38,52 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0001
+- id: DEC-0003
   summary: CEM implementation is intentionally deferred.
-  rationale: '### 1. CEM Orchestrates Components That Must Exist First
+  rationale: |-
+    ### 1. CEM Orchestrates Components That Must Exist First
 
-
-    CEM''s stages call into foundational components:
-
+    CEM's stages call into foundational components:
     - **Orientation** calls RSS for context assembly
-
     - **Analysis** reads AI-DOC semantic state
-
     - **Deliberation** invokes DAP for human judgment
-
     - **Observation** checks divergence state
 
-
     Building CEM before these components are stable would result in:
-
     - Premature abstractions
-
     - Rework as component APIs evolve
-
     - Incomplete orchestration coverage
-
 
     ### 2. Human-in-Loop Provides Implicit CEM Today
 
-
-    During development, Cursor/Claude interaction with the developer satisfies CEM
-    governance:
-
+    During development, Cursor/Claude interaction with the developer satisfies CEM governance:
 
     | CEM Stage | Current Implementation |
-
     |-----------|----------------------|
-
     | Perception | Developer provides task |
-
     | Orientation | Agent queries RSS / searches codebase |
-
     | Analysis | Agent reads code, understands context |
-
     | Deliberation | Agent asks clarifying questions (implicit DAP) |
-
     | Planning | Agent proposes solution |
-
     | Execution | Agent edits files, runs commands |
-
     | Observation | Developer/agent observe results |
-
     | Reflection | Developer accepts/rejects; agent adjusts |
-
     | Adaptation | Future responses incorporate learning |
 
-
-    This implicit CEM is acceptable per ste-spec Section 4.7 because governance is
-    maintained through human oversight.
-
+    This implicit CEM is acceptable per ste-spec Section 4.7 because governance is maintained through human oversight.
 
     ### 3. CEM is the Hardest Component
 
-
     CEM requires:
-
     - State machine formalization
-
     - Integration with all other components
-
     - Audit trail persistence
-
     - Configurable governance policies
-
     - Error recovery and rollback semantics
-
 
     Tackling this complexity after foundations are solid reduces risk.
 
-
-    ---'
+    ---
   alternatives_considered: []
   consequences:
     positive:
@@ -142,3 +100,8 @@ decisions:
     - Use execution pressure to surface integration gaps
   related_invariants: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: decision
+    from: DEC-0001
+    to: DEC-0003

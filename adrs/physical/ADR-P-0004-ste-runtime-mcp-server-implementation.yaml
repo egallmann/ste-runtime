@@ -2,7 +2,7 @@ schema_version: '1.0'
 adr_type: physical
 id: ADR-P-0004
 title: ste-runtime MCP Server Implementation
-status: accepted
+status: superseded
 created_date: '2026-01-11'
 modified_date: '2026-01-11'
 authors:
@@ -18,7 +18,9 @@ tags:
 - file-watching
 related_adrs:
 - ADR-P-0001
+- ADR-PS-0001
 supersedes: []
+superseded_by: ADR-PS-0001
 implements_logical:
 - ADR-L-0004
 - ADR-L-0006
@@ -34,44 +36,28 @@ technologies:
 - testing
 - typescript
 - yaml
-context: 'Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
-
+context: |-
+  Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
   - **Provisional state** maintenance (pre-merge, feature branches)
-
   - **Soft + hard enforcement** (LLM instruction-following + validation tools)
-
   - **Post-reasoning validation** (catch violations after generation)
-
   - **Context assembly via RSS** (CEM Stage 2: State Loading)
 
-
   Currently, ste-runtime provides:
-
   - ✅ Incremental RECON (maintains fresh AI-DOC)
-
   - ✅ RSS operations (semantic graph traversal)
-
   - ✅ CLI interface (human-friendly commands)
-
   - ❌ No long-running process (graph reloaded on every query)
-
-  - ❌ No MCP interface (Cursor can''t discover tools automatically)
-
+  - ❌ No MCP interface (Cursor can't discover tools automatically)
   - ❌ No automatic file watching (manual RECON invocation required)
 
-
   **Gap:** Cursor (and other AI assistants) need:
-
   1. **Always-fresh semantic state** (automatic updates on file changes)
-
   2. **Fast queries** (in-memory graph, <100ms response)
-
   3. **Tool auto-discovery** (MCP protocol for semantic operations)
-
   4. **Deterministic context** (RSS graph traversal, not probabilistic search)
 
-
-  ---'
+  ---
 technology_stack:
 - category: language
   name: TypeScript

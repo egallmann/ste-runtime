@@ -2,7 +2,7 @@ schema_version: '1.0'
 adr_type: physical
 id: ADR-P-0002
 title: JSON Data Extraction for Compliance Controls and Schemas
-status: proposed
+status: superseded
 created_date: '2026-01-07'
 modified_date: '2026-01-07'
 authors:
@@ -19,7 +19,9 @@ tags:
 related_adrs:
 - ADR-P-0003
 - ADR-P-0005
+- ADR-PC-0005
 supersedes: []
+superseded_by: ADR-PC-0005
 implements_logical:
 - ADR-L-0001
 technologies:
@@ -34,56 +36,31 @@ technologies:
 - testing
 - typescript
 - yaml
-context: 'Many enterprise codebases contain JSON files with semantic value beyond
-  simple configuration:
-
+context: |-
+  Many enterprise codebases contain JSON files with semantic value beyond simple configuration:
 
   | Category | Examples | Semantic Value |
-
   |----------|----------|----------------|
-
-  | Controls/Rules Catalog | Security controls, compliance rules, policy definitions
-  | High - governance metadata |
-
-  | Data Schemas | Entity definitions, API contracts, validation schemas | High -
-  data contracts |
-
-  | Deployment Parameters | CFN parameters, environment configs, feature flags | High
-  - deployment configuration |
-
-  | Reference Data | Seed data, lookup tables, static catalogs | Medium - reference
-  data |
-
+  | Controls/Rules Catalog | Security controls, compliance rules, policy definitions | High - governance metadata |
+  | Data Schemas | Entity definitions, API contracts, validation schemas | High - data contracts |
+  | Deployment Parameters | CFN parameters, environment configs, feature flags | High - deployment configuration |
+  | Reference Data | Seed data, lookup tables, static catalogs | Medium - reference data |
   | Test Fixtures | Mock data, test inputs | Low - test data |
-
-  | Package Manifests | `package.json`, `tsconfig.json` | Low - tooling configuration
-  |
-
+  | Package Manifests | `package.json`, `tsconfig.json` | Low - tooling configuration |
 
   Currently, RECON extracts:
-
   - Python code (functions, classes, imports, SDK usage, API endpoints)
-
   - TypeScript code (functions, classes, imports)
-
   - CloudFormation templates (resources, outputs, parameters, GSIs)
 
-
   **JSON files are not extracted**, leaving semantic gaps:
-
-  - Infrastructure resources may reference control/rule IDs, but definitions are not
-  in the graph
-
-  - Data schemas define entity structure, but schemas are not linked to code that
-  uses them
-
+  - Infrastructure resources may reference control/rule IDs, but definitions are not in the graph
+  - Data schemas define entity structure, but schemas are not linked to code that uses them
   - Deployment parameters configure resources, but parameter values are not visible
-
 
   The question arose: Should RECON extract JSON data models and configuration files?
 
-
-  ---'
+  ---
 technology_stack:
 - category: language
   name: TypeScript
