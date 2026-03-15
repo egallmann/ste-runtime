@@ -18,23 +18,17 @@ tags:
 related_adrs:
 - ADR-L-0001
 supersedes: []
-context: 'RECON generates AI-DOC state from source code extraction. The question arose:
-  How should RECON validate its own output to ensure consistency and quality?
-
+context: |-
+  RECON generates AI-DOC state from source code extraction. The question arose: How should RECON validate its own output to ensure consistency and quality?
 
   Key tensions:
 
-
   1. **Blocking vs. Non-Blocking:** Should validation failures halt RECON execution?
-
   2. **Verdict vs. Evidence:** Should validation declare correctness or surface observations?
-
   3. **Scope:** What aspects of AI-DOC state should be validated?
-
   4. **Integration:** When does validation run in the RECON pipeline?
 
-
-  ---'
+  ---
 capabilities: []
 architectural_boundaries: []
 interaction_contracts: []
@@ -42,63 +36,40 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0001
+- id: DEC-0002
   summary: RECON self-validation is non-blocking, report-only, and exploratory.
-  rationale: '### 1. Non-Blocking Preserves Learning
+  rationale: |-
+    ### 1. Non-Blocking Preserves Learning
 
-
-    If validation blocked execution on every finding, RECON would become unusable
-    during exploratory development. Many validation findings are informational or
-    represent known limitations in extraction algorithms.
-
+    If validation blocked execution on every finding, RECON would become unusable during exploratory development. Many validation findings are informational or represent known limitations in extraction algorithms.
 
     By remaining non-blocking, validation:
-
     - Captures all findings without losing work
-
     - Allows developers to review findings at their discretion
-
     - Generates historical data for pattern analysis
-
     - Avoids false positive friction
-
 
     ### 2. Evidence Over Verdicts
 
-
-    During exploratory development, the validators themselves are evolving. A "verdict"
-    implies confidence that is premature. Instead, validators generate:
-
+    During exploratory development, the validators themselves are evolving. A "verdict" implies confidence that is premature. Instead, validators generate:
     - Observations about state structure
-
     - Anomalies that may indicate issues
-
     - Coverage gaps in extraction
-
     - Repeatability concerns
-
 
     Developers interpret findings; validators do not judge.
 
-
     ### 3. Categorization Enables Prioritization
-
 
     All findings are categorized:
 
-
     | Category | Meaning | Action |
-
     |----------|---------|--------|
-
     | ERROR | Structural issue that may indicate a bug | Investigate promptly |
-
     | WARNING | Anomaly that may indicate a problem | Review when convenient |
-
     | INFO | Observation for awareness | Log for future reference |
 
-
-    ---'
+    ---
   alternatives_considered: []
   consequences:
     positive:
@@ -116,3 +87,8 @@ decisions:
     - Use findings to guide extractor improvements
   related_invariants: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: decision
+    from: DEC-0001
+    to: DEC-0002

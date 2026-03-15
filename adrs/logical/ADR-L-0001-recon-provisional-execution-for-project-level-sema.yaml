@@ -19,28 +19,17 @@ related_adrs:
 - ADR-L-0002
 - ADR-L-0003
 supersedes: []
-context: 'The STE Architecture Specification defines RECON (Reconciliation Engine)
-  as the mechanism for extracting semantic state from source code and populating AI-DOC.
-  The question arose: How should RECON operate during the exploratory development
-  phase when foundational components are still being built?
-
+context: |-
+  The STE Architecture Specification defines RECON (Reconciliation Engine) as the mechanism for extracting semantic state from source code and populating AI-DOC. The question arose: How should RECON operate during the exploratory development phase when foundational components are still being built?
 
   Key tensions:
 
+  1. **Canonical vs. Provisional State:** Should RECON produce canonical state that is authoritative for downstream systems?
+  2. **Automatic Resolution vs. Conflict Surfacing:** Should RECON automatically resolve conflicts or surface them for human judgment?
+  3. **Blocking vs. Non-Blocking:** Should RECON block development workflows when conflicts are detected?
+  4. **Single Repository vs. Multi-Repository:** What is the scope of RECON's reconciliation?
 
-  1. **Canonical vs. Provisional State:** Should RECON produce canonical state that
-  is authoritative for downstream systems?
-
-  2. **Automatic Resolution vs. Conflict Surfacing:** Should RECON automatically resolve
-  conflicts or surface them for human judgment?
-
-  3. **Blocking vs. Non-Blocking:** Should RECON block development workflows when
-  conflicts are detected?
-
-  4. **Single Repository vs. Multi-Repository:** What is the scope of RECON''s reconciliation?
-
-
-  ---'
+  ---
 capabilities: []
 architectural_boundaries: []
 interaction_contracts: []
@@ -180,60 +169,36 @@ decisions:
 - id: DEC-0001
   summary: RECON executes provisionally, generating semantic pressure without assuming
     correctness.
-  rationale: '### 1. Semantic Pressure Over Semantic Truth
+  rationale: |-
+    ### 1. Semantic Pressure Over Semantic Truth
 
-
-    RECON exists to **observe how semantic truth breaks under change**, not to declare
-    what truth is. During exploratory development, the extraction algorithms, normalization
-    schemas, and conflict detection heuristics are all evolving. Declaring any output
-    as "canonical" would be premature.
-
+    RECON exists to **observe how semantic truth breaks under change**, not to declare what truth is. During exploratory development, the extraction algorithms, normalization schemas, and conflict detection heuristics are all evolving. Declaring any output as "canonical" would be premature.
 
     By generating pressure without claiming correctness, RECON:
-
     - Forces execution of incomplete implementations
-
     - Surfaces edge cases and extraction gaps
-
     - Generates learning evidence for future refinement
-
     - Avoids false confidence in evolving algorithms
-
 
     ### 2. Conflicts Require Human Judgment
 
-
-    Automatic conflict resolution assumes the system understands developer intent.
-    During this phase, RECON cannot reliably determine:
-
+    Automatic conflict resolution assumes the system understands developer intent. During this phase, RECON cannot reliably determine:
     - Was a function renamed or deleted?
-
     - Is a signature change intentional or accidental?
-
     - Which version of a conflicting definition is correct?
 
-
-    All conflicts are written to disk as YAML files in `.ste/state/conflicts/active/`
-    for human review. RECON surfaces evidence; humans render judgment.
-
+    All conflicts are written to disk as YAML files in `.ste/state/conflicts/active/` for human review. RECON surfaces evidence; humans render judgment.
 
     ### 3. Development Must Not Be Blocked
 
-
     RECON is a learning tool, not an enforcement mechanism. Blocking commits would:
-
-    - Create friction disproportionate to RECON''s maturity
-
+    - Create friction disproportionate to RECON's maturity
     - Force developers to work around false positives
-
     - Reduce willingness to run RECON frequently
 
+    By remaining non-blocking, RECON encourages frequent execution and generates more learning data.
 
-    By remaining non-blocking, RECON encourages frequent execution and generates more
-    learning data.
-
-
-    ---'
+    ---
   alternatives_considered: []
   consequences:
     positive:

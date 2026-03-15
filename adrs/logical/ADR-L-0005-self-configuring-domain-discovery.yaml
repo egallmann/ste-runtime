@@ -24,7 +24,7 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0001
+- id: DEC-0005
   summary: ''
   rationale: ''
   alternatives_considered: []
@@ -67,3 +67,8 @@ decisions:
     - Clear discovery debugging output
   related_invariants: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: decision
+    from: DEC-0001
+    to: DEC-0005

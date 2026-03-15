@@ -1,0 +1,78 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0006
+title: Frontend Semantic Extraction
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- extraction
+- frontend
+- recon
+implements_system:
+- ADR-PS-0002
+implements_logical:
+- ADR-L-0001
+related_adrs:
+- ADR-P-0003
+supersedes:
+- ADR-P-0003
+technologies:
+- typescript
+- angular
+- css
+- scss
+context: |
+  Frontend semantic extraction captures Angular and CSS/SCSS-specific semantics
+  beyond generic TypeScript structure and feeds them into RECON normalization.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+component_specifications:
+- id: COMP-0006
+  name: Frontend Semantic Extractor
+  type: library
+  responsibilities: |
+    - Extract Angular component, service, route, and template semantics
+    - Extract CSS/SCSS tokens, styles, and related frontend semantics
+    - Provide frontend assertions for RECON normalization
+  generation_context:
+    purpose: Extract frontend-specific semantic information for RECON.
+    key_responsibilities:
+    - Angular semantic extraction
+    - CSS/SCSS semantic extraction
+    constraints:
+    - Extraction must remain deterministic and source-driven
+    success_criteria:
+    - Frontend-specific semantics appear in RECON output
+  interfaces:
+  - id: IFACE-0006
+    type: library_api
+    specification: |
+      Public surfaces:
+      - src/extractors/angular/angular-extractor.ts
+      - src/extractors/css/css-extractor.ts
+  implementation_identifiers:
+    module_path: src/extractors/angular/angular-extractor.ts
+    test_path: src/extractors/angular/angular-extractor.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Ignore unsupported frontend patterns while surfacing deterministic
+        extraction failures.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: frontend_extractions_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - Angular semantic extraction
+        - CSS/SCSS semantic extraction
+implementation_decisions: []
+gaps: []

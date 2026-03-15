@@ -1,0 +1,75 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0007
+title: CloudFormation Semantic Extraction
+status: proposed
+created_date: '2026-03-15'
+authors:
+- ste-runtime
+domains:
+- extraction
+- cloudformation
+- recon
+implements_system:
+- ADR-PS-0002
+implements_logical:
+- ADR-L-0001
+technologies:
+- typescript
+- cloudformation
+- yaml
+- json
+context: |
+  CloudFormation semantic extraction captures templates, resources, outputs,
+  parameters, infrastructure relationships, and template-level implementation
+  intent from CloudFormation sources.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+component_specifications:
+- id: COMP-0007
+  name: CloudFormation Semantic Extractor
+  type: library
+  responsibilities: |
+    - Extract template, parameter, resource, and output semantics
+    - Derive infrastructure relationships and API/data model evidence
+    - Preserve template-level implementation intent metadata
+  generation_context:
+    purpose: Extract CloudFormation semantics for RECON.
+    key_responsibilities:
+    - CloudFormation template extraction
+    - Infrastructure relationship extraction
+    constraints:
+    - Extraction must remain deterministic and metadata-preserving
+    success_criteria:
+    - CloudFormation resources and relationships appear in RECON output
+  interfaces:
+  - id: IFACE-0007
+    type: library_api
+    specification: |
+      Public surfaces:
+      - src/recon/phases/extraction-cloudformation.ts
+      - src/extractors/cfn/*
+  implementation_identifiers:
+    module_path: src/recon/phases/extraction-cloudformation.ts
+    test_path: src/recon/phases/extraction-cloudformation.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Continue extracting valid template sections while surfacing deterministic
+        parsing failures.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: cfn_extractions_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - CloudFormation extraction
+        - CloudFormation validation extraction coverage
+implementation_decisions: []
+gaps: []
