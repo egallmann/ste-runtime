@@ -1,9 +1,12 @@
 import process from 'node:process';
 
+import {
+  resolveArchitectureEvidenceFreshness,
+  type ArchitectureEvidenceFreshnessStatus,
+} from './architecture-evidence-freshness.js';
 import { loadArchitectureBundle, type ArchitectureBundleResult } from '../discovery/architecture-bundle.js';
 
 export type ArchitectureEvidenceVersion = '1';
-export type ArchitectureEvidenceFreshnessStatus = 'current' | 'stale-unknown' | 'stale-confirmed';
 
 export interface ArchitectureEvidence {
   version: ArchitectureEvidenceVersion;
@@ -24,6 +27,8 @@ export interface ArchitectureEvidence {
   };
 }
 
+export type { ArchitectureEvidenceFreshnessStatus } from './architecture-evidence-freshness.js';
+
 export interface ArchitectureEvidenceCommandIo {
   stdout(message: string): void;
   stderr(message: string): void;
@@ -31,6 +36,15 @@ export interface ArchitectureEvidenceCommandIo {
 
 export interface ArchitectureEvidenceCommandDependencies {
   loadBundle(projectRoot: string): Promise<ArchitectureBundleResult>;
+  resolveFreshness(
+    projectRoot: string,
+    bundle: ArchitectureBundleResult,
+  ): Promise<{
+    status: ArchitectureEvidenceFreshnessStatus;
+    lastReconciled?: string;
+    warnings: string[];
+    errors: string[];
+  }>;
 }
 
 const defaultIo: ArchitectureEvidenceCommandIo = {
@@ -42,15 +56,21 @@ const defaultIo: ArchitectureEvidenceCommandIo = {
   },
 };
 
-export function buildArchitectureEvidence(bundle: ArchitectureBundleResult): ArchitectureEvidence {
-  const lastReconciled = bundle.index.generatedAt ?? bundle.manifest.generatedDate;
+export async function buildArchitectureEvidence(
+  projectRoot: string,
+  bundle: ArchitectureBundleResult,
+  dependencies: Pick<ArchitectureEvidenceCommandDependencies, 'resolveFreshness'> = {
+    resolveFreshness: resolveArchitectureEvidenceFreshness,
+  },
+): Promise<ArchitectureEvidence> {
+  const freshness = await dependencies.resolveFreshness(projectRoot, bundle);
 
   return {
     version: '1',
     bundle: {
       status: bundle.status,
-      warnings: [...bundle.warnings],
-      errors: [...bundle.errors],
+      warnings: [...bundle.warnings, ...freshness.warnings],
+      errors: [...bundle.errors, ...freshness.errors],
       manifest: bundle.manifest.generatedDate
         ? { generatedDate: bundle.manifest.generatedDate }
         : undefined,
@@ -59,8 +79,8 @@ export function buildArchitectureEvidence(bundle: ArchitectureBundleResult): Arc
         : undefined,
     },
     freshness: {
-      status: 'stale-unknown',
-      lastReconciled,
+      status: freshness.status,
+      lastReconciled: freshness.lastReconciled,
     },
   };
 }
@@ -70,11 +90,12 @@ export async function runArchitectureEvidenceCommand(
   io: ArchitectureEvidenceCommandIo = defaultIo,
   dependencies: ArchitectureEvidenceCommandDependencies = {
     loadBundle: loadArchitectureBundle,
+    resolveFreshness: resolveArchitectureEvidenceFreshness,
   },
 ): Promise<number> {
   try {
     const bundle = await dependencies.loadBundle(projectRoot);
-    const evidence = buildArchitectureEvidence(bundle);
+    const evidence = await buildArchitectureEvidence(projectRoot, bundle, dependencies);
     io.stdout(`${JSON.stringify(evidence, null, 2)}\n`);
     return 0;
   } catch (error) {
