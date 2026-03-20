@@ -6,6 +6,7 @@ import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile } from '../config/index.js';
 import { runRssTraversal } from '../rss/graph-traversal.js';
 import { runArchitectureEvidenceCommand } from './evidence-command.js';
+import { compileArchitecture } from '../architecture/compile-architecture.js';
 import { 
   initRssContext, 
   dependencies, 
@@ -62,6 +63,33 @@ evidence
     const exitCode = await runArchitectureEvidenceCommand(path.resolve(options.projectRoot));
     if (exitCode !== 0) {
       process.exit(exitCode);
+    }
+  });
+
+const architecture = program.command('architecture').description('Architecture compiler (ste-runtime compiler of record)');
+
+architecture
+  .command('compile')
+  .description('Compile ADR YAML into registries, architecture index, manifest, and legacy entity registry')
+  .requiredOption('--project-root <path>', 'Project root containing adrs/ and PROJECT.yaml')
+  .option('--dry-run', 'Run pipeline without writing files', false)
+  .action(async (options: { projectRoot: string; dryRun: boolean }) => {
+    const result = await compileArchitecture({
+      scopeRoot: path.resolve(options.projectRoot),
+      dryRun: Boolean(options.dryRun),
+    });
+    if (!result.success) {
+      for (const err of result.errors) {
+        process.stderr.write(`${err}\n`);
+      }
+      process.exit(1);
+    }
+    if (result.written.length) {
+      for (const rel of result.written) {
+        process.stdout.write(`Wrote ${rel}\n`);
+      }
+    } else if (options.dryRun) {
+      process.stdout.write('Dry run OK (no files written).\n');
     }
   });
 

@@ -17,6 +17,8 @@ If you need fast repo orientation, start with [SYSTEM-OVERVIEW.md](SYSTEM-OVERVI
 
 `SYSTEM-OVERVIEW.md` is a generated artifact from ADR Kit. Refresh generated ADR docs with ADR Kit tooling, not by hand-editing generated outputs.
 
+**Compiler authority:** [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md) — ste-runtime is the **compiler of record** for machine-consumable architecture state (ADR YAML + code → graphs → registries/evidence). adr-architecture-kit is **authoring-only**; do not treat it as a parallel compiler authority for runtime/kernel artifacts.
+
 ---
 
 > **⚠️ EXPERIMENTAL STATUS — NOT PRODUCTION-READY**

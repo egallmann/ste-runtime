@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { mkdir, mkdtemp, rm, utimes, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { access, readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import Ajv2020 from 'ajv/dist/2020.js';
 
 import { buildArchitectureEvidence, runArchitectureEvidenceCommand } from './evidence-command.js';
 import type { ArchitectureBundleResult } from '../discovery/architecture-bundle.js';
@@ -78,6 +81,36 @@ function createBundleResult(
   };
 }
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+async function loadSpecSchema(schemaFile: string): Promise<object> {
+  const steRuntimeRoot = path.resolve(__dirname, '..', '..');
+  const candidates = [
+    path.resolve(steRuntimeRoot, '..', 'ste-spec', 'schemas', schemaFile),
+    path.resolve(steRuntimeRoot, 'test', 'fixtures', schemaFile),
+  ];
+  for (const schemaPath of candidates) {
+    try {
+      await access(schemaPath);
+      return JSON.parse(await readFile(schemaPath, 'utf8')) as object;
+    } catch {
+      /* try next */
+    }
+  }
+  throw new Error(
+    `Architecture evidence schema not found (tried: ${candidates.join(', ')}). ` +
+      'Add ste-spec as a sibling repo or keep test/fixtures copy in sync.',
+  );
+}
+
+async function expectMatchesArchitectureEvidenceSchema(payload: unknown): Promise<void> {
+  const ajv = new Ajv2020({ strict: false });
+  const schema = await loadSpecSchema('architecture-evidence.schema.json');
+  const validate = ajv.compile(schema);
+  const valid = validate(payload);
+  expect(valid, JSON.stringify(validate.errors, null, 2)).toBe(true);
+}
+
 describe('buildArchitectureEvidence', () => {
   it('builds the versioned evidence contract with required arrays', async () => {
     const result = await buildArchitectureEvidence(
@@ -104,6 +137,7 @@ describe('buildArchitectureEvidence', () => {
     expect(result.bundle.errors).toEqual([]);
     expect(result.freshness.status).toBe('stale-unknown');
     expect(result.freshness.lastReconciled).toBe('2026-03-19T00:00:01Z');
+    await expectMatchesArchitectureEvidenceSchema(result);
   });
 
   it('falls back to manifest generated date when index timestamp is unavailable', async () => {
@@ -149,6 +183,7 @@ describe('buildArchitectureEvidence', () => {
     expect(parsed.freshness.status).toBe('stale-unknown');
     expect(parsed).not.toHaveProperty('decision');
     expect(parsed).not.toHaveProperty('eligibility');
+    await expectMatchesArchitectureEvidenceSchema(parsed);
   });
 });
 
@@ -176,6 +211,7 @@ describe('runArchitectureEvidenceCommand', () => {
     expect(parsed.bundle.warnings).toEqual(expect.any(Array));
     expect(parsed.bundle.errors).toEqual(expect.any(Array));
     expect(parsed.freshness.status).toBe('current');
+    await expectMatchesArchitectureEvidenceSchema(parsed);
   });
 
   it('emits stale-confirmed when canonical ADR sources are newer than the bundle timestamp', async () => {
@@ -212,6 +248,9 @@ describe('runArchitectureEvidenceCommand', () => {
       {
         async loadBundle() {
           throw new Error('fatal evidence failure');
+        },
+        async resolveFreshness() {
+          return { status: 'current', warnings: [], errors: [] };
         },
       },
     );
