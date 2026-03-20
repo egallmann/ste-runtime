@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, utimes, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -40,6 +40,13 @@ adrs:
   await writeYaml('adrs/index/entity-registry.yaml', 'entities: []\n');
   await writeYaml('adrs/index/relationship-registry.yaml', 'relationships: []\n');
   await writeYaml('adrs/index/unresolved-registry.yaml', 'unresolved: []\n');
+  await writeYaml('adrs/logical/ADR-L-0013-test.yaml', 'id: ADR-L-0013\n');
+}
+
+async function setMtime(relativePath: string, isoTimestamp: string): Promise<void> {
+  const fullPath = path.join(tempDir, relativePath);
+  const timestamp = new Date(isoTimestamp);
+  await utimes(fullPath, timestamp, timestamp);
 }
 
 function createBundleResult(
@@ -72,12 +79,23 @@ function createBundleResult(
 }
 
 describe('buildArchitectureEvidence', () => {
-  it('builds the versioned evidence contract with required arrays', () => {
-    const result = buildArchitectureEvidence(
+  it('builds the versioned evidence contract with required arrays', async () => {
+    const result = await buildArchitectureEvidence(
+      tempDir,
       createBundleResult({
         status: 'degraded',
         warnings: ['missing additive graph'],
       }),
+      {
+        async resolveFreshness() {
+          return {
+            status: 'stale-unknown',
+            lastReconciled: '2026-03-19T00:00:01Z',
+            warnings: [],
+            errors: [],
+          };
+        },
+      },
     );
 
     expect(result.version).toBe('1');
@@ -88,19 +106,43 @@ describe('buildArchitectureEvidence', () => {
     expect(result.freshness.lastReconciled).toBe('2026-03-19T00:00:01Z');
   });
 
-  it('falls back to manifest generated date when index timestamp is unavailable', () => {
-    const result = buildArchitectureEvidence(
+  it('falls back to manifest generated date when index timestamp is unavailable', async () => {
+    const result = await buildArchitectureEvidence(
+      tempDir,
       createBundleResult({
         index: {},
       }),
+      {
+        async resolveFreshness() {
+          return {
+            status: 'stale-unknown',
+            lastReconciled: '2026-03-19T00:00:00.000Z',
+            warnings: [],
+            errors: [],
+          };
+        },
+      },
     );
 
     expect(result.freshness.status).toBe('stale-unknown');
-    expect(result.freshness.lastReconciled).toBe('2026-03-19T00:00:00Z');
+    expect(result.freshness.lastReconciled).toBe('2026-03-19T00:00:00.000Z');
   });
 
-  it('keeps stdout payload JSON-compatible and policy-free', () => {
-    const result = buildArchitectureEvidence(createBundleResult());
+  it('keeps stdout payload JSON-compatible and policy-free', async () => {
+    const result = await buildArchitectureEvidence(
+      tempDir,
+      createBundleResult(),
+      {
+        async resolveFreshness() {
+          return {
+            status: 'stale-unknown',
+            lastReconciled: '2026-03-19T00:00:01Z',
+            warnings: [],
+            errors: [],
+          };
+        },
+      },
+    );
     const parsed = JSON.parse(JSON.stringify(result));
 
     expect(parsed.bundle.status).toBe('valid');
@@ -115,6 +157,7 @@ describe('runArchitectureEvidenceCommand', () => {
     const stdout: string[] = [];
     const stderr: string[] = [];
     await writeBundleFixture();
+    await setMtime('adrs/logical/ADR-L-0013-test.yaml', '2026-03-18T00:00:00Z');
 
     const exitCode = await runArchitectureEvidenceCommand(tempDir, {
       stdout(message: string) {
@@ -132,7 +175,24 @@ describe('runArchitectureEvidenceCommand', () => {
     expect(parsed.bundle.status).toBe('degraded');
     expect(parsed.bundle.warnings).toEqual(expect.any(Array));
     expect(parsed.bundle.errors).toEqual(expect.any(Array));
-    expect(parsed.freshness.status).toBe('stale-unknown');
+    expect(parsed.freshness.status).toBe('current');
+  });
+
+  it('emits stale-confirmed when canonical ADR sources are newer than the bundle timestamp', async () => {
+    const stdout: string[] = [];
+    await writeBundleFixture();
+    await setMtime('adrs/logical/ADR-L-0013-test.yaml', '2026-03-20T00:00:02Z');
+
+    const exitCode = await runArchitectureEvidenceCommand(tempDir, {
+      stdout(message: string) {
+        stdout.push(message);
+      },
+      stderr() {},
+    });
+
+    expect(exitCode).toBe(0);
+    const parsed = JSON.parse(stdout.join(''));
+    expect(parsed.freshness.status).toBe('stale-confirmed');
   });
 
   it('returns non-zero and writes to stderr when bundle loading fails', async () => {
