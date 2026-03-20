@@ -103,3 +103,16 @@ export {
   type QueryIntent,
   type NodeSummary,
 } from './rss/conversational-query.js';
+
+// ============================================================================
+// Architecture Bundle Discovery
+// ============================================================================
+
+export {
+  loadArchitectureBundle,
+  type ArchitectureBundleArtifact,
+  type ArchitectureBundleIndexSummary,
+  type ArchitectureBundleManifestSummary,
+  type ArchitectureBundleResult,
+  type ArchitectureBundleStatus,
+} from './discovery/architecture-bundle.js';
