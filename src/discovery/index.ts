@@ -14,5 +14,14 @@ export {
   type ProjectStructure
 } from './project-discovery.js';
 
+export {
+  loadArchitectureBundle,
+  type ArchitectureBundleArtifact,
+  type ArchitectureBundleIndexSummary,
+  type ArchitectureBundleManifestSummary,
+  type ArchitectureBundleResult,
+  type ArchitectureBundleStatus,
+} from './architecture-bundle.js';
+
 
 
