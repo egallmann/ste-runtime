@@ -332,13 +332,17 @@ export class McpServer {
           
           case 'overview': {
             const ctx = this.getContextForScope(scope);
-            result = await optimizedTools.overview(ctx, toolArgs as any);
+            result = await optimizedTools.overview(ctx, toolArgs as any, {
+              projectRoot: this.options.projectRoot,
+            });
             break;
           }
           
           case 'diagnose': {
             const ctx = this.getContextForScope(scope);
-            result = await optimizedTools.diagnose(ctx, toolArgs as any);
+            result = await optimizedTools.diagnose(ctx, toolArgs as any, {
+              projectRoot: this.options.projectRoot,
+            });
             break;
           }
           
