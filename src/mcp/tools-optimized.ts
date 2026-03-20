@@ -17,6 +17,7 @@
  */
 
 import type { AidocNode } from '../rss/graph-loader.js';
+import { loadArchitectureBundle, type ArchitectureBundleResult } from '../discovery/architecture-bundle.js';
 import { 
   type RssContext,
   search, 
@@ -536,7 +537,12 @@ export interface OverviewResult {
   architecture: string;
   keyComponents: string[];
   totalNodes: number;
+  architectureBundle?: ArchitectureBundleResult;
   meta: ResponseMeta;
+}
+
+export interface ArchitectureToolOptions {
+  projectRoot?: string;
 }
 
 /**
@@ -546,7 +552,8 @@ export interface OverviewResult {
  */
 export async function overview(
   ctx: RssContext,
-  args: OverviewArgs
+  args: OverviewArgs,
+  options: ArchitectureToolOptions = {}
 ): Promise<OverviewResult> {
   const startTime = performance.now();
   const { focus } = args;
@@ -610,12 +617,17 @@ export async function overview(
   } else if (Object.keys(domains).length > 3) {
     architecture = 'Multi-domain';
   }
+
+  const architectureBundle = options.projectRoot
+    ? await loadArchitectureBundle(options.projectRoot)
+    : undefined;
   
   return {
     domains,
     architecture,
     keyComponents,
     totalNodes: stats.totalNodes,
+    architectureBundle,
     meta: createMeta(
       startTime,
       ctx.graph.size,
@@ -655,13 +667,17 @@ export interface DiagnoseResult {
  */
 export async function diagnose(
   ctx: RssContext,
-  args: DiagnoseArgs
+  args: DiagnoseArgs,
+  options: ArchitectureToolOptions = {}
 ): Promise<DiagnoseResult> {
   const startTime = performance.now();
   const { target, mode = 'health' } = args;
   
   const stats = getGraphStats(ctx);
   const validation = validateGraphHealth(ctx);
+  const architectureBundle = options.projectRoot
+    ? await loadArchitectureBundle(options.projectRoot)
+    : undefined;
   
   if (mode === 'health') {
     const healthy = validation.brokenEdges.length === 0 && 
@@ -678,6 +694,7 @@ export async function diagnose(
         brokenEdges: validation.brokenEdges.length,
         inconsistencies: validation.bidirectionalInconsistencies.length,
         graphVersion: ctx.graphVersion,
+        architectureBundle,
       },
       meta: createMeta(startTime, stats.totalNodes, 0, 0, ctx.graphVersion),
     };
@@ -703,6 +720,7 @@ export async function diagnose(
         byType,
         filesIndexed: files.size,
         graphVersion: ctx.graphVersion,
+        architectureBundle,
       },
       meta: createMeta(startTime, stats.totalNodes, files.size, 0, ctx.graphVersion),
     };
@@ -729,6 +747,7 @@ export async function diagnose(
         edgeCount: stats.totalEdges,
         graphVersion: ctx.graphVersion,
         advantage: `Semantic search examined ${stats.totalNodes} nodes vs grep scanning entire codebase.`,
+        architectureBundle,
       },
       meta: createMeta(startTime, stats.totalNodes, 0, 0, ctx.graphVersion),
     };
@@ -761,6 +780,7 @@ export async function diagnose(
         hasSource: !!node.source,
         references: node.references.length,
         referencedBy: node.referencedBy.length,
+        architectureBundle,
       },
       meta: createMeta(startTime, 1, 1, 0, ctx.graphVersion),
     };
@@ -769,7 +789,10 @@ export async function diagnose(
   return {
     healthy: true,
     summary: `Graph: ${stats.totalNodes} nodes, ${stats.totalEdges} edges.`,
-    details: stats,
+    details: {
+      ...stats,
+      architectureBundle,
+    },
     meta: createMeta(startTime, stats.totalNodes, 0, 0, ctx.graphVersion),
   };
 }
