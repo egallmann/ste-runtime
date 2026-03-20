@@ -116,3 +116,32 @@ export {
   type ArchitectureBundleResult,
   type ArchitectureBundleStatus,
 } from './discovery/architecture-bundle.js';
+
+export {
+  buildArchitectureEvidence,
+  runArchitectureEvidenceCommand,
+  type ArchitectureEvidence,
+  type ArchitectureEvidenceFreshnessStatus,
+  type ArchitectureEvidenceVersion,
+} from './cli/evidence-command.js';
+
+// ============================================================================
+// Architecture compiler (ADR → registries / index / manifest)
+// ============================================================================
+
+export {
+  compileArchitecture,
+  runArchitecturePipeline,
+  architectureMerge,
+  emptyReconSnapshot,
+  buildAdrGraph,
+  assembleDiscoveryBundle,
+  type CompileArchitectureOptions,
+  type CompileArchitectureResult,
+  type PipelineRunOptions,
+  type ArchModelState,
+  type AdrGraph,
+  type ReconArchitectureSnapshot,
+  type CompileDiagnostic,
+  type DiscoveryBundle,
+} from './architecture/index.js';
