@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile } from '../config/index.js';
 import { runRssTraversal } from '../rss/graph-traversal.js';
+import { runArchitectureEvidenceCommand } from './evidence-command.js';
 import { 
   initRssContext, 
   dependencies, 
@@ -48,6 +49,21 @@ async function resolveStatePath(options: { state?: string; config?: string }): P
   // Default: project's .ste/state
   return path.join(runtimeDir, '.ste/state');
 }
+
+const evidence = program
+  .command('evidence')
+  .description('Emit normalized runtime evidence as JSON');
+
+evidence
+  .command('architecture')
+  .description('Emit architecture bundle evidence as JSON only')
+  .requiredOption('--project-root <path>', 'Project root containing canonical ADR artifacts')
+  .action(async (options) => {
+    const exitCode = await runArchitectureEvidenceCommand(path.resolve(options.projectRoot));
+    if (exitCode !== 0) {
+      process.exit(exitCode);
+    }
+  });
 
 program
   .command('recon')

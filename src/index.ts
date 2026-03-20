@@ -116,3 +116,11 @@ export {
   type ArchitectureBundleResult,
   type ArchitectureBundleStatus,
 } from './discovery/architecture-bundle.js';
+
+export {
+  buildArchitectureEvidence,
+  runArchitectureEvidenceCommand,
+  type ArchitectureEvidence,
+  type ArchitectureEvidenceFreshnessStatus,
+  type ArchitectureEvidenceVersion,
+} from './cli/evidence-command.js';
