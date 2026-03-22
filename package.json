@@ -22,6 +22,7 @@
     "bootstrap": "node scripts/init.cjs",
     "build": "tsc",
     "test": "vitest run",
+    "test:contract-guards": "vitest run src/cli/evidence-command.test.ts src/cli/spec-schema-fixture-sync.test.ts",
     "test:watch": "vitest",
     "test:unit": "vitest run",
     "test:integration": "node scripts/prove-architecture-compile.mjs",
