@@ -86,7 +86,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function loadSpecSchema(schemaFile: string): Promise<object> {
   const steRuntimeRoot = path.resolve(__dirname, '..', '..');
   const candidates = [
-    path.resolve(steRuntimeRoot, '..', 'ste-spec', 'schemas', schemaFile),
+    path.resolve(steRuntimeRoot, '..', 'ste-spec', 'contracts', schemaFile),
     path.resolve(steRuntimeRoot, 'test', 'fixtures', schemaFile),
   ];
   for (const schemaPath of candidates) {

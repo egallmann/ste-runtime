@@ -1,20 +1,31 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ste.local/test/architecture-evidence.schema.json",
-  "title": "ArchitectureEvidence (test mirror of ste-spec contract v1)",
+  "$id": "https://github.com/egallmann/ste-spec/contracts/architecture-evidence.schema.json",
+  "title": "ArchitectureEvidence",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "bundle", "freshness"],
   "properties": {
-    "version": { "const": "1" },
+    "version": {
+      "const": "1"
+    },
     "bundle": {
       "type": "object",
       "additionalProperties": false,
       "required": ["status", "warnings", "errors"],
       "properties": {
-        "status": { "type": "string", "enum": ["valid", "degraded", "invalid"] },
-        "warnings": { "type": "array", "items": { "type": "string" } },
-        "errors": { "type": "array", "items": { "type": "string" } },
+        "status": {
+          "type": "string",
+          "enum": ["valid", "degraded", "invalid"]
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "errors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
         "manifest": {
           "type": "object",
           "additionalProperties": false,
@@ -40,7 +51,9 @@
           "type": "string",
           "enum": ["current", "stale-unknown", "stale-confirmed"]
         },
-        "lastReconciled": { "type": "string" }
+        "lastReconciled": {
+          "type": "string"
+        }
       }
     }
   }
