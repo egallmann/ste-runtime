@@ -418,6 +418,9 @@ RECON will:
 # Run all tests
 npm test
 
+# Run focused contract guards before push
+npm run test:contract-guards
+
 # Run tests in watch mode
 npm run test:watch
 
