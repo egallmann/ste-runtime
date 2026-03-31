@@ -6,10 +6,15 @@ import {
 } from './architecture-evidence-freshness.js';
 import { loadArchitectureBundle, type ArchitectureBundleResult } from '../discovery/architecture-bundle.js';
 
-export type ArchitectureEvidenceVersion = '1';
+export type ArchitectureEvidenceVersion = '2';
 
 export interface ArchitectureEvidence {
   version: ArchitectureEvidenceVersion;
+  subjects: Array<{
+    kind: 'system';
+    id: string;
+    effect: 'validates';
+  }>;
   bundle: {
     status: ArchitectureBundleResult['status'];
     warnings: string[];
@@ -66,7 +71,14 @@ export async function buildArchitectureEvidence(
   const freshness = await dependencies.resolveFreshness(projectRoot, bundle);
 
   return {
-    version: '1',
+    version: '2',
+    subjects: [
+      {
+        kind: 'system',
+        id: bundle.scopeRoot,
+        effect: 'validates',
+      },
+    ],
     bundle: {
       status: bundle.status,
       warnings: [...bundle.warnings, ...freshness.warnings],
