@@ -66,7 +66,9 @@ evidence
     }
   });
 
-const architecture = program.command('architecture').description('Architecture compiler (ste-runtime compiler of record)');
+const architecture = program
+  .command('architecture')
+  .description('Architecture bundle tooling (public contracts owned by ste-spec)');
 
 architecture
   .command('compile')

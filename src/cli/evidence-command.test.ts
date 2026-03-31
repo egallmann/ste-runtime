@@ -131,7 +131,14 @@ describe('buildArchitectureEvidence', () => {
       },
     );
 
-    expect(result.version).toBe('1');
+    expect(result.version).toBe('2');
+    expect(result.subjects).toEqual([
+      {
+        kind: 'system',
+        id: 'C:/fixture',
+        effect: 'validates',
+      },
+    ]);
     expect(result.bundle.status).toBe('degraded');
     expect(result.bundle.warnings).toEqual(['missing additive graph']);
     expect(result.bundle.errors).toEqual([]);
@@ -179,6 +186,14 @@ describe('buildArchitectureEvidence', () => {
     );
     const parsed = JSON.parse(JSON.stringify(result));
 
+    expect(parsed.version).toBe('2');
+    expect(parsed.subjects).toEqual([
+      {
+        kind: 'system',
+        id: 'C:/fixture',
+        effect: 'validates',
+      },
+    ]);
     expect(parsed.bundle.status).toBe('valid');
     expect(parsed.freshness.status).toBe('stale-unknown');
     expect(parsed).not.toHaveProperty('decision');
@@ -206,7 +221,14 @@ describe('runArchitectureEvidenceCommand', () => {
     expect(exitCode).toBe(0);
     expect(stderr).toEqual([]);
     const parsed = JSON.parse(stdout.join(''));
-    expect(parsed.version).toBe('1');
+    expect(parsed.version).toBe('2');
+    expect(parsed.subjects).toEqual([
+      {
+        kind: 'system',
+        id: tempDir,
+        effect: 'validates',
+      },
+    ]);
     expect(parsed.bundle.status).toBe('degraded');
     expect(parsed.bundle.warnings).toEqual(expect.any(Array));
     expect(parsed.bundle.errors).toEqual(expect.any(Array));
