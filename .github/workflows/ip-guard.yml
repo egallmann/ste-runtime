@@ -1,0 +1,79 @@
+## Invariant 1 Gate 4 — Public-CI backstop
+##
+## CANONICAL VERSION. Copy this file into each protected repo at
+## .github/workflows/ip-guard.yml when creating the workspace-mode feature
+## branches (ste-runtime and adr-architecture-kit).
+##
+## This workflow IS committed to public repos, so its content MUST be safe
+## to be public:
+##   - SHAPE-based patterns only; NO literal company names, NO vendor names,
+##     NO internal-system names. The literal list is a local-only defense
+##     (see scripts/ip_scan.py and the ~/.ste-forbidden-tokens.txt file).
+##   - Adds gitleaks as an independent second opinion.
+##
+## After pushing this workflow, enable it as a required status check on the
+## main and develop branches in the GitHub repo settings.
+
+name: ip-guard
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  shape-patterns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail on shape-based IP leaks
+        shell: bash
+        run: |
+          set -eu
+          PATTERNS=(
+            # Generic JIRA-style identifiers (any project key)
+            '\b[A-Z]{2,}-[0-9]{3,}\b'
+            # AWS ARNs with account IDs
+            'arn:aws:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:'
+            # AWS account IDs in obvious contexts
+            '(account[_ -]?id|aws[_ -]?account)[^A-Za-z0-9]{0,8}[0-9]{12}\b'
+            # GitHub PATs
+            '\bghp_[A-Za-z0-9]{36,}\b'
+            # Private package-registry hostnames (JFrog / Artifactory /
+            # Nexus). Each requires URL context (// or @) so mentioning
+            # the vendor name in prose does not trip the check.
+            '(//|@)[A-Za-z0-9.-]*\.jfrog\.io\b'
+            '(//|@)[A-Za-z0-9.-]*artifactory[A-Za-z0-9.-]*'
+            '(//|@)[A-Za-z0-9.-]*nexus[A-Za-z0-9.-]*/repository/'
+            # npm/pip registry/index directives pointing at non-public hosts.
+            '^[[:space:]]*(registry|index[_-]?url|extra[_-]?index[_-]?url)[[:space:]]*=[[:space:]]*https?://(?!(registry\.npmjs\.org|registry\.yarnpkg\.com|pypi\.org|files\.pythonhosted\.org)\b)[A-Za-z0-9.-]+'
+          )
+          HITS=0
+          for PAT in "${PATTERNS[@]}"; do
+            if git grep -nE "$PAT" -- ':!/.github/workflows/ip-guard.yml' ; then
+              echo "::error::IP-GUARD SHAPE MATCH: $PAT"
+              HITS=1
+            fi
+          done
+          if [ "$HITS" -ne 0 ]; then
+            echo "::error::ip-guard: one or more forbidden shapes detected. Review the matches above."
+            exit 1
+          fi
+          echo "ip-guard shape check: OK"
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
