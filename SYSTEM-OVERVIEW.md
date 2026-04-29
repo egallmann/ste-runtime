@@ -5,8 +5,8 @@ artifact_kind: system_overview
 generator_id: adr-system-overview
 generator_version: 1
 hash_algorithm: sha256
-source_hash: d041d0cb304542a0054d79b70ef31d18baf3b271fa6ce5f4f0a80dfb3adfefb3
-rendered_hash: 8219d815cf039e905c9b850284ad80d4d338d0afafed315100aadec406c114d3
+source_hash: 96cbbf414b3187ec250c831f59837e8a5610d0efe6f47a24960f826302cada10
+rendered_hash: ab35b37bd5dbe4fa475f4b23f5bc756ed27bfe0bd46e776eacf7f59dae4710b1
 -->
 
 <!--
@@ -15,7 +15,7 @@ audience: ai-first
 project: adr-architecture-kit
 status: active
 purpose: >
-  Single-file orientation for AI and human contributors. Use this file first to discover project authority, canonical workflows, required tools, and safe extension points before making changes.
+  Single-file orientation for AI and human contributors. Use this file first to discover project authority, public surface boundaries, canonical workflows, required tools, and safe extension points before making changes.
 authority_order:
   - ste-spec doctrine
   - PROJECT.yaml project authority
@@ -80,7 +80,7 @@ When an AI enters this repo cold, use this order:
 4. Inspect the CLI entrypoints in [`main.py`](src/adr_kit/cli/main.py).
 5. Inspect generators in [`src/adr_kit/generators/`](src/adr_kit/generators/).
 6. Inspect validators in [`src/adr_kit/validators/`](src/adr_kit/validators/).
-7. Inspect placement and scope rules in [`PLACEMENT-CONVENTION.md`](docs/PLACEMENT-CONVENTION.md).
+7. Inspect placement and scope rules in [`placement-convention.md`](docs/contributors/placement-convention.md).
 8. Only then decide whether new code is needed.
 
 Do not start by hand-writing artifacts if a generator or validator already exists.
@@ -93,9 +93,10 @@ Core implementation areas:
 - Business validation: [`adr_validator.py`](src/adr_kit/validators/adr_validator.py)
 - Scope resolution: [`resolver.py`](src/adr_kit/scope/resolver.py)
 - Manifest generation: [`manifest_generator.py`](src/adr_kit/generators/manifest_generator.py)
+- Repository discovery bundle generation: [`architecture_index_generator.py`](src/adr_kit/generators/architecture_index_generator.py)
 - Legacy entity registry compatibility: [`entity_registry_generator.py`](src/adr_kit/generators/entity_registry_generator.py)
-- Architecture index generation: [`architecture_index_generator.py`](src/adr_kit/generators/architecture_index_generator.py)
 - Physical-System ADR generation: [`physical_system_generator.py`](src/adr_kit/generators/physical_system_generator.py)
+- Architecture IR fragment adapter: [`adr_ir_fragment_emitter.py`](src/adr_kit/compiler/backend/adr_ir_fragment_emitter.py)
 - Runtime hygiene: [`runtime_hygiene.py`](src/adr_kit/validators/runtime_hygiene.py)
 
 Primary CLI capabilities:
@@ -119,11 +120,12 @@ Repository artifact classes:
 
 - ADRs: [`adrs/logical/`](adrs/logical/) and [`adrs/physical/`](adrs/physical/)
 - Invariants: [`adrs/invariants/`](adrs/invariants/)
-- Architecture discovery bundle: [`adrs/index/`](adrs/index/)
-- Derived manifest: [`adrs/manifest.yaml`](adrs/manifest.yaml)
+- Repository-normalized discovery bundle: [`adrs/index/`](adrs/index/)
+- Derived manifest and discovery aid: [`adrs/manifest.yaml`](adrs/manifest.yaml)
 - Legacy compatibility registry: [`adrs/entities/registry.yaml`](adrs/entities/registry.yaml)
+- ADR-derived IR publication example: [`dist/architecture-ir/`](dist/architecture-ir/)
 - Rendered ADR markdown: [`adrs/rendered/`](adrs/rendered/)
-- JSON schemas: [`schema/v1.0/`](schema/v1.0/) and [`schema/v1.1/`](schema/v1.1/)
+- Stable schemas: [`schema/v1.0/`](schema/v1.0/); draft schemas: [`schema/v1.1/`](schema/v1.1/)
 - Project metadata: [`PROJECT.yaml`](PROJECT.yaml)
 - AI-first overview: [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md)
 
@@ -139,8 +141,8 @@ Do not infer physical subtype from directory names when frontmatter already tell
 Use this type model when reasoning about repository architecture artifacts:
 
 - `ADR-L-XXXX`: Conceptual logical design: capabilities, boundaries, contracts, constraints, invariants, and non-functional requirements.
-- `ADR-V-XXXX`: Vision-oriented logical ADRs that describe future-state capabilities and target evolution.
-- `ADR-P-XXXX`: Legacy broad physical implementation specifications.
+- `ADR-V-XXXX`: Experimental vision-oriented logical ADRs that describe future-state capabilities and target evolution.
+- `ADR-P-XXXX`: Legacy broad physical implementation specifications retained for compatibility.
 - `ADR-PS-XXXX`: Physical-System ADRs: high-level system design with major component boxes, relationships, broad technology claims, and a coherent design for the abstraction layer they support.
 - `ADR-PC-XXXX`: Physical-Component ADRs: executable architecture intended to be implementation-ready without further human clarification.
 
@@ -164,11 +166,11 @@ Update `README.md` when contributor-facing workflows or orientation guidance cha
 
 ### Generate or refresh the architecture index
 
-Run `adr generate-architecture-index`. Treat `adrs/index/` as the primary machine discovery surface.
+Run `adr generate-architecture-index`. Treat `adrs/index/` as the primary repository discovery surface.
 
 ### Generate or refresh the manifest
 
-Run `adr generate-manifest` or `adr generate-manifest --recursive`. Do not hand-edit `manifest.yaml`.
+Run `adr generate-manifest` or `adr generate-manifest --recursive`. Treat `manifest.yaml` as a discovery and freshness aid, not semantic authority.
 
 ### Generate rendered ADR markdown
 
@@ -181,6 +183,10 @@ Run `adr validate-generated-docs` after regenerating manifest or rendered ADR ma
 ### Validate compiled contract profiles
 
 Run `adr validate-contract --contract-profile greenfield` for strict contract enforcement, or use the brownfield profile with explicit thresholds during migration.
+
+### Build ADR-derived IR fragments
+
+Run `adr build-ir-fragments` when you need the repository's conventional ADR-derived Architecture IR fragment publication example. The normative IR schema still lives in `ste-spec`.
 
 ### Generate a Physical-System ADR
 
@@ -207,7 +213,8 @@ These are operational rules for AI contributors:
 3. If a CLI command exposes the workflow, prefer it over ad hoc scripts.
 4. If scope resolution exists, use it instead of assuming the current working directory is the only project root.
 5. If frontmatter identifies artifact type, trust frontmatter over folder naming.
-6. AI-first artifacts such as this overview must be generated from code or structured templates, not maintained manually.
+6. If Architecture IR ownership is relevant, treat `ste-spec` as normative and this repo as an adapter/producer, not a competing schema authority.
+7. AI-first artifacts such as this overview must be generated from code or structured templates, not maintained manually.
 
 ## Path and Scope Rules
 
@@ -218,7 +225,7 @@ These rules are mandatory:
 3. Treat submodules and sibling repositories as separate scopes unless recursive scope resolution is explicitly requested.
 4. Never classify artifacts by path shape when authoritative document metadata already exists.
 
-See [`PLACEMENT-CONVENTION.md`](docs/PLACEMENT-CONVENTION.md) for the full placement rule.
+See [`placement-convention.md`](docs/contributors/placement-convention.md) for the full placement rule.
 
 ## High-Value Invariants
 
@@ -261,6 +268,7 @@ Avoid these:
 - writing tests against OS temp locations when repo-owned temp roots are the project rule
 - leaving manifest output stale after artifact changes
 - hand-editing rendered ADR markdown instead of regenerating it
+- treating repository-normalized discovery outputs as if they were the normative public Architecture IR schema
 - allowing deprecated APIs or dependency vulnerabilities to accumulate silently
 - maintaining AI-first documentation manually when a generator should be authoritative
 
@@ -278,10 +286,11 @@ Minimum close-out expectation:
 - regenerate derived artifacts if their sources changed
 - run `adr validate-generated-docs` for committed generated documentation artifacts
 - run runtime hygiene audit when changing dependency or runtime-facing code
-- regenerate and validate `SYSTEM-OVERVIEW.md` when orientation-relevant workflows change
+- regenerate and validate `SYSTEM-OVERVIEW.md` when orientation-relevant workflows or public surface boundaries change
 
 ## One-Line Orientation
 
 If you only remember one thing:
 
 This repository is generator-first, validator-first, scope-aware, and frontmatter-authoritative.
+It is also boundary-sensitive: `ste-spec` owns the normative public Architecture IR contract.

@@ -294,3 +294,252 @@ entities:
     extraction_phase: extract_decision
     classification: explicit
     generator: adr-architecture-index
+- id: DEC-0009
+  entity_type: decision
+  name: Workspace is the universal scope unit
+  summary: Multi-repo analysis cannot be retrofitted onto single-repo scope without
+    pervasive special-casing. Defining workspace as the universal scope from the start
+    eliminates that debt. A workspace containing a single repository
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#DEC-0009
+    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0009
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0009
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#DEC-0009
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0010
+  entity_type: decision
+  name: ste init is the canonical one-command install experience
+  summary: Manual onboarding is error-prone and slow. A first-class init command with
+    binding constraints ensures consistent, portable, and safe workspace initialization.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#DEC-0010
+    artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0010
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0010
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#DEC-0010
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0011
+  entity_type: decision
+  name: ste-runtime conforms to RuntimeAdapter role
+  summary: Explicit role conformance prevents scope leakage across subsystem boundaries
+    and ensures evidence artifacts are schema-compliant.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#DEC-0011
+    artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0011
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0011
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#DEC-0011
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0012
+  entity_type: decision
+  name: ste-spec is the single schema authority
+  summary: Polyglot subsystems cannot safely maintain independent copies of shared
+    schemas. Centralizing authority in ste-spec eliminates drift and ensures all subsystems
+    validate against the same contract.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#DEC-0012
+    artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0012
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0012
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#DEC-0012
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0013
+  entity_type: decision
+  name: Persisted paths are POSIX-relative to workspace root
+  summary: Platform-specific paths in persisted artifacts break cross-platform workflows.
+    Enforcing POSIX-relative paths at the serialization boundary ensures portability
+    without constraining internal disk-IO.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0013#DEC-0013
+    artifact_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0013
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0013
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0013#DEC-0013
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0014
+  entity_type: decision
+  name: No private registry references in source or artifacts
+  summary: Private registry URLs are work-context IP that must not appear in version-controlled
+    files. Mechanical enforcement via the scanner prevents accidental leakage.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0014#DEC-0014
+    artifact_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0014
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0014
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0014#DEC-0014
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
