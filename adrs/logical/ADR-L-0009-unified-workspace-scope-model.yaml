@@ -1,0 +1,55 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0009
+title: Unified Workspace Scope Model
+status: proposed
+created_date: '2026-04-21'
+authors:
+- ste-runtime
+domains:
+- workspace
+- scope
+tags:
+- workspace
+- scope
+- multi-repo
+vision_category: false
+context: |
+  Reconnaissance tools traditionally assume a single repository as the unit
+  of analysis. Multi-repo systems require scope to expand to the workspace
+  level so that cross-repo relationships, shared configuration, and
+  aggregate evidence can be captured correctly.
+capabilities:
+- id: CAP-0009
+  name: Workspace-scoped analysis
+  description: All reconnaissance and evidence emission operates on workspace scope.
+invariants:
+- id: INV-0014
+  statement: Scope is a workspace. Size(workspace) >= 1.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: All analysis operates on workspace scope; a workspace always contains at least one repository.
+decisions:
+- id: DEC-0009
+  summary: Workspace is the universal scope unit
+  rationale: |
+    Multi-repo analysis cannot be retrofitted onto single-repo scope
+    without pervasive special-casing. Defining workspace as the universal
+    scope from the start eliminates that debt. A workspace containing a
+    single repository (e.g. repo-a) behaves identically to a degenerate
+    case of workspace containing repo-a, repo-b, repo-c.
+decision: |
+  Scope is a workspace. A workspace contains one or more repositories.
+  A workspace of size one behaves identically to traditional single-repo
+  scope. ste-runtime treats workspace as the universal unit of analysis.
+  The --workspace flag is the canonical entry point. Single-repo invocation
+  is --workspace <dir> where the workspace contains one repo. No
+  special-case code exists for single-repo mode.
+consequences:
+  positive:
+  - A single code path handles both single-repo and multi-repo workspaces.
+  - Cross-repo analysis is a natural extension, not a bolt-on.
+  negative:
+  - All existing single-repo tooling must be refactored to accept workspace scope.

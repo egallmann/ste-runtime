@@ -42,3 +42,160 @@ entities:
     extraction_phase: extract_capability
     classification: explicit
     generator: adr-architecture-index
+- id: CAP-0009
+  entity_type: capability
+  name: Workspace-scoped analysis
+  summary: All reconnaissance and evidence emission operates on workspace scope.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#CAP-0009
+    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0009
+    domains:
+    - workspace
+    - scope
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0009
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#CAP-0009
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0010
+  entity_type: capability
+  name: One-command workspace initialization
+  summary: ste init <target> creates a fully configured workspace.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#CAP-0010
+    artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0010
+    domains:
+    - workspace
+    - init
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0010
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#CAP-0010
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0011
+  entity_type: capability
+  name: ArchitectureEvidence emission
+  summary: Emit ArchitectureEvidence v2 at .ste-workspace/evidence/architecture-evidence.json.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#CAP-0011
+    artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0011
+    domains:
+    - architecture
+    - integration
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0011
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#CAP-0011
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0012
+  entity_type: capability
+  name: Schema fixture synchronization
+  summary: ste-runtime consumes architecture-evidence.schema.json via fixture sync
+    in test/fixtures/. Drift is detected by spec-schema-fixture-sync.test.ts.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#CAP-0012
+    artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0012
+    domains:
+    - architecture
+    - interop
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0012
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#CAP-0012
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index

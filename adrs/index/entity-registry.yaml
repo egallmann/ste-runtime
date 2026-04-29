@@ -23,6 +23,9 @@ entities:
     - provisional-execution
     - semantic-state
     - ste-compliance
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references:
@@ -69,6 +72,9 @@ entities:
     - validation
     - self-validation
     - ste-compliance
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references:
@@ -114,6 +120,9 @@ entities:
     - deferral
     - meta-decision
     - build-order
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references:
@@ -159,6 +168,9 @@ entities:
     - file-watching
     - workspace-boundary
     - ste-compliance
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references:
@@ -201,6 +213,9 @@ entities:
     - domain-discovery
     - self-configuring
     - ai-doc
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -245,6 +260,9 @@ entities:
     - conversational
     - query-interface
     - natural-language
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -289,6 +307,9 @@ entities:
     - obligations
     - preflight
     - validation
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references:
@@ -310,6 +331,276 @@ entities:
   provenance:
     source_type: logical_adr
     source_ref: ADR-L-0007
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0009
+  entity_type: adr
+  name: Unified Workspace Scope Model
+  summary: Reconnaissance tools traditionally assume a single repository as the unit
+    of analysis. Multi-repo systems require scope to expand to the workspace level
+    so that cross-repo relationships, shared configuration, and aggrega
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0009
+    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - workspace
+    - scope
+    tags:
+    - workspace
+    - scope
+    - multi-repo
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0009
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0010
+  entity_type: adr
+  name: Bootstrap and Init Capability
+  summary: Without a first-class init command, onboarding requires manual file creation
+    and sequencing knowledge. Users must know which files to create, in which order,
+    and which values to populate. This friction slows adoption and
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0010
+    artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - workspace
+    - init
+    tags:
+    - init
+    - bootstrap
+    - onboarding
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0010
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0011
+  entity_type: adr
+  name: Adapter Role Conformance
+  summary: 'STE defines five subsystems. ste-runtime is the RuntimeAdapter. Its role
+    and publication surface must be declared, not assumed. Without explicit conformance,
+    the runtime risks emitting artifacts outside its authority or '
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0011
+    artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - architecture
+    - integration
+    tags:
+    - adapter
+    - role
+    - evidence
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0011
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0012
+  entity_type: adr
+  name: Polyglot Interop Contract
+  summary: STE subsystems are written in different languages. On-disk artifacts are
+    the only interop boundary. Neither runtime invents schema. Without a single schema
+    authority, subsystems risk copying, re-deriving, or hand-maintai
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0012
+    artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - architecture
+    - interop
+    tags:
+    - polyglot
+    - schema
+    - interop
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0012
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0013
+  entity_type: adr
+  name: Path Portability Contract
+  summary: Windows, macOS, and Linux represent paths differently. Any path persisted
+    to a file, logged, or used as an identifier must be portable. src/utils/paths.ts
+    already implements the correct helpers (toPosixPath, getRelativeP
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0013
+    artifact_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - portability
+    - paths
+    tags:
+    - paths
+    - portability
+    - cross-platform
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0013
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0014
+  entity_type: adr
+  name: Private Registry Isolation
+  summary: Enterprise environments route package installs through private registry
+    instances. These hosts are unreachable outside the corporate network and their
+    URLs are work-context IP. Source code, configuration, generated artif
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0014
+    artifact_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - security
+    - registry
+    tags:
+    - registry
+    - isolation
+    - ip-protection
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0014
     extraction_phase: extract_adr
     classification: explicit
     generator: adr-architecture-index
@@ -335,6 +626,9 @@ entities:
     - cli
     - graph-traversal
     - developer-tools
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -379,6 +673,9 @@ entities:
     - extractor
     - compliance
     - schemas
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -424,6 +721,9 @@ entities:
     - scss
     - extractor
     - frontend
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -468,6 +768,9 @@ entities:
     - server
     - cursor-integration
     - file-watching
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -509,6 +812,9 @@ entities:
     - validation
     - extractors
     - quality-assurance
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -549,6 +855,9 @@ entities:
     - integration
     - runtime
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -589,6 +898,9 @@ entities:
     - runtime
     - reconciliation
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -628,6 +940,9 @@ entities:
     - freshness
     - reconciliation
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -668,6 +983,9 @@ entities:
     - context
     - rss
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -707,6 +1025,9 @@ entities:
     - json
     - recon
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -746,6 +1067,9 @@ entities:
     - frontend
     - recon
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -786,6 +1110,9 @@ entities:
     - cloudformation
     - recon
     tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -831,6 +1158,9 @@ entities:
     - mcp
     - watchdog
     - obligations
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -878,6 +1208,9 @@ entities:
     - extraction
     - recon
     - semantic-state
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
   relationships:
     declared_in: []
     references: []
@@ -941,6 +1274,163 @@ entities:
   provenance:
     source_type: logical_adr
     source_ref: ADR-L-0007#CAP-0007
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0009
+  entity_type: capability
+  name: Workspace-scoped analysis
+  summary: All reconnaissance and evidence emission operates on workspace scope.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#CAP-0009
+    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0009
+    domains:
+    - workspace
+    - scope
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0009
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#CAP-0009
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0010
+  entity_type: capability
+  name: One-command workspace initialization
+  summary: ste init <target> creates a fully configured workspace.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#CAP-0010
+    artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0010
+    domains:
+    - workspace
+    - init
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0010
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#CAP-0010
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0011
+  entity_type: capability
+  name: ArchitectureEvidence emission
+  summary: Emit ArchitectureEvidence v2 at .ste-workspace/evidence/architecture-evidence.json.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#CAP-0011
+    artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0011
+    domains:
+    - architecture
+    - integration
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0011
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#CAP-0011
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0012
+  entity_type: capability
+  name: Schema fixture synchronization
+  summary: ste-runtime consumes architecture-evidence.schema.json via fixture sync
+    in test/fixtures/. Drift is detected by spec-schema-fixture-sync.test.ts.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#CAP-0012
+    artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0012
+    domains:
+    - architecture
+    - interop
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0012
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#CAP-0012
     extraction_phase: extract_capability
     classification: explicit
     generator: adr-architecture-index
@@ -1560,6 +2050,255 @@ entities:
     extraction_phase: extract_decision
     classification: explicit
     generator: adr-architecture-index
+- id: DEC-0009
+  entity_type: decision
+  name: Workspace is the universal scope unit
+  summary: Multi-repo analysis cannot be retrofitted onto single-repo scope without
+    pervasive special-casing. Defining workspace as the universal scope from the start
+    eliminates that debt. A workspace containing a single repository
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#DEC-0009
+    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0009
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0009
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#DEC-0009
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0010
+  entity_type: decision
+  name: ste init is the canonical one-command install experience
+  summary: Manual onboarding is error-prone and slow. A first-class init command with
+    binding constraints ensures consistent, portable, and safe workspace initialization.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#DEC-0010
+    artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0010
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0010
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0010#DEC-0010
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0011
+  entity_type: decision
+  name: ste-runtime conforms to RuntimeAdapter role
+  summary: Explicit role conformance prevents scope leakage across subsystem boundaries
+    and ensures evidence artifacts are schema-compliant.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#DEC-0011
+    artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0011
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0011
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0011#DEC-0011
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0012
+  entity_type: decision
+  name: ste-spec is the single schema authority
+  summary: Polyglot subsystems cannot safely maintain independent copies of shared
+    schemas. Centralizing authority in ste-spec eliminates drift and ensures all subsystems
+    validate against the same contract.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#DEC-0012
+    artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0012
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0012
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0012#DEC-0012
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0013
+  entity_type: decision
+  name: Persisted paths are POSIX-relative to workspace root
+  summary: Platform-specific paths in persisted artifacts break cross-platform workflows.
+    Enforcing POSIX-relative paths at the serialization boundary ensures portability
+    without constraining internal disk-IO.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0013#DEC-0013
+    artifact_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0013
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0013
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0013#DEC-0013
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0014
+  entity_type: decision
+  name: No private registry references in source or artifacts
+  summary: Private registry URLs are work-context IP that must not appear in version-controlled
+    files. Mechanical enforcement via the scanner prevents accidental leakage.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0014#DEC-0014
+    artifact_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0014
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0014
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0014#DEC-0014
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
 - id: INV-0001
   entity_type: invariant
   name: INV-0001
@@ -2087,6 +2826,45 @@ entities:
   provenance:
     source_type: logical_adr
     source_ref: ADR-L-0001#INV-0013
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0014
+  entity_type: invariant
+  name: INV-0014
+  summary: Scope is a workspace. Size(workspace) >= 1.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#INV-0014
+    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0009
+    scope: global
+    statement: Scope is a workspace. Size(workspace) >= 1.
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0009
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0009#INV-0014
     extraction_phase: assign_canonical_invariant
     classification: explicit
     generator: adr-architecture-index

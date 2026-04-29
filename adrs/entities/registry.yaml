@@ -4,8 +4,8 @@
 # generator_id: adr-compiler
 # generator_version: 1
 # hash_algorithm: sha256
-# source_hash: 0380cca483a764c23b6ef00e0471bf9f8c9e02a23567075372bca8784d0fb670
-# rendered_hash: 835aa38984ba9d78ac6d8ed07c0529c41448956de4ee1e6b914ca3e34e4016d2
+# source_hash: dcfde8cb508f2585e02e2bc32c1e3802979d1a6a8fb01ef7c0cece111dcb9d7f
+# rendered_hash: cb1470cc78b62353b1daa503920547e97972cf59842d5d7961ba46609d440f6a
 
 schema_version: '1.1'
 type: entity_registry
@@ -16,6 +16,66 @@ entities:
   introduced_by: ADR-L-0007
   lifecycle_stage: active
   source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: CAP-0009
+  entity_type: capability
+  name: Workspace-scoped analysis
+  introduced_by: ADR-L-0009
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: CAP-0010
+  entity_type: capability
+  name: One-command workspace initialization
+  introduced_by: ADR-L-0010
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: CAP-0011
+  entity_type: capability
+  name: ArchitectureEvidence emission
+  introduced_by: ADR-L-0011
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: CAP-0012
+  entity_type: capability
+  name: Schema fixture synchronization
+  introduced_by: ADR-L-0012
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
   source_artifact_type: logical_adr
   domains: []
   related_adrs: []
@@ -236,6 +296,96 @@ entities:
     implements: []
     consumes: []
     realizes: []
+- entity_id: DEC-0009
+  entity_type: decision
+  name: Workspace is the universal scope unit
+  introduced_by: ADR-L-0009
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0010
+  entity_type: decision
+  name: ste init is the canonical one-command install experience
+  introduced_by: ADR-L-0010
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0011
+  entity_type: decision
+  name: ste-runtime conforms to RuntimeAdapter role
+  introduced_by: ADR-L-0011
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0012
+  entity_type: decision
+  name: ste-spec is the single schema authority
+  introduced_by: ADR-L-0012
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0013
+  entity_type: decision
+  name: Persisted paths are POSIX-relative to workspace root
+  introduced_by: ADR-L-0013
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0014
+  entity_type: decision
+  name: No private registry references in source or artifacts
+  introduced_by: ADR-L-0014
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
 - entity_id: INV-0001
   entity_type: invariant
   name: INV-0001
@@ -422,6 +572,21 @@ entities:
   introduced_by: ADR-L-0001
   lifecycle_stage: active
   source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0014
+  entity_type: invariant
+  name: INV-0014
+  introduced_by: ADR-L-0009
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
   source_artifact_type: logical_adr
   domains: []
   related_adrs: []
