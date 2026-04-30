@@ -658,7 +658,7 @@ entities:
   entity_type: adr
   name: Workspace Graph Slice Schema Contract
   summary: ste-runtime produces per-repository graph slices during workspace RECON.
-    These slices are consumed by downstream mergers (e.g. aos-graph) to produce a
+    These slices are consumed by any compliant downstream merger to produce a
     unified workspace graph. Without a defined schema contract, the produ
   canonical_source:
     source_type: logical_adr

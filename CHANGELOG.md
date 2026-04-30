@@ -47,10 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `wireInvokesEdges` now recognizes `AWS::Serverless::Function` as a valid
   invocation target alongside `AWS::Lambda::Function`.
 
-### Wiring Backlog Gap Closure (Sibling Plan #7)
+### Wiring Gap Closure
 
-The following changes close the 47 `missing_edge` items identified in MP-3 validation.
-All changes are workspace-agnostic (W-1). Post-fix merged graph: 94 edges, 4 distinct verbs.
+The following changes close the `missing_edge` items identified in graph validation.
+All changes are workspace-agnostic (W-1).
 
 #### Gap 1: SAM Events API endpoint extraction
 
@@ -101,17 +101,10 @@ All changes are workspace-agnostic (W-1). Post-fix merged graph: 94 edges, 4 dis
   (ISO-8601 UTC), `source_commit` (git rev-parse HEAD), and `diagnostics`
   (default []) on every slice.
 - Node `repo` field moved from top-level to provenance object to align with
-  merger Pydantic model (extra="forbid").
+  the downstream merger schema contract (extra="forbid").
 - Endpoint graph IDs now use lowercase method tokens per Identity Contract.
 - `SliceEmitResult` fields renamed from `entityCount`/`relationshipCount` to
   `nodeCount`/`edgeCount`.
-- MP-2 close-out (this workspace): `recon --workspace` with `workspace.yaml`,
-  `aos-graph --workspace . merge`, merged graph 26 edges using ratified verbs
-  `has_contract` and `consumes` only on current slice data; merger produced zero
-  warnings and zero Pydantic errors; W-1 enforced on `ste-runtime/src/`; `adr
-  validate --scope . --mode complete --cross-references` reports 0 errors.
-  Additional wiring verbs (reads, writes, publishes, deploys_to, invokes) await
-  stronger env/SDK/ASL resolution signals in RECON state for this workspace.
 
 ### Fixed
 

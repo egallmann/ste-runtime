@@ -68,7 +68,7 @@ constraints:
     output_dir (default: .ste-workspace/). No domain-specific directory
     name appears in ste-runtime source code.
   rationale: >
-    Domain-specific output directory names (e.g. .aos-graph) belong in
+    Domain-specific output directory names (e.g. .my-workspace/) belong in
     workspace.yaml, not in the tool source.
 - id: CONST-0009
   type: technical
