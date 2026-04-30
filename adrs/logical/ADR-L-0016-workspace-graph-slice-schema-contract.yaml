@@ -1,0 +1,131 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0016
+title: Workspace Graph Slice Schema Contract
+status: proposed
+created_date: '2026-04-24'
+authors:
+- ste-runtime
+domains:
+- workspace
+- interop
+- graph
+tags:
+- slice-schema
+- graph
+- interop
+- contract
+vision_category: false
+related_adrs:
+- ADR-L-0012
+- ADR-L-0009
+- ADR-L-0013
+context: |
+  ste-runtime produces per-repository graph slices during workspace RECON.
+  These slices are consumed by downstream mergers (e.g. aos-graph) to
+  produce a unified workspace graph. Without a defined schema contract,
+  the producer and consumer drift, causing Pydantic validation failures
+  and broken merge pipelines. ADR-L-0012 established ste-spec as the
+  schema authority; this ADR defines the specific slice output contract
+  as a polyglot interop boundary.
+capabilities:
+- id: CAP-0016
+  name: Schema-compliant slice emission
+  description: >
+    ste-runtime emits workspace graph slices that conform to a defined
+    schema contract, enabling any compliant merger to consume them without
+    validation errors.
+invariants:
+- id: INV-0017
+  statement: >
+    Every workspace graph slice emitted by ste-runtime contains exactly
+    the fields defined in the slice schema contract: schema_version, repo,
+    generated_by, generated_at, source_commit, nodes, edges, diagnostics.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: >
+    Missing or extra fields cause downstream Pydantic validation failures.
+    The contract must be exact.
+- id: INV-0018
+  statement: >
+    Only edges with confidence 'high' are emitted. Ambiguous resolutions
+    produce diagnostics, not edges.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: >
+    The graph must not lie. Emitting uncertain edges degrades trust in
+    the entire graph. Diagnostics preserve the signal without asserting
+    false relationships.
+constraints:
+- id: CONST-0010
+  type: technical
+  description: >
+    Node shape: { id: string, type: string, name: string, provenance: { source_path: string, source_ref: string } }.
+    Node ID format follows the Graph Identity Contract (Type:normalized-name).
+  rationale: >
+    Consistent node shape enables merger join logic and identity stability
+    across runs.
+- id: CONST-0011
+  type: technical
+  description: >
+    Edge shape: { from: string, to: string, verb: string, confidence: 'high', provenance: { source_path: string, source_ref: string } }.
+    Verb must be one of the ratified set: reads, writes, publishes, consumes, invokes, deploys_to, has_contract, validates_against, implements.
+  rationale: >
+    Consistent edge shape and ratified verb set prevent schema drift and
+    enable reliable graph queries.
+- id: CONST-0012
+  type: technical
+  description: >
+    generated_by is read from package.json (ste-runtime@<version>), never
+    hardcoded or workspace-specific. generated_at is ISO-8601 UTC.
+    source_commit is git rev-parse HEAD of the scanned repository, or null.
+  rationale: >
+    Provenance fields must be accurate and reproducible for audit trails.
+decisions:
+- id: DEC-0016
+  summary: Workspace graph slices follow a defined schema contract
+  rationale: |
+    Producer-consumer drift between ste-runtime and downstream mergers
+    caused Pydantic validation failures. A defined schema contract with
+    exact field names, shapes, and constraints eliminates this class of
+    integration failures.
+decision: |
+  ste-runtime emits workspace graph slices with the following contract:
+
+  Top-level fields:
+    schema_version: "1.0"
+    repo: <repository name from workspace.yaml>
+    generated_by: "ste-runtime@<version>" (from package.json)
+    generated_at: <ISO-8601 UTC timestamp>
+    source_commit: <git rev-parse HEAD, or null>
+    nodes: <array of Node>
+    edges: <array of Edge>
+    diagnostics: <array of Diagnostic, default []>
+
+  Node shape:
+    id: <Type:normalized-name>
+    type: <one of ratified NodeTypes>
+    name: <human-readable name>
+    provenance: { source_path, source_ref }
+
+  Edge shape:
+    from: <node ID>
+    to: <node ID>
+    verb: <one of ratified verbs>
+    confidence: "high"
+    provenance: { source_path, source_ref }
+
+  Only edges with confidence "high" are emitted. Ambiguous resolutions
+  produce diagnostics entries, not edges.
+consequences:
+  positive:
+  - Downstream mergers can consume slices without validation errors.
+  - Schema contract is versioned and auditable.
+  - Confidence model ensures the graph does not assert false relationships.
+  negative:
+  - Any schema change requires an ADR amendment and coordinated update.
+  - Strict confidence model may reduce edge count; diagnostics capture the gap.

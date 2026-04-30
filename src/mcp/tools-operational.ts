@@ -470,9 +470,8 @@ export async function triggerSelfRecon() {
   const runtimeDir = path.resolve(__dirname, '../..');
   
   try {
-    // Load config - this will automatically detect self-analysis mode
-    // and set projectRoot to runtimeDir and stateDir to .ste-self/state
-    const config = await loadConfig(runtimeDir);
+    // Load self-analysis config (ste-self.config.json) with selfMode flag
+    const config = await loadConfig(runtimeDir, { selfMode: true });
     
     // Validate that self-analysis was detected
     if (config.projectRoot !== runtimeDir) {

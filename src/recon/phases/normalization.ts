@@ -564,6 +564,58 @@ function normalizeElement(
   }
   
   // ============================================================================
+  // ASL (Amazon States Language) extraction types
+  // ============================================================================
+
+  if (assertion.elementType === 'state_machine_definition') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'infrastructure',
+        type: 'state_machine_definition',
+        source_files: [assertion.file],
+      },
+      element: {
+        id: assertion.elementId,
+        comment: assertion.metadata.comment,
+        startAt: assertion.metadata.startAt,
+        stateCount: assertion.metadata.stateCount,
+        filePath: assertion.metadata.filePath,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+
+  if (assertion.elementType === 'asl_lambda_ref') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'infrastructure',
+        type: 'asl_lambda_ref',
+        source_files: [assertion.file],
+      },
+      element: {
+        id: assertion.elementId,
+        functionRef: assertion.metadata.functionRef,
+        sourceFile: assertion.metadata.sourceFile,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+
+  // ============================================================================
   // Python behavioral extraction types
   // These capture runtime behavior patterns that link code to infrastructure
   // ============================================================================

@@ -199,3 +199,86 @@ entities:
     extraction_phase: extract_capability
     classification: explicit
     generator: adr-architecture-index
+- id: CAP-0015
+  entity_type: capability
+  name: Workspace-agnostic operation
+  summary: ste-runtime operates identically in any workspace without source code changes.
+    All workspace-specific values (repo names, output directories, domain vocabulary)
+    are derived from workspace.yaml at runtime.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#CAP-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    domains:
+    - workspace
+    - portability
+    - architecture
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#CAP-0015
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0016
+  entity_type: capability
+  name: Schema-compliant slice emission
+  summary: ste-runtime emits workspace graph slices that conform to a defined schema
+    contract, enabling any compliant merger to consume them without validation errors.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#CAP-0016
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    domains:
+    - workspace
+    - interop
+    - graph
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#CAP-0016
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index

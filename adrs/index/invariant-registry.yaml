@@ -570,3 +570,220 @@ entities:
     extraction_phase: assign_canonical_invariant
     classification: explicit
     generator: adr-architecture-index
+- id: INV-0015
+  entity_type: invariant
+  name: INV-0015
+  summary: ste-runtime source code contains zero references to any specific workspace,
+    repository name, output directory name, or domain vocabulary. All such values
+    are derived from workspace.yaml at runtime.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    scope: global
+    statement: 'ste-runtime source code contains zero references to any specific workspace,
+      repository name, output directory name, or domain vocabulary. All such values
+      are derived from workspace.yaml at runtime.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0015
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0016
+  entity_type: invariant
+  name: INV-0016
+  summary: Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
+    and never reference real workspace repository names.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0016
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    scope: global
+    statement: 'Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
+      and never reference real workspace repository names.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0016
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0017
+  entity_type: invariant
+  name: INV-0017
+  summary: 'Every workspace graph slice emitted by ste-runtime contains exactly the
+    fields defined in the slice schema contract: schema_version, repo, generated_by,
+    generated_at, source_commit, nodes, edges, diagnostics.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0017
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    scope: global
+    statement: 'Every workspace graph slice emitted by ste-runtime contains exactly
+      the fields defined in the slice schema contract: schema_version, repo, generated_by,
+      generated_at, source_commit, nodes, edges, diagnostics.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0017
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0018
+  entity_type: invariant
+  name: INV-0018
+  summary: Only edges with confidence 'high' are emitted. Ambiguous resolutions produce
+    diagnostics, not edges.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0018
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    scope: global
+    statement: 'Only edges with confidence ''high'' are emitted. Ambiguous resolutions
+      produce diagnostics, not edges.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0018
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0019
+  entity_type: invariant
+  name: INV-0019
+  summary: Workspace RECON emits exactly one progress line per repository before that
+    repository begins processing.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#INV-0019
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    scope: global
+    statement: Workspace RECON emits exactly one progress line per repository before
+      that repository begins processing.
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#INV-0019
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index

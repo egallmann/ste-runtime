@@ -543,3 +543,208 @@ entities:
     extraction_phase: extract_decision
     classification: explicit
     generator: adr-architecture-index
+- id: DEC-0015
+  entity_type: decision
+  name: ste-runtime is workspace-agnostic by invariant
+  summary: Workspace-specific references in source code create coupling to a single
+    consumer. By codifying workspace agnosticism as an invariant with automated enforcement
+    (grep-based CI check), the tool remains portable across all
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#DEC-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#DEC-0015
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0016
+  entity_type: decision
+  name: Workspace graph slices follow a defined schema contract
+  summary: Producer-consumer drift between ste-runtime and downstream mergers caused
+    Pydantic validation failures. A defined schema contract with exact field names,
+    shapes, and constraints eliminates this class of integration failu
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#DEC-0016
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#DEC-0016
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0017
+  entity_type: decision
+  name: Mandatory per-repo heartbeat (stdout)
+  summary: Operators need deterministic progress granularity per repository.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0017
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0017
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0018
+  entity_type: decision
+  name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
+  summary: Default runs remain untouched; caches are explicitly requested.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0018
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0018
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0019
+  entity_type: decision
+  name: Opt-in per-repo Promise timeout (--timeout-per-repo)
+  summary: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally
+    out of scope.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0019
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0019
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index

@@ -1,0 +1,15 @@
+validation_run:
+  timestamp: '2026-04-30T19:17:44.417Z'
+  recon_run_id: recon-1777576664414
+  validation_version: 0.1.0
+summary:
+  total_findings: 1
+  errors: 0
+  warnings: 0
+  info: 1
+findings:
+  - category: INFO
+    validator: coverage
+    affected_artifacts: []
+    description: 'AI-DOC file validity: 0/0 files exist (100%)'
+    suggested_investigation: All AI-DOC entries reference valid files

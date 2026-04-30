@@ -591,8 +591,26 @@ def parse_file(filepath: str) -> Dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Python AST extractor for STE runtime")
-    parser.add_argument("filepath", help="Python file to parse")
+    parser.add_argument("filepath", nargs="?", help="Python file to parse (single-file mode)")
+    parser.add_argument("--batch", action="store_true", help="Batch mode: read paths from stdin, emit NDJSON")
     args = parser.parse_args()
+
+    if args.batch:
+        for line in sys.stdin:
+            filepath = line.strip()
+            if not filepath:
+                continue
+            try:
+                payload = parse_file(filepath)
+                print(json.dumps(payload))
+            except SyntaxError as exc:
+                print(json.dumps({"filepath": filepath, "error": f"SyntaxError: {exc}"}))
+            except Exception as exc:
+                print(json.dumps({"filepath": filepath, "error": str(exc)}))
+        return
+
+    if not args.filepath:
+        parser.error("filepath is required in single-file mode")
 
     try:
         payload = parse_file(args.filepath)

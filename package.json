@@ -1,6 +1,7 @@
 {
   "name": "ste-runtime",
   "version": "0.9.0-experimental",
+  "private": true,
   "description": "STE Runtime [EXPERIMENTAL] - Component implementation of RECON and RSS for AI-assisted development. NOT production-ready.",
   "type": "module",
   "main": "dist/index.js",
@@ -30,6 +31,7 @@
     "lint": "eslint src vitest.config.ts",
     "lint:fix": "eslint src vitest.config.ts --fix",
     "recon": "node dist/cli/recon-cli.js",
+    "recon:workspace": "node dist/cli/recon-cli.js --workspace",
     "recon:full": "node dist/cli/recon-cli.js --mode=full",
     "recon:self": "node dist/cli/recon-cli.js --self",
     "recon:init": "node dist/cli/recon-cli.js --init",
@@ -49,6 +51,7 @@
     "globby": "^13.0.0",
     "js-yaml": "^4.1.0",
     "lru-cache": "^10.0.0",
+    "p-limit": "6.2.0",
     "typescript": "^5.3.0",
     "zod": "^3.22.4"
   },

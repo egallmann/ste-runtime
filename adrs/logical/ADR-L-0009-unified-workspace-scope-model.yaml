@@ -31,6 +31,8 @@ invariants:
   enforcement_mechanism: design
   verification_method: automated
   rationale: All analysis operates on workspace scope; a workspace always contains at least one repository.
+  supersedes:
+  - INV-0001
 decisions:
 - id: DEC-0009
   summary: Workspace is the universal scope unit

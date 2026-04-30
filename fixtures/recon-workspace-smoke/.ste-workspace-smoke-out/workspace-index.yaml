@@ -1,0 +1,8 @@
+schema_version: '1.0'
+generated_at: '2026-04-30T19:17:44.379Z'
+repos:
+  - name: repo-alpha
+    status: failed
+    error:
+      stage: timeout
+      message: Repo repo-alpha timed out after 1ms

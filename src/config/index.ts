@@ -250,7 +250,7 @@ export interface ResolvedConfig {
 /**
  * Built-in ignore patterns (always applied)
  */
-const BUILTIN_IGNORE_PATTERNS = [
+export const BUILTIN_IGNORE_PATTERNS = [
   '**/node_modules/**',
   '**/dist/**',
   '**/build/**',
@@ -270,7 +270,7 @@ const BUILTIN_IGNORE_PATTERNS = [
  * 1. Start from ste-runtime's PARENT directory (not ste-runtime itself)
  * Auto-detect languages based on file presence in project
  */
-async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]> {
+export async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]> {
   const languages: SupportedLanguage[] = [];
   
   // Validate project root exists and is accessible
@@ -311,7 +311,14 @@ async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]
   }
   
   // Check for CloudFormation (look for cloudformation directory or template files)
-  const cfnPaths = ['cloudformation', 'backend/cloudformation', 'infrastructure', 'cfn'];
+  const cfnPaths = [
+    'cloudformation',
+    'backend/cloudformation',
+    'infrastructure',
+    'cfn',
+    'cfn_templates',
+    'sam',
+  ];
   for (const cfnPath of cfnPaths) {
     try {
       const fullPath = path.join(projectRoot, cfnPath);
