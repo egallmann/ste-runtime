@@ -282,7 +282,7 @@ entities:
   name: CloudFormation Semantic Extractor
   summary: '- Extract template, parameter, resource, and output semantics - Derive
     infrastructure relationships and API/data model evidence - Preserve template-level
-    implementation intent metadata'
+    implementation intent metadata - Detect nested stack topology via '
   canonical_source:
     source_type: physical_component_adr
     source_ref: ADR-PC-0007#COMP-0007
@@ -321,6 +321,98 @@ entities:
   provenance:
     source_type: physical_component_adr
     source_ref: ADR-PC-0007#COMP-0007
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0008
+  entity_type: component
+  name: Resource Resolver
+  summary: '- Build env-var-to-CFN-resource join maps from per-repo RECON state -
+    Build SDK-service-to-graph-type maps (dynamodb->Database, s3->Bucket, etc.) -
+    Build Lambda-handler-to-function maps from CFN handler metadata - Resolv'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0008
+    artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0008
+    legacy_component_id: COMP-0008
+    technologies:
+    - typescript
+    - node.js
+    - yaml
+    module_path: src/workspace/resource-resolver.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0008
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0008
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0009
+  entity_type: component
+  name: Slice Emitter Edge Wiring
+  summary: '- Produce reads/writes edges by joining SDK usage with infrastructure
+    resources via env-var bridge - Produce publishes edges for SQS/SNS SDK usage -
+    Improve consumes edge resolution via CFN logical ID lookup - Produce de'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0009
+    artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0008
+    legacy_component_id: COMP-0009
+    technologies:
+    - typescript
+    - node.js
+    - yaml
+    module_path: src/workspace/slice-emitter.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0008
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0009
     extraction_phase: extract_component
     classification: explicit
     generator: adr-architecture-index

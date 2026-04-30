@@ -6,8 +6,12 @@ import { access, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 
-import { buildArchitectureEvidence, runArchitectureEvidenceCommand } from './evidence-command.js';
+import { buildArchitectureEvidence, runArchitectureEvidenceCommand, deriveSubjectsFromBundle, type EvidenceSubject } from './evidence-command.js';
 import type { ArchitectureBundleResult } from '../discovery/architecture-bundle.js';
+
+const DEFAULT_SUBJECTS: EvidenceSubject[] = [
+  { kind: 'adr_l', id: 'ADR-L-0001', effect: 'validates' },
+];
 
 let tempDir: string;
 
@@ -119,6 +123,7 @@ describe('buildArchitectureEvidence', () => {
         status: 'degraded',
         warnings: ['missing additive graph'],
       }),
+      DEFAULT_SUBJECTS,
       {
         async resolveFreshness() {
           return {
@@ -131,7 +136,8 @@ describe('buildArchitectureEvidence', () => {
       },
     );
 
-    expect(result.version).toBe('1');
+    expect(result.version).toBe('2');
+    expect(result.subjects).toEqual(DEFAULT_SUBJECTS);
     expect(result.bundle.status).toBe('degraded');
     expect(result.bundle.warnings).toEqual(['missing additive graph']);
     expect(result.bundle.errors).toEqual([]);
@@ -146,6 +152,7 @@ describe('buildArchitectureEvidence', () => {
       createBundleResult({
         index: {},
       }),
+      DEFAULT_SUBJECTS,
       {
         async resolveFreshness() {
           return {
@@ -166,6 +173,7 @@ describe('buildArchitectureEvidence', () => {
     const result = await buildArchitectureEvidence(
       tempDir,
       createBundleResult(),
+      DEFAULT_SUBJECTS,
       {
         async resolveFreshness() {
           return {
@@ -206,7 +214,10 @@ describe('runArchitectureEvidenceCommand', () => {
     expect(exitCode).toBe(0);
     expect(stderr).toEqual([]);
     const parsed = JSON.parse(stdout.join(''));
-    expect(parsed.version).toBe('1');
+    expect(parsed.version).toBe('2');
+    expect(parsed.subjects).toEqual([
+      { kind: 'adr_l', id: 'ADR-L-0013', effect: 'validates' },
+    ]);
     expect(parsed.bundle.status).toBe('degraded');
     expect(parsed.bundle.warnings).toEqual(expect.any(Array));
     expect(parsed.bundle.errors).toEqual(expect.any(Array));
@@ -258,5 +269,41 @@ describe('runArchitectureEvidenceCommand', () => {
     expect(exitCode).toBe(1);
     expect(stdout).toEqual([]);
     expect(stderr.join('')).toContain('fatal evidence failure');
+  });
+});
+
+describe('deriveSubjectsFromBundle', () => {
+  it('extracts ADR subjects from manifest data', () => {
+    const bundle = createBundleResult();
+    (bundle.requiredArtifacts.manifest as { data: unknown }).data = {
+      adrs: [
+        { id: 'ADR-L-0001' },
+        { id: 'ADR-PS-0002' },
+        { id: 'ADR-PC-0003' },
+      ],
+    };
+    const subjects = deriveSubjectsFromBundle(bundle);
+    expect(subjects).toEqual([
+      { kind: 'adr_l', id: 'ADR-L-0001', effect: 'validates' },
+      { kind: 'adr_ps', id: 'ADR-PS-0002', effect: 'validates' },
+      { kind: 'adr_pc', id: 'ADR-PC-0003', effect: 'validates' },
+    ]);
+  });
+
+  it('marks subjects as invalidates when bundle status is invalid', () => {
+    const bundle = createBundleResult({ status: 'invalid' });
+    (bundle.requiredArtifacts.manifest as { data: unknown }).data = {
+      adrs: [{ id: 'ADR-L-0001' }],
+    };
+    const subjects = deriveSubjectsFromBundle(bundle);
+    expect(subjects).toEqual([
+      { kind: 'adr_l', id: 'ADR-L-0001', effect: 'invalidates' },
+    ]);
+  });
+
+  it('returns empty when manifest has no ADR data', () => {
+    const bundle = createBundleResult();
+    (bundle.requiredArtifacts.manifest as { data: unknown }).data = {};
+    expect(deriveSubjectsFromBundle(bundle)).toEqual([]);
   });
 });

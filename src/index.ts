@@ -120,9 +120,13 @@ export {
 export {
   buildArchitectureEvidence,
   runArchitectureEvidenceCommand,
+  deriveSubjectsFromBundle,
   type ArchitectureEvidence,
   type ArchitectureEvidenceFreshnessStatus,
   type ArchitectureEvidenceVersion,
+  type EvidenceSubject,
+  type EvidenceSubjectKind,
+  type EvidenceSubjectEffect,
 } from './cli/evidence-command.js';
 
 // ============================================================================

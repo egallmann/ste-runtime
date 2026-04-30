@@ -1,0 +1,15 @@
+schema_version: '1.0'
+repo: repo-alpha
+generated_by: ste-runtime@0.9.0-experimental
+generated_at: '2026-04-30T19:17:44.432Z'
+source_commit: 35b0bf585b69a74b2107cf6cddf1e608ad1385f9
+nodes:
+  - id: Service:repo-alpha
+    type: Service
+    name: repo-alpha
+    provenance:
+      source_path: .
+      source_ref: workspace
+      repo: repo-alpha
+edges: []
+diagnostics: []

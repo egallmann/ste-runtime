@@ -140,6 +140,24 @@ program
       console.log('\nErrors:');
       result.errors.forEach(e => console.log(`  - ${e}`));
     }
+
+    // Self-pass: always keep ste-runtime's own graph fresh
+    const isSelfAnalysis = config.projectRoot === config.runtimeDir;
+    if (!isSelfAnalysis) {
+      console.log('\n--- Self-Pass (ste-runtime) ---');
+      const selfConfig = await loadConfig(runtimeDir, { selfMode: true });
+      const selfResult = await executeRecon({
+        projectRoot: selfConfig.projectRoot,
+        sourceRoot: selfConfig.sourceDirs[0] ?? 'src',
+        stateRoot: selfConfig.stateDir,
+        mode: options.mode as 'full' | 'incremental',
+        config: selfConfig,
+      });
+      console.log(`Self-pass: Created=${selfResult.aiDocCreated} Modified=${selfResult.aiDocModified} Unchanged=${selfResult.aiDocUnchanged}`);
+      if (!selfResult.success) {
+        console.log(`Self-pass errors: ${selfResult.errors.join('; ')}`);
+      }
+    }
   });
 
 program

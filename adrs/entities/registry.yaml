@@ -4,8 +4,8 @@
 # generator_id: adr-compiler
 # generator_version: 1
 # hash_algorithm: sha256
-# source_hash: dcfde8cb508f2585e02e2bc32c1e3802979d1a6a8fb01ef7c0cece111dcb9d7f
-# rendered_hash: cb1470cc78b62353b1daa503920547e97972cf59842d5d7961ba46609d440f6a
+# source_hash: da1f7aa316b508e9c95a97283650ac32b0f98f8be3c2bdccbadd8b58b68bf760
+# rendered_hash: 14068c3450e3cf57ff397d20beb900d60ecbce82973bdb07ab107194e42e1153
 
 schema_version: '1.1'
 type: entity_registry
@@ -76,6 +76,36 @@ entities:
   introduced_by: ADR-L-0012
   lifecycle_stage: active
   source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: CAP-0015
+  entity_type: capability
+  name: Workspace-agnostic operation
+  introduced_by: ADR-L-0015
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: CAP-0016
+  entity_type: capability
+  name: Schema-compliant slice emission
+  introduced_by: ADR-L-0016
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
   source_artifact_type: logical_adr
   domains: []
   related_adrs: []
@@ -181,6 +211,36 @@ entities:
   introduced_by: ADR-PC-0007
   lifecycle_stage: active
   source_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0008
+  entity_type: component
+  name: Resource Resolver
+  introduced_by: ADR-PC-0008
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+  source_artifact_type: physical_component_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: COMP-0009
+  entity_type: component
+  name: Slice Emitter Edge Wiring
+  introduced_by: ADR-PC-0008
+  lifecycle_stage: active
+  source_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
   source_artifact_type: physical_component_adr
   domains: []
   related_adrs: []
@@ -377,6 +437,81 @@ entities:
   introduced_by: ADR-L-0014
   lifecycle_stage: active
   source_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0015
+  entity_type: decision
+  name: ste-runtime is workspace-agnostic by invariant
+  introduced_by: ADR-L-0015
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0016
+  entity_type: decision
+  name: Workspace graph slices follow a defined schema contract
+  introduced_by: ADR-L-0016
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0017
+  entity_type: decision
+  name: Mandatory per-repo heartbeat (stdout)
+  introduced_by: ADR-L-0017
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0018
+  entity_type: decision
+  name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
+  introduced_by: ADR-L-0017
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: DEC-0019
+  entity_type: decision
+  name: Opt-in per-repo Promise timeout (--timeout-per-repo)
+  introduced_by: ADR-L-0017
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
   source_artifact_type: logical_adr
   domains: []
   related_adrs: []
@@ -587,6 +722,81 @@ entities:
   introduced_by: ADR-L-0009
   lifecycle_stage: active
   source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0015
+  entity_type: invariant
+  name: INV-0015
+  introduced_by: ADR-L-0015
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0016
+  entity_type: invariant
+  name: INV-0016
+  introduced_by: ADR-L-0015
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0017
+  entity_type: invariant
+  name: INV-0017
+  introduced_by: ADR-L-0016
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0018
+  entity_type: invariant
+  name: INV-0018
+  introduced_by: ADR-L-0016
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_artifact_type: logical_adr
+  domains: []
+  related_adrs: []
+  realized_by: []
+  relationships:
+    depends_on: []
+    implements: []
+    consumes: []
+    realizes: []
+- entity_id: INV-0019
+  entity_type: invariant
+  name: INV-0019
+  introduced_by: ADR-L-0017
+  lifecycle_stage: active
+  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
   source_artifact_type: logical_adr
   domains: []
   related_adrs: []

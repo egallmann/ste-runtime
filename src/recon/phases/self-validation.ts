@@ -62,91 +62,41 @@ export async function runSelfValidation(
   const allFindings: ValidationFinding[] = [];
   
   try {
-    // Run all validators (wrapped in try-catch to ensure non-blocking)
-    
-    // 1. Schema Integrity
-    try {
-      if (verbosity !== 'silent') {
-        log('[RECON Phase 7] Running schema validation...');
-      }
-      const schemaFindings = await validateSchema(context);
-      allFindings.push(...schemaFindings);
-    } catch (error) {
-      allFindings.push({
-        category: 'ERROR',
-        validator: 'schema',
-        affected_artifacts: [],
-        description: `Schema validation crashed: ${error instanceof Error ? error.message : String(error)}`,
-        suggested_investigation: 'Check schema-validator.ts implementation',
-      });
+    // Run all validators concurrently (each is independently error-isolated)
+    const validators: Array<{
+      name: string;
+      run: () => Promise<ValidationFinding[]>;
+    }> = [
+      { name: 'schema', run: () => validateSchema(context) },
+      { name: 'repeatability', run: () => validateRepeatability(context, runId) },
+      { name: 'graph', run: () => validateGraph(context) },
+      { name: 'identity', run: () => validateIdentity(context) },
+      { name: 'coverage', run: () => validateCoverage(context) },
+    ];
+
+    if (verbosity !== 'silent') {
+      log(`[RECON Phase 7] Running ${validators.length} validators in parallel...`);
     }
-    
-    // 2. Repeatability
-    try {
-      if (verbosity !== 'silent') {
-        log('[RECON Phase 7] Running repeatability validation...');
+
+    const results = await Promise.allSettled(
+      validators.map(v => v.run())
+    );
+
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const validatorName = validators[i].name;
+      if (result.status === 'fulfilled') {
+        allFindings.push(...result.value);
+      } else {
+        const msg = result.reason instanceof Error ? result.reason.message : String(result.reason);
+        allFindings.push({
+          category: 'ERROR',
+          validator: validatorName as ValidationFinding['validator'],
+          affected_artifacts: [],
+          description: `${validatorName} validation crashed: ${msg}`,
+          suggested_investigation: `Check ${validatorName}-validator.ts implementation`,
+        });
       }
-      const repeatabilityFindings = await validateRepeatability(context, runId);
-      allFindings.push(...repeatabilityFindings);
-    } catch (error) {
-      allFindings.push({
-        category: 'ERROR',
-        validator: 'repeatability',
-        affected_artifacts: [],
-        description: `Repeatability validation crashed: ${error instanceof Error ? error.message : String(error)}`,
-        suggested_investigation: 'Check repeatability-validator.ts implementation',
-      });
-    }
-    
-    // 3. Graph Consistency
-    try {
-      if (verbosity !== 'silent') {
-        log('[RECON Phase 7] Running graph validation...');
-      }
-      const graphFindings = await validateGraph(context);
-      allFindings.push(...graphFindings);
-    } catch (error) {
-      allFindings.push({
-        category: 'ERROR',
-        validator: 'graph',
-        affected_artifacts: [],
-        description: `Graph validation crashed: ${error instanceof Error ? error.message : String(error)}`,
-        suggested_investigation: 'Check graph-validator.ts implementation',
-      });
-    }
-    
-    // 4. Identity Stability
-    try {
-      if (verbosity !== 'silent') {
-        log('[RECON Phase 7] Running identity validation...');
-      }
-      const identityFindings = await validateIdentity(context);
-      allFindings.push(...identityFindings);
-    } catch (error) {
-      allFindings.push({
-        category: 'ERROR',
-        validator: 'identity',
-        affected_artifacts: [],
-        description: `Identity validation crashed: ${error instanceof Error ? error.message : String(error)}`,
-        suggested_investigation: 'Check identity-validator.ts implementation',
-      });
-    }
-    
-    // 5. Extraction Coverage
-    try {
-      if (verbosity !== 'silent') {
-        log('[RECON Phase 7] Running coverage validation...');
-      }
-      const coverageFindings = await validateCoverage(context);
-      allFindings.push(...coverageFindings);
-    } catch (error) {
-      allFindings.push({
-        category: 'ERROR',
-        validator: 'coverage',
-        affected_artifacts: [],
-        description: `Coverage validation crashed: ${error instanceof Error ? error.message : String(error)}`,
-        suggested_investigation: 'Check coverage-validator.ts implementation',
-      });
     }
     
     // Calculate summary

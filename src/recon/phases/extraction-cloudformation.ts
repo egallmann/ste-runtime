@@ -31,8 +31,8 @@ import {
 } from '../../extractors/cfn/cfn-spec-loader.js';
 import { parseResourceType } from '../../extractors/cfn/cfn-types.js';
 
-// Cached spec (loaded once per RECON run)
-let cachedSpec: CloudFormationSpec | null = null;
+// Promise-based singleton: concurrent callers await the same promise
+let cachedSpecPromise: Promise<CloudFormationSpec | null> | null = null;
 
 /**
  * Custom YAML schema for CloudFormation intrinsic functions.
@@ -166,20 +166,19 @@ export async function extractFromCloudFormation(file: DiscoveredFile): Promise<R
   const normalizedPath = toPosixPath(file.relativePath);
   
   try {
-    // Load CFN spec (cached after first load)
-    if (!cachedSpec) {
-      try {
-        // Determine runtime directory for spec cache
-        const runtimeDir = process.cwd().includes('ste-runtime') 
-          ? process.cwd() 
-          : path.join(process.cwd(), 'ste-runtime');
-        cachedSpec = await loadCfnSpec(runtimeDir);
-      } catch (specError) {
+    // Load CFN spec (promise-based singleton: concurrent callers share the same promise)
+    if (!cachedSpecPromise) {
+      const runtimeDir = process.cwd().includes('ste-runtime')
+        ? process.cwd()
+        : path.join(process.cwd(), 'ste-runtime');
+      cachedSpecPromise = loadCfnSpec(runtimeDir).catch(specError => {
         console.warn('[RECON CFN] Could not load CFN spec, using generic extraction only:', specError);
-      }
+        return null;
+      });
     }
+    const cachedSpec = await cachedSpecPromise;
     
-    let content = await fs.readFile(file.path, 'utf-8');
+    let content = file.cachedContent ?? await fs.readFile(file.path, 'utf-8');
     
     // Remove BOM (Byte Order Mark) if present
     if (content.charCodeAt(0) === 0xFEFF) {
@@ -305,6 +304,10 @@ export async function extractFromCloudFormation(file: DiscoveredFile): Promise<R
     // Extract API endpoints from API Gateway resources
     const apiEndpoints = extractApiEndpoints(template, normalizedPath);
     assertions.push(...apiEndpoints);
+
+    // SAM Events (Type: Api / HttpApi) on Serverless::Function → api_endpoint assertions
+    const samApiEndpoints = extractSamApiEndpoints(template, normalizedPath);
+    assertions.push(...samApiEndpoints);
     
     // Extract data models from DynamoDB tables
     const dataModels = extractDataModels(template, normalizedPath);
@@ -577,6 +580,28 @@ function extractResourceMetadata(
       meta.memorySize = props.MemorySize;
       meta.timeout = props.Timeout;
       meta.architectures = props.Architectures;
+      if (props.Layers !== undefined && props.Layers !== null) {
+        meta.layers = props.Layers;
+      }
+      break;
+
+    case 'AWS::Serverless::Function':
+      meta.functionName = stringifyIntrinsic(props.FunctionName);
+      meta.runtime = props.Runtime;
+      meta.handler = props.Handler;
+      meta.memorySize = props.MemorySize;
+      meta.timeout = props.Timeout;
+      meta.architectures = props.Architectures;
+      meta.codeUri = stringifyIntrinsic(props.CodeUri);
+      if (props.Layers !== undefined && props.Layers !== null) {
+        meta.layers = props.Layers;
+      }
+      if (props.Environment && typeof props.Environment === 'object') {
+        const env = props.Environment as Record<string, unknown>;
+        if (env.Variables && typeof env.Variables === 'object') {
+          meta.environment = sanitizePropertiesForStorage(env.Variables as Record<string, unknown>);
+        }
+      }
       break;
       
     case 'AWS::ApiGateway::RestApi':
@@ -590,6 +615,12 @@ function extractResourceMetadata(
       meta.bucketName = stringifyIntrinsic(props.BucketName);
       meta.versioningEnabled = (props.VersioningConfiguration as Record<string, unknown>)?.Status === 'Enabled';
       meta.hasEncryption = !!props.BucketEncryption;
+      break;
+
+    case 'AWS::Serverless::LayerVersion':
+    case 'AWS::Lambda::LayerVersion':
+      meta.contentUri = stringifyIntrinsic(props.ContentUri);
+      meta.layerName = stringifyIntrinsic(props.LayerName);
       break;
       
     case 'AWS::IAM::Role':
@@ -678,6 +709,38 @@ function extractResourceMetadata(
     case 'AWS::StepFunctions::StateMachine':
       meta.stateMachineName = stringifyIntrinsic(props.StateMachineName);
       meta.type = props.StateMachineType ?? 'STANDARD';
+      if (props.DefinitionBody && typeof props.DefinitionBody === 'object') {
+        meta.definitionBody = sanitizePropertiesForStorage(props.DefinitionBody as Record<string, unknown>);
+      }
+      if (typeof props.DefinitionString === 'string') {
+        try {
+          meta.definitionBody = JSON.parse(props.DefinitionString);
+        } catch { /* non-JSON DefinitionString, likely Fn::Sub */ }
+      }
+      if (props.DefinitionString && typeof props.DefinitionString === 'object') {
+        meta.definitionBody = sanitizePropertiesForStorage(
+          props.DefinitionString as Record<string, unknown>
+        );
+      }
+      if (typeof props.DefinitionUri === 'string') {
+        meta.definitionUri = props.DefinitionUri;
+      } else if (props.DefinitionUri && typeof props.DefinitionUri === 'object') {
+        meta.definitionUri = stringifyIntrinsic(props.DefinitionUri);
+      }
+      break;
+
+    case 'AWS::Serverless::StateMachine':
+      meta.stateMachineName = stringifyIntrinsic(props.Name);
+      meta.type = props.Type ?? 'STANDARD';
+      // SAM uses Definition (inline map) rather than DefinitionBody
+      if (props.Definition && typeof props.Definition === 'object') {
+        meta.definitionBody = sanitizePropertiesForStorage(props.Definition as Record<string, unknown>);
+      }
+      if (typeof props.DefinitionUri === 'string') {
+        meta.definitionUri = props.DefinitionUri;
+      } else if (props.DefinitionUri && typeof props.DefinitionUri === 'object') {
+        meta.definitionUri = stringifyIntrinsic(props.DefinitionUri);
+      }
       break;
   }
   
@@ -936,6 +999,61 @@ function extractApiEndpoints(
 }
 
 /**
+ * Extract API endpoints declared via SAM `Events` on `AWS::Serverless::Function`
+ * (Type: Api / HttpApi). Complements explicit `AWS::ApiGateway::*` Method extraction.
+ */
+function extractSamApiEndpoints(
+  template: CfnTemplate,
+  filePath: string,
+): RawAssertion[] {
+  const assertions: RawAssertion[] = [];
+  const resources = template.Resources ?? {};
+
+  for (const [logicalId, resource] of Object.entries(resources)) {
+    if (resource.Type !== 'AWS::Serverless::Function') continue;
+    const props = resource.Properties ?? {};
+    if (!props.Events || typeof props.Events !== 'object') continue;
+
+    const events = props.Events as Record<string, Record<string, unknown>>;
+    for (const [eventName, eventConfig] of Object.entries(events)) {
+      if (!eventConfig || typeof eventConfig !== 'object') continue;
+      const eventType = String(eventConfig.Type ?? '');
+      if (eventType !== 'Api' && eventType !== 'HttpApi') continue;
+
+      const eventProps = (eventConfig.Properties ?? {}) as Record<string, unknown>;
+      const method = String(eventProps.Method ?? 'ANY');
+      let routePath = String(eventProps.Path ?? '');
+      if (!routePath) continue;
+      if (!routePath.startsWith('/')) {
+        routePath = `/${routePath}`;
+      }
+
+      const restApiRef = extractRefFromIntrinsic(eventProps.RestApiId ?? eventProps.ApiId);
+
+      assertions.push({
+        elementId: `api_endpoint:${filePath}:${method}:${routePath}`,
+        elementType: 'api_endpoint',
+        file: filePath,
+        line: 0,
+        language: 'cloudformation',
+        metadata: {
+          framework: 'sam-events-api',
+          method,
+          path: routePath,
+          function_name: logicalId,
+          sourceResource: `${logicalId}-${eventName}`,
+          restApiId: restApiRef,
+          samEventType: eventType,
+          samEventName: eventName,
+        },
+      });
+    }
+  }
+
+  return assertions;
+}
+
+/**
  * Normalize a value to an array (IAM policies can have single value or array)
  */
 function normalizeToArray(value: unknown): string[] {
@@ -1087,7 +1205,7 @@ function extractTriggerRelationships(
       const eventSourceArn = props.EventSourceArn;
       const functionName = props.FunctionName;
       
-      // Extract the source reference (could be !GetAtt, !Ref, or string)
+      // Extract the source reference (could be !GetAtt, !Ref, Fn::Sub map, or string)
       const sourceRef = extractRefFromIntrinsic(eventSourceArn);
       const targetRef = extractRefFromIntrinsic(functionName);
       
@@ -1126,6 +1244,84 @@ function extractTriggerRelationships(
       });
     }
     
+    // AWS::Serverless::Function Events property
+    if (resource.Type === 'AWS::Serverless::Function' && props.Events && typeof props.Events === 'object') {
+      const events = props.Events as Record<string, Record<string, unknown>>;
+      for (const [eventName, eventConfig] of Object.entries(events)) {
+        if (!eventConfig || typeof eventConfig !== 'object') continue;
+        const eventType = String(eventConfig.Type ?? '');
+        const eventProps = (eventConfig.Properties ?? {}) as Record<string, unknown>;
+
+        let triggerType = 'sam_event';
+        let sourceType = eventType.toLowerCase();
+        let sourceRef: string | undefined;
+        let sourceArn: string | undefined;
+
+        switch (eventType) {
+          case 'SQS':
+            triggerType = 'event_source_mapping';
+            sourceType = 'sqs';
+            sourceRef = extractRefFromIntrinsic(eventProps.Queue);
+            sourceArn = stringifyIntrinsic(eventProps.Queue);
+            break;
+          case 'SNS':
+            triggerType = 'event_source_mapping';
+            sourceType = 'sns';
+            sourceRef = extractRefFromIntrinsic(eventProps.Topic);
+            sourceArn = stringifyIntrinsic(eventProps.Topic);
+            break;
+          case 'DynamoDB':
+          case 'Kinesis':
+            triggerType = 'event_source_mapping';
+            sourceType = eventType.toLowerCase();
+            sourceRef = extractRefFromIntrinsic(eventProps.Stream);
+            sourceArn = stringifyIntrinsic(eventProps.Stream);
+            break;
+          case 'Api':
+          case 'HttpApi':
+            triggerType = 'api_event';
+            sourceType = eventType === 'HttpApi' ? 'httpapi' : 'api';
+            sourceRef = extractRefFromIntrinsic(eventProps.RestApiId ?? eventProps.ApiId);
+            break;
+          case 'Schedule':
+          case 'ScheduleV2':
+            triggerType = 'scheduled_event';
+            sourceType = 'schedule';
+            break;
+          case 'S3':
+            triggerType = 's3_event';
+            sourceType = 's3';
+            sourceRef = extractRefFromIntrinsic(eventProps.Bucket);
+            sourceArn = stringifyIntrinsic(eventProps.Bucket);
+            break;
+          case 'EventBridgeRule':
+            triggerType = 'event_pattern';
+            sourceType = 'eventbridge';
+            break;
+        }
+
+        assertions.push({
+          elementId: generateSliceId('cfn_trigger', filePath, `${logicalId}-${eventName}`),
+          elementType: 'cfn_trigger',
+          file: filePath,
+          line: 0,
+          language: 'cloudformation',
+          metadata: {
+            logicalId: `${logicalId}-${eventName}`,
+            triggerType,
+            sourceType,
+            sourceRef,
+            sourceArn,
+            targetRef: logicalId,
+            targetFunction: logicalId,
+            samEventType: eventType,
+            samEventName: eventName,
+            enabled: eventConfig.Properties ? (eventProps.Enabled ?? true) : true,
+          },
+        });
+      }
+    }
+
     // AWS::Events::Rule (EventBridge)
     if (resource.Type === 'AWS::Events::Rule') {
       const targets = props.Targets as unknown[] | undefined;
@@ -1241,6 +1437,18 @@ function extractRefFromIntrinsic(value: unknown): string | undefined {
       const getAtt = obj.GetAtt;
       if (Array.isArray(getAtt) && getAtt.length > 0) {
         return String(getAtt[0]);
+      }
+    }
+
+    // { 'Fn::Sub': [ 'template', { Var: !Ref X } ] } — extract first Ref/GetAtt in map values
+    if ('Fn::Sub' in obj) {
+      const sub = obj['Fn::Sub'];
+      if (Array.isArray(sub) && sub.length >= 2 && typeof sub[1] === 'object' && sub[1] !== null) {
+        const vars = sub[1] as Record<string, unknown>;
+        for (const v of Object.values(vars)) {
+          const inner = extractRefFromIntrinsic(v);
+          if (inner) return inner;
+        }
       }
     }
   }

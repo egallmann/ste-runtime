@@ -604,6 +604,153 @@ entities:
     extraction_phase: extract_adr
     classification: explicit
     generator: adr-architecture-index
+- id: ADR-L-0015
+  entity_type: adr
+  name: Workspace Agnosticism Invariant
+  summary: ste-runtime is an OSS tool that operates on arbitrary workspaces. Each
+    workspace declares its own repository list, output directory, and domain vocabulary
+    in workspace.yaml. The runtime must never contain references to a
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - workspace
+    - portability
+    - architecture
+    tags:
+    - workspace-agnosticism
+    - invariant
+    - oss
+    - manifest-driven
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0009
+    - ADR-L-0013
+    - ADR-L-0014
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0016
+  entity_type: adr
+  name: Workspace Graph Slice Schema Contract
+  summary: ste-runtime produces per-repository graph slices during workspace RECON.
+    These slices are consumed by downstream mergers (e.g. aos-graph) to produce a
+    unified workspace graph. Without a defined schema contract, the produ
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - workspace
+    - interop
+    - graph
+    tags:
+    - slice-schema
+    - graph
+    - interop
+    - contract
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0009
+    - ADR-L-0012
+    - ADR-L-0013
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-L-0017
+  entity_type: adr
+  name: RECON Workspace Execution Contract
+  summary: ADR-L-0009 fixes workspace as the universal scope unit. This ADR records
+    how workspace RECON execution behaves for observability, optional incremental
+    cross-run skips, and optional per-repository timeouts without changin
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - workspace
+    - recon
+    tags:
+    - workspace
+    - recon
+    - reliability
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references:
+    - ADR-L-0009
+    - ADR-L-0013
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
 - id: ADR-P-0001
   entity_type: adr
   name: RSS CLI Implementation for Developer-Invoked Graph Traversal
@@ -1097,7 +1244,7 @@ entities:
   name: CloudFormation Semantic Extraction
   summary: CloudFormation semantic extraction captures templates, resources, outputs,
     parameters, infrastructure relationships, and template-level implementation intent
-    from CloudFormation sources.
+    from CloudFormation sources. This includes nested stack topolo
   canonical_source:
     source_type: physical_component_adr
     source_ref: ADR-PC-0007
@@ -1132,6 +1279,49 @@ entities:
   provenance:
     source_type: physical_component_adr
     source_ref: ADR-PC-0007
+    extraction_phase: extract_adr
+    classification: explicit
+    generator: adr-architecture-index
+- id: ADR-PC-0008
+  entity_type: adr
+  name: Service Wiring Post-Processing
+  summary: RECON produces rich per-repository state (call graphs, SDK usage, env vars,
+    CFN resources, triggers) but the workspace slice emitter collapsed this to a skeleton
+    with only has_contract edges. Cross-domain joins (SDK usag
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008
+    artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+  source_refs: []
+  metadata:
+    status: proposed
+    domains:
+    - workspace
+    - graph
+    - extraction
+    tags: []
+    implementation_authority: null
+    related_reviews: []
+    related_overrides: []
+  relationships:
+    declared_in: []
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008
     extraction_phase: extract_adr
     classification: explicit
     generator: adr-architecture-index
@@ -1434,6 +1624,89 @@ entities:
     extraction_phase: extract_capability
     classification: explicit
     generator: adr-architecture-index
+- id: CAP-0015
+  entity_type: capability
+  name: Workspace-agnostic operation
+  summary: ste-runtime operates identically in any workspace without source code changes.
+    All workspace-specific values (repo names, output directories, domain vocabulary)
+    are derived from workspace.yaml at runtime.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#CAP-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    domains:
+    - workspace
+    - portability
+    - architecture
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#CAP-0015
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
+- id: CAP-0016
+  entity_type: capability
+  name: Schema-compliant slice emission
+  summary: ste-runtime emits workspace graph slices that conform to a defined schema
+    contract, enabling any compliant merger to consume them without validation errors.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#CAP-0016
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    domains:
+    - workspace
+    - interop
+    - graph
+    implemented_by_components: []
+    enabled_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#CAP-0016
+    extraction_phase: extract_capability
+    classification: explicit
+    generator: adr-architecture-index
 - id: COMP-0001
   entity_type: component
   name: MCP Server and Tool Registry
@@ -1715,7 +1988,7 @@ entities:
   name: CloudFormation Semantic Extractor
   summary: '- Extract template, parameter, resource, and output semantics - Derive
     infrastructure relationships and API/data model evidence - Preserve template-level
-    implementation intent metadata'
+    implementation intent metadata - Detect nested stack topology via '
   canonical_source:
     source_type: physical_component_adr
     source_ref: ADR-PC-0007#COMP-0007
@@ -1754,6 +2027,98 @@ entities:
   provenance:
     source_type: physical_component_adr
     source_ref: ADR-PC-0007#COMP-0007
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0008
+  entity_type: component
+  name: Resource Resolver
+  summary: '- Build env-var-to-CFN-resource join maps from per-repo RECON state -
+    Build SDK-service-to-graph-type maps (dynamodb->Database, s3->Bucket, etc.) -
+    Build Lambda-handler-to-function maps from CFN handler metadata - Resolv'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0008
+    artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0008
+    legacy_component_id: COMP-0008
+    technologies:
+    - typescript
+    - node.js
+    - yaml
+    module_path: src/workspace/resource-resolver.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0008
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0008
+    extraction_phase: extract_component
+    classification: explicit
+    generator: adr-architecture-index
+- id: COMP-0009
+  entity_type: component
+  name: Slice Emitter Edge Wiring
+  summary: '- Produce reads/writes edges by joining SDK usage with infrastructure
+    resources via env-var bridge - Produce publishes edges for SQS/SNS SDK usage -
+    Improve consumes edge resolution via CFN logical ID lookup - Produce de'
+  canonical_source:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0009
+    artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PC-0008
+    legacy_component_id: COMP-0009
+    technologies:
+    - typescript
+    - node.js
+    - yaml
+    module_path: src/workspace/slice-emitter.ts
+    implements_capabilities: []
+    implements_system:
+    - ADR-PS-0002
+  relationships:
+    declared_in:
+    - ADR-PC-0008
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in:
+    - SYS-0002
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_component_adr
+    source_ref: ADR-PC-0008#COMP-0009
     extraction_phase: extract_component
     classification: explicit
     generator: adr-architecture-index
@@ -2296,6 +2661,211 @@ entities:
   provenance:
     source_type: logical_adr
     source_ref: ADR-L-0014#DEC-0014
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0015
+  entity_type: decision
+  name: ste-runtime is workspace-agnostic by invariant
+  summary: Workspace-specific references in source code create coupling to a single
+    consumer. By codifying workspace agnosticism as an invariant with automated enforcement
+    (grep-based CI check), the tool remains portable across all
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#DEC-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#DEC-0015
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0016
+  entity_type: decision
+  name: Workspace graph slices follow a defined schema contract
+  summary: Producer-consumer drift between ste-runtime and downstream mergers caused
+    Pydantic validation failures. A defined schema contract with exact field names,
+    shapes, and constraints eliminates this class of integration failu
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#DEC-0016
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#DEC-0016
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0017
+  entity_type: decision
+  name: Mandatory per-repo heartbeat (stdout)
+  summary: Operators need deterministic progress granularity per repository.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0017
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0017
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0018
+  entity_type: decision
+  name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
+  summary: Default runs remain untouched; caches are explicitly requested.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0018
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0018
+    extraction_phase: extract_decision
+    classification: explicit
+    generator: adr-architecture-index
+- id: DEC-0019
+  entity_type: decision
+  name: Opt-in per-repo Promise timeout (--timeout-per-repo)
+  summary: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally
+    out of scope.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0019
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    related_invariants: []
+    enforces_invariants: []
+    enables_capabilities: []
+    governs_components: []
+    supersedes: []
+    refines: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#DEC-0019
     extraction_phase: extract_decision
     classification: explicit
     generator: adr-architecture-index
@@ -2865,6 +3435,223 @@ entities:
   provenance:
     source_type: logical_adr
     source_ref: ADR-L-0009#INV-0014
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0015
+  entity_type: invariant
+  name: INV-0015
+  summary: ste-runtime source code contains zero references to any specific workspace,
+    repository name, output directory name, or domain vocabulary. All such values
+    are derived from workspace.yaml at runtime.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0015
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    scope: global
+    statement: 'ste-runtime source code contains zero references to any specific workspace,
+      repository name, output directory name, or domain vocabulary. All such values
+      are derived from workspace.yaml at runtime.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0015
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0016
+  entity_type: invariant
+  name: INV-0016
+  summary: Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
+    and never reference real workspace repository names.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0016
+    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0015
+    scope: global
+    statement: 'Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
+      and never reference real workspace repository names.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0015
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0015#INV-0016
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0017
+  entity_type: invariant
+  name: INV-0017
+  summary: 'Every workspace graph slice emitted by ste-runtime contains exactly the
+    fields defined in the slice schema contract: schema_version, repo, generated_by,
+    generated_at, source_commit, nodes, edges, diagnostics.'
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0017
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    scope: global
+    statement: 'Every workspace graph slice emitted by ste-runtime contains exactly
+      the fields defined in the slice schema contract: schema_version, repo, generated_by,
+      generated_at, source_commit, nodes, edges, diagnostics.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0017
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0018
+  entity_type: invariant
+  name: INV-0018
+  summary: Only edges with confidence 'high' are emitted. Ambiguous resolutions produce
+    diagnostics, not edges.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0018
+    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0016
+    scope: global
+    statement: 'Only edges with confidence ''high'' are emitted. Ambiguous resolutions
+      produce diagnostics, not edges.
+
+      '
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0016
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0016#INV-0018
+    extraction_phase: assign_canonical_invariant
+    classification: explicit
+    generator: adr-architecture-index
+- id: INV-0019
+  entity_type: invariant
+  name: INV-0019
+  summary: Workspace RECON emits exactly one progress line per repository before that
+    repository begins processing.
+  canonical_source:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#INV-0019
+    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-L-0017
+    scope: global
+    statement: Workspace RECON emits exactly one progress line per repository before
+      that repository begins processing.
+    enforcement_level: must
+    declaration_mode: local
+    upheld_by_decisions: []
+  relationships:
+    declared_in:
+    - ADR-L-0017
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: logical_adr
+    source_ref: ADR-L-0017#INV-0019
     extraction_phase: assign_canonical_invariant
     classification: explicit
     generator: adr-architecture-index
