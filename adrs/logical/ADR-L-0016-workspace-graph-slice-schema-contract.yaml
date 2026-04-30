@@ -22,7 +22,7 @@ related_adrs:
 - ADR-L-0013
 context: |
   ste-runtime produces per-repository graph slices during workspace RECON.
-  These slices are consumed by downstream mergers (e.g. aos-graph) to
+  These slices are consumed by any compliant downstream merger to
   produce a unified workspace graph. Without a defined schema contract,
   the producer and consumer drift, causing Pydantic validation failures
   and broken merge pipelines. ADR-L-0012 established ste-spec as the
