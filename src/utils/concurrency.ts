@@ -7,7 +7,10 @@
  */
 
 import os from 'node:os';
-import pLimit, { type LimitFunction } from 'p-limit';
+import pLimit from 'p-limit';
+
+/** Return type of {@link pLimit} — p-limit v6 no longer exports `LimitFunction`. */
+export type LimitFunction = ReturnType<typeof pLimit>;
 
 const cpuCount = os.cpus().length;
 

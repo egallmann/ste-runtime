@@ -15,8 +15,9 @@ export function renderLegacyEntityRegistry(bodyYaml: string): string {
 artifact_kind: legacy_entity_registry
 generator_id: ste-runtime-architecture-compiler
 note: >
-  Emitted by ste-runtime (compiler of record). Integrity hashes may differ from adr-kit;
-  content is derived from the same ADR sources via the TypeScript compiler pipeline.
+  Emitted by ste-runtime as a runtime-owned machine artifact. Public cross-repo
+  contracts remain owned by ste-spec; content is derived from the same ADR
+  sources via the TypeScript compiler pipeline.
 -->
 
 `;

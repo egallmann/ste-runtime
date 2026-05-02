@@ -24,8 +24,8 @@ import { extractFromJson } from '../../extractors/json/index.js';
 import { extractFromAngular } from '../../extractors/angular/index.js';
 import { extract as extractFromCss } from '../../extractors/css/index.js';
 import { log, warn } from '../../utils/logger.js';
-import type { LimitFunction } from 'p-limit';
 import {
+  type LimitFunction,
   MAX_PYTHON_WORKERS, MAX_FILES_PER_CHUNK, MAX_STDIN_BYTES,
   cpuLimiter, ioLimiter, BoundedCache,
 } from '../../utils/concurrency.js';

@@ -1,9 +1,9 @@
 /**
  * Loads pre-generated architecture index / registry YAML from disk for evidence and tooling.
  *
- * Compiler authority: ste-runtime is the compiler of record for machine-consumable architecture
- * state. Do not treat these files as a substitute for compiling from canonical ADR YAML + source;
- * long term they must be outputs of the ste-runtime compiler, not a second authority.
+ * Authority note: ste-runtime reads runtime-owned machine artifacts here for evidence
+ * and tooling. Public cross-repo schemas remain owned by ste-spec; these files are
+ * not a second authority for shared contracts.
  * See repo root COMPILER-AUTHORITY.md.
  */
 import { promises as fs } from 'node:fs';
