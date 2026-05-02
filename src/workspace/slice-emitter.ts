@@ -622,8 +622,8 @@ export async function loadRepoState(stateDir: string): Promise<ParsedStateFile[]
     } catch { return null; }
   })));
   return results
-    .filter((r): r is ParsedStateFile => r !== null)
-    .sort((a, b) => a.filePath.localeCompare(b.filePath));
+    .filter((r: ParsedStateFile | null): r is ParsedStateFile => r !== null)
+    .sort((a: ParsedStateFile, b: ParsedStateFile) => a.filePath.localeCompare(b.filePath));
 }
 
 /**
