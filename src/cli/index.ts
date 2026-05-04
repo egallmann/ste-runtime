@@ -586,4 +586,79 @@ program
     console.log('');
   });
 
+// ─── ste init ───────────────────────────────────────────────
+program
+  .command('init')
+  .description('Scaffold a workspace.yaml with discovered repos and generic defaults')
+  .option('--output <file>', 'Output file path', 'workspace.yaml')
+  .option('--output-dir <dir>', 'Workspace output directory', '.ste-workspace/')
+  .option('--dry-run', 'Print to stdout without writing file', false)
+  .action(async (options) => {
+    const cwd = process.cwd();
+    const fs = await import('node:fs/promises');
+    const fss = await import('node:fs');
+
+    const langHints: Record<string, string> = {
+      'package.json': 'node',
+      'tsconfig.json': 'node',
+      'setup.py': 'python',
+      'pyproject.toml': 'python',
+      'requirements.txt': 'python',
+    };
+
+    const entries = await fs.readdir(cwd, { withFileTypes: true });
+    const repos: Array<{ name: string; path: string; kind: string; lang: string }> = [];
+
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      if (ent.name.startsWith('.') || ent.name === 'node_modules') continue;
+      const dirPath = path.join(cwd, ent.name);
+      const children = await fs.readdir(dirPath).catch(() => [] as string[]);
+
+      let lang = 'unknown';
+      for (const [marker, detected] of Object.entries(langHints)) {
+        if (children.includes(marker)) { lang = detected; break; }
+      }
+      if (lang === 'unknown') {
+        if (children.some(c => c.endsWith('.csproj') || c.endsWith('.sln'))) lang = 'dotnet';
+        if (children.includes('sam') || children.includes('cfn_templates')) {
+          if (lang === 'unknown') lang = 'python';
+        }
+      }
+
+      const hasCfn = children.includes('sam') || children.includes('cfn_templates');
+      const kind = hasCfn ? 'service' : 'library';
+      repos.push({ name: ent.name, path: `./${ent.name}`, kind, lang });
+    }
+
+    if (repos.length === 0) {
+      console.log('[ste init] No repository directories found in current directory.');
+      return;
+    }
+
+    const yamlLines = [
+      `schema_version: "1.0"`,
+      `output_dir: ${options.outputDir}`,
+      `repos:`,
+    ];
+    for (const r of repos) {
+      const pad = Math.max(1, 30 - r.name.length);
+      yamlLines.push(`  - { name: ${r.name},${' '.repeat(pad)}path: ${r.path},${' '.repeat(Math.max(1, 30 - r.path.length))}kind: ${r.kind},${' '.repeat(Math.max(1, 14 - r.kind.length))}lang: ${r.lang} }`);
+    }
+    const content = yamlLines.join('\n') + '\n';
+
+    if (options.dryRun) {
+      console.log(content);
+    } else {
+      const outPath = path.resolve(cwd, options.output);
+      if (fss.existsSync(outPath)) {
+        console.log(`[ste init] ${options.output} already exists. Use --dry-run to preview or delete the file first.`);
+        return;
+      }
+      await fs.writeFile(outPath, content, 'utf-8');
+      console.log(`[ste init] Created ${options.output} with ${repos.length} repos.`);
+      console.log(`[ste init] Review the file, then run: ste recon --workspace`);
+    }
+  });
+
 program.parseAsync();

@@ -33,7 +33,7 @@ export async function detectMissingExtractors(
   
   const detectedLanguages: string[] = [];
   const missingExtractors: string[] = [];
-  const availableExtractors = ['python', 'typescript', 'javascript', 'cloudformation', 'json', 'angular', 'css'];
+  const availableExtractors = ['python', 'typescript', 'javascript', 'cloudformation', 'json', 'angular', 'css', 'csharp'];
   
   // Detect Python
   const pythonFiles = await globby(['**/*.py'], {

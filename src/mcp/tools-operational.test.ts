@@ -84,13 +84,13 @@ describe('MCP Tools - Operational', () => {
       expect(result.missingExtractors).toContain('rust');
     });
 
-    it('should detect C# files and flag as missing', async () => {
+    it('should detect C# files as available', async () => {
       await fs.writeFile(path.join(tempDir, 'Program.cs'), 'class Program {}', 'utf-8');
 
       const result = await detectMissingExtractors({ projectRoot: tempDir });
 
       expect(result.detectedLanguages).toContain('csharp');
-      expect(result.missingExtractors).toContain('csharp');
+      expect(result.missingExtractors).not.toContain('csharp');
     });
 
     it('should detect Ruby files and flag as missing', async () => {

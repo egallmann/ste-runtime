@@ -580,8 +580,18 @@ function extractResourceMetadata(
       meta.memorySize = props.MemorySize;
       meta.timeout = props.Timeout;
       meta.architectures = props.Architectures;
+      if (typeof props.Handler === 'string' && props.Handler.includes('/')) {
+        const lastSlash = props.Handler.lastIndexOf('/');
+        meta.codeUri = props.Handler.slice(0, lastSlash);
+      }
       if (props.Layers !== undefined && props.Layers !== null) {
         meta.layers = props.Layers;
+      }
+      if (props.Environment && typeof props.Environment === 'object') {
+        const env = props.Environment as Record<string, unknown>;
+        if (env.Variables && typeof env.Variables === 'object') {
+          meta.environment = sanitizePropertiesForStorage(env.Variables as Record<string, unknown>);
+        }
       }
       break;
 
@@ -708,7 +718,7 @@ function extractResourceMetadata(
       
     case 'AWS::StepFunctions::StateMachine':
       meta.stateMachineName = stringifyIntrinsic(props.StateMachineName);
-      meta.type = props.StateMachineType ?? 'STANDARD';
+      meta.stateMachineType = props.StateMachineType ?? 'STANDARD';
       if (props.DefinitionBody && typeof props.DefinitionBody === 'object') {
         meta.definitionBody = sanitizePropertiesForStorage(props.DefinitionBody as Record<string, unknown>);
       }
@@ -727,11 +737,16 @@ function extractResourceMetadata(
       } else if (props.DefinitionUri && typeof props.DefinitionUri === 'object') {
         meta.definitionUri = stringifyIntrinsic(props.DefinitionUri);
       }
+      if (props.DefinitionSubstitutions && typeof props.DefinitionSubstitutions === 'object') {
+        meta.definitionSubstitutions = sanitizePropertiesForStorage(
+          props.DefinitionSubstitutions as Record<string, unknown>,
+        );
+      }
       break;
 
     case 'AWS::Serverless::StateMachine':
       meta.stateMachineName = stringifyIntrinsic(props.Name);
-      meta.type = props.Type ?? 'STANDARD';
+      meta.stateMachineType = props.Type ?? 'STANDARD';
       // SAM uses Definition (inline map) rather than DefinitionBody
       if (props.Definition && typeof props.Definition === 'object') {
         meta.definitionBody = sanitizePropertiesForStorage(props.Definition as Record<string, unknown>);
@@ -740,6 +755,11 @@ function extractResourceMetadata(
         meta.definitionUri = props.DefinitionUri;
       } else if (props.DefinitionUri && typeof props.DefinitionUri === 'object') {
         meta.definitionUri = stringifyIntrinsic(props.DefinitionUri);
+      }
+      if (props.DefinitionSubstitutions && typeof props.DefinitionSubstitutions === 'object') {
+        meta.definitionSubstitutions = sanitizePropertiesForStorage(
+          props.DefinitionSubstitutions as Record<string, unknown>,
+        );
       }
       break;
   }

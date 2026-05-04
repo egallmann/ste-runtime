@@ -38,6 +38,8 @@ const LANGUAGE_PATTERNS: Record<SupportedLanguage, string[]> = {
     '**/*-routing.module.ts',
     '**/routes.ts',
   ],
+  // MP-4c: C#/.NET extraction
+  csharp: ['**/*.cs'],
   // E-ADR-006: CSS/SCSS extraction (standalone, cross-cutting)
   css: [
     '**/*.css',
@@ -85,6 +87,15 @@ const LANGUAGE_IGNORES: Record<SupportedLanguage, string[]> = {
     '**/*.spec.ts',
     '**/*.test.ts',
   ],
+  // MP-4c: C# ignores
+  csharp: [
+    '**/obj/**',
+    '**/bin/**',
+    '**/*.Designer.cs',
+    '**/*.g.cs',
+    '**/*.AssemblyInfo.cs',
+    '**/Migrations/**',
+  ],
   // E-ADR-006: CSS ignores
   css: [
     '**/node_modules/**',
@@ -114,6 +125,8 @@ function getLanguageForFile(filePath: string, _content?: string): SupportedLangu
       // Need to check if it's a CloudFormation template
       // This is determined by content inspection in the caller
       return null; // Will be handled specially for CFN
+    case '.cs':
+      return 'csharp';
     case '.css':
     case '.scss':
     case '.sass':
@@ -304,7 +317,7 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
             }
           }
           // ASL (Amazon States Language) state machine definitions
-          else if (ext === '.json' && file.endsWith('.asl.json')) {
+          else if (file.endsWith('.asl.json') || file.endsWith('.asl.yaml') || file.endsWith('.asl.yml')) {
             language = 'json';
           }
           // Check for JSON data files (E-ADR-005)

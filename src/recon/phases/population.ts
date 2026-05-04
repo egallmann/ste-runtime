@@ -23,6 +23,7 @@ import type { NormalizedAssertion } from './index.js';
 import { computeFileChecksum } from '../../watch/full-reconciliation.js';
 import { writeTracker } from '../../watch/write-tracker.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
+import { atomicWriteFile } from '../../utils/atomic-write.js';
 import { log } from '../../utils/logger.js';
 
 export interface PopulationResult {
@@ -206,7 +207,7 @@ export async function populateAiDoc(
       });
 
       const writeFileStart = performance.now();
-      await fs.writeFile(targetPath, yamlContent, 'utf-8');
+      await atomicWriteFile(targetPath, yamlContent);
       writeTime += performance.now() - writeFileStart;
       currentState.set(assertion._slice.id, assertion);
       
