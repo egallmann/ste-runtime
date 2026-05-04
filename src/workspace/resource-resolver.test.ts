@@ -201,4 +201,79 @@ describe('resource-resolver', () => {
       expect(result.topology).toBeNull();
     });
   });
+
+  describe('node identity namespacing', () => {
+    it('should prefix graph IDs with repo name when repoName is provided', async () => {
+      const stateFiles: ParsedStateFile[] = [
+        makeStateFile({
+          domain: 'infrastructure', type: 'resource',
+          logicalId: 'MyFunction', cfnType: 'AWS::Serverless::Function',
+          srcFile: 'template.yaml',
+          element: {
+            logicalId: 'MyFunction',
+            type: 'AWS::Serverless::Function',
+            functionName: 'my-function',
+          },
+        }),
+        makeStateFile({
+          domain: 'infrastructure', type: 'resource',
+          logicalId: 'MyTable', cfnType: 'AWS::DynamoDB::Table',
+          srcFile: 'template.yaml',
+          element: {
+            logicalId: 'MyTable',
+            type: 'AWS::DynamoDB::Table',
+            tableName: 'my-table',
+          },
+        }),
+        makeStateFile({
+          domain: 'infrastructure', type: 'resource',
+          logicalId: 'MyQueue', cfnType: 'AWS::SQS::Queue',
+          srcFile: 'template.yaml',
+          element: {
+            logicalId: 'MyQueue',
+            type: 'AWS::SQS::Queue',
+            queueName: 'my-queue',
+          },
+        }),
+        makeStateFile({
+          domain: 'infrastructure', type: 'resource',
+          logicalId: 'MySfn', cfnType: 'AWS::Serverless::StateMachine',
+          srcFile: 'template.yaml',
+          element: {
+            logicalId: 'MySfn',
+            type: 'AWS::Serverless::StateMachine',
+            stateMachineName: 'my-sfn',
+          },
+        }),
+      ];
+
+      const result = await buildResourceResolverFromState(
+        stateFiles, '/repo/.ste-runtime', undefined, undefined, 'my-repo',
+      );
+
+      expect(result.logicalIdToGraphId.get('MyFunction')).toBe('Lambda:my-repo:my-function');
+      expect(result.logicalIdToGraphId.get('MyTable')).toBe('Database:my-repo:my-table');
+      expect(result.logicalIdToGraphId.get('MyQueue')).toBe('Queue:my-repo:my-queue');
+      expect(result.logicalIdToGraphId.get('MySfn')).toBe('StateMachine:my-repo:my-sfn');
+    });
+
+    it('should produce un-prefixed IDs when repoName is omitted', async () => {
+      const stateFiles: ParsedStateFile[] = [
+        makeStateFile({
+          domain: 'infrastructure', type: 'resource',
+          logicalId: 'MyFunction', cfnType: 'AWS::Serverless::Function',
+          srcFile: 'template.yaml',
+          element: {
+            logicalId: 'MyFunction',
+            type: 'AWS::Serverless::Function',
+            functionName: 'my-function',
+          },
+        }),
+      ];
+
+      const result = await buildResourceResolverFromState(stateFiles, '/repo/.ste-runtime');
+
+      expect(result.logicalIdToGraphId.get('MyFunction')).toBe('Lambda:my-function');
+    });
+  });
 });

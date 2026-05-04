@@ -7,7 +7,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Node Identity Namespacing: all resource node IDs now include the owning
+  repo name as the first segment after the type
+  (`Type:repo:name[:qualifier]`). This eliminates identity collisions when
+  multiple repos declare resources with the same logical name. `Service`
+  and `ExternalSystem` IDs are exempt (already unique by design). The repo
+  segment is optional for backward compatibility when used outside a
+  workspace context.
+
 ### Added
+
+- ExternalSystem node support: workspace manifest schema extended with optional
+  `external_systems` registry; `wireExternalSystemEdges` in slice-emitter creates
+  ExternalSystem nodes and `invokes` edges from Lambda env-var matches to registered
+  external systems.
+- `csharp` added to `availableExtractors` in tools-operational so C# repos are no
+  longer flagged as missing extractors.
+
+### Fixed
+
+- StateMachine node extraction: `extractResourceMetadata` overwrote the CFN
+  resource type field with the SAM execution type property (e.g., `EXPRESS`),
+  preventing downstream matching on `AWS::Serverless::StateMachine`. Renamed
+  to `meta.stateMachineType` to preserve the original resource type.
+- ASL `DefinitionUri` resolution: external ASL files referenced via
+  `DefinitionUri` were resolved relative to the state directory instead of
+  the repo checkout. Added the repo path as the primary resolution candidate.
+- ASL DefinitionSubstitution variable extraction: `${VarName}` substitution
+  placeholders in ASL `Resource` fields are now recognized and mapped back to
+  Lambda logical IDs through `DefinitionSubstitutions`. Previously, only
+  literal ARNs and CFN intrinsics were extracted from ASL bodies.
+- `DefinitionSubstitutions` now captured as metadata for both
+  `AWS::StepFunctions::StateMachine` and `AWS::Serverless::StateMachine`.
+- Lambda code root resolution: `meta.codeUri` now populated for
+  `AWS::Lambda::Function` (derived from Handler path prefix);
+  `Environment.Variables` extracted for raw Lambda resources (previously
+  only SAM).
+- Path normalization: `collectLambdaCodePathPrefixes` and layer ContentUri
+  resolution now use `path.posix.normalize` to resolve `..` segments in
+  relative CodeUri paths.
+- Nested stack collision prevention: `lambdaCodeRoots` now merges (not
+  overwrites) entries when the same logical ID appears from multiple nested
+  stacks.
+- Shared dependency matching: CodeUri parent directory added as additional
+  code root, allowing SDK usage in sibling shared directories to match Lambda
+  functions.
+- ASL YAML discovery: `.asl.yaml`/`.asl.yml` files now discovered and
+  classified alongside `.asl.json`.
+- YAML ASL parsing: `DefinitionUri` handler accepts `.yaml`/`.yml` files and
+  parses them with js-yaml before extracting Lambda references.
+- `Fn::Sub` intrinsic unwrap in `extractLambdaArns`: string-form `${VarName}`
+  placeholders and map-form `[template, {Var: !GetAtt Fn.Arn}]` now resolved
+  to Lambda references in ASL definitions.
+
+### Changed
 
 - Workspace discovery for RECON CLI: `recon --workspace` and `--workspace=auto` resolve the manifest
   directory via `STE_WORKSPACE_ROOT` or by walking upward from cwd for `workspace.yaml` /
@@ -33,6 +88,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM `Events` trigger extraction: `extractTriggerRelationships` now parses
   `AWS::Serverless::Function` `Events` property for SQS, SNS, DynamoDB,
   Kinesis, S3, API, HttpApi, Schedule, and EventBridgeRule event sources.
+- C#/.NET extractor (MP-4c): `csharp` added to `SupportedLanguage`, `.cs` file
+  discovery with `obj/bin` ignore patterns, regex-based shallow extraction of
+  classes (including ASP.NET controllers with `[Route]` attributes), HTTP action
+  routes (`[HttpGet]`, `[HttpPost]`, etc.), dependency injection registrations
+  (`services.AddScoped<T>`, etc.), and namespace detection. Wired into
+  extraction routing alongside existing language extractors.
+- Atomic file write utility (`utils/atomic-write.ts`, MP-4e): write-to-temp +
+  rename pattern for concurrency-safe file writes. Applied to RECON population
+  phase (`.ste-self/state` slices) and workspace slice emitter to prevent
+  corruption when concurrent workspaces share the same ste-runtime installation.
 - ASL (Amazon States Language) extraction pipeline: `.asl.json` files are
   discovered, parsed, and produce `state_machine_definition` and
   `asl_lambda_ref` assertions with normalization support.
