@@ -13,8 +13,10 @@ import { globby } from 'globby';
 
 import { createRequire } from 'node:module';
 import { ioLimiter } from '../utils/concurrency.js';
+import { atomicWriteFile } from '../utils/atomic-write.js';
 import { buildResourceResolverFromState, type ResourceResolverResult } from './resource-resolver.js';
 import { buildStackTopology } from './cfn-stack-resolver.js';
+import type { ExternalSystemEntry } from './manifest.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../../package.json') as { name: string; version: string };
@@ -91,7 +93,7 @@ function pickCfnDisplayName(
   return null;
 }
 
-function resourceGraphId(cfnType: string, el: Record<string, unknown>): string | null {
+function resourceGraphId(cfnType: string, el: Record<string, unknown>, repoName?: string): string | null {
   const graphType = CFN_TO_GRAPH[cfnType];
   if (!graphType) {
     return null;
@@ -129,7 +131,8 @@ function resourceGraphId(cfnType: string, el: Record<string, unknown>): string |
   if (!norm) {
     return null;
   }
-  return `${graphType}:${norm}`;
+  const repoPrefix = repoName ? `${normalizeGraphToken(repoName)}:` : '';
+  return `${graphType}:${repoPrefix}${norm}`;
 }
 
 function endpointGraphId(repoName: string, el: Record<string, unknown>): string | null {
@@ -146,22 +149,23 @@ function endpointGraphId(repoName: string, el: Record<string, unknown>): string 
 }
 
 function schemaGraphId(repoName: string, el: Record<string, unknown>): string | null {
+  const repo = normalizeGraphToken(repoName);
   const schemaId = el.schemaId;
   if (typeof schemaId === 'string' && schemaId.trim().length > 0 && !isIntrinsicName(schemaId)) {
-    return `Schema:${normalizeGraphToken(schemaId)}`;
+    return `Schema:${repo}:${normalizeGraphToken(schemaId)}`;
   }
   const entity = el.entity;
   if (typeof entity === 'string' && entity.trim().length > 0) {
-    return `Schema:${normalizeGraphToken(entity)}`;
+    return `Schema:${repo}:${normalizeGraphToken(entity)}`;
   }
   const name = el.name;
   if (typeof name === 'string' && name.trim().length > 0) {
-    return `Schema:${normalizeGraphToken(repoName)}:${normalizeGraphToken(name)}`;
+    return `Schema:${repo}:${normalizeGraphToken(name)}`;
   }
   return null;
 }
 
-function lambdaIdFromTrigger(el: Record<string, unknown>): string | null {
+function lambdaIdFromTrigger(el: Record<string, unknown>, repoName?: string): string | null {
   // NS-5: Prefer targetRef (clean logical ID) over targetFunction
   // which may contain intrinsics like !GetAtt
   const fn =
@@ -171,21 +175,23 @@ function lambdaIdFromTrigger(el: Record<string, unknown>): string | null {
   if (!fn) {
     return null;
   }
-  return `Lambda:${normalizeGraphToken(fn)}`;
+  const repoPrefix = repoName ? `${normalizeGraphToken(repoName)}:` : '';
+  return `Lambda:${repoPrefix}${normalizeGraphToken(fn)}`;
 }
 
-function queueOrDbIdFromTrigger(el: Record<string, unknown>): string | null {
+function queueOrDbIdFromTrigger(el: Record<string, unknown>, repoName?: string): string | null {
   const srcRef = typeof el.sourceRef === 'string' ? el.sourceRef : '';
   const srcArn = typeof el.sourceArn === 'string' ? el.sourceArn : '';
   const st = String(el.sourceType ?? '');
   if (!srcRef || isIntrinsicName(srcRef)) {
     return null;
   }
+  const repoPrefix = repoName ? `${normalizeGraphToken(repoName)}:` : '';
   if (st.toLowerCase().includes('sqs') || srcArn.toLowerCase().includes('sqs')) {
-    return `Queue:${normalizeGraphToken(srcRef)}`;
+    return `Queue:${repoPrefix}${normalizeGraphToken(srcRef)}`;
   }
   if (st.toLowerCase().includes('dynamo') || srcArn.toLowerCase().includes('dynamodb')) {
-    return `Database:${normalizeGraphToken(srcRef)}`;
+    return `Database:${repoPrefix}${normalizeGraphToken(srcRef)}`;
   }
   return null;
 }
@@ -470,6 +476,7 @@ function wireConsumesEdgesFromTriggers(
   nodes: Map<string, WorkspaceEntity>,
   edges: WorkspaceRelationship[],
   diagnostics: SliceDiagnostic[],
+  repoName?: string,
 ): void {
   for (const sf of stateFiles) {
     const domain = String(sf.slice.domain ?? '');
@@ -480,7 +487,7 @@ function wireConsumesEdgesFromTriggers(
     const srcFile = String(provenance?.file ?? sf.relativePath);
     const line = provenance?.line !== undefined ? String(provenance.line) : '0';
     const triggerType = String(element.triggerType ?? '');
-    const lambdaId = lambdaIdFromTrigger(element);
+    const lambdaId = lambdaIdFromTrigger(element, repoName);
 
     if (!lambdaId) continue;
 
@@ -503,7 +510,7 @@ function wireConsumesEdgesFromTriggers(
         }
       }
       if (!targetId) {
-        const qid = queueOrDbIdFromTrigger(element);
+        const qid = queueOrDbIdFromTrigger(element, repoName);
         if (qid && nodes.has(qid)) {
           targetId = qid;
         }
@@ -592,6 +599,72 @@ function wireInvokesEdges(
   }
 }
 
+function wireExternalSystemEdges(
+  externalSystems: ExternalSystemEntry[],
+  resolver: ResourceResolverResult,
+  nodes: Map<string, WorkspaceEntity>,
+  edges: WorkspaceRelationship[],
+  diagnostics: SliceDiagnostic[],
+  repoName: string,
+): void {
+  if (externalSystems.length === 0) return;
+
+  for (const ext of externalSystems) {
+    const extId = `ExternalSystem:${normalizeGraphToken(ext.key)}`;
+    if (!nodes.has(extId)) {
+      nodes.set(extId, {
+        id: extId,
+        type: 'ExternalSystem',
+        name: ext.name,
+        provenance: { source_path: 'workspace.yaml', source_ref: `external_systems.${ext.key}`, repo: repoName },
+        attributes: { kind: ext.kind, key: ext.key },
+      });
+    }
+  }
+
+  const lambdaCfnTypes = new Set(['AWS::Lambda::Function', 'AWS::Serverless::Function']);
+  for (const [logicalId, cfnType] of resolver.logicalIdToCfnType) {
+    if (!lambdaCfnTypes.has(cfnType)) continue;
+    const lambdaGid = resolver.logicalIdToGraphId.get(logicalId);
+    if (!lambdaGid || !nodes.has(lambdaGid)) continue;
+
+    for (const envEntry of resolver.lambdaEnvVars) {
+      if (envEntry.lambdaLogicalId !== logicalId) continue;
+      const varNameLower = envEntry.varName.toLowerCase();
+      const refLower = (envEntry.refTarget ?? '').toLowerCase();
+
+      for (const ext of externalSystems) {
+        const keyLower = ext.key.toLowerCase();
+        const extId = `ExternalSystem:${normalizeGraphToken(ext.key)}`;
+        const keyInVar = varNameLower.includes(keyLower) || refLower.includes(keyLower);
+        const urlMatch = ext.url_patterns?.some(p => refLower.includes(p.toLowerCase()));
+        if (keyInVar || urlMatch) {
+          const exists = edges.some(e => e.from === lambdaGid && e.to === extId && e.verb === 'invokes');
+          if (!exists) {
+            edges.push({
+              from: lambdaGid, to: extId, verb: 'invokes', confidence: 'high',
+              provenance: { source_path: envEntry.file, source_ref: `env:${envEntry.varName}→${ext.key}` },
+            });
+          }
+          } else {
+          const lambdaName = (nodes.get(lambdaGid)?.name ?? '').toLowerCase();
+          if (lambdaName.includes(keyLower)) {
+            const exists = edges.some(e => e.from === lambdaGid && e.to === extId && e.verb === 'invokes');
+            if (!exists) {
+              diagnostics.push({
+                level: 'warn',
+                code: 'ambiguous-external-system-match',
+                message: `Lambda ${lambdaGid} name contains '${ext.key}' but no env var match; edge not emitted`,
+                source_path: envEntry.file,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 export interface ParsedStateFile {
   filePath: string;
   relativePath: string;
@@ -634,6 +707,7 @@ export async function emitWorkspaceSlice(
   stateDir: string,
   outputPath: string,
   _repoPath: string,
+  externalSystems?: ExternalSystemEntry[],
 ): Promise<SliceEmitResult> {
   const stateFiles = await loadRepoState(stateDir);
   const nodes = new Map<string, WorkspaceEntity>();
@@ -657,7 +731,7 @@ export async function emitWorkspaceSlice(
 
     if (domain === 'infrastructure' && sliceType === 'resource') {
       const cfnType = String(element.type ?? '');
-      const gid = resourceGraphId(cfnType, element);
+      const gid = resourceGraphId(cfnType, element, repoName);
       if (gid) {
         nodes.set(gid, {
           id: gid,
@@ -710,7 +784,7 @@ export async function emitWorkspaceSlice(
     }
 
     if (domain === 'infrastructure' && sliceType === 'trigger') {
-      const lambdaId = lambdaIdFromTrigger(element);
+      const lambdaId = lambdaIdFromTrigger(element, repoName);
       // SQS/SNS/Dynamo event_source_mapping consumes edges are emitted in
       // wireConsumesEdgesFromTriggers (after resolver + param bridge) so
       // targets resolve to the same graph IDs as infrastructure nodes.
@@ -719,7 +793,7 @@ export async function emitWorkspaceSlice(
       if (samEventType === 'S3' || samEventType === 's3_event') {
         const srcRef = element.sourceRef as string | undefined;
         if (lambdaId && srcRef && !isIntrinsicName(srcRef)) {
-          const bucketGid = `Bucket:${normalizeGraphToken(srcRef)}`;
+          const bucketGid = `Bucket:${normalizeGraphToken(repoName)}:${normalizeGraphToken(srcRef)}`;
           if (nodes.has(bucketGid)) {
             edges.push({
               from: lambdaId, to: bucketGid, verb: 'consumes', confidence: 'high',
@@ -733,13 +807,16 @@ export async function emitWorkspaceSlice(
 
   // NS-4: Compute topology once per repo (R7), pass to resolver
   const { topology } = await buildStackTopology(stateFiles, stateDir, _repoPath || undefined);
-  const resolver = await buildResourceResolverFromState(stateFiles, stateDir, topology, _repoPath || undefined);
+  const resolver = await buildResourceResolverFromState(stateFiles, stateDir, topology, _repoPath || undefined, repoName);
 
   wireReadWriteEdges(resolver, nodes, edges, diagnostics);
   wirePublishEdges(resolver, nodes, edges, diagnostics);
   wireDeploysToEdges(resolver, nodes, edges, diagnostics);
   wireInvokesEdges(resolver, nodes, edges, diagnostics);
-  wireConsumesEdgesFromTriggers(resolver, stateFiles, nodes, edges, diagnostics);
+  wireConsumesEdgesFromTriggers(resolver, stateFiles, nodes, edges, diagnostics, repoName);
+  if (externalSystems && externalSystems.length > 0) {
+    wireExternalSystemEdges(externalSystems, resolver, nodes, edges, diagnostics, repoName);
+  }
 
   const body = {
     schema_version: '1.0',
@@ -752,8 +829,7 @@ export async function emitWorkspaceSlice(
     diagnostics,
   };
   const yamlOut = yaml.dump(body, { lineWidth: 120, noRefs: true });
-  await fs.mkdir(path.dirname(outputPath), { recursive: true });
-  await fs.writeFile(outputPath, yamlOut, 'utf-8');
+  await atomicWriteFile(outputPath, yamlOut);
   const contentHash = `sha256:${crypto.createHash('sha256').update(yamlOut, 'utf-8').digest('hex')}`;
   return {
     nodeCount: nodes.size,

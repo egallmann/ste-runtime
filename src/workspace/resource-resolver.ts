@@ -229,7 +229,13 @@ function collectLambdaCodePathPrefixes(
   const codeUriRaw = el.codeUri ?? el.CodeUri;
   if (typeof codeUriRaw === 'string' && !isIntrinsicEl(codeUriRaw)) {
     const rel = stripLeadingRelPath(codeUriRaw);
-    roots.push(`${tplDir}/${rel}`.replace(/\/+/g, '/'));
+    const joined = `${tplDir}/${rel}`.replace(/\/+/g, '/');
+    const fullRoot = path.posix.normalize(joined);
+    roots.push(fullRoot);
+    const parentOfCodeUri = posixDirOf(fullRoot);
+    if (parentOfCodeUri !== tplDir && parentOfCodeUri !== '.') {
+      roots.push(parentOfCodeUri);
+    }
   } else {
     roots.push(tplDir);
   }
@@ -244,6 +250,34 @@ function collectLambdaCodePathPrefixes(
 
 const LAMBDA_ARN_RE = /arn:aws:lambda:[^:]*:[^:]*:function:([a-zA-Z0-9_-]+)/;
 const STATES_LAMBDA_RE = /arn:aws:states:[^:]*:[^:]*:lambda:invoke/;
+const FN_SUB_VAR_RE = /\$\{([A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z]+)?)\}/g;
+
+function extractFnSubRefs(subValue: unknown, results: string[]): void {
+  if (typeof subValue === 'string') {
+    let m: RegExpExecArray | null;
+    while ((m = FN_SUB_VAR_RE.exec(subValue)) !== null) {
+      const ref = m[1];
+      const dotIdx = ref.indexOf('.');
+      results.push(dotIdx >= 0 ? ref.slice(0, dotIdx) : ref);
+    }
+    const arnMatch = subValue.match(LAMBDA_ARN_RE);
+    if (arnMatch) results.push(arnMatch[1]);
+  } else if (Array.isArray(subValue) && subValue.length === 2) {
+    if (typeof subValue[0] === 'string') {
+      extractFnSubRefs(subValue[0], results);
+    }
+    if (subValue[1] && typeof subValue[1] === 'object') {
+      for (const val of Object.values(subValue[1] as Record<string, unknown>)) {
+        if (typeof val === 'string') {
+          const arnMatch = val.match(LAMBDA_ARN_RE);
+          if (arnMatch) results.push(arnMatch[1]);
+        } else if (val && typeof val === 'object') {
+          extractLambdaArns(val, results);
+        }
+      }
+    }
+  }
+}
 
 function extractLambdaArns(body: unknown, results: string[]): void {
   if (!body || typeof body !== 'object') return;
@@ -257,6 +291,8 @@ function extractLambdaArns(body: unknown, results: string[]): void {
       results.push(val);
     } else if (key === 'Fn::GetAtt' && Array.isArray(val)) {
       results.push(String(val[0]));
+    } else if (key === 'Fn::Sub') {
+      extractFnSubRefs(val, results);
     } else if (typeof val === 'string') {
       const arnMatch = val.match(LAMBDA_ARN_RE);
       if (arnMatch) {
@@ -267,6 +303,15 @@ function extractLambdaArns(body: unknown, results: string[]): void {
         if (parent?.FunctionName && typeof parent.FunctionName === 'string') {
           const fnMatch = parent.FunctionName.match(LAMBDA_ARN_RE);
           if (fnMatch) results.push(fnMatch[1]);
+        }
+      }
+      if (key === 'Resource' && FN_SUB_VAR_RE.test(val)) {
+        FN_SUB_VAR_RE.lastIndex = 0;
+        let sm: RegExpExecArray | null;
+        while ((sm = FN_SUB_VAR_RE.exec(val)) !== null) {
+          const ref = sm[1];
+          const dotIdx = ref.indexOf('.');
+          results.push(dotIdx >= 0 ? ref.slice(0, dotIdx) : ref);
         }
       }
     } else {
@@ -290,6 +335,7 @@ export async function buildResourceResolverFromState(
   stateDir: string,
   topology?: StackTopology,
   repoPath?: string,
+  repoName?: string,
 ): Promise<ResourceResolverResult> {
   const envVarToResource = new Map<string, EnvVarRef>();
   const lambdaEnvVars: LambdaEnvVar[] = [];
@@ -298,7 +344,12 @@ export async function buildResourceResolverFromState(
   const logicalIdToGraphId = new Map<string, string>();
   const logicalIdToCfnType = new Map<string, string>();
   const layerContentRoots = new Map<string, string>();
-  const pendingAslReads: Array<{ logicalId: string; srcFile: string; defUri: string }> = [];
+  const pendingAslReads: Array<{
+    logicalId: string;
+    srcFile: string;
+    defUri: string;
+    substitutions?: Record<string, unknown>;
+  }> = [];
 
   for (const sf of stateFiles) {
     const { slice, element, provenance } = sf;
@@ -320,7 +371,7 @@ export async function buildResourceResolverFromState(
         const cu = el.contentUri ?? el.ContentUri;
         if (typeof cu === 'string' && !isIntrinsicEl(cu) && logicalId) {
           const rel = stripLeadingRelPath(cu);
-          const root = `${posixDirOf(srcFile)}/${rel}`.replace(/\/+/g, '/');
+          const root = path.posix.normalize(`${posixDirOf(srcFile)}/${rel}`.replace(/\/+/g, '/'));
           layerContentRoots.set(logicalId, root);
         }
       }
@@ -330,7 +381,8 @@ export async function buildResourceResolverFromState(
         const name = displayNameForGraphId(cfnType, el, logicalId);
         const norm = normalizeToken(name);
         if (norm) {
-          logicalIdToGraphId.set(logicalId, `${graphType}:${norm}`);
+          const repoPrefix = repoName ? `${normalizeToken(repoName)}:` : '';
+          logicalIdToGraphId.set(logicalId, `${graphType}:${repoPrefix}${norm}`);
         }
       }
 
@@ -360,8 +412,9 @@ export async function buildResourceResolverFromState(
         }
 
         const defUri = element.definitionUri as string | undefined;
-        if (typeof defUri === 'string' && defUri.endsWith('.json')) {
-          pendingAslReads.push({ logicalId, srcFile, defUri });
+        if (typeof defUri === 'string' && /\.(json|yaml|yml)$/i.test(defUri)) {
+          const defSubs = element.definitionSubstitutions as Record<string, unknown> | undefined;
+          pendingAslReads.push({ logicalId, srcFile, defUri, substitutions: defSubs });
         }
 
         const unique = [...new Set(refs)];
@@ -416,24 +469,50 @@ export async function buildResourceResolverFromState(
     const srcFile = String(sf.provenance?.file ?? sf.relativePath);
     const prefixes = collectLambdaCodePathPrefixes(sf.element as Record<string, unknown>, srcFile, layerContentRoots);
     if (prefixes.length > 0) {
-      lambdaCodeRoots.set(logicalId, prefixes);
+      const existing = lambdaCodeRoots.get(logicalId);
+      if (existing) {
+        const merged = new Set([...existing, ...prefixes]);
+        lambdaCodeRoots.set(logicalId, [...merged]);
+      } else {
+        lambdaCodeRoots.set(logicalId, prefixes);
+      }
     }
   }
 
   for (const pending of pendingAslReads) {
     const refs: string[] = [];
     const templateDir = path.dirname(pending.srcFile);
-    const candidates = [
+    const candidates: string[] = [];
+    if (repoPath) {
+      candidates.push(path.resolve(repoPath, templateDir, pending.defUri));
+    }
+    candidates.push(
       path.resolve(stateDir, '..', pending.defUri),
       path.resolve(stateDir, '..', templateDir, pending.defUri),
-    ];
+    );
+    const isYamlUri = /\.(yaml|yml)$/i.test(pending.defUri);
     for (const candidate of candidates) {
       try {
         const aslText = await fs.readFile(candidate, 'utf-8');
-        const aslDoc = JSON.parse(aslText);
-        extractLambdaArns(aslDoc, refs);
+        const aslDoc = isYamlUri
+          ? yaml.load(aslText) as unknown
+          : JSON.parse(aslText);
+        if (aslDoc && typeof aslDoc === 'object') {
+          extractLambdaArns(aslDoc, refs);
+        }
         break;
-      } catch { /* file not found or invalid JSON */ }
+      } catch { /* file not found or invalid content */ }
+    }
+    if (refs.length > 0 && pending.substitutions) {
+      const subMap = new Map<string, string>();
+      for (const [varName, varValue] of Object.entries(pending.substitutions)) {
+        const refTarget = extractRefTarget(varValue);
+        if (refTarget) subMap.set(varName, refTarget);
+      }
+      for (let i = 0; i < refs.length; i++) {
+        const mapped = subMap.get(refs[i]);
+        if (mapped) refs[i] = mapped;
+      }
     }
     const unique = [...new Set(refs)];
     if (unique.length > 0) {
