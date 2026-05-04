@@ -40,6 +40,9 @@ jobs:
     
     - name: Run tests
       run: npm test
+
+    - name: Prove architecture compiler (ADR sources only)
+      run: npm run test:integration
     
     - name: Verify RECON self-documentation
       run: |

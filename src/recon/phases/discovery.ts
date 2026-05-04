@@ -38,6 +38,8 @@ const LANGUAGE_PATTERNS: Record<SupportedLanguage, string[]> = {
     '**/*-routing.module.ts',
     '**/routes.ts',
   ],
+  // MP-4c: C#/.NET extraction
+  csharp: ['**/*.cs'],
   // E-ADR-006: CSS/SCSS extraction (standalone, cross-cutting)
   css: [
     '**/*.css',
@@ -85,6 +87,15 @@ const LANGUAGE_IGNORES: Record<SupportedLanguage, string[]> = {
     '**/*.spec.ts',
     '**/*.test.ts',
   ],
+  // MP-4c: C# ignores
+  csharp: [
+    '**/obj/**',
+    '**/bin/**',
+    '**/*.Designer.cs',
+    '**/*.g.cs',
+    '**/*.AssemblyInfo.cs',
+    '**/Migrations/**',
+  ],
   // E-ADR-006: CSS ignores
   css: [
     '**/node_modules/**',
@@ -114,6 +125,8 @@ function getLanguageForFile(filePath: string, _content?: string): SupportedLangu
       // Need to check if it's a CloudFormation template
       // This is determined by content inspection in the caller
       return null; // Will be handled specially for CFN
+    case '.cs':
+      return 'csharp';
     case '.css':
     case '.scss':
     case '.sass':
@@ -191,23 +204,21 @@ function isSemanticJsonFile(filePath: string): boolean {
 }
 
 /**
- * Check if a YAML/JSON file is a CloudFormation template
+ * Classify a YAML/JSON file as CloudFormation and return its content to avoid a second read during extraction.
  */
-async function isCloudFormationTemplate(filePath: string): Promise<boolean> {
+async function classifyCloudFormationTemplate(filePath: string): Promise<{ isCfn: boolean; content?: string }> {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
     
-    // Quick heuristics to identify CFN templates
-    // Check for AWSTemplateFormatVersion or Resources section
     if (content.includes('AWSTemplateFormatVersion') || 
         content.includes('AWS::') ||
         (content.includes('Resources:') && content.includes('Type:'))) {
-      return true;
+      return { isCfn: true, content };
     }
     
-    return false;
+    return { isCfn: false };
   } catch {
-    return false;
+    return { isCfn: false };
   }
 }
 
@@ -295,18 +306,26 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
         
         // Handle YAML/JSON files - determine if CFN template or JSON data
         const ext = path.extname(file).toLowerCase();
+        let cfnContent: string | undefined;
         if (ext === '.yaml' || ext === '.yml' || ext === '.json') {
           // Check for CloudFormation first
-          if (languages.includes('cloudformation') && await isCloudFormationTemplate(absolutePath)) {
-            language = 'cloudformation';
+          if (languages.includes('cloudformation')) {
+            const classification = await classifyCloudFormationTemplate(absolutePath);
+            if (classification.isCfn) {
+              language = 'cloudformation';
+              cfnContent = classification.content;
+            }
+          }
+          // ASL (Amazon States Language) state machine definitions
+          else if (file.endsWith('.asl.json') || file.endsWith('.asl.yaml') || file.endsWith('.asl.yml')) {
+            language = 'json';
           }
           // Check for JSON data files (E-ADR-005)
           else if (ext === '.json' && languages.includes('json')) {
-            // Check if this is a semantic JSON file (controls, schemas, parameters)
             if (isSemanticJsonFile(file)) {
               language = 'json';
             } else {
-              continue; // Not a semantic JSON file, skip
+              continue;
             }
           }
           else {
@@ -337,12 +356,10 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
           
           discoveredFiles.push({
             path: absolutePath,
-            // Normalize to POSIX paths for consistent IDs across platforms
             relativePath: toPosixPath(file),
             language,
-            // Without git diff, treat all as 'unchanged' initially
-            // Future: Add timestamp-based detection
             changeType: 'unchanged',
+            ...(cfnContent !== undefined && { cachedContent: cfnContent }),
           });
         } catch {
           // File not accessible, skip

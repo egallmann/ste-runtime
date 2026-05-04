@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile } from '../config/index.js';
 import { runRssTraversal } from '../rss/graph-traversal.js';
+import { runArchitectureEvidenceCommand } from './evidence-command.js';
+import { compileArchitecture } from '../architecture/compile-architecture.js';
 import { 
   initRssContext, 
   dependencies, 
@@ -48,6 +50,50 @@ async function resolveStatePath(options: { state?: string; config?: string }): P
   // Default: project's .ste/state
   return path.join(runtimeDir, '.ste/state');
 }
+
+const evidence = program
+  .command('evidence')
+  .description('Emit normalized runtime evidence as JSON');
+
+evidence
+  .command('architecture')
+  .description('Emit architecture bundle evidence as JSON only')
+  .requiredOption('--project-root <path>', 'Project root containing canonical ADR artifacts')
+  .action(async (options) => {
+    const exitCode = await runArchitectureEvidenceCommand(path.resolve(options.projectRoot));
+    if (exitCode !== 0) {
+      process.exit(exitCode);
+    }
+  });
+
+const architecture = program
+  .command('architecture')
+  .description('Architecture bundle tooling (public contracts owned by ste-spec)');
+
+architecture
+  .command('compile')
+  .description('Compile ADR YAML into registries, architecture index, manifest, and legacy entity registry')
+  .requiredOption('--project-root <path>', 'Project root containing adrs/ and PROJECT.yaml')
+  .option('--dry-run', 'Run pipeline without writing files', false)
+  .action(async (options: { projectRoot: string; dryRun: boolean }) => {
+    const result = await compileArchitecture({
+      scopeRoot: path.resolve(options.projectRoot),
+      dryRun: Boolean(options.dryRun),
+    });
+    if (!result.success) {
+      for (const err of result.errors) {
+        process.stderr.write(`${err}\n`);
+      }
+      process.exit(1);
+    }
+    if (result.written.length) {
+      for (const rel of result.written) {
+        process.stdout.write(`Wrote ${rel}\n`);
+      }
+    } else if (options.dryRun) {
+      process.stdout.write('Dry run OK (no files written).\n');
+    }
+  });
 
 program
   .command('recon')
@@ -95,6 +141,24 @@ program
     if (result.errors.length > 0) {
       console.log('\nErrors:');
       result.errors.forEach(e => console.log(`  - ${e}`));
+    }
+
+    // Self-pass: always keep ste-runtime's own graph fresh
+    const isSelfAnalysis = config.projectRoot === config.runtimeDir;
+    if (!isSelfAnalysis) {
+      console.log('\n--- Self-Pass (ste-runtime) ---');
+      const selfConfig = await loadConfig(runtimeDir, { selfMode: true });
+      const selfResult = await executeRecon({
+        projectRoot: selfConfig.projectRoot,
+        sourceRoot: selfConfig.sourceDirs[0] ?? 'src',
+        stateRoot: selfConfig.stateDir,
+        mode: options.mode as 'full' | 'incremental',
+        config: selfConfig,
+      });
+      console.log(`Self-pass: Created=${selfResult.aiDocCreated} Modified=${selfResult.aiDocModified} Unchanged=${selfResult.aiDocUnchanged}`);
+      if (!selfResult.success) {
+        console.log(`Self-pass errors: ${selfResult.errors.join('; ')}`);
+      }
     }
   });
 
@@ -520,6 +584,81 @@ program
     }
     
     console.log('');
+  });
+
+// ─── ste init ───────────────────────────────────────────────
+program
+  .command('init')
+  .description('Scaffold a workspace.yaml with discovered repos and generic defaults')
+  .option('--output <file>', 'Output file path', 'workspace.yaml')
+  .option('--output-dir <dir>', 'Workspace output directory', '.ste-workspace/')
+  .option('--dry-run', 'Print to stdout without writing file', false)
+  .action(async (options) => {
+    const cwd = process.cwd();
+    const fs = await import('node:fs/promises');
+    const fss = await import('node:fs');
+
+    const langHints: Record<string, string> = {
+      'package.json': 'node',
+      'tsconfig.json': 'node',
+      'setup.py': 'python',
+      'pyproject.toml': 'python',
+      'requirements.txt': 'python',
+    };
+
+    const entries = await fs.readdir(cwd, { withFileTypes: true });
+    const repos: Array<{ name: string; path: string; kind: string; lang: string }> = [];
+
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      if (ent.name.startsWith('.') || ent.name === 'node_modules') continue;
+      const dirPath = path.join(cwd, ent.name);
+      const children = await fs.readdir(dirPath).catch(() => [] as string[]);
+
+      let lang = 'unknown';
+      for (const [marker, detected] of Object.entries(langHints)) {
+        if (children.includes(marker)) { lang = detected; break; }
+      }
+      if (lang === 'unknown') {
+        if (children.some(c => c.endsWith('.csproj') || c.endsWith('.sln'))) lang = 'dotnet';
+        if (children.includes('sam') || children.includes('cfn_templates')) {
+          if (lang === 'unknown') lang = 'python';
+        }
+      }
+
+      const hasCfn = children.includes('sam') || children.includes('cfn_templates');
+      const kind = hasCfn ? 'service' : 'library';
+      repos.push({ name: ent.name, path: `./${ent.name}`, kind, lang });
+    }
+
+    if (repos.length === 0) {
+      console.log('[ste init] No repository directories found in current directory.');
+      return;
+    }
+
+    const yamlLines = [
+      `schema_version: "1.0"`,
+      `output_dir: ${options.outputDir}`,
+      `repos:`,
+    ];
+    for (const r of repos) {
+      const pad = Math.max(1, 30 - r.name.length);
+      yamlLines.push(`  - { name: ${r.name},${' '.repeat(pad)}path: ${r.path},${' '.repeat(Math.max(1, 30 - r.path.length))}kind: ${r.kind},${' '.repeat(Math.max(1, 14 - r.kind.length))}lang: ${r.lang} }`);
+    }
+    const content = yamlLines.join('\n') + '\n';
+
+    if (options.dryRun) {
+      console.log(content);
+    } else {
+      const outPath = path.resolve(cwd, options.output);
+      if (fss.existsSync(outPath)) {
+        console.log(`[ste init] ${options.output} already exists. Use --dry-run to preview or delete the file first.`);
+        return;
+      }
+      await fs.writeFile(outPath, content, 'utf-8');
+      console.log(`[ste init] Created ${options.output} with ${repos.length} repos.`);
+      console.log(`[ste init] Review the file, then run: ste recon --workspace`);
+    }
   });
 
 program.parseAsync();

@@ -1,0 +1,165 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0008
+title: Service Wiring Post-Processing
+status: proposed
+created_date: '2026-04-24'
+authors:
+- ste-runtime
+domains:
+- workspace
+- graph
+- extraction
+implements_system:
+- ADR-PS-0002
+implements_logical:
+- ADR-L-0015
+- ADR-L-0016
+technologies:
+- typescript
+- node.js
+- yaml
+context: |
+  RECON produces rich per-repository state (call graphs, SDK usage, env
+  vars, CFN resources, triggers) but the workspace slice emitter collapsed
+  this to a skeleton with only has_contract edges. Cross-domain joins
+  (SDK usage to CFN resources via env var bridging) can produce reads,
+  writes, publishes, consumes, invokes, and deploys_to edges without any
+  new AST parsing. This wiring must be post-processing on existing RECON
+  state, never modifying extraction output.
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing implementation language.
+component_specifications:
+- id: COMP-0008
+  name: Resource Resolver
+  type: library
+  responsibilities: |
+    - Build env-var-to-CFN-resource join maps from per-repo RECON state
+    - Build SDK-service-to-graph-type maps (dynamodb->Database, s3->Bucket, etc.)
+    - Build Lambda-handler-to-function maps from CFN handler metadata
+    - Resolve cross-stack parameter chains through nested stack topology (ParamResolutionTable)
+    - Follow master-to-child GetAtt ChildStack.Outputs.X references through to originating resource logical IDs
+    - All maps keyed by structural type, never by repository name
+  generation_context:
+    purpose: Provide cross-domain join maps for edge wiring.
+    key_responsibilities:
+    - Env-var-to-CFN-resource join map construction
+    - SDK-service-to-graph-type mapping
+    - Lambda-handler-to-function mapping
+    - Cross-stack parameter resolution via ParamResolutionTable
+    constraints:
+    - All maps keyed by structural type, never by repository name
+    success_criteria:
+    - Join maps correctly resolve env var references to CFN resources, including through nested stack parameter chains
+  interfaces:
+  - id: IFACE-0008
+    type: library_api
+    specification: |
+      Public surfaces:
+      - src/workspace/resource-resolver.ts
+      Dependencies:
+      - src/workspace/cfn-stack-resolver.ts
+  implementation_identifiers:
+    module_path: src/workspace/resource-resolver.ts
+    test_path: src/workspace/resource-resolver.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Skip unresolvable joins and emit diagnostics.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: resource_resolver_joins_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - Resource resolution with synthetic repo state
+        - Env-var bridging with CFN logical IDs
+- id: COMP-0009
+  name: Slice Emitter Edge Wiring
+  type: library
+  responsibilities: |
+    - Produce reads/writes edges by joining SDK usage with infrastructure resources via env-var bridge
+    - Produce publishes edges for SQS/SNS SDK usage
+    - Improve consumes edge resolution via CFN logical ID lookup
+    - Produce deploys_to edges from StepFunctions DefinitionBody
+    - Produce invokes edges from Lambda-to-Lambda env var and SDK patterns
+    - Emit diagnostics (not edges) when join resolution is ambiguous
+    - Never modify RECON extraction output
+    - Use cross-stack parameter resolution (ParamResolutionTable) for trigger and StepFunctions resolution when available
+  generation_context:
+    purpose: Enrich workspace graph slices with service wiring edges.
+    key_responsibilities:
+    - Multi-verb edge production from existing RECON state
+    - Diagnostic emission for ambiguous joins
+    constraints:
+    - Wiring never modifies extraction output
+    - Only high-confidence edges are emitted
+    success_criteria:
+    - At least 4 distinct edge verbs produced across workspace repos
+  interfaces:
+  - id: IFACE-0009
+    type: library_api
+    specification: |
+      Public surfaces:
+      - src/workspace/slice-emitter.ts
+  implementation_identifiers:
+    module_path: src/workspace/slice-emitter.ts
+    test_path: src/workspace/slice-emitter.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Ambiguous joins produce diagnostics, not edges. Errors in individual edge production do not block other edges.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: slice_edges_produced_total
+        type: counter
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - Edge wiring with synthetic repo state
+        - Diagnostic emission for ambiguous joins
+architectural_boundaries:
+- id: BOUND-0003
+  description: |
+    Wiring reads per-repo RECON state (**/*.yaml) as input and produces
+    edges as output. It never modifies extraction output. If a join is
+    ambiguous, the emitter produces a diagnostic entry, not an edge.
+  rationale: >
+    Separation between extraction and wiring preserves pipeline stability.
+    Extraction phases can evolve independently. Wiring is a pure
+    post-processing join that cannot introduce extraction regressions.
+constraints:
+- id: CONST-0013
+  type: technical
+  description: >
+    Only edges with confidence 'high' are emitted. Ambiguous resolutions
+    produce diagnostics, not edges.
+  rationale: >
+    The graph must not lie. False edges degrade trust in the entire graph.
+- id: CONST-0014
+  type: technical
+  description: >
+    All wiring logic uses structural matching only (AWS resource types,
+    SDK service names, CFN ref/getatt patterns). Zero repo-name awareness.
+    Per INV-0015 (ADR-L-0015).
+  rationale: >
+    Nominal matching by repo name would couple wiring to a specific
+    workspace and violate the workspace agnosticism invariant.
+implementation_decisions: []
+gaps: []
+consequences:
+  positive:
+  - Rich edges (reads, writes, publishes, consumes, invokes, deploys_to) from existing RECON state without new parsing.
+  - Extraction pipeline remains stable; wiring is additive post-processing.
+  - Ambiguous joins are surfaced as diagnostics for human review.
+  negative:
+  - Edge count depends on quality of RECON state (env vars, SDK usage coverage).
+  - Repos without CFN or SDK usage produce no new edges beyond has_contract.

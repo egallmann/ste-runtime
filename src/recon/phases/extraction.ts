@@ -23,7 +23,13 @@ import { extractFromCloudFormation } from './extraction-cloudformation.js';
 import { extractFromJson } from '../../extractors/json/index.js';
 import { extractFromAngular } from '../../extractors/angular/index.js';
 import { extract as extractFromCss } from '../../extractors/css/index.js';
+import { extractFromCsharp } from '../../extractors/csharp/index.js';
 import { log, warn } from '../../utils/logger.js';
+import {
+  type LimitFunction,
+  MAX_PYTHON_WORKERS, MAX_FILES_PER_CHUNK, MAX_STDIN_BYTES,
+  cpuLimiter, ioLimiter, BoundedCache,
+} from '../../utils/concurrency.js';
 
 // Get runtime directory from this file's location
 const __filename = fileURLToPath(import.meta.url);
@@ -70,334 +76,381 @@ function getPythonBinary(): string {
  * Extract semantic assertions from discovered files.
  * Dispatches to language-specific extractors.
  */
+async function extractLanguageGroup(
+  label: string,
+  files: DiscoveredFile[],
+  extractor: (file: DiscoveredFile) => Promise<RawAssertion[]>,
+  limiter: LimitFunction,
+): Promise<RawAssertion[]> {
+  if (files.length === 0) return [];
+  log(`[RECON Extraction] Processing ${files.length} ${label} files...`);
+  const results = await Promise.all(files.map(file =>
+    limiter(async () => {
+      try {
+        return await extractor(file);
+      } catch (error) {
+        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
+        return [];
+      }
+    }),
+  ));
+  return results.flat();
+}
+
+async function extractJsonOrAsl(file: DiscoveredFile): Promise<RawAssertion[]> {
+  if (file.relativePath.endsWith('.asl.json')) {
+    return extractFromAsl(file);
+  }
+  return extractFromJson(file);
+}
+
 export async function extractAssertions(files: DiscoveredFile[]): Promise<RawAssertion[]> {
-  const assertions: RawAssertion[] = [];
-  
-  // Group files by language for batch processing
   const byLanguage = new Map<SupportedLanguage, DiscoveredFile[]>();
   for (const file of files) {
     const group = byLanguage.get(file.language) ?? [];
     group.push(file);
     byLanguage.set(file.language, group);
   }
-  
-  // Process TypeScript files
-  const tsFiles = byLanguage.get('typescript') ?? [];
-  if (tsFiles.length > 0) {
-    log(`[RECON Extraction] Processing ${tsFiles.length} TypeScript files...`);
-    for (const file of tsFiles) {
-      try {
-        const fileAssertions = await extractFromTypeScript(file);
-        assertions.push(...fileAssertions);
-      } catch (error) {
-        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
-      }
-    }
-  }
-  
-  // Process Python files
-  const pyFiles = byLanguage.get('python') ?? [];
-  if (pyFiles.length > 0) {
-    log(`[RECON Extraction] Processing ${pyFiles.length} Python files...`);
-    for (const file of pyFiles) {
-      try {
-        const fileAssertions = await extractFromPython(file);
-        assertions.push(...fileAssertions);
-      } catch (error) {
-        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
-      }
-    }
-  }
-  
-  // Process CloudFormation templates
-  const cfnFiles = byLanguage.get('cloudformation') ?? [];
-  if (cfnFiles.length > 0) {
-    log(`[RECON Extraction] Processing ${cfnFiles.length} CloudFormation templates...`);
-    for (const file of cfnFiles) {
-      try {
-        const fileAssertions = await extractFromCloudFormation(file);
-        assertions.push(...fileAssertions);
-      } catch (error) {
-        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
-      }
-    }
-  }
-  
-  // Process JSON data files (E-ADR-005)
-  const jsonFiles = byLanguage.get('json') ?? [];
-  if (jsonFiles.length > 0) {
-    log(`[RECON Extraction] Processing ${jsonFiles.length} JSON data files...`);
-    for (const file of jsonFiles) {
-      try {
-        const fileAssertions = await extractFromJson(file);
-        assertions.push(...fileAssertions);
-      } catch (error) {
-        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
-      }
-    }
-  }
-  
-  // Process Angular files (E-ADR-006)
-  const angularFiles = byLanguage.get('angular') ?? [];
-  if (angularFiles.length > 0) {
-    log(`[RECON Extraction] Processing ${angularFiles.length} Angular files...`);
-    for (const file of angularFiles) {
-      try {
-        const fileAssertions = await extractFromAngular(file);
-        assertions.push(...fileAssertions);
-      } catch (error) {
-        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
-      }
-    }
-  }
-  
-  // Process CSS/SCSS files (E-ADR-006)
-  const cssFiles = byLanguage.get('css') ?? [];
-  if (cssFiles.length > 0) {
-    log(`[RECON Extraction] Processing ${cssFiles.length} CSS/SCSS files...`);
-    // Note: CSS extractor expects projectRoot as second parameter
-    // But we need to pass it properly. For now, extract individually.
-    for (const file of cssFiles) {
-      try {
-        // Extract expects (files, projectRoot) but we're calling per-file here
-        // Let's call the internal extraction function instead
-        const fileAssertions = await extractFromCss([file], process.cwd());
-        assertions.push(...fileAssertions);
-      } catch (error) {
-        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, error);
-      }
-    }
-  }
-  
+
+  const [tsAssertions, pyAssertions, cfnAssertions, jsonAssertions, angularAssertions, cssAssertions, csharpAssertions] =
+    await Promise.all([
+      extractLanguageGroup('typescript', byLanguage.get('typescript') ?? [], extractFromTypeScript, cpuLimiter),
+      extractPythonBatch(byLanguage.get('python') ?? []),
+      extractLanguageGroup('cloudformation', byLanguage.get('cloudformation') ?? [], extractFromCloudFormation, ioLimiter),
+      extractLanguageGroup('json', byLanguage.get('json') ?? [], extractJsonOrAsl, ioLimiter),
+      extractLanguageGroup('angular', byLanguage.get('angular') ?? [], extractFromAngular, cpuLimiter),
+      extractLanguageGroup('css', byLanguage.get('css') ?? [], f => extractFromCss([f], process.cwd()), cpuLimiter),
+      extractLanguageGroup('csharp', byLanguage.get('csharp') ?? [], extractFromCsharp, cpuLimiter),
+    ]);
+
+  const assertions = [
+    ...tsAssertions, ...pyAssertions, ...cfnAssertions,
+    ...jsonAssertions, ...angularAssertions, ...cssAssertions,
+    ...csharpAssertions,
+  ];
+
+  // Deterministic ordering: sort by elementId for stable output across runs
+  assertions.sort((a, b) => a.elementId.localeCompare(b.elementId));
+
   return assertions;
 }
 
 /**
- * Extract assertions from a Python file using the AST parser script
+ * Map a parsed Python AST payload to RawAssertions.
+ * Pure data transformation -- no I/O. Used by both single-file and batch extraction.
+ */
+function mapPythonPayloadToAssertions(
+  parsed: any,
+  file: DiscoveredFile,
+  contentLines: string[],
+): RawAssertion[] {
+  const assertions: RawAssertion[] = [];
+  const normalizedPath = toPosixPath(file.relativePath);
+
+  const extractPythonSource = (startLine: number, endLine: number): string | undefined => {
+    if (!startLine || !endLine || contentLines.length === 0) return undefined;
+    const start = Math.max(0, startLine - 1);
+    const end = Math.min(contentLines.length, endLine);
+    return contentLines.slice(start, end).join('\n');
+  };
+
+  if (Array.isArray(parsed.functions)) {
+    for (const fn of parsed.functions) {
+      const lineNumber = fn.lineno ?? 0;
+      const endLine = fn.end_lineno ?? lineNumber;
+      assertions.push({
+        elementId: generateSliceId('function', normalizedPath, `${fn.name}:${lineNumber}`),
+        elementType: 'function',
+        file: normalizedPath,
+        line: lineNumber,
+        end_line: endLine,
+        language: 'python',
+        signature: buildPythonFunctionSignature(fn),
+        source: extractPythonSource(lineNumber, endLine),
+        metadata: {
+          name: fn.name,
+          args: fn.args ?? [],
+          returns: fn.returns,
+          decorators: fn.decorators ?? [],
+          implementationIntent: fn.implementation_intent,
+          docstring: fn.docstring,
+          async: fn.async ?? false,
+        },
+      });
+    }
+  }
+
+  if (Array.isArray(parsed.classes)) {
+    for (const cls of parsed.classes) {
+      const lineNumber = cls.lineno ?? 0;
+      const endLine = cls.end_lineno ?? lineNumber;
+      assertions.push({
+        elementId: generateSliceId('class', normalizedPath, cls.name),
+        elementType: 'class',
+        file: normalizedPath,
+        line: lineNumber,
+        end_line: endLine,
+        language: 'python',
+        source: extractPythonSource(lineNumber, endLine),
+        metadata: {
+          name: cls.name,
+          bases: cls.bases ?? [],
+          decorators: cls.decorators ?? [],
+          implementationIntent: cls.implementation_intent,
+          methods: (cls.methods ?? []).map((m: any) => m.name),
+          docstring: cls.docstring,
+        },
+      });
+    }
+  }
+
+  if (Array.isArray(parsed.imports)) {
+    for (const imp of parsed.imports) {
+      assertions.push({
+        elementId: generateSliceId('import', normalizedPath, imp.module),
+        elementType: 'import',
+        file: normalizedPath,
+        line: 0,
+        language: 'python',
+        metadata: {
+          module: imp.module,
+          names: imp.names ?? [],
+          alias: imp.alias,
+        },
+      });
+    }
+  }
+
+  if (Array.isArray(parsed.api_endpoints)) {
+    for (const endpoint of parsed.api_endpoints) {
+      assertions.push({
+        elementId: `api_endpoint:${normalizedPath}:${endpoint.method}:${endpoint.path}`,
+        elementType: 'api_endpoint',
+        file: normalizedPath,
+        line: endpoint.lineno ?? 0,
+        language: 'python',
+        metadata: {
+          framework: endpoint.framework,
+          method: endpoint.method,
+          path: endpoint.path,
+          function_name: endpoint.function_name,
+          docstring: endpoint.docstring,
+        },
+      });
+    }
+  }
+
+  if (Array.isArray(parsed.data_models)) {
+    for (const model of parsed.data_models) {
+      assertions.push({
+        elementId: generateSliceId('data_model', normalizedPath, model.name),
+        elementType: 'data_model',
+        file: normalizedPath,
+        line: model.lineno ?? 0,
+        language: 'python',
+        metadata: {
+          name: model.name,
+          fields: model.fields ?? [],
+          docstring: model.docstring,
+        },
+      });
+    }
+  }
+
+  if (Array.isArray(parsed.aws_sdk_usage) && parsed.aws_sdk_usage.length > 0) {
+    assertions.push({
+      elementId: generateSliceId('aws_sdk_usage', normalizedPath, 'module'),
+      elementType: 'aws_sdk_usage',
+      file: normalizedPath,
+      line: 0,
+      language: 'python',
+      metadata: {
+        clients: parsed.aws_sdk_usage
+          .filter((u: any) => u.type === 'sdk_client')
+          .map((u: any) => ({ service: u.service, method: u.method, lineno: u.lineno })),
+        operations: parsed.aws_sdk_usage
+          .filter((u: any) => u.type === 'sdk_call')
+          .map((u: any) => ({ method: u.method, operationType: u.operation_type, target: u.target, lineno: u.lineno })),
+        services: [...new Set(
+          parsed.aws_sdk_usage.filter((u: any) => u.type === 'sdk_client').map((u: any) => u.service)
+        )],
+        hasReadOperations: parsed.aws_sdk_usage.some((u: any) => u.operation_type === 'read'),
+        hasWriteOperations: parsed.aws_sdk_usage.some((u: any) => u.operation_type === 'write'),
+      },
+    });
+  }
+
+  if (Array.isArray(parsed.env_var_access) && parsed.env_var_access.length > 0) {
+    assertions.push({
+      elementId: generateSliceId('env_var_access', normalizedPath, 'module'),
+      elementType: 'env_var_access',
+      file: normalizedPath,
+      line: 0,
+      language: 'python',
+      metadata: {
+        variables: parsed.env_var_access.map((v: any) => ({
+          name: v.name, accessType: v.access_type, lineno: v.lineno,
+        })),
+        variableNames: [...new Set(parsed.env_var_access.map((v: any) => v.name))],
+      },
+    });
+  }
+
+  if (parsed.function_calls && Object.keys(parsed.function_calls).length > 0) {
+    assertions.push({
+      elementId: generateSliceId('function_calls', normalizedPath, 'module'),
+      elementType: 'function_calls',
+      file: normalizedPath,
+      line: 0,
+      language: 'python',
+      metadata: {
+        callGraph: parsed.function_calls,
+        callers: Object.keys(parsed.function_calls),
+      },
+    });
+  }
+
+  return assertions;
+}
+
+/**
+ * Extract assertions from a Python file using the AST parser script (single-file mode).
  */
 async function extractFromPython(file: DiscoveredFile): Promise<RawAssertion[]> {
-  const assertions: RawAssertion[] = [];
   const pythonBin = getPythonBinary();
   const parserPath = getPythonParserPath();
-  
+
   try {
-    // Read file content for source extraction (Pillar 1: Rich Slices)
-    // Graceful degradation: if file read fails, continue without source
     let contentLines: string[] = [];
     try {
       const content = await fs.readFile(file.path, 'utf-8');
       contentLines = content.split('\n');
-    } catch {
-      // File read failed (e.g., in tests with mock paths), continue without source
-    }
-    
+    } catch { /* graceful: no snippets */ }
+
     const { stdout } = await execa(pythonBin, [parserPath, file.path], {
       timeout: 30000,
     });
-    
+
     const parsed = JSON.parse(stdout);
-    
-    // Normalize path to POSIX for consistent IDs across platforms
-    const normalizedPath = toPosixPath(file.relativePath);
-    
-    // Helper to extract source lines (Pillar 1)
-    const extractPythonSource = (startLine: number, endLine: number): string | undefined => {
-      if (!startLine || !endLine || contentLines.length === 0) return undefined;
-      const start = Math.max(0, startLine - 1);
-      const end = Math.min(contentLines.length, endLine);
-      return contentLines.slice(start, end).join('\n');
-    };
-    
-    // Extract functions - IDs include file path and line number for uniqueness per ADR-007
-    // Line number is included to disambiguate nested functions with the same name
-    if (Array.isArray(parsed.functions)) {
-      for (const fn of parsed.functions) {
-        const lineNumber = fn.lineno ?? 0;
-        const endLine = fn.end_lineno ?? lineNumber;
-        const source = extractPythonSource(lineNumber, endLine);
-        
-        assertions.push({
-          elementId: generateSliceId('function', normalizedPath, `${fn.name}:${lineNumber}`),
-          elementType: 'function',
-          file: normalizedPath,
-          line: lineNumber,
-          end_line: endLine,
-          language: 'python',
-          signature: buildPythonFunctionSignature(fn),
-          source,  // Pillar 1: Embedded source
-          metadata: {
-            name: fn.name,
-            args: fn.args ?? [],
-            returns: fn.returns,
-            decorators: fn.decorators ?? [],
-            docstring: fn.docstring,
-            async: fn.async ?? false,
-          },
-        });
-      }
-    }
-    
-    // Extract classes - IDs include file path for uniqueness per ADR-007
-    if (Array.isArray(parsed.classes)) {
-      for (const cls of parsed.classes) {
-        const lineNumber = cls.lineno ?? 0;
-        const endLine = cls.end_lineno ?? lineNumber;
-        const source = extractPythonSource(lineNumber, endLine);
-        
-        assertions.push({
-          elementId: generateSliceId('class', normalizedPath, cls.name),
-          elementType: 'class',
-          file: normalizedPath,
-          line: lineNumber,
-          end_line: endLine,
-          language: 'python',
-          source,  // Pillar 1: Embedded source
-          metadata: {
-            name: cls.name,
-            bases: cls.bases ?? [],
-            methods: (cls.methods ?? []).map((m: any) => m.name),
-            docstring: cls.docstring,
-          },
-        });
-      }
-    }
-    
-    // Extract imports - IDs include file path for uniqueness per ADR-007
-    if (Array.isArray(parsed.imports)) {
-      for (const imp of parsed.imports) {
-        assertions.push({
-          elementId: generateSliceId('import', normalizedPath, imp.module),
-          elementType: 'import',
-          file: normalizedPath,
-          line: 0,
-          language: 'python',
-          metadata: {
-            module: imp.module,
-            names: imp.names ?? [],
-            alias: imp.alias,
-          },
-        });
-      }
-    }
-    
-    // Extract API endpoints - IDs include file path for uniqueness per ADR-007
-    if (Array.isArray(parsed.api_endpoints)) {
-      for (const endpoint of parsed.api_endpoints) {
-        assertions.push({
-          elementId: `api_endpoint:${normalizedPath}:${endpoint.method}:${endpoint.path}`,
-          elementType: 'api_endpoint',
-          file: normalizedPath,
-          line: endpoint.lineno ?? 0,
-          language: 'python',
-          metadata: {
-            framework: endpoint.framework,
-            method: endpoint.method,
-            path: endpoint.path,
-            function_name: endpoint.function_name,
-            docstring: endpoint.docstring,
-          },
-        });
-      }
-    }
-    
-    // Extract data models - IDs include file path for uniqueness per ADR-007
-    if (Array.isArray(parsed.data_models)) {
-      for (const model of parsed.data_models) {
-        assertions.push({
-          elementId: generateSliceId('data_model', normalizedPath, model.name),
-          elementType: 'data_model',
-          file: normalizedPath,
-          line: model.lineno ?? 0,
-          language: 'python',
-          metadata: {
-            name: model.name,
-            fields: model.fields ?? [],
-            docstring: model.docstring,
-          },
-        });
-      }
-    }
-    
-    // NEW: Extract AWS SDK usage (boto3/botocore calls)
-    if (Array.isArray(parsed.aws_sdk_usage) && parsed.aws_sdk_usage.length > 0) {
-      assertions.push({
-        elementId: generateSliceId('aws_sdk_usage', normalizedPath, 'module'),
-        elementType: 'aws_sdk_usage',
-        file: normalizedPath,
-        line: 0,
-        language: 'python',
-        metadata: {
-          // SDK clients/resources created
-          clients: parsed.aws_sdk_usage
-            .filter((u: any) => u.type === 'sdk_client')
-            .map((u: any) => ({
-              service: u.service,
-              method: u.method,
-              lineno: u.lineno,
-            })),
-          // SDK operations performed
-          operations: parsed.aws_sdk_usage
-            .filter((u: any) => u.type === 'sdk_call')
-            .map((u: any) => ({
-              method: u.method,
-              operationType: u.operation_type,
-              target: u.target,
-              lineno: u.lineno,
-            })),
-          // Summary for quick lookup
-          services: [...new Set(
-            parsed.aws_sdk_usage
-              .filter((u: any) => u.type === 'sdk_client')
-              .map((u: any) => u.service)
-          )],
-          hasReadOperations: parsed.aws_sdk_usage.some((u: any) => u.operation_type === 'read'),
-          hasWriteOperations: parsed.aws_sdk_usage.some((u: any) => u.operation_type === 'write'),
-        },
-      });
-    }
-    
-    // NEW: Extract environment variable access
-    if (Array.isArray(parsed.env_var_access) && parsed.env_var_access.length > 0) {
-      assertions.push({
-        elementId: generateSliceId('env_var_access', normalizedPath, 'module'),
-        elementType: 'env_var_access',
-        file: normalizedPath,
-        line: 0,
-        language: 'python',
-        metadata: {
-          variables: parsed.env_var_access.map((v: any) => ({
-            name: v.name,
-            accessType: v.access_type,
-            lineno: v.lineno,
-          })),
-          // Summary for quick lookup
-          variableNames: [...new Set(parsed.env_var_access.map((v: any) => v.name))],
-        },
-      });
-    }
-    
-    // NEW: Extract function call graph
-    if (parsed.function_calls && Object.keys(parsed.function_calls).length > 0) {
-      assertions.push({
-        elementId: generateSliceId('function_calls', normalizedPath, 'module'),
-        elementType: 'function_calls',
-        file: normalizedPath,
-        line: 0,
-        language: 'python',
-        metadata: {
-          callGraph: parsed.function_calls,
-          // Summary: functions that call other functions
-          callers: Object.keys(parsed.function_calls),
-        },
-      });
-    }
-    
+    return mapPythonPayloadToAssertions(parsed, file, contentLines);
   } catch (error: any) {
     const stderr = error?.stderr ?? error?.message ?? String(error);
     throw new Error(`Python extraction failed: ${stderr}`);
   }
-  
-  return assertions;
+}
+
+/**
+ * Batch Python extraction via NDJSON.
+ * Spawns N Python workers (bounded by MAX_PYTHON_WORKERS), each processing a chunk of files.
+ * Falls back to per-file extraction on chunk failure or high corruption rate.
+ */
+async function extractPythonBatch(pyFiles: DiscoveredFile[]): Promise<RawAssertion[]> {
+  if (pyFiles.length === 0) return [];
+
+  const pythonBin = getPythonBinary();
+  const parserPath = getPythonParserPath();
+
+  let workerCount = Math.min(MAX_PYTHON_WORKERS, Math.ceil(pyFiles.length / 20));
+
+  const totalStdinBytes = pyFiles.reduce((sum, f) => sum + f.path.length + 1, 0);
+  const minChunksByFiles = Math.ceil(pyFiles.length / MAX_FILES_PER_CHUNK);
+  const minChunksBySize = Math.ceil(totalStdinBytes / MAX_STDIN_BYTES);
+  workerCount = Math.max(workerCount, minChunksByFiles, minChunksBySize);
+
+  const chunks: DiscoveredFile[][] = Array.from({ length: workerCount }, () => []);
+  pyFiles.forEach((f, i) => chunks[i % workerCount].push(f));
+
+  const contentCache = new BoundedCache<string[]>(
+    'Python contentCache',
+    (lines) => lines.reduce((sum, line) => sum + line.length + 1, 0),
+  );
+  await Promise.all(pyFiles.map(f => ioLimiter(async () => {
+    try {
+      const content = await fs.readFile(f.path, 'utf-8');
+      contentCache.set(f.path, content.split('\n'));
+    } catch { /* graceful: no snippets for this file */ }
+  })));
+
+  log(`[RECON Extraction] Batch: ${pyFiles.length} files -> ${workerCount} workers`);
+
+  const CORRUPTION_THRESHOLD = 0.10;
+
+  const chunkResults = await Promise.all(chunks.map(async (chunk) => {
+    const input = chunk.map(f => f.path).join('\n') + '\n';
+
+    try {
+      const { stdout } = await execa(pythonBin, [parserPath, '--batch'], {
+        input,
+        timeout: Math.max(30000, chunk.length * 200),
+      });
+
+      const outputLines = stdout.split('\n').filter(l => l.trim().length > 0);
+      const parsedResults: Array<{ parsed: any } | { parseError: string; rawLine: string }> = [];
+      let jsonParseFailures = 0;
+
+      for (const line of outputLines) {
+        try {
+          parsedResults.push({ parsed: JSON.parse(line) });
+        } catch (parseErr) {
+          jsonParseFailures++;
+          parsedResults.push({ parseError: String(parseErr), rawLine: line.substring(0, 200) });
+        }
+      }
+
+      const failureRate = outputLines.length > 0
+        ? jsonParseFailures / outputLines.length
+        : 0;
+
+      if (failureRate > CORRUPTION_THRESHOLD) {
+        warn(
+          `[RECON Extraction] Chunk stdout corruption detected: ` +
+          `${jsonParseFailures}/${outputLines.length} lines (${(failureRate * 100).toFixed(1)}%) ` +
+          `failed JSON parse. Falling back to per-file extraction for ${chunk.length} files.`
+        );
+        return await extractChunkPerFile(chunk);
+      }
+
+      const assertions: RawAssertion[] = [];
+      for (const result of parsedResults) {
+        if ('parseError' in result) {
+          warn(`[RECON Extraction] Failed to parse batch line: ${result.parseError}`);
+          continue;
+        }
+        const { parsed } = result;
+        if (parsed.error) {
+          warn(`[RECON Extraction] Python batch error for ${parsed.filepath}: ${parsed.error}`);
+          continue;
+        }
+        const df = parsed.filepath
+          ? chunk.find(f => f.path === parsed.filepath || toPosixPath(f.path) === parsed.filepath)
+          : undefined;
+        const matchedFile = df ?? (chunk.length === 1 ? chunk[0] : null);
+        if (!matchedFile) continue;
+
+        const contentLines = contentCache.get(matchedFile.path) ?? [];
+        assertions.push(...mapPythonPayloadToAssertions(parsed, matchedFile, contentLines));
+      }
+      return assertions;
+
+    } catch (error: any) {
+      warn(`[RECON Extraction] Batch worker failed, falling back to per-file: ${error.message}`);
+      return await extractChunkPerFile(chunk);
+    }
+  }));
+
+  async function extractChunkPerFile(chunk: DiscoveredFile[]): Promise<RawAssertion[]> {
+    const assertions: RawAssertion[] = [];
+    for (const file of chunk) {
+      try {
+        assertions.push(...await extractFromPython(file));
+      } catch (err) {
+        warn(`[RECON Extraction] Failed to extract from ${file.relativePath}:`, err);
+      }
+    }
+    return assertions;
+  }
+
+  return chunkResults.flat();
 }
 
 function buildPythonFunctionSignature(fn: any): string {
@@ -425,25 +478,25 @@ function extractJsDoc(node: ts.Node, sourceFile: ts.SourceFile): JsDocInfo {
   if (!jsDocNodes || jsDocNodes.length === 0) {
     return {};
   }
-  
+
   const jsDoc = jsDocNodes[0]; // Get first JSDoc block
   const info: JsDocInfo = {};
-  
+
   // Extract full comment text
   if (jsDoc.comment) {
-    const fullText = typeof jsDoc.comment === 'string' 
-      ? jsDoc.comment 
+    const fullText = typeof jsDoc.comment === 'string'
+      ? jsDoc.comment
       : jsDoc.comment.map((part: any) => part.text).join('');
-    
+
     info.docstring = fullText.trim();
-    
+
     // Extract description (first paragraph/line)
     const firstParagraph = fullText.split('\n\n')[0].trim();
     if (firstParagraph) {
       info.description = firstParagraph;
     }
   }
-  
+
   // Extract JSDoc tags
   if (jsDoc.tags && Array.isArray(jsDoc.tags)) {
     const params: Array<{ name: string; type?: string; description?: string }> = [];
@@ -520,8 +573,98 @@ function extractJsDoc(node: ts.Node, sourceFile: ts.SourceFile): JsDocInfo {
       info.tags = customTags;
     }
   }
-  
+
   return info;
+}
+
+function getDecoratorName(expression: ts.LeftHandSideExpression): string | null {
+  if (ts.isIdentifier(expression)) {
+    return expression.text;
+  }
+
+  if (ts.isPropertyAccessExpression(expression)) {
+    return expression.name.text;
+  }
+
+  return null;
+}
+
+function extractStringLiteralValues(node: ts.Expression): string[] {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return [node.text];
+  }
+
+  if (ts.isArrayLiteralExpression(node)) {
+    const values: string[] = [];
+    for (const element of node.elements) {
+      if (!ts.isStringLiteral(element) && !ts.isNoSubstitutionTemplateLiteral(element)) {
+        return [];
+      }
+      values.push(element.text);
+    }
+    return values;
+  }
+
+  return [];
+}
+
+function extractRawDecorators(node: ts.Node, sourceFile: ts.SourceFile): string[] {
+  const decorators = ts.getDecorators(node as ts.HasDecorators);
+  if (!decorators) {
+    return [];
+  }
+
+  return decorators.map(decorator => decorator.getText(sourceFile));
+}
+
+function extractTypeScriptImplementationIntent(
+  node: ts.Node,
+): Record<string, unknown> | undefined {
+  const decorators = ts.getDecorators(node as ts.HasDecorators);
+  if (!decorators) {
+    return undefined;
+  }
+
+  const implementsAdrs: string[] = [];
+  const enforcedInvariants: string[] = [];
+
+  for (const decorator of decorators) {
+    if (!ts.isCallExpression(decorator.expression)) {
+      continue;
+    }
+
+    const decoratorName = getDecoratorName(decorator.expression.expression);
+    if (!decoratorName) {
+      continue;
+    }
+
+    const args = decorator.expression.arguments.flatMap(extractStringLiteralValues);
+    if (args.length === 0) {
+      continue;
+    }
+
+    if (decoratorName === 'implements_adr' || decoratorName === 'implements_adrs') {
+      implementsAdrs.push(...args);
+    }
+
+    if (decoratorName === 'enforces_invariant' || decoratorName === 'enforces_invariants') {
+      enforcedInvariants.push(...args);
+    }
+  }
+
+  const uniqueAdrs = [...new Set(implementsAdrs)];
+  const uniqueInvariants = [...new Set(enforcedInvariants)];
+
+  if (uniqueAdrs.length === 0 && uniqueInvariants.length === 0) {
+    return undefined;
+  }
+
+  return {
+    implements_adrs: uniqueAdrs,
+    enforced_invariants: uniqueInvariants,
+    confidence: 'declared',
+    source: 'decorator',
+  };
 }
 
 /**
@@ -562,6 +705,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
       const lineNumber = getLineNumber(sourceFile, node);
       const endLineNumber = getEndLineNumber(sourceFile, node);
       const jsDocInfo = extractJsDoc(node, sourceFile);
+      const decorators = extractRawDecorators(node, sourceFile);
+      const implementationIntent = extractTypeScriptImplementationIntent(node);
       
       // Pillar 1: Rich Slices - capture source code
       const source = extractSourceLines(content, lineNumber, endLineNumber);
@@ -580,6 +725,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
           isExported: hasExportModifier(node),
           isAsync: !!(node.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword)),
           parameters: node.parameters.map(p => p.name.getText(sourceFile)),
+          decorators,
+          implementationIntent,
           ...jsDocInfo,
         },
       });
@@ -599,6 +746,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
       const methods = extractClassMethods(node, sourceFile);
       const classStartLine = getLineNumber(sourceFile, node);
       const classEndLine = getEndLineNumber(sourceFile, node);
+      const decorators = extractRawDecorators(node, sourceFile);
+      const implementationIntent = extractTypeScriptImplementationIntent(node);
       
       // Pillar 1: Rich Slices - capture source code
       const source = extractSourceLines(content, classStartLine, classEndLine);
@@ -616,6 +765,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
           isExported: hasExportModifier(node),
           methods,
           properties: extractClassProperties(node, sourceFile),
+          decorators,
+          implementationIntent,
           ...jsDocInfo,
         },
       });
@@ -627,6 +778,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
           const lineNumber = getLineNumber(sourceFile, member);
           const methodEndLine = getEndLineNumber(sourceFile, member);
           const methodJsDoc = extractJsDoc(member, sourceFile);
+          const methodDecorators = extractRawDecorators(member, sourceFile);
+          const methodImplementationIntent = extractTypeScriptImplementationIntent(member);
           
           // Pillar 1: Rich Slices - capture method source
           const methodSource = extractSourceLines(content, lineNumber, methodEndLine);
@@ -648,6 +801,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
               isAsync: !!(member.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword)),
               isStatic: !!(member.modifiers?.some(m => m.kind === ts.SyntaxKind.StaticKeyword)),
               parameters: member.parameters.map(p => p.name.getText(sourceFile)),
+              decorators: methodDecorators,
+              implementationIntent: methodImplementationIntent,
               ...methodJsDoc,
             },
           });
@@ -1040,4 +1195,81 @@ function extractImportedNames(node: ts.ImportDeclaration, _sourceFile: ts.Source
   }
   
   return names;
+}
+
+const LAMBDA_ARN_PATTERN = /arn:aws:lambda:[^:]*:[^:]*:function:([a-zA-Z0-9_-]+)/;
+const STATES_LAMBDA_PATTERN = /arn:aws:states:[^:]*:[^:]*:lambda:invoke/;
+
+/**
+ * Extract assertions from an ASL (Amazon States Language) state machine definition.
+ * Produces:
+ * - A `state_machine_definition` assertion with metadata about the state machine
+ * - `asl_lambda_ref` assertions for each Lambda function referenced in Task states
+ */
+async function extractFromAsl(file: DiscoveredFile): Promise<RawAssertion[]> {
+  const content = await fs.readFile(file.path, 'utf-8');
+  const asl = JSON.parse(content) as Record<string, unknown>;
+  const assertions: RawAssertion[] = [];
+
+  const comment = asl.Comment as string | undefined;
+  const startAt = asl.StartAt as string | undefined;
+  const states = asl.States as Record<string, Record<string, unknown>> | undefined;
+
+  assertions.push({
+    elementId: generateSliceId('state_machine_definition', file.relativePath, 'root'),
+    elementType: 'state_machine_definition',
+    file: file.relativePath,
+    line: 0,
+    language: 'json',
+    metadata: {
+      comment: comment ?? null,
+      startAt: startAt ?? null,
+      stateCount: states ? Object.keys(states).length : 0,
+      filePath: file.relativePath,
+    },
+  });
+
+  if (!states) return assertions;
+
+  const lambdaRefs = new Set<string>();
+
+  for (const [stateName, state] of Object.entries(states)) {
+    const resource = state.Resource as string | undefined;
+    if (!resource) continue;
+
+    const arnMatch = resource.match(LAMBDA_ARN_PATTERN);
+    if (arnMatch) {
+      lambdaRefs.add(arnMatch[1]);
+    }
+
+    if (STATES_LAMBDA_PATTERN.test(resource)) {
+      const params = state.Parameters as Record<string, unknown> | undefined;
+      if (params?.FunctionName && typeof params.FunctionName === 'string') {
+        const fnMatch = params.FunctionName.match(LAMBDA_ARN_PATTERN);
+        if (fnMatch) lambdaRefs.add(fnMatch[1]);
+      }
+      const fnRef = params?.FunctionName;
+      if (typeof fnRef === 'string' && fnRef.includes('.$')) {
+        // JSONPath reference - not statically resolvable, skip
+      } else if (typeof fnRef === 'string' && !fnRef.includes(':')) {
+        lambdaRefs.add(fnRef);
+      }
+    }
+  }
+
+  for (const ref of lambdaRefs) {
+    assertions.push({
+      elementId: generateSliceId('asl_lambda_ref', file.relativePath, ref),
+      elementType: 'asl_lambda_ref',
+      file: file.relativePath,
+      line: 0,
+      language: 'json',
+      metadata: {
+        functionRef: ref,
+        sourceFile: file.relativePath,
+      },
+    });
+  }
+
+  return assertions;
 }

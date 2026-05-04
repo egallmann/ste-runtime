@@ -1,0 +1,7 @@
+schema_version: "1.0"
+output_dir: .ste-workspace-smoke-out/
+repos:
+  - name: repo-alpha
+    path: repo-alpha
+    kind: service
+    lang: typescript

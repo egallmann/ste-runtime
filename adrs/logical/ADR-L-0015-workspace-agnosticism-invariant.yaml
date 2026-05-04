@@ -1,0 +1,102 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0015
+title: Workspace Agnosticism Invariant
+status: proposed
+created_date: '2026-04-24'
+authors:
+- ste-runtime
+domains:
+- workspace
+- portability
+- architecture
+tags:
+- workspace-agnosticism
+- invariant
+- oss
+- manifest-driven
+vision_category: false
+related_adrs:
+- ADR-L-0009
+- ADR-L-0013
+- ADR-L-0014
+context: |
+  ste-runtime is an OSS tool that operates on arbitrary workspaces. Each
+  workspace declares its own repository list, output directory, and domain
+  vocabulary in workspace.yaml. The runtime must never contain references
+  to any specific workspace, repository name, or domain vocabulary in its
+  source code. Prior ADRs established workspace scope (ADR-L-0009) and
+  path portability (ADR-L-0013). This ADR strengthens those commitments
+  into a codified invariant with automated enforcement.
+capabilities:
+- id: CAP-0015
+  name: Workspace-agnostic operation
+  description: >
+    ste-runtime operates identically in any workspace without source code
+    changes. All workspace-specific values (repo names, output directories,
+    domain vocabulary) are derived from workspace.yaml at runtime.
+invariants:
+- id: INV-0015
+  statement: >
+    ste-runtime source code contains zero references to any specific
+    workspace, repository name, output directory name, or domain vocabulary.
+    All such values are derived from workspace.yaml at runtime.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: >
+    ste-runtime is OSS and must work in any workspace. Hardcoded references
+    to specific workspaces, repositories, or domains would couple the tool
+    to a single consumer and violate its portability contract.
+- id: INV-0016
+  statement: >
+    Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
+    and never reference real workspace repository names.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: >
+    Test fixtures containing real workspace names leak domain-specific
+    vocabulary into the OSS codebase and create false coupling.
+constraints:
+- id: CONST-0008
+  type: technical
+  description: >
+    The output directory name is manifest-driven. workspace.yaml declares
+    output_dir (default: .ste-workspace/). No domain-specific directory
+    name appears in ste-runtime source code.
+  rationale: >
+    Domain-specific output directory names (e.g. .my-workspace/) belong in
+    workspace.yaml, not in the tool source.
+- id: CONST-0009
+  type: technical
+  description: >
+    Edge wiring logic uses structural matching only (AWS resource types,
+    SDK service names, CFN ref/getatt patterns). Zero repo-name awareness.
+  rationale: >
+    Nominal matching (by repo name) would couple the wiring logic to a
+    specific workspace layout and break portability.
+decisions:
+- id: DEC-0015
+  summary: ste-runtime is workspace-agnostic by invariant
+  rationale: |
+    Workspace-specific references in source code create coupling to a single
+    consumer. By codifying workspace agnosticism as an invariant with
+    automated enforcement (grep-based CI check), the tool remains portable
+    across all workspaces without manual auditing.
+decision: |
+  ste-runtime source code MUST NOT contain references to any specific
+  workspace, repository name, output directory name, or domain vocabulary.
+  Enforcement: rg -i against ste-runtime/src/ for domain-specific terms
+  must return zero matches at every phase exit. All workspace-specific
+  values are derived from workspace.yaml at runtime.
+consequences:
+  positive:
+  - ste-runtime works in any workspace without source changes.
+  - OSS consumers can adopt the tool without encountering domain-specific vocabulary.
+  - Automated enforcement prevents regression.
+  negative:
+  - All validation and testing must use synthetic names, adding a small overhead.
+  - Domain-specific optimizations (if ever needed) must live in workspace.yaml, not in source.

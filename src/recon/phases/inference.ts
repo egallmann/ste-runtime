@@ -95,6 +95,25 @@ export function inferRelationships(
     }
   }
   
+  // Pre-index function_calls slices by file: file -> assertion
+  const functionCallsByFile = new Map<string, NormalizedAssertion>();
+  // Pre-index assertions by (domain, type): "domain:type" -> assertion[]
+  const byDomainType = new Map<string, NormalizedAssertion[]>();
+  for (const assertion of assertions) {
+    const key = `${assertion._slice.domain}:${assertion._slice.type}`;
+    if (!byDomainType.has(key)) {
+      byDomainType.set(key, []);
+    }
+    byDomainType.get(key)!.push(assertion);
+
+    if (assertion._slice.type === 'function_calls' && assertion._slice.domain === 'behavior') {
+      const file = assertion._slice.source_files[0];
+      if (file) {
+        functionCallsByFile.set(file, assertion);
+      }
+    }
+  }
+
   // Build relationship map from raw assertions (imports and dependencies)
   const relationshipsByFile = buildRelationshipMap(rawAssertions);
   
@@ -133,11 +152,7 @@ export function inferRelationships(
       }
       
       // Module-level constructor calls (new ClassName() in arrow functions, callbacks, top-level)
-      const functionCallsSlice = assertions.find(a =>
-        a._slice.type === 'function_calls' &&
-        a._slice.domain === 'behavior' &&
-        a._slice.source_files[0] === file
-      );
+      const functionCallsSlice = functionCallsByFile.get(file);
       
       if (functionCallsSlice) {
         const constructorCallGraph = functionCallsSlice.element.constructorCallGraph as Record<string, string[]> | undefined;
@@ -243,11 +258,7 @@ export function inferRelationships(
       const className = element.className as string | undefined;
       
       // Find the function_calls slice for this file
-      const functionCallsSlice = assertions.find(a =>
-        a._slice.type === 'function_calls' &&
-        a._slice.domain === 'behavior' &&
-        a._slice.source_files[0] === file
-      );
+      const functionCallsSlice = functionCallsByFile.get(file);
       
       if (functionCallsSlice) {
         const callGraph = functionCallsSlice.element.callGraph as Record<string, string[]> | undefined;
@@ -632,8 +643,8 @@ export function inferRelationships(
       // ========================================================
       const resourceType = element.type as string | undefined;
       if (resourceType === 'AWS::Lambda::Function') {
-        const handler = element.handler as string | undefined;
-        if (handler) {
+        const handler = element.handler;
+        if (typeof handler === 'string' && handler.trim().length > 0) {
           // Handler format: "module_name.function_name" or "path/to/module.function_name"
           const handlerParts = handler.split('.');
           if (handlerParts.length >= 2) {

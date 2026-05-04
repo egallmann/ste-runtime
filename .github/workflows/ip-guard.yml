@@ -1,0 +1,102 @@
+## Invariant 1 Gate 4 — Public-CI backstop
+##
+## CANONICAL VERSION. Copy this file into each protected repo at
+## .github/workflows/ip-guard.yml when creating the workspace-mode feature
+## branches (ste-runtime and adr-architecture-kit).
+##
+## This workflow IS committed to public repos, so its content MUST be safe
+## to be public:
+##   - SHAPE-based patterns only; NO literal company names, NO vendor names,
+##     NO internal-system names. The literal list is a local-only defense
+##     (see scripts/ip_scan.py and the ~/.ste-forbidden-tokens.txt file).
+##   - Adds gitleaks as an independent second opinion.
+##
+## After pushing this workflow, enable it as a required status check on the
+## main and develop branches in the GitHub repo settings.
+
+name: ip-guard
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  shape-patterns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail on shape-based IP leaks
+        shell: bash
+        run: |
+          set -eu
+
+          # Paths excluded from ALL pattern checks.
+          GLOBAL_EXCLUDES=(
+            ':!/.github/workflows/ip-guard.yml'
+            ':!package-lock.json'
+            ':!yarn.lock'
+          )
+
+          HITS=0
+          fail() { echo "::error::IP-GUARD SHAPE MATCH: $1"; HITS=1; }
+
+          # --- Pattern 1: JIRA-style identifiers ---
+          # Require 3+ uppercase letters in the project key to avoid matching
+          # architecture sub-type prefixes (PC-nnnn, PS-nnnn, etc.).
+          # Exclude known product/architecture identifiers via lookahead:
+          SAFE='ADR-|INV-|CAP-|DEC-|REL-|COMP-|CONST-|SYS-|SHA-|ISO-'
+          SAFE+='|BOUND-|SYSBOUND-|IFACE-|GAP-|CTR-'
+          PAT_JIRA="\b(?!${SAFE})[A-Z]{3,}-[0-9]{3,}\b"
+          if git grep -nP "$PAT_JIRA" -- "${GLOBAL_EXCLUDES[@]}" ; then
+            fail "$PAT_JIRA"
+          fi
+
+          # --- Pattern 2: AWS ARNs with account IDs ---
+          PAT='arn:aws:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 3: AWS account IDs in obvious contexts ---
+          PAT='(account[_ -]?id|aws[_ -]?account)[^A-Za-z0-9]{0,8}[0-9]{12}\b'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 4: GitHub PATs ---
+          PAT='\bghp_[A-Za-z0-9]{36,}\b'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 5-7: Private package registries ---
+          PAT='(//|@)[A-Za-z0-9.-]*\.jfrog\.io\b'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          PAT='(//|@)[A-Za-z0-9.-]*artifactory[A-Za-z0-9.-]*'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          PAT='(//|@)[A-Za-z0-9.-]*nexus[A-Za-z0-9.-]*/repository/'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 8: Non-public registry directives ---
+          PAT='^[[:space:]]*(registry|index[_-]?url|extra[_-]?index[_-]?url)[[:space:]]*=[[:space:]]*https?://(?!(registry\.npmjs\.org|registry\.yarnpkg\.com|pypi\.org|files\.pythonhosted\.org)\b)[A-Za-z0-9.-]+'
+          if git grep -nP "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          if [ "$HITS" -ne 0 ]; then
+            echo "::error::ip-guard: one or more forbidden shapes detected. Review the matches above."
+            exit 1
+          fi
+          echo "ip-guard shape check: OK"
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

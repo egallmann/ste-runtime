@@ -103,3 +103,49 @@ export {
   type QueryIntent,
   type NodeSummary,
 } from './rss/conversational-query.js';
+
+// ============================================================================
+// Architecture Bundle Discovery
+// ============================================================================
+
+export {
+  loadArchitectureBundle,
+  type ArchitectureBundleArtifact,
+  type ArchitectureBundleIndexSummary,
+  type ArchitectureBundleManifestSummary,
+  type ArchitectureBundleResult,
+  type ArchitectureBundleStatus,
+} from './discovery/architecture-bundle.js';
+
+export {
+  buildArchitectureEvidence,
+  runArchitectureEvidenceCommand,
+  deriveSubjectsFromBundle,
+  type ArchitectureEvidence,
+  type ArchitectureEvidenceFreshnessStatus,
+  type ArchitectureEvidenceVersion,
+  type EvidenceSubject,
+  type EvidenceSubjectKind,
+  type EvidenceSubjectEffect,
+} from './cli/evidence-command.js';
+
+// ============================================================================
+// Architecture compiler (ADR → registries / index / manifest)
+// ============================================================================
+
+export {
+  compileArchitecture,
+  runArchitecturePipeline,
+  architectureMerge,
+  emptyReconSnapshot,
+  buildAdrGraph,
+  assembleDiscoveryBundle,
+  type CompileArchitectureOptions,
+  type CompileArchitectureResult,
+  type PipelineRunOptions,
+  type ArchModelState,
+  type AdrGraph,
+  type ReconArchitectureSnapshot,
+  type CompileDiagnostic,
+  type DiscoveryBundle,
+} from './architecture/index.js';

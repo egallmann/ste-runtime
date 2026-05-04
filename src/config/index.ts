@@ -22,6 +22,7 @@ export const SupportedLanguage = z.enum([
   'json',
   'angular',  // E-ADR-006: Angular semantic extraction
   'css',      // E-ADR-006: CSS/SCSS extraction (standalone, cross-cutting)
+  'csharp',   // MP-4c: C#/.NET extraction
 ]);
 export type SupportedLanguage = z.infer<typeof SupportedLanguage>;
 
@@ -250,7 +251,7 @@ export interface ResolvedConfig {
 /**
  * Built-in ignore patterns (always applied)
  */
-const BUILTIN_IGNORE_PATTERNS = [
+export const BUILTIN_IGNORE_PATTERNS = [
   '**/node_modules/**',
   '**/dist/**',
   '**/build/**',
@@ -270,7 +271,7 @@ const BUILTIN_IGNORE_PATTERNS = [
  * 1. Start from ste-runtime's PARENT directory (not ste-runtime itself)
  * Auto-detect languages based on file presence in project
  */
-async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]> {
+export async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]> {
   const languages: SupportedLanguage[] = [];
   
   // Validate project root exists and is accessible
@@ -311,7 +312,14 @@ async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]
   }
   
   // Check for CloudFormation (look for cloudformation directory or template files)
-  const cfnPaths = ['cloudformation', 'backend/cloudformation', 'infrastructure', 'cfn'];
+  const cfnPaths = [
+    'cloudformation',
+    'backend/cloudformation',
+    'infrastructure',
+    'cfn',
+    'cfn_templates',
+    'sam',
+  ];
   for (const cfnPath of cfnPaths) {
     try {
       const fullPath = path.join(projectRoot, cfnPath);
@@ -352,6 +360,25 @@ async function detectLanguages(projectRoot: string): Promise<SupportedLanguage[]
     }
   }
   
+  // Check for C#/.NET (look for .csproj or .sln files) per MP-4c
+  try {
+    const entries = await fs.readdir(projectRoot);
+    if (entries.some(e => e.endsWith('.csproj') || e.endsWith('.sln'))) {
+      languages.push('csharp');
+    } else {
+      const subdirs = ['src', 'Api', 'Service'];
+      for (const sub of subdirs) {
+        try {
+          const subEntries = await fs.readdir(path.join(projectRoot, sub));
+          if (subEntries.some(e => e.endsWith('.csproj'))) {
+            languages.push('csharp');
+            break;
+          }
+        } catch { /* continue */ }
+      }
+    }
+  } catch { /* continue */ }
+
   // Check for CSS/SCSS files (styles directory or src/styles) per E-ADR-006
   const cssPaths = ['styles', 'src/styles', 'frontend/src/styles', 'src/assets/styles'];
   for (const cssPath of cssPaths) {

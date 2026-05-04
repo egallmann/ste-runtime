@@ -23,6 +23,7 @@ import type { NormalizedAssertion } from './index.js';
 import { computeFileChecksum } from '../../watch/full-reconciliation.js';
 import { writeTracker } from '../../watch/write-tracker.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
+import { atomicWriteFile } from '../../utils/atomic-write.js';
 import { log } from '../../utils/logger.js';
 
 export interface PopulationResult {
@@ -31,6 +32,7 @@ export interface PopulationResult {
   deleted: number;
   unchanged: number;
   priorState: Map<string, NormalizedAssertion>;
+  currentState: Map<string, NormalizedAssertion>;
 }
 
 export interface PopulationOptions {
@@ -73,6 +75,7 @@ export async function populateAiDoc(
   let updated = 0;
   let deleted = 0;
   let unchanged = 0;
+  const currentState = new Map(priorState);
   
   // If full reconciliation, we'll delete everything not in the new assertions
   if (options.fullReconciliation) {
@@ -86,6 +89,7 @@ export async function populateAiDoc(
         try {
           await fs.unlink(targetPath);
           deleted++;
+          currentState.delete(priorId);
           log(`[RECON Population] Deleted orphan: ${priorId}`);
         } catch (_error) {
           // File might not exist, ignore
@@ -132,6 +136,7 @@ export async function populateAiDoc(
             try {
               await fs.unlink(targetPath);
               deleted++;
+              currentState.delete(priorId);
               log(`[RECON Population] Deleted orphan: ${priorId}`);
             } catch (_error) {
               // File might not exist (already deleted or misnamed), log but continue
@@ -148,6 +153,7 @@ export async function populateAiDoc(
   let checksumTime = 0;
   let writeTime = 0;
   let trackerTime = 0;
+  const checksumCache = new Map<string, string>();
   
   for (const assertion of assertions) {
     try {
@@ -159,13 +165,15 @@ export async function populateAiDoc(
       const sourceFile = assertion._slice.source_files?.[0];
       if (sourceFile) {
         const sourceFilePath = path.resolve(projectRoot, sourceFile);
-        const sourceChecksum = await computeFileChecksum(sourceFilePath);
-        
+        if (!checksumCache.has(sourceFilePath)) {
+          checksumCache.set(sourceFilePath, await computeFileChecksum(sourceFilePath));
+        }
+
       // Add checksum to provenance
       if (!assertion.provenance) {
         assertion.provenance = {} as any;
       }
-      assertion.provenance.source_checksum = sourceChecksum;
+      assertion.provenance.source_checksum = checksumCache.get(sourceFilePath)!;
     }
     checksumTime += performance.now() - checksumStart;
     
@@ -179,28 +187,29 @@ export async function populateAiDoc(
       },
     };
     
-    const yamlContent = yaml.dump(sliceWithLineRange, {
+      // Check if this is create, update, or unchanged before serializing
+      const priorAssertion = priorState.get(assertion._slice.id);
+      if (priorAssertion && !hasSemanticChanges(priorAssertion, assertion)) {
+        unchanged++;
+        currentState.set(assertion._slice.id, assertion);
+        continue;
+      }
+      if (priorAssertion) {
+        updated++;
+      } else {
+        created++;
+      }
+
+      const yamlContent = yaml.dump(sliceWithLineRange, {
         noRefs: true,
         lineWidth: -1,
         sortKeys: false,
       });
-      
-      // Check if this is create, update, or unchanged
-      const priorAssertion = priorState.get(assertion._slice.id);
-      if (!priorAssertion) {
-        created++;
-      } else {
-        // Compare semantic content (excluding provenance timestamps)
-        if (hasSemanticChanges(priorAssertion, assertion)) {
-          updated++;
-        } else {
-          unchanged++;
-        }
-      }
-      
+
       const writeFileStart = performance.now();
-      await fs.writeFile(targetPath, yamlContent, 'utf-8');
+      await atomicWriteFile(targetPath, yamlContent);
       writeTime += performance.now() - writeFileStart;
+      currentState.set(assertion._slice.id, assertion);
       
       // Track write for watchdog (E-ADR-007)
       const trackerStart = performance.now();
@@ -234,6 +243,7 @@ export async function populateAiDoc(
     deleted,
     unchanged,
     priorState,
+    currentState,
   };
 }
 

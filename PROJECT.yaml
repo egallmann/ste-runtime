@@ -57,3 +57,4 @@ compliance:
 architecture_documentation:
   adr_directory: "adrs/"
   manifest_path: "adrs/manifest.yaml"
+  architecture_namespace: "ste-runtime"
