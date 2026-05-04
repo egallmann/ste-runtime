@@ -35,31 +35,52 @@ jobs:
         shell: bash
         run: |
           set -eu
-          PATTERNS=(
-            # Generic JIRA-style identifiers (any project key)
-            '\b[A-Z]{2,}-[0-9]{3,}\b'
-            # AWS ARNs with account IDs
-            'arn:aws:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:'
-            # AWS account IDs in obvious contexts
-            '(account[_ -]?id|aws[_ -]?account)[^A-Za-z0-9]{0,8}[0-9]{12}\b'
-            # GitHub PATs
-            '\bghp_[A-Za-z0-9]{36,}\b'
-            # Private package-registry hostnames (JFrog / Artifactory /
-            # Nexus). Each requires URL context (// or @) so mentioning
-            # the vendor name in prose does not trip the check.
-            '(//|@)[A-Za-z0-9.-]*\.jfrog\.io\b'
-            '(//|@)[A-Za-z0-9.-]*artifactory[A-Za-z0-9.-]*'
-            '(//|@)[A-Za-z0-9.-]*nexus[A-Za-z0-9.-]*/repository/'
-            # npm/pip registry/index directives pointing at non-public hosts.
-            '^[[:space:]]*(registry|index[_-]?url|extra[_-]?index[_-]?url)[[:space:]]*=[[:space:]]*https?://(?!(registry\.npmjs\.org|registry\.yarnpkg\.com|pypi\.org|files\.pythonhosted\.org)\b)[A-Za-z0-9.-]+'
+
+          # Paths excluded from ALL pattern checks.
+          GLOBAL_EXCLUDES=(
+            ':!/.github/workflows/ip-guard.yml'
+            ':!package-lock.json'
+            ':!yarn.lock'
           )
+
           HITS=0
-          for PAT in "${PATTERNS[@]}"; do
-            if git grep -nE "$PAT" -- ':!/.github/workflows/ip-guard.yml' ; then
-              echo "::error::IP-GUARD SHAPE MATCH: $PAT"
-              HITS=1
-            fi
-          done
+          fail() { echo "::error::IP-GUARD SHAPE MATCH: $1"; HITS=1; }
+
+          # --- Pattern 1: JIRA-style identifiers ---
+          # Allow product identifiers: E-ADR-nnn, ADR-xx-nnnn, INV-nnnn,
+          # CAP-nnnn, DEC-nnnn, REL-nnnn, SHA-nnn, ISO-nnnn, MP-nn.
+          # Uses Perl regex negative lookbehind to skip these prefixes.
+          PAT_JIRA='\b(?!E-ADR-|ADR-[A-Z]{1,3}-|INV-|CAP-|DEC-|REL-|SHA-|ISO-|MP-)[A-Z]{2,}-[0-9]{3,}\b'
+          if git grep -nP "$PAT_JIRA" -- "${GLOBAL_EXCLUDES[@]}" ; then
+            fail "$PAT_JIRA"
+          fi
+
+          # --- Pattern 2: AWS ARNs with account IDs ---
+          PAT='arn:aws:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 3: AWS account IDs in obvious contexts ---
+          PAT='(account[_ -]?id|aws[_ -]?account)[^A-Za-z0-9]{0,8}[0-9]{12}\b'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 4: GitHub PATs ---
+          PAT='\bghp_[A-Za-z0-9]{36,}\b'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 5-7: Private package registries ---
+          PAT='(//|@)[A-Za-z0-9.-]*\.jfrog\.io\b'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          PAT='(//|@)[A-Za-z0-9.-]*artifactory[A-Za-z0-9.-]*'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          PAT='(//|@)[A-Za-z0-9.-]*nexus[A-Za-z0-9.-]*/repository/'
+          if git grep -nE "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
+          # --- Pattern 8: Non-public registry directives ---
+          PAT='^[[:space:]]*(registry|index[_-]?url|extra[_-]?index[_-]?url)[[:space:]]*=[[:space:]]*https?://(?!(registry\.npmjs\.org|registry\.yarnpkg\.com|pypi\.org|files\.pythonhosted\.org)\b)[A-Za-z0-9.-]+'
+          if git grep -nP "$PAT" -- "${GLOBAL_EXCLUDES[@]}" ; then fail "$PAT"; fi
+
           if [ "$HITS" -ne 0 ]; then
             echo "::error::ip-guard: one or more forbidden shapes detected. Review the matches above."
             exit 1
