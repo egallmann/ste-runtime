@@ -40,14 +40,23 @@ export const RepoEntrySchema = z.object({
   lang: z.string().default('unknown'),
 });
 
+export const ExternalSystemEntrySchema = z.object({
+  key: z.string().min(1),
+  name: z.string().min(1),
+  kind: z.enum(['partner-api', 'vendor-service', 'saas', 'unknown']).default('unknown'),
+  url_patterns: z.array(z.string()).optional(),
+});
+
 export const WorkspaceManifestSchema = z.object({
   schema_version: z.string(),
   output_dir: z.string().optional().default('.ste-workspace/'),
   seed_scope: z.array(z.string()).optional(),
   repos: z.array(RepoEntrySchema).min(1),
+  external_systems: z.array(ExternalSystemEntrySchema).optional().default([]),
 });
 
 export type RepoEntry = z.infer<typeof RepoEntrySchema>;
+export type ExternalSystemEntry = z.infer<typeof ExternalSystemEntrySchema>;
 export type WorkspaceManifest = z.infer<typeof WorkspaceManifestSchema>;
 
 export interface ParsedWorkspaceLocation {

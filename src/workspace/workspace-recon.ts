@@ -182,7 +182,7 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
             const stateAbs = path.resolve(workspaceRoot, outputRel, 'state', repo.name);
             const sliceAbs = path.join(outputRoot, 'slices', `${repo.name}.yaml`);
             const sliceRel = `slices/${repo.name}.yaml`;
-            const emit = await emitWorkspaceSlice(repo.name, stateAbs, sliceAbs, repoAbs);
+            const emit = await emitWorkspaceSlice(repo.name, stateAbs, sliceAbs, repoAbs, manifest.external_systems);
             const result: RepoResult = {
               name: repo.name,
               status: 'success',
