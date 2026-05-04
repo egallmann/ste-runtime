@@ -47,10 +47,12 @@ jobs:
           fail() { echo "::error::IP-GUARD SHAPE MATCH: $1"; HITS=1; }
 
           # --- Pattern 1: JIRA-style identifiers ---
-          # Allow product identifiers: E-ADR-nnn, ADR-xx-nnnn, INV-nnnn,
-          # CAP-nnnn, DEC-nnnn, REL-nnnn, SHA-nnn, ISO-nnnn, MP-nn.
-          # Uses Perl regex negative lookbehind to skip these prefixes.
-          PAT_JIRA='\b(?!E-ADR-|ADR-[A-Z]{1,3}-|INV-|CAP-|DEC-|REL-|SHA-|ISO-|MP-)[A-Z]{2,}-[0-9]{3,}\b'
+          # Require 3+ uppercase letters in the project key to avoid matching
+          # architecture sub-type prefixes (PC-nnnn, PS-nnnn, etc.).
+          # Exclude known product/architecture identifiers via lookahead:
+          SAFE='ADR-|INV-|CAP-|DEC-|REL-|COMP-|CONST-|SYS-|SHA-|ISO-'
+          SAFE+='|BOUND-|SYSBOUND-|IFACE-|GAP-|CTR-'
+          PAT_JIRA="\b(?!${SAFE})[A-Z]{3,}-[0-9]{3,}\b"
           if git grep -nP "$PAT_JIRA" -- "${GLOBAL_EXCLUDES[@]}" ; then
             fail "$PAT_JIRA"
           fi
