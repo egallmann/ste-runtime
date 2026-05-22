@@ -130,6 +130,31 @@ export {
 } from './cli/evidence-command.js';
 
 // ============================================================================
+// Workspace Graph Queries (non-LLM canned traversals)
+// ============================================================================
+
+export {
+  loadWorkspaceGraph,
+  systemDependencies,
+  componentIntegration,
+  blastRadiusWorkspace,
+  toMermaid,
+  toTable,
+  toAdjacencyMatrix,
+  type WorkspaceGraph,
+  type WorkspaceNode,
+  type WorkspaceEdge,
+  type SystemDependencyResult,
+  type RepoDependency,
+  type ComponentIntegrationResult,
+  type IntegrationGroup,
+  type WorkspaceBlastRadiusResult,
+  type BlastTier,
+  type CannedQueryResult,
+  type AdjacencyMatrixResult,
+} from './workspace/index.js';
+
+// ============================================================================
 // Architecture compiler (ADR → registries / index / manifest)
 // ============================================================================
 

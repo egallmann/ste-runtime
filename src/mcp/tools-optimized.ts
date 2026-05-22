@@ -54,6 +54,7 @@ export interface CodeMatch {
   description?: string;
   type: string;
   domain: string;
+  repo?: string;
 }
 
 /**
@@ -73,6 +74,7 @@ function nodeToCodeMatch(node: AidocNode): CodeMatch {
     description: node.description ?? (node.element?.docstring as string) ?? (node.element?.description as string),
     type: node.type,
     domain: node.domain,
+    repo: node.repo,
   };
 }
 
@@ -113,6 +115,7 @@ export interface FindArgs {
   includeUsages?: boolean;
   domain?: string;
   type?: string;
+  repo?: string;
 }
 
 export interface FindResult {
@@ -137,9 +140,9 @@ export async function find(
   args: FindArgs
 ): Promise<FindResult> {
   const startTime = performance.now();
-  const { query, maxResults = 5, includeUsages = false, domain, type } = args;
+  const { query, maxResults = 5, includeUsages = false, domain, type, repo } = args;
   
-  const searchResult = search(ctx, query, { maxResults, domain, type });
+  const searchResult = search(ctx, query, { maxResults, domain, type, repo });
   
   const matches = searchResult.nodes.map(nodeToCodeMatch);
   
@@ -184,6 +187,7 @@ export async function find(
 export interface ShowArgs {
   target: string;
   depth?: number;
+  repo?: string;
 }
 
 export interface ShowResult {
@@ -204,14 +208,19 @@ export async function show(
   args: ShowArgs
 ): Promise<ShowResult> {
   const startTime = performance.now();
-  const { target, depth = 1 } = args;
+  const { target, depth = 1, repo } = args;
   
   // Try direct lookup first
   let node = lookupByKey(ctx, target);
   
+  // If found by key, still honour repo filter
+  if (node && repo && node.repo !== repo) {
+    node = null;
+  }
+  
   // If not found, try search
   if (!node) {
-    const searchResult = search(ctx, target, { maxResults: 1 });
+    const searchResult = search(ctx, target, { maxResults: 1, repo });
     node = searchResult.nodes[0] ?? null;
   }
   
@@ -255,6 +264,7 @@ export async function show(
 export interface UsagesArgs {
   target: string;
   maxResults?: number;
+  repo?: string;
 }
 
 export interface UsageMatch extends CodeMatch {
@@ -279,12 +289,15 @@ export async function usages(
   args: UsagesArgs
 ): Promise<UsagesResult> {
   const startTime = performance.now();
-  const { target, maxResults = 10 } = args;
+  const { target, maxResults = 10, repo } = args;
   
   // Find the target
   let node = lookupByKey(ctx, target);
+  if (node && repo && node.repo !== repo) {
+    node = null;
+  }
   if (!node) {
-    const searchResult = search(ctx, target, { maxResults: 1 });
+    const searchResult = search(ctx, target, { maxResults: 1, repo });
     node = searchResult.nodes[0] ?? null;
   }
   
@@ -298,13 +311,15 @@ export async function usages(
   
   const targetMatch = nodeToCodeMatch(node);
   
-  // Get dependents (what uses this)
+  // Get dependents (what uses this) -- traversal crosses repos, then filter
   const depsResult = dependents(ctx, node.key, 1, maxResults);
   
-  const usageMatches: UsageMatch[] = depsResult.nodes.map(n => ({
-    ...nodeToCodeMatch(n),
-    context: n.element?.docstring as string ?? undefined,
-  }));
+  const usageMatches: UsageMatch[] = depsResult.nodes
+    .filter(n => !repo || n.repo === repo)
+    .map(n => ({
+      ...nodeToCodeMatch(n),
+      context: n.element?.docstring as string ?? undefined,
+    }));
   
   // Calculate tokens
   let tokensEstimate = estimateTokens(targetMatch.source ?? '');
@@ -334,6 +349,7 @@ export async function usages(
 export interface ImpactArgs {
   target: string;
   depth?: number;
+  repo?: string;
 }
 
 export interface Obligations {
@@ -362,12 +378,15 @@ export async function impact(
   args: ImpactArgs
 ): Promise<ImpactResult> {
   const startTime = performance.now();
-  const { target, depth = 2 } = args;
+  const { target, depth = 2, repo } = args;
   
-  // Find the target
+  // Find the target -- repo filter applies to lookup only
   let node = lookupByKey(ctx, target);
+  if (node && repo && node.repo !== repo) {
+    node = null;
+  }
   if (!node) {
-    const searchResult = search(ctx, target, { maxResults: 1 });
+    const searchResult = search(ctx, target, { maxResults: 1, repo });
     node = searchResult.nodes[0] ?? null;
   }
   
@@ -382,7 +401,7 @@ export async function impact(
   
   const targetMatch = nodeToCodeMatch(node);
   
-  // Get blast radius
+  // Get blast radius -- traversal crosses repos by design
   const blastResult = blastRadius(ctx, node.key, depth, 50);
   
   const affected = blastResult.nodes
@@ -436,6 +455,7 @@ export async function impact(
 export interface SimilarArgs {
   target: string;
   maxResults?: number;
+  repo?: string;
 }
 
 export interface SimilarResult {
@@ -456,12 +476,15 @@ export async function similar(
   args: SimilarArgs
 ): Promise<SimilarResult> {
   const startTime = performance.now();
-  const { target, maxResults = 5 } = args;
+  const { target, maxResults = 5, repo } = args;
   
   // Find the target
   let node = lookupByKey(ctx, target);
+  if (node && repo && node.repo !== repo) {
+    node = null;
+  }
   if (!node) {
-    const searchResult = search(ctx, target, { maxResults: 1 });
+    const searchResult = search(ctx, target, { maxResults: 1, repo });
     node = searchResult.nodes[0] ?? null;
   }
   
@@ -481,6 +504,7 @@ export async function similar(
   for (const candidate of ctx.graph.values()) {
     if (candidate.key === node.key) continue;
     if (candidate.type !== node.type) continue;
+    if (repo && candidate.repo !== repo) continue;
     
     // Score by tag overlap
     const sharedTags = candidate.tags.filter(t => node!.tags.includes(t));
@@ -525,6 +549,7 @@ export async function similar(
 
 export interface OverviewArgs {
   focus?: string;
+  repo?: string;
 }
 
 export interface DomainSummary {
@@ -532,11 +557,17 @@ export interface DomainSummary {
   entryPoints: string[];
 }
 
+export interface RepoSummary {
+  nodes: number;
+  domains: Record<string, DomainSummary>;
+}
+
 export interface OverviewResult {
   domains: Record<string, DomainSummary>;
   architecture: string;
   keyComponents: string[];
   totalNodes: number;
+  repos?: Record<string, RepoSummary>;
   architectureBundle?: ArchitectureBundleResult;
   meta: ResponseMeta;
 }
@@ -556,33 +587,55 @@ export async function overview(
   options: ArchitectureToolOptions = {}
 ): Promise<OverviewResult> {
   const startTime = performance.now();
-  const { focus } = args;
+  const { focus, repo } = args;
   
-  const stats = getGraphStats(ctx);
-  
-  // Group by domain
+  // Group by domain (with optional repo and focus filters)
   const domains: Record<string, DomainSummary> = {};
   const domainCounts: Record<string, number> = {};
   const domainEntryPoints: Record<string, string[]> = {};
-  
+
+  // Per-repo breakdown (only populated when no repo filter is set)
+  const repoData: Record<string, { count: number; domainCounts: Record<string, number>; domainEntryPoints: Record<string, string[]> }> = {};
+  let filteredNodeCount = 0;
+
   for (const node of ctx.graph.values()) {
-    // Apply focus filter if specified
     if (focus && !node.path?.includes(focus) && !node.domain.includes(focus)) {
       continue;
     }
-    
+    if (repo && node.repo !== repo) continue;
+
+    filteredNodeCount++;
+
     if (!domainCounts[node.domain]) {
       domainCounts[node.domain] = 0;
       domainEntryPoints[node.domain] = [];
     }
-    
     domainCounts[node.domain]++;
-    
-    // Identify entry points (exported functions, API endpoints)
+
     if (node.tags.includes('exported') || node.domain === 'api') {
       if (domainEntryPoints[node.domain].length < 5) {
         const name = (node.element?.name as string) ?? node.id;
         domainEntryPoints[node.domain].push(name);
+      }
+    }
+
+    // Accumulate per-repo stats when no repo filter is active
+    if (!repo && node.repo) {
+      if (!repoData[node.repo]) {
+        repoData[node.repo] = { count: 0, domainCounts: {}, domainEntryPoints: {} };
+      }
+      const rd = repoData[node.repo];
+      rd.count++;
+      if (!rd.domainCounts[node.domain]) {
+        rd.domainCounts[node.domain] = 0;
+        rd.domainEntryPoints[node.domain] = [];
+      }
+      rd.domainCounts[node.domain]++;
+      if (node.tags.includes('exported') || node.domain === 'api') {
+        if ((rd.domainEntryPoints[node.domain]?.length ?? 0) < 5) {
+          const name = (node.element?.name as string) ?? node.id;
+          rd.domainEntryPoints[node.domain].push(name);
+        }
       }
     }
   }
@@ -594,9 +647,12 @@ export async function overview(
     };
   }
   
-  // Identify key components (most referenced)
+  // Identify key components (most referenced), respecting repo filter
   const keyComponents = Array.from(ctx.graph.values())
-    .filter(n => n.referencedBy.length > 3)
+    .filter(n => {
+      if (repo && n.repo !== repo) return false;
+      return n.referencedBy.length > 3;
+    })
     .sort((a, b) => b.referencedBy.length - a.referencedBy.length)
     .slice(0, 10)
     .map(n => (n.element?.name as string) ?? n.id);
@@ -609,13 +665,29 @@ export async function overview(
   
   let architecture = 'Unknown';
   if (hasFrontend && hasApi && hasData) {
-    architecture = 'Full-stack (frontend → api → data)';
+    architecture = 'Full-stack (frontend \u2192 api \u2192 data)';
   } else if (hasApi && hasData) {
-    architecture = 'Backend (api → data)';
+    architecture = 'Backend (api \u2192 data)';
   } else if (hasInfrastructure) {
     architecture = 'Infrastructure-as-code';
   } else if (Object.keys(domains).length > 3) {
     architecture = 'Multi-domain';
+  }
+
+  // Build repos breakdown when not filtering by repo
+  let repos: Record<string, RepoSummary> | undefined;
+  if (!repo && Object.keys(repoData).length > 0) {
+    repos = {};
+    for (const [repoName, rd] of Object.entries(repoData)) {
+      const repoDomains: Record<string, DomainSummary> = {};
+      for (const [domain, count] of Object.entries(rd.domainCounts)) {
+        repoDomains[domain] = {
+          components: count,
+          entryPoints: rd.domainEntryPoints[domain] ?? [],
+        };
+      }
+      repos[repoName] = { nodes: rd.count, domains: repoDomains };
+    }
   }
 
   const architectureBundle = options.projectRoot
@@ -626,7 +698,8 @@ export async function overview(
     domains,
     architecture,
     keyComponents,
-    totalNodes: stats.totalNodes,
+    totalNodes: filteredNodeCount,
+    repos,
     architectureBundle,
     meta: createMeta(
       startTime,

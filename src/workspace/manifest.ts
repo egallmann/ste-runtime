@@ -25,8 +25,8 @@ const INFRA_SOURCE_SUBDIRS = [
 ] as const;
 
 const LANG_MAP: Record<string, SupportedLanguage[]> = {
-  dotnet: ['cloudformation', 'json'],
-  csharp: ['cloudformation', 'json'],
+  dotnet: ['csharp', 'cloudformation', 'json'],
+  csharp: ['csharp', 'cloudformation', 'json'],
   python: ['python', 'cloudformation', 'json'],
   node: ['typescript', 'json'],
   typescript: ['typescript', 'json'],

@@ -31,7 +31,7 @@ _slice:
   extraction:
     method: static
     confidence: high
-    timestamp: '2026-04-30T21:04:57.020Z'
+    timestamp: '2026-05-22T21:45:25.967Z'
 module:
   id: module-app-api
   path: app/api.py

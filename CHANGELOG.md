@@ -7,6 +7,145 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Semantic Compression Engine (`src/workspace/compression.ts`): deterministic
+  aggregation layer that transforms canned-query results into multi-resolution
+  `CompressedProjection` at five levels (L0-L4). Implements endpoint path-prefix
+  grouping into capability domains, same-type node aggregation above configurable
+  threshold, 5-tier edge verb taxonomy with per-level suppression rules, edge
+  multiplicity compression, maxNodes safety valve, and infrastructure condensation
+  for alarm/monitoring resources at L0-L1. All compression preserves traceability
+  via `memberIds` on aggregate nodes and `sourceEdgeIds` on compressed edges.
+
+- Resolution-Aware Renderers: `toMermaidAtResolution()` and
+  `toTableAtResolution()` in `projections.ts` consume `CompressedProjection` and
+  produce multi-resolution Mermaid diagrams with capability subgraphs, aggregate
+  node shapes, and navigation bars linking all resolution levels. L4 backward
+  compatibility preserved: `toMermaid()` remains unchanged.
+
+- Multi-Resolution Projection Emission (`src/workspace/emit-multi-res-projections.ts`):
+  emits `system-context-L0.md`, `service-topology-L1.md`, `capability-domains-L2.md`,
+  per-repo `capability-domains-L2-{repo}.md`, `contract-integration-L3.md`, and
+  per-repo `contract-integration-L3-{repo}.md` alongside existing L4 files. Each
+  file includes YAML frontmatter (projection_level, compression_ratio, generation_hash,
+  drill_down/drill_up links) and navigation bars. Wired into `executeWorkspaceRecon`
+  as non-fatal post-processing.
+
+- Resolution parameter for MCP and CLI: `ws_dependencies` and `ws_integration` MCP
+  tools accept optional `resolution` parameter (L0|L1|L2|L3|L4, default L4). CLI
+  `ws deps` and `ws integration` commands accept `--resolution` flag. When resolution
+  is specified, results route through the compression engine before rendering.
+  Omitting resolution produces identical L4 output (backward compatible).
+
+- Projection Family Registry (`src/workspace/projection-families.ts`):
+  `ProjectionFamily` interface and registry with five built-in families:
+  `architecture-overview` (L0+L2), `integration-topology` (L1-L3),
+  `dependency-projection` (L0-L1), `governance-projection` (L0-L1, stub),
+  `runtime-projection` (L1-L2, stub). Extensible via `registerFamily()`.
+
+- ADR-L-0019: Multi-Resolution Architecture Projection logical ADR (CAP-0019,
+  DEC-0021, INV-0022, INV-0023).
+- ADR-PC-0010: Semantic Compression Engine physical-component ADR (COMP-0011).
+- Amended ADR-L-0018: added multi-resolution projection as enabled capability,
+  added INV-0024 for projection level metadata.
+- Amended ADR-PC-0009: added COMP-0011 dependency, resolution-aware API to
+  IFACE-0010, and new module paths.
+
+- Bilateral cross-repo edge extraction via httpCalls + api_endpoint matching.
+  The workspace resolver now produces HIGH confidence edges when a TypeScript
+  frontend's `this.http.get/post/put/delete` calls match a C# backend's
+  `[Route]+[HttpVerb]` endpoint contracts (path-suffix alignment). Unilateral
+  claims (outbound call with no matching inbound endpoint) produce MEDIUM
+  confidence edges when manifest `kind=service` confirms the target repo.
+  Bilateral enrichment writes `referenced_by` / `references` backlinks on
+  both caller and callee slice files.
+
+### Fixed
+
+- LANG_MAP for dotnet/csharp repos now includes `csharp` language, enabling
+  `.cs` file discovery and extraction in workspace mode.
+- `getExtractorName()` returns `recon-csharp-extractor-v1` for csharp language
+  (was falling through to `recon-unknown-extractor-v1`).
+- C# extractor now finds action-level `[Route("...")]` attributes in addition
+  to inline `[HttpGet("...")]` route suffixes, and searches up to 12 lines
+  ahead for the method signature (was limited to 5).
+
+### Added
+
+- Auto-publish deterministic graph projections to `output_dir/projections/` on
+  workspace recon completion (`src/workspace/emit-projections.ts`). After all
+  slices, cross-repo edges, and the workspace index are emitted, `emitProjections`
+  loads the workspace graph and writes: `system-dependencies.md` (repo-level
+  dependency DAG as Mermaid + table), `component-integration.md` (workspace-wide),
+  per-repo `component-integration-{repoName}.md`, and `architecture-overview.md`
+  (deterministic skeleton with `<!-- LLM-ENRICHMENT: ... -->` markers for optional
+  narrative enrichment). Projection emission is non-fatal; failures are logged
+  without affecting the recon run status. CLI reports projection file count.
+
+- Per-repo filtering for workspace MCP tools: `find`, `show`, `usages`,
+  `impact`, `similar`, and `overview` now accept an optional `repo` parameter
+  that restricts results to nodes from a specific repository in workspace mode.
+  `overview` returns a per-repo breakdown (`repos` section) with node counts and
+  domain summaries when no repo filter is applied. `AidocNode` gains a `repo`
+  field derived from the file path during graph loading. `CodeMatch` includes
+  `repo` in all tool responses. Single-project mode is unaffected (`repo`
+  defaults to `undefined`).
+
+- Workspace Graph Loader (`src/workspace/workspace-graph-loader.ts`): loads
+  workspace slice YAML files into a typed in-memory `WorkspaceGraph` with
+  pre-built `outAdj`/`inAdj` adjacency lists for O(1) neighbor lookups.
+- Canned Queries (`src/workspace/canned-queries.ts`): three deterministic,
+  non-LLM graph traversal functions:
+  - `systemDependencies()` -- repo-level dependency DAG with verb-labeled edges
+  - `componentIntegration()` -- subgraph grouped by integration pattern
+    (HTTP API, Event Stream, Shared Database, Invocation, Deployment)
+  - `blastRadiusWorkspace()` -- BFS blast radius with tiered classification
+    and risk assessment (low/medium/high/critical)
+- Projection Renderers (`src/workspace/projections.ts`):
+  - `toMermaid()` -- flowchart TD with subgraph blocks per repo and
+    type-specific node shapes
+  - `toTable()` -- structured row arrays with query-specific column schemas
+  - `toAdjacencyMatrix()` -- square matrix with verb-labeled cells
+- CLI Commands (`ste ws deps`, `ste ws integration`, `ste ws blast`):
+  workspace graph queries with `--output mermaid|table|matrix|json` format
+  selection and `--workspace <path>` directory targeting.
+- MCP Tools (`ws_dependencies`, `ws_integration`, `ws_blast_radius`):
+  workspace graph queries exposed via MCP protocol, returning Mermaid
+  diagrams and structured tables.
+- Programmatic API: all workspace graph types and functions exported from
+  the `ste-runtime` package entry point (`src/index.ts`).
+
+- Workspace Initialization Guide (`documentation/guides/workspace-initialization.md`):
+  end-to-end walkthrough for setting up ste-runtime in a multi-repo workspace,
+  covering `workspace.yaml` schema, workspace-level MCP config, running
+  `recon:workspace`, and verification.
+- Workspace Mode section in RECON-README (`instructions/RECON-README.md`)
+  documenting `--workspace` usage, output structure, and resilience behavior.
+
+### Changed
+
+- Workspace auto-discovery: bare `--workspace` now checks `ste.config.json`
+  `projectRoot` for `workspace.yaml` before walking upward from cwd, enabling
+  `recon --workspace` when ste-runtime lives outside the workspace tree.
+- MCP server workspace state loading: when `--project-root` points at a
+  directory containing `workspace.yaml`, the MCP server now loads the graph
+  from `output_dir/state/` (the workspace recon output) instead of the
+  single-project `.ste/state` path.
+- MCP Setup Guide (`documentation/guides/mcp-setup.md`): replaced outdated
+  `npm install ste-runtime` / `npx ste` installation instructions with the
+  actual clone-and-build workflow; replaced `${workspaceFolder}` patterns with
+  absolute-path MCP configs; added workspace-level vs global config options.
+- Guides README (`documentation/guides/README.md`): added Workspace
+  Initialization Guide to the index.
+
+### Fixed
+
+- Inference phase crash on Angular projects: added `Array.isArray()` guards
+  around `callGraph`, `constructorCallGraph`, and `methodCallGraph` lookups
+  in `src/recon/phases/inference.ts` to prevent `is not iterable` errors
+  when dynamic call graph data is non-array.
+
 ### Changed
 
 - Node Identity Namespacing: all resource node IDs now include the owning

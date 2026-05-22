@@ -34,6 +34,8 @@ function getExtractorName(language: SupportedLanguage): string {
       return 'recon-angular-extractor-v1';  // E-ADR-006
     case 'css':
       return 'recon-css-extractor-v1';  // E-ADR-006
+    case 'csharp':
+      return 'recon-csharp-extractor-v1';
     default:
       return 'recon-unknown-extractor-v1';
   }
@@ -699,6 +701,8 @@ function normalizeElement(
         instantiatedClasses: assertion.metadata.instantiatedClasses,
         // Summary: all methods called in the file
         calledMethods: assertion.metadata.calledMethods,
+        // HTTP calls for cross-repo edge resolution
+        httpCalls: assertion.metadata.httpCalls,
       },
       provenance: {
         extracted_at: timestamp,

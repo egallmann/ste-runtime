@@ -1,808 +1,711 @@
-# integrity_schema_version: 1
-# generated: deterministic_projection_v1
-# artifact_kind: legacy_entity_registry
-# generator_id: adr-compiler
-# generator_version: 1
-# hash_algorithm: sha256
-# source_hash: da1f7aa316b508e9c95a97283650ac32b0f98f8be3c2bdccbadd8b58b68bf760
-# rendered_hash: 14068c3450e3cf57ff397d20beb900d60ecbce82973bdb07ab107194e42e1153
+<!--
+artifact_kind: legacy_entity_registry
+generator_id: ste-runtime-architecture-compiler
+note: >
+  Emitted by ste-runtime as a runtime-owned machine artifact. Public cross-repo
+  contracts remain owned by ste-spec; content is derived from the same ADR
+  sources via the TypeScript compiler pipeline.
+-->
 
 schema_version: '1.1'
 type: entity_registry
 entities:
-- entity_id: CAP-0007
-  entity_type: capability
-  name: Surface graph freshness and obligation projection semantics
-  introduced_by: ADR-L-0007
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: CAP-0009
-  entity_type: capability
-  name: Workspace-scoped analysis
-  introduced_by: ADR-L-0009
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: CAP-0010
-  entity_type: capability
-  name: One-command workspace initialization
-  introduced_by: ADR-L-0010
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: CAP-0011
-  entity_type: capability
-  name: ArchitectureEvidence emission
-  introduced_by: ADR-L-0011
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: CAP-0012
-  entity_type: capability
-  name: Schema fixture synchronization
-  introduced_by: ADR-L-0012
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: CAP-0015
-  entity_type: capability
-  name: Workspace-agnostic operation
-  introduced_by: ADR-L-0015
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: CAP-0016
-  entity_type: capability
-  name: Schema-compliant slice emission
-  introduced_by: ADR-L-0016
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0001
-  entity_type: component
-  name: MCP Server and Tool Registry
-  introduced_by: ADR-PC-0001
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0002
-  entity_type: component
-  name: Watchdog and Update Coordination
-  introduced_by: ADR-PC-0002
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0003
-  entity_type: component
-  name: Preflight Freshness and Reconciliation Gate
-  introduced_by: ADR-PC-0003
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0004
-  entity_type: component
-  name: Obligation Projection and Context Assembly
-  introduced_by: ADR-PC-0004
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0005
-  entity_type: component
-  name: JSON Semantic Extractor
-  introduced_by: ADR-PC-0005
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0006
-  entity_type: component
-  name: Frontend Semantic Extractor
-  introduced_by: ADR-PC-0006
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0007
-  entity_type: component
-  name: CloudFormation Semantic Extractor
-  introduced_by: ADR-PC-0007
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0008
-  entity_type: component
-  name: Resource Resolver
-  introduced_by: ADR-PC-0008
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: COMP-0009
-  entity_type: component
-  name: Slice Emitter Edge Wiring
-  introduced_by: ADR-PC-0008
-  lifecycle_stage: active
-  source_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
-  source_artifact_type: physical_component_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0001
-  entity_type: decision
-  name: RECON executes provisionally, generating semantic pressure without assuming
-    correctness.
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0002
-  entity_type: decision
-  name: RECON self-validation is non-blocking, report-only, and exploratory.
-  introduced_by: ADR-L-0002
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0003
-  entity_type: decision
-  name: CEM implementation is intentionally deferred.
-  introduced_by: ADR-L-0003
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0004
-  entity_type: decision
-  name: 'ste-runtime is a single process that combines:'
-  introduced_by: ADR-L-0004
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0005
-  entity_type: decision
-  name: ''
-  introduced_by: ADR-L-0005
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0006
-  entity_type: decision
-  name: 'Implement a Conversational Query Interface (CQI) as a layer above RSS that:'
-  introduced_by: ADR-L-0006
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0007
-  entity_type: decision
-  name: Freshness and obligation projection are logical runtime semantics
-  introduced_by: ADR-L-0007
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0009
-  entity_type: decision
-  name: Workspace is the universal scope unit
-  introduced_by: ADR-L-0009
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0010
-  entity_type: decision
-  name: ste init is the canonical one-command install experience
-  introduced_by: ADR-L-0010
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0011
-  entity_type: decision
-  name: ste-runtime conforms to RuntimeAdapter role
-  introduced_by: ADR-L-0011
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0012
-  entity_type: decision
-  name: ste-spec is the single schema authority
-  introduced_by: ADR-L-0012
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0013
-  entity_type: decision
-  name: Persisted paths are POSIX-relative to workspace root
-  introduced_by: ADR-L-0013
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0014
-  entity_type: decision
-  name: No private registry references in source or artifacts
-  introduced_by: ADR-L-0014
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0015
-  entity_type: decision
-  name: ste-runtime is workspace-agnostic by invariant
-  introduced_by: ADR-L-0015
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0016
-  entity_type: decision
-  name: Workspace graph slices follow a defined schema contract
-  introduced_by: ADR-L-0016
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0017
-  entity_type: decision
-  name: Mandatory per-repo heartbeat (stdout)
-  introduced_by: ADR-L-0017
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0018
-  entity_type: decision
-  name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
-  introduced_by: ADR-L-0017
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: DEC-0019
-  entity_type: decision
-  name: Opt-in per-repo Promise timeout (--timeout-per-repo)
-  introduced_by: ADR-L-0017
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0001
-  entity_type: invariant
-  name: INV-0001
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0002
-  entity_type: invariant
-  name: INV-0002
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0003
-  entity_type: invariant
-  name: INV-0003
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0004
-  entity_type: invariant
-  name: INV-0004
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0005
-  entity_type: invariant
-  name: INV-0005
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0006
-  entity_type: invariant
-  name: INV-0006
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0007
-  entity_type: invariant
-  name: INV-0007
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0008
-  entity_type: invariant
-  name: INV-0008
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0009
-  entity_type: invariant
-  name: INV-0009
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0010
-  entity_type: invariant
-  name: INV-0010
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0011
-  entity_type: invariant
-  name: INV-0011
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0012
-  entity_type: invariant
-  name: INV-0012
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0013
-  entity_type: invariant
-  name: INV-0013
-  introduced_by: ADR-L-0001
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0014
-  entity_type: invariant
-  name: INV-0014
-  introduced_by: ADR-L-0009
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0015
-  entity_type: invariant
-  name: INV-0015
-  introduced_by: ADR-L-0015
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0016
-  entity_type: invariant
-  name: INV-0016
-  introduced_by: ADR-L-0015
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0017
-  entity_type: invariant
-  name: INV-0017
-  introduced_by: ADR-L-0016
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0018
-  entity_type: invariant
-  name: INV-0018
-  introduced_by: ADR-L-0016
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
-- entity_id: INV-0019
-  entity_type: invariant
-  name: INV-0019
-  introduced_by: ADR-L-0017
-  lifecycle_stage: active
-  source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_artifact_type: logical_adr
-  domains: []
-  related_adrs: []
-  realized_by: []
-  relationships:
-    depends_on: []
-    implements: []
-    consumes: []
-    realizes: []
+  - entity_id: CAP-0007
+    entity_type: capability
+    name: Surface graph freshness and obligation projection semantics
+    introduced_by: ADR-L-0007
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0009
+    entity_type: capability
+    name: Workspace-scoped analysis
+    introduced_by: ADR-L-0009
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0010
+    entity_type: capability
+    name: One-command workspace initialization
+    introduced_by: ADR-L-0010
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0011
+    entity_type: capability
+    name: ArchitectureEvidence emission
+    introduced_by: ADR-L-0011
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0012
+    entity_type: capability
+    name: Schema fixture synchronization
+    introduced_by: ADR-L-0012
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0015
+    entity_type: capability
+    name: Workspace-agnostic operation
+    introduced_by: ADR-L-0015
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0016
+    entity_type: capability
+    name: Schema-compliant slice emission
+    introduced_by: ADR-L-0016
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: CAP-0018
+    entity_type: capability
+    name: Deterministic workspace graph querying
+    introduced_by: ADR-L-0018
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0001
+    entity_type: component
+    name: MCP Server and Tool Registry
+    introduced_by: ADR-PC-0001
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0002
+    entity_type: component
+    name: Watchdog and Update Coordination
+    introduced_by: ADR-PC-0002
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0003
+    entity_type: component
+    name: Preflight Freshness and Reconciliation Gate
+    introduced_by: ADR-PC-0003
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0004
+    entity_type: component
+    name: Obligation Projection and Context Assembly
+    introduced_by: ADR-PC-0004
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0005
+    entity_type: component
+    name: JSON Semantic Extractor
+    introduced_by: ADR-PC-0005
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0006
+    entity_type: component
+    name: Frontend Semantic Extractor
+    introduced_by: ADR-PC-0006
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0007
+    entity_type: component
+    name: CloudFormation Semantic Extractor
+    introduced_by: ADR-PC-0007
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0008
+    entity_type: component
+    name: Resource Resolver
+    introduced_by: ADR-PC-0008
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0009
+    entity_type: component
+    name: Slice Emitter Edge Wiring
+    introduced_by: ADR-PC-0008
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: COMP-0010
+    entity_type: component
+    name: Workspace Graph Query Engine
+    introduced_by: ADR-PC-0009
+    lifecycle_stage: active
+    source_path: adrs/physical-component/ADR-PC-0009-workspace-graph-query-engine.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0001
+    entity_type: decision
+    name: RECON executes provisionally, generating semantic pressure without assuming correctness.
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0002
+    entity_type: decision
+    name: RECON self-validation is non-blocking, report-only, and exploratory.
+    introduced_by: ADR-L-0002
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0003
+    entity_type: decision
+    name: CEM implementation is intentionally deferred.
+    introduced_by: ADR-L-0003
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0004
+    entity_type: decision
+    name: 'ste-runtime is a single process that combines:'
+    introduced_by: ADR-L-0004
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0005
+    entity_type: decision
+    name: DEC-0005
+    introduced_by: ADR-L-0005
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0006
+    entity_type: decision
+    name: 'Implement a Conversational Query Interface (CQI) as a layer above RSS that:'
+    introduced_by: ADR-L-0006
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0007
+    entity_type: decision
+    name: Freshness and obligation projection are logical runtime semantics
+    introduced_by: ADR-L-0007
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0009
+    entity_type: decision
+    name: Workspace is the universal scope unit
+    introduced_by: ADR-L-0009
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0010
+    entity_type: decision
+    name: ste init is the canonical one-command install experience
+    introduced_by: ADR-L-0010
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0011
+    entity_type: decision
+    name: ste-runtime conforms to RuntimeAdapter role
+    introduced_by: ADR-L-0011
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0012
+    entity_type: decision
+    name: ste-spec is the single schema authority
+    introduced_by: ADR-L-0012
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0013
+    entity_type: decision
+    name: Persisted paths are POSIX-relative to workspace root
+    introduced_by: ADR-L-0013
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0014
+    entity_type: decision
+    name: No private registry references in source or artifacts
+    introduced_by: ADR-L-0014
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0015
+    entity_type: decision
+    name: ste-runtime is workspace-agnostic by invariant
+    introduced_by: ADR-L-0015
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0016
+    entity_type: decision
+    name: Workspace graph slices follow a defined schema contract
+    introduced_by: ADR-L-0016
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0017
+    entity_type: decision
+    name: Mandatory per-repo heartbeat (stdout)
+    introduced_by: ADR-L-0017
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0018
+    entity_type: decision
+    name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
+    introduced_by: ADR-L-0017
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0019
+    entity_type: decision
+    name: Opt-in per-repo Promise timeout (--timeout-per-repo)
+    introduced_by: ADR-L-0017
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: DEC-0020
+    entity_type: decision
+    name: Workspace graph queries are deterministic graph traversal with no LLM inference
+    introduced_by: ADR-L-0018
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements:
+        - CAP-0018
+      realizes:
+        - INV-0020
+        - INV-0021
+  - entity_id: INV-0001
+    entity_type: invariant
+    name: INV-0001
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0002
+    entity_type: invariant
+    name: INV-0002
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0003
+    entity_type: invariant
+    name: INV-0003
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0004
+    entity_type: invariant
+    name: INV-0004
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0005
+    entity_type: invariant
+    name: INV-0005
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0006
+    entity_type: invariant
+    name: INV-0006
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0007
+    entity_type: invariant
+    name: INV-0007
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0008
+    entity_type: invariant
+    name: INV-0008
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0009
+    entity_type: invariant
+    name: INV-0009
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0010
+    entity_type: invariant
+    name: INV-0010
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0011
+    entity_type: invariant
+    name: INV-0011
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0012
+    entity_type: invariant
+    name: INV-0012
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0013
+    entity_type: invariant
+    name: INV-0013
+    introduced_by: ADR-L-0001
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0014
+    entity_type: invariant
+    name: INV-0014
+    introduced_by: ADR-L-0009
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0015
+    entity_type: invariant
+    name: INV-0015
+    introduced_by: ADR-L-0015
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0016
+    entity_type: invariant
+    name: INV-0016
+    introduced_by: ADR-L-0015
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0017
+    entity_type: invariant
+    name: INV-0017
+    introduced_by: ADR-L-0016
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0018
+    entity_type: invariant
+    name: INV-0018
+    introduced_by: ADR-L-0016
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0019
+    entity_type: invariant
+    name: INV-0019
+    introduced_by: ADR-L-0017
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0020
+    entity_type: invariant
+    name: INV-0020
+    introduced_by: ADR-L-0018
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0021
+    entity_type: invariant
+    name: INV-0021
+    introduced_by: ADR-L-0018
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []

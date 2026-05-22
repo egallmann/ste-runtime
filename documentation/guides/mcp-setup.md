@@ -38,18 +38,18 @@ ste-runtime provides a unified MCP server that combines:
 ## Prerequisites
 
 1. **Node.js** 18+ installed
-2. **ste-runtime** installed in your project
+2. **ste-runtime** cloned and built (see below)
 3. **Cursor** editor installed
 
 ## Installation
 
-### 1. Install ste-runtime
+### 1. Clone and Build ste-runtime
 
 ```bash
-cd your-project
-npm install ste-runtime
-# or globally
-npm install -g ste-runtime
+git clone https://github.com/egallmann/ste-runtime.git
+cd ste-runtime
+npm install
+npm run build
 ```
 
 ### 2. Run Initial RECON
@@ -57,63 +57,76 @@ npm install -g ste-runtime
 Before starting the MCP server, run an initial RECON to build the semantic graph:
 
 ```bash
-npx ste recon
+cd ste-runtime
+npm run recon:full
 ```
 
 This creates the `.ste/state/` directory with AI-DOC files.
 
+For multi-repo workspaces, see the
+[Workspace Initialization Guide](./workspace-initialization.md).
+
 ### 3. Configure Cursor MCP
 
-Create or edit `~/.cursor/mcp.json` (or `%USERPROFILE%\.cursor\mcp.json` on Windows):
+There are two configuration options: workspace-level (recommended) or global.
+
+#### Option A: Workspace-Level Config (Recommended)
+
+Create `.cursor/mcp.json` inside your project or workspace root directory.
+This scopes the MCP server to that workspace.
 
 ```json
 {
   "mcpServers": {
     "ste-runtime": {
-      "command": "ste",
-      "args": ["watch", "--mcp"],
-      "cwd": "${workspaceFolder}"
+      "command": "node",
+      "args": [
+        "/absolute/path/to/ste-runtime/dist/cli/index.js",
+        "watch",
+        "--mcp",
+        "--project-root",
+        "/absolute/path/to/your-project"
+      ],
+      "type": "stdio",
+      "timeout": 60
     }
   }
 }
 ```
 
-**Explanation:**
-- `command`: The `ste` executable (from package.json bin)
-- `args`: Starts watch mode with MCP enabled
-- `cwd`: Runs in your workspace folder
+**Important:** Use absolute paths. Cursor does not interpolate variables like
+`${workspaceFolder}` in MCP configs.
 
-### 4. Configure ste-runtime (Optional)
+#### Option B: Global Config
 
-Create `ste.config.json` in your project root to customize behavior:
+Create or edit `~/.cursor/mcp.json` (or `%USERPROFILE%\.cursor\mcp.json` on
+Windows). This applies to all workspaces that do not have a workspace-level
+config.
 
 ```json
 {
-  "languages": ["typescript", "python"],
-  "sourceDirs": ["src", "lib"],
-  "watchdog": {
-    "enabled": true,
-    "debounceMs": 500,
-    "aiEditDebounceMs": 2000,
-    "patterns": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.py"]
-  },
-  "mcp": {
-    "transport": "stdio",
-    "logLevel": "info"
-  },
-  "rss": {
-    "stateRoot": ".ste/state",
-    "defaultDepth": 2,
-    "maxResults": 50
+  "mcpServers": {
+    "ste-runtime": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/ste-runtime/dist/cli/index.js",
+        "watch",
+        "--mcp"
+      ],
+      "type": "stdio",
+      "timeout": 60
+    }
   }
 }
 ```
 
-**Key Settings:**
-- `watchdog.enabled`: Enable automatic RECON on file changes (default: false)
-- `watchdog.debounceMs`: Wait time for manual edits (default: 500ms)
-- `watchdog.aiEditDebounceMs`: Wait time for AI edits (default: 2000ms)
-- `rss.defaultDepth`: Graph traversal depth (adaptive based on your codebase)
+Without `--project-root`, the MCP server auto-detects the project root from
+the ste-runtime `ste.config.json` (defaults to the parent directory).
+
+### 4. Configure ste-runtime (Optional)
+
+Create `ste.config.json` in the ste-runtime directory to customize behavior.
+See the [Configuration Reference](./configuration-reference.md) for all options.
 
 ### 5. Restart Cursor
 
@@ -221,90 +234,44 @@ This keeps the semantic graph always fresh without manual intervention.
 
 **Symptom:**
 ```
-Error: Cannot find module 'C:\Users\YourName\dist\cli\index.js'
+Error: Cannot find module '/path/to/dist/cli/index.js'
 ```
 
-**Cause:** Cursor is trying to run `node dist/cli/index.js` from the wrong directory, or the path is incorrect.
+**Cause:** The path to `dist/cli/index.js` in your MCP config is incorrect,
+or ste-runtime has not been built.
 
-**Solution:** Use the globally installed `ste` command instead:
+**Solution:**
 
-```json
-{
-  "mcpServers": {
-    "ste-runtime": {
-      "disabled": false,
-      "timeout": 60,
-      "type": "stdio",
-      "command": "ste",
-      "args": ["watch", "--mcp"],
-      "cwd": "${workspaceFolder}"
-    }
-  }
-}
-```
-
-**Why This Works:**
-- `ste` is globally installed and in your PATH
-- Cursor can find it from any directory
-- The `cwd: "${workspaceFolder}"` ensures correct working directory
-
-**Alternative (If Global Install Issues):**
-If you have issues with the global install, use an absolute path:
-
-```json
-{
-  "mcpServers": {
-    "ste-runtime": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/ste-runtime/dist/cli/index.js",
-        "watch",
-        "--mcp"
-      ],
-      "cwd": "${workspaceFolder}"
-    }
-  }
-}
-```
+1. Verify the build exists:
+   ```bash
+   ls /path/to/ste-runtime/dist/cli/index.js
+   ```
+2. If missing, rebuild:
+   ```bash
+   cd /path/to/ste-runtime
+   npm run build
+   ```
+3. Verify the absolute path in your `.cursor/mcp.json` matches the actual
+   location of `dist/cli/index.js`.
 
 ### MCP Server Not Starting
 
-**Verify ste is in PATH:**
+**Test the server manually:**
 ```bash
-# Windows
-where.exe ste
-
-# macOS/Linux
-which ste
+cd /path/to/ste-runtime
+node dist/cli/index.js watch --mcp
 ```
 
-Should show the path where `ste` is installed (typically `C:\Users\YourName\AppData\Roaming\npm\ste` on Windows).
-
-**Test manually from any directory:**
-```bash
-cd ~
-ste --version
-```
-
-Should show: `1.0.0`
-
-**Rebuild and reinstall if needed:**
+**Rebuild if needed:**
 ```bash
 cd /path/to/ste-runtime
 npm run build
-npm install -g .
-```
-
-**Test the server manually:**
-```bash
-cd your-project
-ste watch --mcp
 ```
 
 **Common issues:**
-- `ste` not in PATH → Install globally or use `npx ste`
-- No manifest → Run `ste recon` first
-- Config errors → Check `ste.config.json` syntax
+- Path in MCP config does not match actual file location
+- ste-runtime not built (`dist/` directory missing)
+- No graph state exists (run `npm run recon:full` first)
 
 **Expected Output Verification:**
 
@@ -471,9 +438,10 @@ This design minimizes token usage while providing rich context.
 
 ## See Also
 
+- [Workspace Initialization Guide](./workspace-initialization.md) -- Multi-repo workspace setup
 - [ADR-P-0004: ste-runtime MCP Server Implementation](../../adrs/rendered/ADR-P-0004.md)
-- [RSS Usage Guide](../instructions/RSS-USAGE-GUIDE.md)
-- [RECON README](../instructions/RECON-README.md)
+- [RSS Usage Guide](../../instructions/RSS-USAGE-GUIDE.md)
+- [RECON README](../../instructions/RECON-README.md)
 
 
 

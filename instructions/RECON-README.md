@@ -267,6 +267,82 @@ Options:
 
 ---
 
+## Workspace Mode
+
+RECON supports multi-repo workspaces through the `--workspace` flag. Instead
+of analyzing a single parent project, workspace mode reads a `workspace.yaml`
+manifest and runs extraction across all declared repositories.
+
+### Requirements
+
+- A `workspace.yaml` at the workspace root (see
+  [Workspace Initialization Guide](../documentation/guides/workspace-initialization.md)
+  for the full schema)
+- ste-runtime built (`npm run build`)
+
+### Usage
+
+```bash
+cd ste-runtime
+
+# Explicit workspace path
+node dist/cli/recon-cli.js --workspace=/path/to/workspace
+
+# Auto-discover workspace.yaml (walks upward from cwd)
+npm run recon:workspace
+```
+
+### How It Works
+
+1. Reads `workspace.yaml` and resolves repo paths
+2. Runs RECON per repo sequentially, with per-repo isolation
+3. Writes per-repo state to `<output_dir>/state/<repo-name>/`
+4. Emits graph slices to `<output_dir>/slices/<repo-name>.yaml`
+5. Writes `<output_dir>/workspace-index.yaml` summarizing all repos
+
+### Output Directory Structure
+
+Given `output_dir: .my-graph/` in the manifest:
+
+```
+workspace-root/
+├── workspace.yaml
+└── .my-graph/
+    ├── workspace-index.yaml
+    ├── slices/
+    │   ├── repo-a.yaml
+    │   └── repo-b.yaml
+    └── state/
+        ├── repo-a/
+        │   ├── graph/
+        │   ├── api/
+        │   └── validation/
+        └── repo-b/
+            ├── graph/
+            └── validation/
+```
+
+### Resilience
+
+Workspace recon is non-fatal by default: if one repo fails, the remaining
+repos continue processing. Use `--fail-on-any-error` for strict mode.
+
+Use `--skip-unchanged` to skip repos that have not changed since the last
+successful run (based on a content-addressable sentinel).
+
+### Additional Options
+
+```
+--skip-unchanged         Skip repos unchanged since last successful run
+--timeout-per-repo=<ms>  Per-repo time ceiling (0 to disable)
+--fail-on-any-error      Fail entire run if any repo fails
+```
+
+For the full workspace setup workflow (manifest, MCP config, verification),
+see the [Workspace Initialization Guide](../documentation/guides/workspace-initialization.md).
+
+---
+
 ## Interpreting RECON Output
 
 ### Successful Execution

@@ -12,10 +12,12 @@ domains:
 - runtime
 implements_system:
 - ADR-PS-0001
+modified_date: '2026-05-22'
 implements_logical:
 - ADR-L-0004
 - ADR-L-0006
 - ADR-L-0007
+- ADR-L-0018
 technologies:
 - typescript
 - node.js
@@ -23,8 +25,8 @@ technologies:
 - zod
 context: |
   This component exposes assistant-facing runtime tools over MCP and binds
-  structural, operational, context, optimized, and obligation-oriented tool
-  surfaces into one discoverable server boundary.
+  structural, operational, context, optimized, obligation-oriented, and
+  workspace graph query tool surfaces into one discoverable server boundary.
 technology_stack:
 - category: language
   name: TypeScript
@@ -40,8 +42,8 @@ component_specifications:
   type: service
   responsibilities: |
     - Serve MCP stdio runtime for assistant integration
-    - Register structural, operational, context, optimized, and obligation tools
-    - Route tool requests onto runtime graph and context services
+    - Register structural, operational, context, optimized, obligation, and workspace graph query tools
+    - Route tool requests onto runtime graph, context, and workspace query services
   generation_context:
     purpose: Expose runtime semantic capabilities to assistants through MCP.
     key_responsibilities:
@@ -59,7 +61,7 @@ component_specifications:
     specification: |
       Entry surfaces:
       - src/mcp/mcp-server.ts
-      - MCP stdio tool registration for structural, operational, context, optimized, and obligation tools
+      - MCP stdio tool registration for structural, operational, context, optimized, obligation, and workspace graph query tools (ws_dependencies, ws_integration, ws_blast_radius)
   implementation_identifiers:
     module_path: src/mcp/mcp-server.ts
     entry_point: src/mcp/mcp-server.ts

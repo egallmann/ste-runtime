@@ -101,4 +101,69 @@ describe('resolveWorkspaceDirectory', () => {
       if (prev !== undefined) process.env.STE_WORKSPACE_ROOT = prev;
     }
   });
+
+  describe('config-based discovery via runtimeDir', () => {
+    let runtimeDir: string;
+    let workspaceDir: string;
+
+    beforeEach(async () => {
+      runtimeDir = path.join(tempDir, 'ste-runtime');
+      workspaceDir = path.join(tempDir, 'workspace');
+      await mkdir(runtimeDir, { recursive: true });
+      await mkdir(workspaceDir, { recursive: true });
+    });
+
+    it('resolves from ste.config.json projectRoot when workspace.yaml exists', async () => {
+      await writeFile(
+        path.join(runtimeDir, 'ste.config.json'),
+        JSON.stringify({ projectRoot: '../workspace' }),
+        'utf-8',
+      );
+      await writeFile(
+        path.join(workspaceDir, 'workspace.yaml'),
+        'schema_version: "1.0"\nrepos:\n  - { name: a, path: ./a, kind: service, lang: python }\n',
+        'utf-8',
+      );
+
+      const prev = process.env.STE_WORKSPACE_ROOT;
+      delete process.env.STE_WORKSPACE_ROOT;
+      try {
+        const result = await resolveWorkspaceDirectory(WORKSPACE_CLI_AUTO, runtimeDir, runtimeDir);
+        expect(result).toBe(path.resolve(workspaceDir));
+      } finally {
+        if (prev !== undefined) process.env.STE_WORKSPACE_ROOT = prev;
+      }
+    });
+
+    it('falls through when projectRoot dir has no workspace.yaml', async () => {
+      await writeFile(
+        path.join(runtimeDir, 'ste.config.json'),
+        JSON.stringify({ projectRoot: '../workspace' }),
+        'utf-8',
+      );
+
+      const prev = process.env.STE_WORKSPACE_ROOT;
+      delete process.env.STE_WORKSPACE_ROOT;
+      try {
+        const result = await resolveWorkspaceDirectory(WORKSPACE_CLI_AUTO, runtimeDir, runtimeDir);
+        expect(result).toBeNull();
+      } finally {
+        if (prev !== undefined) process.env.STE_WORKSPACE_ROOT = prev;
+      }
+    });
+
+    it('behaves unchanged when runtimeDir is undefined', async () => {
+      const lonely = path.join(tempDir, 'lonely');
+      await mkdir(lonely, { recursive: true });
+
+      const prev = process.env.STE_WORKSPACE_ROOT;
+      delete process.env.STE_WORKSPACE_ROOT;
+      try {
+        const result = await resolveWorkspaceDirectory(WORKSPACE_CLI_AUTO, lonely, undefined);
+        expect(result).toBeNull();
+      } finally {
+        if (prev !== undefined) process.env.STE_WORKSPACE_ROOT = prev;
+      }
+    });
+  });
 });

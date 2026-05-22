@@ -28,11 +28,28 @@ export type AidocNode = {
   source?: string;
   /** Optional description/docstring for this component */
   description?: string;
+  /** Originating repository name in workspace mode; undefined in single-project mode */
+  repo?: string;
 };
 
 export type AidocGraph = Map<string, AidocNode>;
 
 const SLICE_KEY = '_slice';
+
+/**
+ * Known domain directory names used by the extractor. When the first path
+ * segment relative to stateRoot matches one of these, the graph is in
+ * single-project mode (no repo prefix). If the first segment is NOT in
+ * this set and the path has 3+ segments, it is treated as a repo name
+ * (workspace mode).
+ *
+ * COUPLING: if the extractor adds a new top-level domain directory, this
+ * set must be updated to avoid misidentifying it as a repo name.
+ */
+const DOMAIN_DIRS = new Set([
+  'graph', 'infrastructure', 'behavior', 'api', 'data',
+  'attribution', 'manifest', 'validation',
+]);
 
 function edgeKey(edge: AidocEdge): string {
   return `${edge.domain}/${edge.type}/${edge.id}`;
@@ -121,6 +138,14 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
     const key = `${domain}/${type}/${id}`;
     if (graph.has(key)) continue;
 
+    // Derive repo name from file path relative to stateRoot
+    const relPath = path.relative(resolvedRoot, filePath);
+    const segments = relPath.split(path.sep);
+    const firstSeg = segments[0];
+    const repo = (segments.length > 2 && !DOMAIN_DIRS.has(firstSeg))
+      ? firstSeg
+      : undefined;
+
     const sourceFilesRaw = Array.isArray(sliceObj.source_files) ? sliceObj.source_files : [];
     const sourceFiles = sourceFilesRaw.map((v) => String(v)).filter(Boolean);
     const references = normalizeEdges(sliceObj.references);
@@ -171,6 +196,7 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
       element: element || undefined,
       source,
       description,
+      repo,
     });
   }
 

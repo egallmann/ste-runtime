@@ -1,0 +1,129 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0018
+title: Deterministic Workspace Graph Queries
+status: proposed
+created_date: '2026-05-22'
+authors:
+- erik.gallmann
+domains:
+- workspace
+- graph
+- rss
+tags:
+- workspace
+- graph-traversal
+- canned-queries
+- deterministic
+- non-llm
+related_adrs:
+- ADR-L-0009
+- ADR-L-0016
+- ADR-L-0006
+- ADR-L-0019
+introduces_entities:
+- CAP-0018
+- DEC-0020
+- INV-0020
+- INV-0021
+- INV-0024
+vision_category: false
+context: |
+  The workspace semantic graph (verb-typed edges in slices/*.yaml, produced per
+  ADR-L-0016) already contains the relationships needed to answer standard
+  system-level questions such as "show me the repo dependency map," "show me the
+  component integration," and "what is the blast radius of node X." Today, those
+  questions require either manual MCP tool invocation by an LLM or reading raw
+  YAML.
+
+  ADR-L-0006 established the Conversational Query Interface (CQI) for
+  intent-classified, session-cached queries over the per-repo RECON graph. CQI
+  is LLM-assisted (intent classification) and operates on untyped bidirectional
+  edges. A distinct capability is needed for deterministic, LLM-free queries
+  that operate on the workspace infra graph's typed verb edges and produce
+  structured results projectable as diagrams and tables.
+
+  The key gap: the workspace infra graph (slices/*.yaml) had no loader or query
+  API. loadAidocGraph() only consumes per-repo RECON YAML with _slice blocks. A
+  new loader and query layer was required.
+capabilities:
+- id: CAP-0018
+  name: Deterministic workspace graph querying
+  description: |
+    Load workspace infra graph slices into a typed in-memory graph and execute deterministic, non-LLM traversal queries that answer standard workspace-level questions (system dependencies, component integration, blast radius), returning structured results projectable as Mermaid diagrams, tables, and adjacency matrices.
+  implemented_by_components:
+  - COMP-0010
+  - COMP-0011
+  enabled_by_decisions:
+  - DEC-0020
+  enables_capabilities:
+  - CAP-0019
+constraints:
+- id: CONST-0018
+  type: technical
+  description: |
+    Canned query functions accept only a WorkspaceGraph (loaded from slices/*.yaml) as their data source. They do not access the per-repo RECON graph (AidocGraph), the file system, or any external service.
+  rationale: |
+    Keeps queries deterministic and testable with in-memory fixtures. Cross-layer enrichment from the RECON graph is deferred to a follow-up slice.
+invariants:
+- id: INV-0020
+  statement: |
+    Canned query functions (systemDependencies, componentIntegration, blastRadiusWorkspace) are pure graph traversal. They do not invoke LLM inference, network calls, or non-deterministic operations.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Determinism is the defining property of canned queries. If an LLM were involved, the output would be non-reproducible and untestable with fixture-based assertions.
+- id: INV-0021
+  statement: |
+    Projection is separated from query. Query functions return structured data objects. Rendering to Mermaid, table, or matrix is performed by distinct projection functions.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Separation enables adding new output formats (PlantUML, D2, CSV) in follow-up slices without modifying query logic.
+- id: INV-0024
+  statement: |
+    Every emitted projection file includes projection_level metadata in its YAML frontmatter, identifying the resolution level (L0-L4) at which the projection was generated.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Projection level metadata enables downstream consumers to identify the abstraction level of a projection file, determine whether drill-down or drill-up navigation is available, and detect staleness via the accompanying generation hash.
+decisions:
+- id: DEC-0020
+  summary: Workspace graph queries are deterministic graph traversal with no LLM inference
+  rationale: |
+    Three standard questions (system dependencies, component integration, blast
+    radius) are answerable purely from the typed verb edges in workspace slices.
+    Making them deterministic:
+
+    1. Guarantees reproducibility (same graph -> same result).
+    2. Enables fixture-based unit testing without mocking LLM responses.
+    3. Runs in <10ms even for large workspaces (pure BFS/DFS on adjacency maps).
+    4. Complements rather than replaces CQI (ADR-L-0006), which handles
+       intent-classified natural language queries.
+  alternatives_considered:
+  - name: Extend CQI with workspace-level intents
+    rejected_because: |
+      CQI is session-cached and intent-classified, designed for interactive exploration. Canned queries need to be stateless, reproducible, and callable from CLI and programmatic API without LLM overhead.
+  - name: Build queries on top of existing AidocGraph loader
+    rejected_because: |
+      AidocGraph uses untyped bidirectional edges (references/referenced_by) and cannot load workspace slice YAML (different schema). A new typed loader was required.
+  consequences:
+    positive:
+    - Three standard questions answered without LLM cost or latency.
+    - Results are reproducible and testable with in-memory fixtures.
+    - Multiple output projections (Mermaid, table, matrix) from one query.
+    - Serves CLI, MCP, and programmatic API surfaces from the same engine.
+    negative:
+    - New loader required (workspace slices were previously unloadable).
+    - No natural language flexibility; exact node IDs required for blast radius target.
+  related_invariants:
+  - INV-0020
+  - INV-0021
+  enables_capabilities:
+  - CAP-0018

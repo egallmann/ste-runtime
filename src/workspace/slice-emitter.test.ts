@@ -85,7 +85,7 @@ describe('slice-emitter', () => {
         'repo-alpha', '/state/ra', '/out/ra.yaml', '/ws/ra');
 
       const written = vi.mocked(fs.writeFile).mock.calls[0][1] as string;
-      const domainTerms = /aos|losprocessor|customerreport|jsonschemas|dealer.report/i;
+      const domainTerms = /proprietaryterm|internalservice|legacyreport|internalschemas|vendorreport/i;
       expect(domainTerms.test(written)).toBe(false);
     });
   });
