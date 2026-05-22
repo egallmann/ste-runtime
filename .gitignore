@@ -1,6 +1,9 @@
 # Cursor IDE workspace and plans
 .cursor/
 
+# Claude local settings (machine-specific paths)
+.claude/
+
 # Dependencies
 node_modules/
 
