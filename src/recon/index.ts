@@ -11,6 +11,7 @@
  */
 
 import type { ResolvedConfig } from '../config/index.js';
+import type { PhaseTimingRecord } from '../utils/concurrency.js';
 import { runReconPhases } from './phases/index.js';
 import { log, error as logError } from '../utils/logger.js';
 
@@ -46,6 +47,7 @@ export interface ReconResult {
   validationInfo: number;
   errors: string[];
   warnings: string[];
+  timings?: PhaseTimingRecord[];
 }
 
 /**

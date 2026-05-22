@@ -1,0 +1,135 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0019
+title: Multi-Resolution Architecture Projection
+status: proposed
+created_date: '2026-05-22'
+authors:
+- erik.gallmann
+domains:
+- workspace
+- graph
+- projection
+tags:
+- workspace
+- multi-resolution
+- projection
+- semantic-compression
+- deterministic
+related_adrs:
+- ADR-L-0018
+- ADR-L-0016
+- ADR-L-0009
+introduces_entities:
+- CAP-0019
+- DEC-0021
+- INV-0022
+- INV-0023
+vision_category: false
+context: |
+  ADR-L-0018 established deterministic workspace graph querying with L4 (full
+  fidelity) projection rendering. The resulting projections prove the pipeline
+  works but produce cognitively unusable output for human readers. Evidence:
+  a typical multi-repo workspace architecture-overview.md contains 413 lines with 61 identical
+  has_contract edges rendering every API endpoint as a sibling node.
+
+  The root cause: the pipeline has no aggregation layer between canned-query
+  results and Mermaid rendering. toMermaid() maps every node and edge 1:1 into
+  Mermaid syntax. There is no grouping, no compression, no resolution selection.
+
+  This capability introduces a deterministic semantic compression layer that
+  produces multi-resolution architecture views (L0-L4) optimized for different
+  audiences while preserving the graph substrate, existing L4 projections, and
+  non-LLM deterministic behavior.
+capabilities:
+- id: CAP-0019
+  name: Multi-resolution architecture projection
+  description: |
+    Produce architecture projections at five deterministic resolution levels (L0-L4)
+    from the same workspace graph substrate, using semantic compression (endpoint
+    grouping, same-type aggregation, edge tier filtering) to optimize for human
+    cognition at L0-L2 while preserving full fidelity at L4 for machine consumption.
+  implemented_by_components:
+  - COMP-0011
+  - COMP-0010
+  enabled_by_decisions:
+  - DEC-0021
+constraints:
+- id: CONST-0019
+  type: technical
+  description: |
+    All compression algorithms are deterministic: same graph + same config produces
+    identical output. No LLM inference, sampling, or probabilistic summarization is
+    involved at any resolution level.
+  rationale: |
+    Determinism enables fixture-based testing, CI diffing, and reproducible
+    architecture documentation generation.
+invariants:
+- id: INV-0022
+  statement: |
+    Resolution level is a first-class parameter of the projection pipeline.
+    Every MCP tool and CLI command that produces projections accepts an optional
+    resolution parameter (L0|L1|L2|L3|L4) with L4 as the default.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Making resolution explicit prevents it from being a hidden rendering hack and
+    enables programmatic selection of appropriate abstraction levels.
+- id: INV-0023
+  statement: |
+    Compressed projections preserve traceability to source graph nodes. Every
+    aggregate node carries memberIds linking back to the original workspace nodes.
+    Every compressed edge carries sourceEdgeIds when multiplicity > 1.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Traceability ensures that human-facing compressed views can always be expanded
+    to full fidelity for debugging, audit, or detailed analysis.
+decisions:
+- id: DEC-0021
+  summary: Deterministic semantic compression for multi-resolution architecture projections
+  rationale: |
+    The current L4-only projection pipeline produces cognitively unusable output for
+    human readers. Rather than introducing LLM-based summarization, the compression
+    layer uses deterministic algorithms:
+
+    1. Endpoint path-prefix grouping (capability domain extraction)
+    2. Same-type node aggregation (threshold-based)
+    3. Edge tier filtering (5-tier verb taxonomy with per-level suppression rules)
+    4. Edge multiplicity compression (N edges of same verb collapsed to 1 with count)
+    5. Infrastructure condensation (alarm/monitoring resource suppression at L0-L1)
+
+    These algorithms produce consistent output from identical input, enabling
+    fixture-based testing and CI-diffable architecture documentation.
+  alternatives_considered:
+  - name: LLM-based architecture summarization
+    rejected_because: |
+      Non-deterministic output prevents fixture-based testing and CI diffing.
+      Different runs would produce different summaries, making regression testing
+      impossible and eroding trust in the documentation.
+  - name: Manual curation of architecture views
+    rejected_because: |
+      Does not scale with workspace growth. Manual views drift from the graph
+      substrate and require continuous maintenance effort.
+  - name: Single configurable threshold without resolution levels
+    rejected_because: |
+      Different audiences need fundamentally different views (executives vs API
+      developers vs machine consumers). A single threshold cannot serve all audiences.
+  consequences:
+    positive:
+    - Five resolution levels serve distinct audiences (executive, platform, domain, integration, machine)
+    - All views derive from the same graph substrate ensuring consistency
+    - Deterministic output enables CI diffing and fixture-based testing
+    - Existing L4 projections are fully preserved for backward compatibility
+    negative:
+    - Additional code surface (compression engine, resolution-aware renderers)
+    - Capability domain heuristic (path-prefix grouping) may not perfectly match business domains
+  related_invariants:
+  - INV-0022
+  - INV-0023
+  enables_capabilities:
+  - CAP-0019

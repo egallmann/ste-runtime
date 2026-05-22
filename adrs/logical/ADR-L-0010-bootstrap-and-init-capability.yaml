@@ -1,0 +1,69 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0010
+title: Bootstrap and Init Capability
+status: proposed
+created_date: '2026-04-21'
+authors:
+- ste-runtime
+domains:
+- workspace
+- init
+tags:
+- init
+- bootstrap
+- onboarding
+vision_category: false
+context: |
+  Without a first-class init command, onboarding requires manual file
+  creation and sequencing knowledge. Users must know which files to create,
+  in which order, and which values to populate. This friction slows
+  adoption and increases configuration errors.
+capabilities:
+- id: CAP-0010
+  name: One-command workspace initialization
+  description: ste init <target> creates a fully configured workspace.
+architectural_boundaries:
+- id: BOUND-0001
+  name: Init publication surface
+  description: |
+    Creates .ste-workspace/config.yaml and
+    .ste-workspace/registry.local.yaml.example at the target path.
+  rationale: Defines the exact files produced by init, bounding its write surface.
+constraints:
+- id: CONST-0001
+  type: technical
+  description: Defaults to public registries only (registry.npmjs.org, pypi.org).
+  rationale: Ensures the init command works without corporate network access.
+- id: CONST-0002
+  type: security
+  description: Reads but never persists work-context environment variables.
+  rationale: Prevents accidental leakage of environment-specific values into version-controlled files.
+- id: CONST-0003
+  type: technical
+  description: Generates a gitignored local-override pattern for private mirror opt-in.
+  rationale: Users who need private registries can opt in locally without affecting the shared configuration.
+- id: CONST-0004
+  type: technical
+  description: Fails with a clear actionable error when offline; never silently retries against a hard-coded private host.
+  rationale: Prevents silent network requests to unreachable hosts and provides actionable diagnostics.
+- id: CONST-0005
+  type: technical
+  description: Is idempotent -- running twice produces the same result as running once.
+  rationale: Idempotency ensures safe re-runs and reduces operator anxiety during onboarding.
+decisions:
+- id: DEC-0010
+  summary: ste init is the canonical one-command install experience
+  rationale: |
+    Manual onboarding is error-prone and slow. A first-class init command
+    with binding constraints ensures consistent, portable, and safe
+    workspace initialization.
+decision: |
+  ste init <target> is a first-class CLI command and the canonical
+  one-command install experience. Phase 3d implements it.
+consequences:
+  positive:
+  - One-command onboarding reduces setup friction.
+  - Generated configuration is consistent and correct by construction.
+  negative:
+  - The init command must be maintained as a first-class CLI surface.

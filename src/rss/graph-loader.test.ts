@@ -449,6 +449,112 @@ _slice:
     });
   });
 
+  describe('repo derivation from file path', () => {
+    it('should populate repo for workspace-mode paths', async () => {
+      await writeYaml('acmeui/graph/modules/app.yaml', `
+_slice:
+  id: app-module
+  domain: graph
+  type: module
+  source_files:
+    - src/app.ts
+  references: []
+  referenced_by: []
+`);
+
+      await writeYaml('acmeapi/graph/functions/handler.yaml', `
+_slice:
+  id: api-handler
+  domain: graph
+  type: function
+  source_files:
+    - src/handler.ts
+  references: []
+  referenced_by: []
+`);
+
+      const { graph } = await loadAidocGraph(tempDir);
+
+      const uiNode = graph.get('graph/module/app-module');
+      expect(uiNode).toBeDefined();
+      expect(uiNode?.repo).toBe('acmeui');
+
+      const apiNode = graph.get('graph/function/api-handler');
+      expect(apiNode).toBeDefined();
+      expect(apiNode?.repo).toBe('acmeapi');
+    });
+
+    it('should set repo to undefined for single-project paths', async () => {
+      await writeYaml('graph/modules/service.yaml', `
+_slice:
+  id: service
+  domain: graph
+  type: module
+  source_files:
+    - src/service.ts
+  references: []
+  referenced_by: []
+`);
+
+      const { graph } = await loadAidocGraph(tempDir);
+
+      const node = graph.get('graph/module/service');
+      expect(node).toBeDefined();
+      expect(node?.repo).toBeUndefined();
+    });
+
+    it('should not treat known domain dirs as repo names', async () => {
+      await writeYaml('infrastructure/resources/bucket.yaml', `
+_slice:
+  id: my-bucket
+  domain: infrastructure
+  type: resource
+  source_files:
+    - template.yaml
+  references: []
+  referenced_by: []
+`);
+
+      const { graph } = await loadAidocGraph(tempDir);
+
+      const node = graph.get('infrastructure/resource/my-bucket');
+      expect(node).toBeDefined();
+      expect(node?.repo).toBeUndefined();
+    });
+
+    it('should handle mixed workspace and domain dir names', async () => {
+      await writeYaml('myrepo/graph/modules/thing.yaml', `
+_slice:
+  id: thing
+  domain: graph
+  type: module
+  source_files:
+    - src/thing.ts
+  references: []
+  referenced_by: []
+`);
+
+      await writeYaml('api/endpoints/health.yaml', `
+_slice:
+  id: health
+  domain: api
+  type: endpoint
+  source_files:
+    - src/health.ts
+  references: []
+  referenced_by: []
+`);
+
+      const { graph } = await loadAidocGraph(tempDir);
+
+      const repoNode = graph.get('graph/module/thing');
+      expect(repoNode?.repo).toBe('myrepo');
+
+      const domainNode = graph.get('api/endpoint/health');
+      expect(domainNode?.repo).toBeUndefined();
+    });
+  });
+
   describe('integration with fixture data', () => {
     it('should load state-sample fixture correctly', async () => {
       const fixtureRoot = path.resolve('fixtures', 'state-sample');

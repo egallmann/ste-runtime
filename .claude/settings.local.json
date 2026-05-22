@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(find /c/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime -name \"CLAUDE.md\" -o -name \"claude.md\" -o -name \"*AI*\" -type f 2>/dev/null | head -20)",
+      "Bash(ls -la /c/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime/src/extractors/*/index.ts)",
+      "Bash(ls -la /c/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime/.ste* 2>/dev/null | head -20)",
+      "Bash(git -C /c/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime ls-files .ste/ .ste-self/ | head -20)",
+      "Bash(find /c/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime/src -name \"*.ts\" -exec grep -l \"console.log\" {} \\\\; | head -20)",
+      "Bash(npm test:*)",
+      "Bash(ls C:/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime/node_modules/.bin/tsc 2>&1; node -v 2>&1; npm -v 2>&1)",
+      "Bash(wc -l C:/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime/documentation/plan/1*.md)",
+      "Bash(git -C C:/Users/Erik.Gallmann/Documents/PycharmProjects/ste-runtime status --short documentation/plan/)"
+    ]
+  }
+}

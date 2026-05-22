@@ -1,0 +1,51 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0012
+title: Polyglot Interop Contract
+status: proposed
+created_date: '2026-04-21'
+authors:
+- ste-runtime
+domains:
+- architecture
+- interop
+tags:
+- polyglot
+- schema
+- interop
+vision_category: false
+context: |
+  STE subsystems are written in different languages. On-disk artifacts are
+  the only interop boundary. Neither runtime invents schema. Without a
+  single schema authority, subsystems risk copying, re-deriving, or
+  hand-maintaining sibling schemas, leading to drift and contract
+  violations.
+capabilities:
+- id: CAP-0012
+  name: Schema fixture synchronization
+  description: |
+    ste-runtime consumes architecture-evidence.schema.json via fixture
+    sync in test/fixtures/. Drift is detected by
+    spec-schema-fixture-sync.test.ts.
+decisions:
+- id: DEC-0012
+  summary: ste-spec is the single schema authority
+  rationale: |
+    Polyglot subsystems cannot safely maintain independent copies of
+    shared schemas. Centralizing authority in ste-spec eliminates drift
+    and ensures all subsystems validate against the same contract.
+decision: |
+  ste-spec is the schema authority for all cross-subsystem contracts. No
+  subsystem copies, re-derives, or hand-maintains a sibling's schema.
+  Each subsystem may use any language or framework internally.
+consequences:
+  positive:
+  - Single source of truth for all cross-subsystem schemas.
+  - Drift is detectable and preventable.
+  negative:
+  - Schema changes require coordination through ste-spec.
+contracts:
+- id: CTR-0012-01
+  description: |
+    Cross-subsystem contracts are defined in ste-spec and consumed via
+    fixture sync. No subsystem invents or re-derives schema.

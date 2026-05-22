@@ -95,6 +95,25 @@ export function inferRelationships(
     }
   }
   
+  // Pre-index function_calls slices by file: file -> assertion
+  const functionCallsByFile = new Map<string, NormalizedAssertion>();
+  // Pre-index assertions by (domain, type): "domain:type" -> assertion[]
+  const byDomainType = new Map<string, NormalizedAssertion[]>();
+  for (const assertion of assertions) {
+    const key = `${assertion._slice.domain}:${assertion._slice.type}`;
+    if (!byDomainType.has(key)) {
+      byDomainType.set(key, []);
+    }
+    byDomainType.get(key)!.push(assertion);
+
+    if (assertion._slice.type === 'function_calls' && assertion._slice.domain === 'behavior') {
+      const file = assertion._slice.source_files[0];
+      if (file) {
+        functionCallsByFile.set(file, assertion);
+      }
+    }
+  }
+
   // Build relationship map from raw assertions (imports and dependencies)
   const relationshipsByFile = buildRelationshipMap(rawAssertions);
   
@@ -133,16 +152,13 @@ export function inferRelationships(
       }
       
       // Module-level constructor calls (new ClassName() in arrow functions, callbacks, top-level)
-      const functionCallsSlice = assertions.find(a =>
-        a._slice.type === 'function_calls' &&
-        a._slice.domain === 'behavior' &&
-        a._slice.source_files[0] === file
-      );
+      const functionCallsSlice = functionCallsByFile.get(file);
       
       if (functionCallsSlice) {
         const constructorCallGraph = functionCallsSlice.element.constructorCallGraph as Record<string, string[]> | undefined;
-        if (constructorCallGraph && constructorCallGraph['__module__']) {
-          for (const className of constructorCallGraph['__module__']) {
+        if (constructorCallGraph) {
+          const moduleCtors = constructorCallGraph['__module__'];
+          for (const className of (Array.isArray(moduleCtors) ? moduleCtors : [])) {
             // Find the class in same file first
             let targetClasses = byFile.get(file)?.filter(a =>
               a._slice.type === 'class' &&
@@ -188,8 +204,9 @@ export function inferRelationships(
         
         // Module-level method calls
         const methodCallGraph = functionCallsSlice.element.methodCallGraph as Record<string, string[]> | undefined;
-        if (methodCallGraph && methodCallGraph['__module__']) {
-          for (const methodName of methodCallGraph['__module__']) {
+        if (methodCallGraph) {
+          const moduleMethods = methodCallGraph['__module__'];
+          for (const methodName of (Array.isArray(moduleMethods) ? moduleMethods : [])) {
             // Find methods with this name across all files
             for (const [, assertionsInFile] of byFile.entries()) {
               const methods = assertionsInFile.filter(a =>
@@ -243,17 +260,14 @@ export function inferRelationships(
       const className = element.className as string | undefined;
       
       // Find the function_calls slice for this file
-      const functionCallsSlice = assertions.find(a =>
-        a._slice.type === 'function_calls' &&
-        a._slice.domain === 'behavior' &&
-        a._slice.source_files[0] === file
-      );
+      const functionCallsSlice = functionCallsByFile.get(file);
       
       if (functionCallsSlice) {
         const callGraph = functionCallsSlice.element.callGraph as Record<string, string[]> | undefined;
         if (callGraph && functionName) {
           // Get functions called by this function
-          const calledFunctions = callGraph[functionName] ?? [];
+          const raw = callGraph[functionName];
+          const calledFunctions = Array.isArray(raw) ? raw : [];
           
           for (const calledName of calledFunctions) {
             // First: Find the called function in the same file
@@ -367,8 +381,10 @@ export function inferRelationships(
         const constructorCallGraph = functionCallsSlice.element.constructorCallGraph as Record<string, string[]> | undefined;
         if (constructorCallGraph) {
           // Get classes instantiated by this function OR at module level (arrow functions, callbacks)
-          const instantiatedByFn = constructorCallGraph[functionName] ?? [];
-          const instantiatedByModule = constructorCallGraph['__module__'] ?? [];
+          const rawByFn = constructorCallGraph[functionName];
+          const rawByMod = constructorCallGraph['__module__'];
+          const instantiatedByFn = Array.isArray(rawByFn) ? rawByFn : [];
+          const instantiatedByModule = Array.isArray(rawByMod) ? rawByMod : [];
           const instantiatedClasses = [...new Set([...instantiatedByFn, ...instantiatedByModule])];
           
           for (const className of instantiatedClasses) {
@@ -423,8 +439,10 @@ export function inferRelationships(
         const methodCallGraph = functionCallsSlice.element.methodCallGraph as Record<string, string[]> | undefined;
         if (methodCallGraph) {
           // Get methods called by this function OR at module level (arrow functions, callbacks)
-          const calledByFn = methodCallGraph[functionName] ?? [];
-          const calledByModule = methodCallGraph['__module__'] ?? [];
+          const rawMcByFn = methodCallGraph[functionName];
+          const rawMcByMod = methodCallGraph['__module__'];
+          const calledByFn = Array.isArray(rawMcByFn) ? rawMcByFn : [];
+          const calledByModule = Array.isArray(rawMcByMod) ? rawMcByMod : [];
           const calledMethods = [...new Set([...calledByFn, ...calledByModule])];
           
           for (const methodName of calledMethods) {
@@ -632,8 +650,8 @@ export function inferRelationships(
       // ========================================================
       const resourceType = element.type as string | undefined;
       if (resourceType === 'AWS::Lambda::Function') {
-        const handler = element.handler as string | undefined;
-        if (handler) {
+        const handler = element.handler;
+        if (typeof handler === 'string' && handler.trim().length > 0) {
           // Handler format: "module_name.function_name" or "path/to/module.function_name"
           const handlerParts = handler.split('.');
           if (handlerParts.length >= 2) {

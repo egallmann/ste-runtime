@@ -22,7 +22,13 @@ technologies:
 context: |
   CloudFormation semantic extraction captures templates, resources, outputs,
   parameters, infrastructure relationships, and template-level implementation
-  intent from CloudFormation sources.
+  intent from CloudFormation sources. This includes nested stack topology
+  detection: master templates that orchestrate child stacks via
+  AWS::Serverless::Application and AWS::CloudFormation::Stack resource types
+  are identified by resource type analysis, and cross-template resolution
+  structures (StackTopology, OutputIndex) are built for downstream service
+  wiring. All resolution is static analysis of template files on disk; no
+  runtime AWS API calls are made.
 technology_stack:
 - category: language
   name: TypeScript
@@ -36,6 +42,9 @@ component_specifications:
     - Extract template, parameter, resource, and output semantics
     - Derive infrastructure relationships and API/data model evidence
     - Preserve template-level implementation intent metadata
+    - Detect nested stack topology via AWS::Serverless::Application and AWS::CloudFormation::Stack resource types
+    - Build cross-template resolution structures (StackTopology, OutputIndex) for downstream wiring
+    - Identify canonical stackId (<repo-relative-template-path>#<logicalId>) as primary identity model
   generation_context:
     purpose: Extract CloudFormation semantics for RECON.
     key_responsibilities:
@@ -52,10 +61,14 @@ component_specifications:
       Public surfaces:
       - src/recon/phases/extraction-cloudformation.ts
       - src/extractors/cfn/*
+      - src/workspace/cfn-stack-resolver.ts
   implementation_identifiers:
     module_path: src/recon/phases/extraction-cloudformation.ts
     test_path: src/recon/phases/extraction-cloudformation.test.ts
   implementation_requirements:
+    constraints:
+    - Nested stack resolution is static analysis only -- no runtime AWS API calls
+    - Intrinsic handling is deterministic: Ref and GetAtt fully supported, Sub map-form conditionally supported, all others unsupported with structured diagnostics
     error_handling:
       strategy: Continue extracting valid template sections while surfacing deterministic
         parsing failures.
@@ -72,4 +85,13 @@ component_specifications:
         - CloudFormation extraction
         - CloudFormation validation extraction coverage
 implementation_decisions: []
-gaps: []
+gaps:
+- id: GAP-0001
+  question: >
+    AWS::Serverless::StateMachine is not yet handled in extractResourceMetadata.
+    Should SAM state machines use the same DefinitionBody/DefinitionUri extraction
+    as AWS::StepFunctions::StateMachine?
+  impact: medium
+  blocking: false
+  affects:
+  - COMP-0007

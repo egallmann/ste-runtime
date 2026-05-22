@@ -16,15 +16,18 @@ tags:
 - mcp
 - watchdog
 - obligations
+modified_date: '2026-05-22'
 implements_logical:
 - ADR-L-0004
 - ADR-L-0006
 - ADR-L-0007
+- ADR-L-0018
 references_components:
 - ADR-PC-0001
 - ADR-PC-0002
 - ADR-PC-0003
 - ADR-PC-0004
+- ADR-PC-0009
 related_adrs:
 - ADR-P-0004
 supersedes:
@@ -71,6 +74,7 @@ system_boundaries:
   - MCP stdio server
   - RSS query operations
   - watchdog-triggered reconciliation
+  - workspace graph canned queries (ws_dependencies, ws_integration, ws_blast_radius)
 component_topology:
   components:
   - name: MCP Server and Tool Registry
@@ -89,6 +93,10 @@ component_topology:
     type: service
     purpose: Project obligations and build source-backed implementation context.
     implements_adr: ADR-PC-0004
+  - name: Workspace Graph Query Engine
+    type: service
+    purpose: Load workspace slices and execute deterministic graph queries with projection renderers.
+    implements_adr: ADR-PC-0009
   relationships:
   - from: Watchdog and Update Coordination
     to: Preflight Freshness and Reconciliation Gate
@@ -106,6 +114,10 @@ component_topology:
     to: Obligation Projection and Context Assembly
     type: depends_on
     description: Assistant-facing tools expose context and obligation projections.
+  - from: MCP Server and Tool Registry
+    to: Workspace Graph Query Engine
+    type: depends_on
+    description: Workspace graph MCP tools delegate to the query engine for deterministic traversals.
 operational_requirements:
   monitoring: Track freshness status, invalidated validations, and runtime health
     metrics.
