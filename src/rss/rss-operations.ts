@@ -425,6 +425,8 @@ const DEFAULT_FUZZY_THRESHOLD = 0.6;
 export interface SearchOptions {
   domain?: string;
   type?: string;
+  /** Filter to nodes from a specific repo in workspace mode (optional) */
+  repo?: string;
   maxResults?: number;
   /** Enable fuzzy matching as fallback when exact search returns no results. Default: true */
   fuzzy?: boolean;
@@ -468,13 +470,14 @@ export function search(
   const { 
     domain, 
     type, 
+    repo,
     maxResults = 50,
     fuzzy = true,
     fuzzyThreshold = DEFAULT_FUZZY_THRESHOLD,
   } = options;
   
   // Tier 1: Exact/substring matching (fast path)
-  const exactResult = exactSearch(ctx, query, { domain, type, maxResults });
+  const exactResult = exactSearch(ctx, query, { domain, type, repo, maxResults });
   
   if (exactResult.nodes.length > 0) {
     return exactResult;
@@ -482,7 +485,7 @@ export function search(
   
   // Tier 2: Fuzzy matching (fallback for typos)
   if (fuzzy) {
-    return fuzzySearch(ctx, query, { domain, type, maxResults, threshold: fuzzyThreshold });
+    return fuzzySearch(ctx, query, { domain, type, repo, maxResults, threshold: fuzzyThreshold });
   }
   
   return exactResult;
@@ -552,9 +555,9 @@ function scoreNodeForTerm(node: AidocNode, termLower: string): number {
 function exactSearch(
   ctx: RssContext,
   query: string,
-  options: { domain?: string; type?: string; maxResults: number }
+  options: { domain?: string; type?: string; repo?: string; maxResults: number }
 ): RssQueryResult {
-  const { domain, type, maxResults } = options;
+  const { domain, type, repo, maxResults } = options;
   const queryLower = query.toLowerCase();
   const result: AidocNode[] = [];
   let truncated = false;
@@ -574,9 +577,10 @@ function exactSearch(
     }
     
     for (const node of ctx.graph.values()) {
-      // Apply domain/type filters if specified
+      // Apply domain/type/repo filters if specified
       if (domain && node.domain !== domain) continue;
       if (type && node.type !== type) continue;
+      if (repo && node.repo !== repo) continue;
       
       let totalScore = 0;
       let matchedTerms = 0;
@@ -598,9 +602,10 @@ function exactSearch(
   } else {
     // Single term search: use exact substring matching
     for (const node of ctx.graph.values()) {
-      // Apply domain/type filters if specified
+      // Apply domain/type/repo filters if specified
       if (domain && node.domain !== domain) continue;
       if (type && node.type !== type) continue;
+      if (repo && node.repo !== repo) continue;
       
       const score = scoreNodeForTerm(node, queryLower);
       if (score > 0) {
@@ -665,9 +670,9 @@ function extractNLSearchTerms(query: string): string[] {
 function fuzzySearch(
   ctx: RssContext,
   query: string,
-  options: { domain?: string; type?: string; maxResults: number; threshold: number }
+  options: { domain?: string; type?: string; repo?: string; maxResults: number; threshold: number }
 ): RssQueryResult {
-  const { domain, type, maxResults, threshold } = options;
+  const { domain, type, repo, maxResults, threshold } = options;
   const queryLower = query.toLowerCase();
   const result: AidocNode[] = [];
   let truncated = false;
@@ -675,9 +680,10 @@ function fuzzySearch(
   const scored: Array<{ node: AidocNode; score: number; similarity: number }> = [];
   
   for (const node of ctx.graph.values()) {
-    // Apply domain/type filters if specified
+    // Apply domain/type/repo filters if specified
     if (domain && node.domain !== domain) continue;
     if (type && node.type !== type) continue;
+    if (repo && node.repo !== repo) continue;
     
     // Calculate similarity against ID (primary) and path (secondary)
     const idSimilarity = similarity(node.id.toLowerCase(), queryLower);

@@ -695,6 +695,9 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
   // All constructor and method calls for summary
   const allConstructorCalls: Array<{ className: string; lineno: number; caller?: string }> = [];
   const allMethodCalls: Array<{ target: string; method: string; lineno: number; caller?: string }> = [];
+  // HTTP call extraction for cross-repo edge detection
+  const httpCalls: Array<{ method: string; urlPattern: string; functionName: string }> = [];
+  const httpMethods = new Set(['get', 'post', 'put', 'delete', 'patch', 'head', 'options']);
   let currentFunction: string | null = null;
   
   function visit(node: ts.Node) {
@@ -998,6 +1001,22 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
             methodCallsByFunction[callerKey].push(methodName);
           }
         }
+        
+        // HTTP call detection: this.http.get(...) or this.httpClient.post(...)
+        const httpMethodCall = methodName.toLowerCase();
+        if (httpMethods.has(httpMethodCall) && ts.isPropertyAccessExpression(targetExpr)) {
+          const propName = targetExpr.name.text.toLowerCase();
+          if (propName === 'http' || propName === 'httpclient') {
+            const urlPattern = extractHttpUrlFromCallExpr(node, sourceFile);
+            if (urlPattern !== 'unknown' && urlPattern.length > 3) {
+              httpCalls.push({
+                method: httpMethodCall.toUpperCase(),
+                urlPattern,
+                functionName: currentFunction ?? '__module__',
+              });
+            }
+          }
+        }
       }
     }
     
@@ -1074,7 +1093,8 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
   
   const hasCallData = Object.keys(functionCalls).length > 0 || 
     Object.keys(constructorCallsByFunction).length > 0 || 
-    Object.keys(methodCallsByFunction).length > 0;
+    Object.keys(methodCallsByFunction).length > 0 ||
+    httpCalls.length > 0;
     
   if (hasCallData) {
     assertions.push({
@@ -1102,11 +1122,53 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
         calledMethods: allMethodCalls.length > 0
           ? [...new Set(allMethodCalls.map(m => m.method))]
           : undefined,
+        httpCalls: httpCalls.length > 0 ? httpCalls : undefined,
       },
     });
   }
   
   return assertions;
+}
+
+/**
+ * Extract the URL pattern from an HTTP call expression's first argument.
+ * Handles string literals, template literals, and no-substitution templates.
+ */
+function extractHttpUrlFromCallExpr(callExpr: ts.CallExpression, sourceFile: ts.SourceFile): string {
+  const firstArg = callExpr.arguments[0];
+  if (!firstArg) return 'unknown';
+
+  if (ts.isStringLiteral(firstArg)) {
+    return firstArg.text;
+  }
+
+  if (ts.isTemplateExpression(firstArg)) {
+    let pattern = firstArg.head.text;
+    for (const span of firstArg.templateSpans) {
+      const exprText = span.expression.getText(sourceFile);
+      if (exprText.includes('this.')) {
+        pattern += `{${exprText.replace('this.', '')}}`;
+      } else {
+        pattern += `{${exprText}}`;
+      }
+      pattern += span.literal.text;
+    }
+    return pattern;
+  }
+
+  if (ts.isNoSubstitutionTemplateLiteral(firstArg)) {
+    return firstArg.text;
+  }
+
+  if (ts.isPropertyAccessExpression(firstArg)) {
+    return `{${firstArg.name.text}}`;
+  }
+
+  if (ts.isIdentifier(firstArg)) {
+    return `{${firstArg.text}}`;
+  }
+
+  return 'unknown';
 }
 
 function getFunctionSignature(node: ts.FunctionDeclaration): string {

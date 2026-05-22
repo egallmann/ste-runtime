@@ -212,6 +212,7 @@ program
   .option('--no-watch', 'Disable file watching (MCP server only)')
   .option('--self', 'Self-analysis mode: analyze ste-runtime itself instead of parent project')
   .option('--config <path>', 'Custom config file path')
+  .option('--project-root <path>', 'Explicit project root directory (overrides cwd detection)')
   .action(async (options) => {
     // Import and run watch logic directly
     const { McpServer } = await import('../mcp/mcp-server.js');
@@ -254,6 +255,9 @@ program
           }
         }
       }
+      if (options.projectRoot) {
+        cwd = path.resolve(options.projectRoot);
+      }
       let projectRoot = cwd;
       let config: any;
       
@@ -285,28 +289,46 @@ program
         projectRoot = config.projectRoot;
       }
       
+      // --project-root takes precedence over config-derived projectRoot
+      if (options.projectRoot) {
+        projectRoot = path.resolve(options.projectRoot);
+      }
+      
       log(`[ste watch] Project root: ${projectRoot}`);
       log(`[ste watch] State directory: ${config.stateDir}`);
       
-      // CRITICAL: Resolve stateDir to absolute path for manifest operations
-      // The stateDir from config is relative to projectRoot, so resolve it properly
-      const resolvedStateDir = path.resolve(projectRoot, config.stateDir);
-      log(`[ste watch] Resolved state directory: ${resolvedStateDir}`);
+      // Detect workspace mode: if projectRoot has a workspace.yaml, skip single-project RECON
+      // (workspace recon is run separately via `ste recon --workspace`)
+      let isWorkspaceMode = false;
+      for (const wsName of ['workspace.yaml', 'workspace.yml']) {
+        try {
+          await fs.access(path.join(projectRoot, wsName));
+          isWorkspaceMode = true;
+          log(`[ste watch] Workspace mode detected (${wsName} found)`);
+          break;
+        } catch { /* not found */ }
+      }
       
-      // Check if manifest exists, run full RECON if not
-      // CRITICAL: Use resolvedStateDir, NOT projectRoot - manifest lives INSIDE stateDir
-      const manifest = await loadReconManifest(resolvedStateDir);
-      if (!manifest) {
-        log('[ste watch] No manifest found, running initial RECON...');
-        // Use executeRecon with proper config - this writes to config.stateDir (inside ste-runtime)
-        await executeRecon({
-          projectRoot: config.projectRoot,
-          sourceRoot: config.sourceDirs[0] ?? '.',
-          stateRoot: config.stateDir,
-          mode: 'full',
-          config: config,
-        });
-        log('[ste watch] Initial RECON complete');
+      if (!isWorkspaceMode) {
+        // CRITICAL: Resolve stateDir to absolute path for manifest operations
+        // The stateDir from config is relative to projectRoot, so resolve it properly
+        const resolvedStateDir = path.resolve(projectRoot, config.stateDir);
+        log(`[ste watch] Resolved state directory: ${resolvedStateDir}`);
+        
+        // Check if manifest exists, run full RECON if not
+        // CRITICAL: Use resolvedStateDir, NOT projectRoot - manifest lives INSIDE stateDir
+        const manifest = await loadReconManifest(resolvedStateDir);
+        if (!manifest) {
+          log('[ste watch] No manifest found, running initial RECON...');
+          await executeRecon({
+            projectRoot: config.projectRoot,
+            sourceRoot: config.sourceDirs[0] ?? '.',
+            stateRoot: config.stateDir,
+            mode: 'full',
+            config: config,
+          });
+          log('[ste watch] Initial RECON complete');
+        }
       }
       
       // Create MCP server
@@ -658,6 +680,157 @@ program
       await fs.writeFile(outPath, content, 'utf-8');
       console.log(`[ste init] Created ${options.output} with ${repos.length} repos.`);
       console.log(`[ste init] Review the file, then run: ste recon --workspace`);
+    }
+  });
+
+// ============================================================================
+// Workspace Graph Queries (non-LLM canned traversals)
+// ============================================================================
+
+const ws = program
+  .command('ws')
+  .description('Workspace graph queries (non-LLM canned traversals)');
+
+ws
+  .command('deps')
+  .description('Show system-level repo dependency map')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory (contains slices/ and workspace-index.yaml)')
+  .option('--output <format>', 'Output format: mermaid | table | matrix | json', 'table')
+  .option('--resolution <level>', 'Resolution level: L0 | L1 | L2 | L3 | L4 (default: L4)')
+  .action(async (options: { workspace: string; output: string; resolution?: string }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { systemDependencies } = await import('../workspace/canned-queries.js');
+    const { toMermaid, toTable, toAdjacencyMatrix, toMermaidAtResolution, toTableAtResolution } = await import('../workspace/projections.js');
+    const { compress } = await import('../workspace/compression.js');
+    const resLevel = (options.resolution as 'L0' | 'L1' | 'L2' | 'L3' | 'L4') ?? undefined;
+
+    const graph = await loadWorkspaceGraph(path.resolve(options.workspace));
+    const result = systemDependencies(graph);
+
+    if (resLevel && resLevel !== 'L4') {
+      const compressed = compress(result, { level: resLevel });
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaidAtResolution(compressed));
+          break;
+        case 'json':
+          console.log(JSON.stringify({ compressed: compressed.metadata, nodes: compressed.nodes.length, edges: compressed.edges.length }, null, 2));
+          break;
+        default:
+          console.table(toTableAtResolution(compressed));
+          break;
+      }
+    } else {
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaid(result));
+          break;
+        case 'matrix': {
+          const m = toAdjacencyMatrix(result);
+          console.log(['', ...m.labels].join('\t'));
+          for (let i = 0; i < m.labels.length; i++) {
+            console.log([m.labels[i], ...m.matrix[i]!].join('\t'));
+          }
+          break;
+        }
+        case 'json':
+          console.log(JSON.stringify(result, null, 2));
+          break;
+        default:
+          console.table(toTable(result));
+          break;
+      }
+    }
+  });
+
+ws
+  .command('integration')
+  .description('Show component integration map')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--repo <name>', 'Filter to a specific repo')
+  .option('--output <format>', 'Output format: mermaid | table | matrix | json', 'table')
+  .option('--resolution <level>', 'Resolution level: L0 | L1 | L2 | L3 | L4 (default: L4)')
+  .action(async (options: { workspace: string; repo?: string; output: string; resolution?: string }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { componentIntegration } = await import('../workspace/canned-queries.js');
+    const { toMermaid, toTable, toAdjacencyMatrix, toMermaidAtResolution, toTableAtResolution } = await import('../workspace/projections.js');
+    const { compress } = await import('../workspace/compression.js');
+    const resLevel = (options.resolution as 'L0' | 'L1' | 'L2' | 'L3' | 'L4') ?? undefined;
+
+    const graph = await loadWorkspaceGraph(path.resolve(options.workspace));
+    const result = componentIntegration(graph, options.repo ? { repo: options.repo } : undefined);
+
+    if (resLevel && resLevel !== 'L4') {
+      const compressed = compress(result, { level: resLevel });
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaidAtResolution(compressed));
+          break;
+        case 'json':
+          console.log(JSON.stringify({ compressed: compressed.metadata, nodes: compressed.nodes.length, edges: compressed.edges.length }, null, 2));
+          break;
+        default:
+          console.table(toTableAtResolution(compressed));
+          break;
+      }
+    } else {
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaid(result));
+          break;
+        case 'matrix': {
+          const m = toAdjacencyMatrix(result);
+          console.log(['', ...m.labels].join('\t'));
+          for (let i = 0; i < m.labels.length; i++) {
+            console.log([m.labels[i], ...m.matrix[i]!].join('\t'));
+          }
+          break;
+        }
+        case 'json':
+          console.log(JSON.stringify(result, null, 2));
+          break;
+        default:
+          console.table(toTable(result));
+          break;
+      }
+    }
+  });
+
+ws
+  .command('blast <target>')
+  .description('Show blast radius for a workspace node')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--output <format>', 'Output format: mermaid | table | matrix | json', 'table')
+  .option('--depth <depth>', 'Max BFS depth', (v) => Number.parseInt(v, 10), 3)
+  .action(async (target: string, options: { workspace: string; output: string; depth: number }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { blastRadiusWorkspace } = await import('../workspace/canned-queries.js');
+    const { toMermaid, toTable, toAdjacencyMatrix } = await import('../workspace/projections.js');
+
+    const graph = await loadWorkspaceGraph(path.resolve(options.workspace));
+    const result = blastRadiusWorkspace(graph, target, { maxDepth: options.depth });
+
+    console.log(`Risk: ${result.risk.toUpperCase()} (${result.affectedNodeCount} nodes, ${result.affectedRepos.length} repos)`);
+    console.log('');
+
+    switch (options.output) {
+      case 'mermaid':
+        console.log(toMermaid(result));
+        break;
+      case 'matrix': {
+        const m = toAdjacencyMatrix(result);
+        console.log(['', ...m.labels].join('\t'));
+        for (let i = 0; i < m.labels.length; i++) {
+          console.log([m.labels[i], ...m.matrix[i]!].join('\t'));
+        }
+        break;
+      }
+      case 'json':
+        console.log(JSON.stringify(result, null, 2));
+        break;
+      default:
+        console.table(toTable(result));
+        break;
     }
   });
 

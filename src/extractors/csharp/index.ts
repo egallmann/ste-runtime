@@ -76,10 +76,19 @@ export async function extractFromCsharp(file: DiscoveredFile): Promise<RawAssert
         const httpMatch = bodyLines[i].match(HTTP_METHOD_RE);
         if (!httpMatch) continue;
         const httpMethod = httpMatch[2].toUpperCase();
-        const routeSuffix = httpMatch[3] ?? '';
+        let routeSuffix = httpMatch[3] ?? '';
+        
+        // If no inline route on [HttpVerb], check neighboring lines for [Route("...")]
+        if (!routeSuffix) {
+          for (let j = Math.max(0, i - 2); j <= Math.min(bodyLines.length - 1, i + 3); j++) {
+            if (j === i) continue;
+            const actionRouteMatch = bodyLines[j].match(ROUTE_ATTR_RE);
+            if (actionRouteMatch) { routeSuffix = actionRouteMatch[1]; break; }
+          }
+        }
         const fullRoute = routePrefix + (routeSuffix ? '/' + routeSuffix : '');
 
-        const methodLine = bodyLines.slice(i + 1, i + 5).join('\n');
+        const methodLine = bodyLines.slice(i + 1, i + 12).join('\n');
         const mMatch = methodLine.match(/(?:public|private|protected|internal)\s+(?:async\s+)?[\w<>\[\]?,\s]+?\s+(\w+)\s*\(/);
         const actionName = mMatch?.[1] ?? 'unknown';
 

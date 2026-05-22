@@ -182,7 +182,7 @@ async function main() {
     process.exit(0);
   }
 
-  const workspaceResolved = await resolveWorkspaceDirectory(args.workspace, process.cwd());
+  const workspaceResolved = await resolveWorkspaceDirectory(args.workspace, process.cwd(), runtimeDir);
   if (args.workspace !== null && workspaceResolved === null) {
     console.error(
       'recon: workspace mode could not resolve a manifest directory. Pass --workspace <path>, set STE_WORKSPACE_ROOT, or run from a directory tree that contains workspace.yaml (or workspace.yml).',
@@ -229,6 +229,10 @@ async function main() {
       } else {
         console.log(`  [${r.name}] FAILED  stage=${r.error?.stage ?? '?'}  ${r.error?.message ?? ''}`);
       }
+    }
+
+    if (wsResult.projectionResult) {
+      console.log(`  Projections: ${wsResult.projectionResult.fileCount} files written to projections/`);
     }
 
     // Self-pass: always include ste-runtime itself

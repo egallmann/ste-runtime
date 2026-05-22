@@ -1,6 +1,6 @@
 {
   "name": "ste-runtime",
-  "version": "0.9.0-experimental",
+  "version": "0.10.0-experimental",
   "private": true,
   "description": "STE Runtime [EXPERIMENTAL] - Component implementation of RECON and RSS for AI-assisted development. NOT production-ready.",
   "type": "module",

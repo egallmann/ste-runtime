@@ -361,6 +361,96 @@ describe('search', () => {
   });
 });
 
+describe('search with repo filter', () => {
+  it('should filter results by repo', async () => {
+    await writeYaml('repoA/graph/modules/service-a.yaml', `
+_slice:
+  id: service-a
+  domain: graph
+  type: module
+  source_files:
+    - src/service-a.ts
+  references: []
+  referenced_by: []
+`);
+
+    await writeYaml('repoB/graph/modules/service-b.yaml', `
+_slice:
+  id: service-b
+  domain: graph
+  type: module
+  source_files:
+    - src/service-b.ts
+  references: []
+  referenced_by: []
+`);
+
+    ctx = await initRssContext(tempDir);
+
+    const allResults = search(ctx, 'service');
+    expect(allResults.nodes.length).toBe(2);
+
+    const repoAResults = search(ctx, 'service', { repo: 'repoA' });
+    expect(repoAResults.nodes.length).toBe(1);
+    expect(repoAResults.nodes[0].id).toBe('service-a');
+    expect(repoAResults.nodes[0].repo).toBe('repoA');
+
+    const repoBResults = search(ctx, 'service', { repo: 'repoB' });
+    expect(repoBResults.nodes.length).toBe(1);
+    expect(repoBResults.nodes[0].id).toBe('service-b');
+    expect(repoBResults.nodes[0].repo).toBe('repoB');
+  });
+
+  it('should return empty for non-existent repo', async () => {
+    await writeYaml('repoA/graph/modules/svc.yaml', `
+_slice:
+  id: svc
+  domain: graph
+  type: module
+  source_files:
+    - src/svc.ts
+  references: []
+  referenced_by: []
+`);
+
+    ctx = await initRssContext(tempDir);
+
+    const result = search(ctx, 'svc', { repo: 'nonexistent' });
+    expect(result.nodes).toHaveLength(0);
+  });
+
+  it('should combine repo and domain filters', async () => {
+    await writeYaml('repoA/graph/modules/mod.yaml', `
+_slice:
+  id: mod
+  domain: graph
+  type: module
+  source_files:
+    - src/mod.ts
+  references: []
+  referenced_by: []
+`);
+
+    await writeYaml('repoA/api/endpoints/ep.yaml', `
+_slice:
+  id: ep
+  domain: api
+  type: endpoint
+  source_files:
+    - src/ep.ts
+  references: []
+  referenced_by: []
+`);
+
+    ctx = await initRssContext(tempDir);
+
+    const result = search(ctx, '', { repo: 'repoA', domain: 'api' });
+    // Only the api endpoint should match
+    expect(result.nodes.every(n => n.domain === 'api')).toBe(true);
+    expect(result.nodes.every(n => n.repo === 'repoA')).toBe(true);
+  });
+});
+
 describe('findEntryPoints', () => {
   beforeEach(async () => {
     await setupTestGraph();
