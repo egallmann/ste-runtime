@@ -23,7 +23,7 @@ import type { ResolvedConfig } from '../config/index.js';
 import * as operationalTools from './tools-operational.js';
 import * as optimizedTools from './tools-optimized.js';
 import { loadWorkspaceGraph } from '../workspace/workspace-graph-loader.js';
-import { systemDependencies, componentIntegration, blastRadiusWorkspace } from '../workspace/canned-queries.js';
+import { systemDependencies, componentIntegration, blastRadiusWorkspace, whatCalls, whatDependsOn, blastRadiusNode } from '../workspace/canned-queries.js';
 import { toMermaid, toTable, toMermaidAtResolution, toTableAtResolution } from '../workspace/projections.js';
 import { compress, type ResolutionLevel } from '../workspace/compression.js';
 
@@ -374,6 +374,39 @@ export class McpServer {
             required: ['target'],
           },
         },
+        {
+          name: 'ws_what_calls',
+          description: 'Find all nodes that call/invoke a given node (depth-1 reverse on invokes/publishes/calls/triggers/publishes_to verbs).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              node_id: { type: 'string', description: 'Target workspace node ID' },
+            },
+            required: ['node_id'],
+          },
+        },
+        {
+          name: 'ws_what_depends_on',
+          description: 'Forward transitive closure: find all nodes that the given node depends on (reachable via outgoing edges).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              node_id: { type: 'string', description: 'Starting workspace node ID' },
+            },
+            required: ['node_id'],
+          },
+        },
+        {
+          name: 'ws_node_blast_radius',
+          description: 'Reverse transitive closure: find all nodes that depend on the given node (reachable via incoming edges).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              node_id: { type: 'string', description: 'Target workspace node ID' },
+            },
+            required: ['node_id'],
+          },
+        },
       ],
     }));
     
@@ -422,16 +455,22 @@ export class McpServer {
           
           case 'overview': {
             const ctx = this.getContextForScope(scope);
+            const overviewRoot = scope === 'self'
+              ? this.options.config.runtimeDir
+              : this.options.projectRoot;
             result = await optimizedTools.overview(ctx, toolArgs as any, {
-              projectRoot: this.options.projectRoot,
+              projectRoot: overviewRoot,
             });
             break;
           }
           
           case 'diagnose': {
             const ctx = this.getContextForScope(scope);
+            const diagnoseRoot = scope === 'self'
+              ? this.options.config.runtimeDir
+              : this.options.projectRoot;
             result = await optimizedTools.diagnose(ctx, toolArgs as any, {
-              projectRoot: this.options.projectRoot,
+              projectRoot: diagnoseRoot,
             });
             break;
           }
@@ -513,6 +552,27 @@ export class McpServer {
               affectedNodeCount: blastResult.affectedNodeCount,
               meta: { queryTimeMs: 0, nodesTraversed: wsGraph.nodes.size, filesInScope: 0, tokensEstimate: 0, graphVersion: 'workspace' },
             };
+            break;
+          }
+
+          case 'ws_what_calls': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            result = whatCalls(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
+          case 'ws_what_depends_on': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            result = whatDependsOn(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
+          case 'ws_node_blast_radius': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            result = blastRadiusNode(wsGraph, (toolArgs as any).node_id);
             break;
           }
 

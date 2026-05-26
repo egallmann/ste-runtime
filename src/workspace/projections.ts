@@ -13,6 +13,9 @@ import type {
   SystemDependencyResult,
   ComponentIntegrationResult,
   WorkspaceBlastRadiusResult,
+  WhatCallsResult,
+  WhatDependsOnResult,
+  NodeBlastRadiusResult,
 } from './canned-queries.js';
 import type {
   CompressedProjection,
@@ -62,7 +65,29 @@ export function toMermaid(result: CannedQueryResult): string {
       return mermaidComponentIntegration(result);
     case 'blast-radius':
       return mermaidBlastRadius(result);
+    case 'what-calls':
+      return mermaidNodeList(result.targetId, 'callers', result.callers);
+    case 'what-depends-on':
+      return mermaidNodeList(result.targetId, 'dependents', result.dependents);
+    case 'node-blast-radius':
+      return mermaidNodeList(result.targetId, 'affected', result.affected);
   }
+}
+
+function mermaidNodeList(targetId: string, label: string, nodes: string[]): string {
+  const lines: string[] = ['flowchart TD'];
+  const safeTarget = targetId.replace(/[^a-zA-Z0-9_]/g, '_');
+  lines.push(`  ${safeTarget}["${targetId}"]`);
+  for (const node of nodes) {
+    const safeNode = node.replace(/[^a-zA-Z0-9_]/g, '_');
+    lines.push(`  ${safeNode}["${node}"]`);
+    lines.push(`  ${safeNode} -->|${label}| ${safeTarget}`);
+  }
+  return lines.join('\n');
+}
+
+function tableNodeList(targetId: string, role: string, nodes: string[]): Array<Record<string, string>> {
+  return nodes.map((n) => ({ target: targetId, [role]: n }));
 }
 
 function mermaidSystemDeps(result: SystemDependencyResult): string {
@@ -161,6 +186,12 @@ export function toTable(result: CannedQueryResult): Array<Record<string, string>
       return tableComponentIntegration(result);
     case 'blast-radius':
       return tableBlastRadius(result);
+    case 'what-calls':
+      return tableNodeList(result.targetId, 'caller', result.callers);
+    case 'what-depends-on':
+      return tableNodeList(result.targetId, 'dependent', result.dependents);
+    case 'node-blast-radius':
+      return tableNodeList(result.targetId, 'affected', result.affected);
   }
 }
 
@@ -224,6 +255,10 @@ export function toAdjacencyMatrix(result: CannedQueryResult): AdjacencyMatrixRes
       return matrixComponentIntegration(result);
     case 'blast-radius':
       return matrixBlastRadius(result);
+    case 'what-calls':
+    case 'what-depends-on':
+    case 'node-blast-radius':
+      return { labels: [], matrix: [] };
   }
 }
 

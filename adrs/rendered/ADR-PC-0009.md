@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: ddbfe3131597a1fe9f97c6dda0341936bd55fc3114a7e04e579d636b67a7dfe9
-rendered_hash: 72105d7a6c27ee908dbc443c7a4dadf25b09ecff0a7636a572754cf0ed9585c8
+source_hash: 8525e1860df80e6fb9dda97af1c5e01fed19991edc56c52db119afa4db9c9e2f
+rendered_hash: 954979aedaa8207e96d3c7b5ba028e4653ddaeed35a6d52e04c202aed01fc032
 -->
 
 # ADR-PC-0009: Workspace Graph Query Engine
@@ -58,12 +58,14 @@ YAML parsing for workspace slice files, consistent with existing codebase.
 - Build outAdj/inAdj adjacency maps at load time for O(1) neighbor lookups
 - Execute systemDependencies, componentIntegration, blastRadiusWorkspace queries
 - Render results to Mermaid, table, and adjacency matrix projections
+- Materialize deterministic projections to output_dir/projections/ on workspace recon (emitProjections)
 
 
 **Interfaces:**
 - **IFACE-0010** (library_api): Programmatic API:
   - loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGraph>
   - systemDepen...
+**Dependencies:** COMP-0011
 
 **Implementation Identifiers:**
 - Module Path: `src/workspace/workspace-graph-loader.ts`

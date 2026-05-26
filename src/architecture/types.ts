@@ -4,17 +4,24 @@ export const GENERATOR_ID = 'adr-architecture-index';
 
 export const RELATIONSHIP_TYPES = [
   'declared_in',
+  'declares',
   'references',
+  'referenced_by',
   'related_to',
   'enforces',
+  'enforced_by',
   'enabled_by',
   'enables',
   'governs',
+  'governed_by',
   'implemented_by',
+  'implements',
   'embodied_in',
+  'embodies',
   'supersedes',
   'superseded_by',
   'refines',
+  'refined_by',
 ] as const;
 
 export type RelationshipType = (typeof RELATIONSHIP_TYPES)[number];
@@ -22,17 +29,24 @@ export type RelationshipType = (typeof RELATIONSHIP_TYPES)[number];
 export function emptyRelationshipBuckets(): Record<RelationshipType, string[]> {
   return {
     declared_in: [],
+    declares: [],
     references: [],
+    referenced_by: [],
     related_to: [],
     enforces: [],
+    enforced_by: [],
     enabled_by: [],
     enables: [],
     governs: [],
+    governed_by: [],
     implemented_by: [],
+    implements: [],
     embodied_in: [],
+    embodies: [],
     supersedes: [],
     superseded_by: [],
     refines: [],
+    refined_by: [],
   };
 }
 
@@ -114,11 +128,14 @@ export interface ValidationSummary {
   unresolved_entries: number;
 }
 
+export type LifecycleStage = 'proposed' | 'active' | 'deprecated' | 'superseded';
+
 export interface NormalizedEntity {
   id: string;
   entity_type: 'adr' | 'system' | 'component' | 'decision' | 'capability' | 'invariant';
   name: string;
   summary: string;
+  lifecycle_stage: LifecycleStage;
   canonical_source: CanonicalSource;
   source_refs: SourceRef[];
   metadata: Record<string, unknown>;

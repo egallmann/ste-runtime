@@ -19,6 +19,7 @@ import { emitProjections } from './emit-projections.js';
 import type { ProjectionEmitResult } from './emit-projections.js';
 import { emitMultiResProjections } from './emit-multi-res-projections.js';
 import type { MultiResEmitResult } from './emit-multi-res-projections.js';
+import { mergeWorkspaceGraph } from './workspace-merge.js';
 
 export interface WorkspaceReconOptions {
   workspacePath: string;
@@ -288,6 +289,20 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log(`[workspace-recon] Cross-repo edge analysis failed (non-fatal): ${msg}`);
+  }
+
+  try {
+    const mergeResult = await mergeWorkspaceGraph(outputRoot);
+    log(
+      `[workspace-recon] Graph merge: ${mergeResult.graph.nodes.length} nodes, ` +
+        `${mergeResult.graph.edges.length} edges` +
+        (mergeResult.graph.partial_from.length > 0
+          ? ` (partial: ${mergeResult.graph.partial_from.join(', ')})`
+          : ''),
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Graph merge failed (non-fatal): ${msg}`);
   }
 
   const generatedAt = new Date().toISOString();

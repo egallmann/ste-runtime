@@ -444,13 +444,17 @@ export function deriveRelationships(
     const adrId = e.canonical_source.source_ref.split('#')[0];
     if (projected.has(adrId)) {
       addRel('declared_in', e.id, adrId, e.canonical_source.source_ref, [e.canonical_source.source_ref]);
+      addRel('declares', adrId, e.id, e.canonical_source.source_ref, [e.canonical_source.source_ref], 'derived');
     }
   }
 
   for (const { adr } of logicalAdrs) {
     const adrId = asString(adr.id, 'adr.id');
     for (const related of asStringArray(adr.related_adrs)) {
-      if (projected.has(related)) addRel('references', adrId, related, adrId, [adrId]);
+      if (projected.has(related)) {
+        addRel('references', adrId, related, adrId, [adrId]);
+        addRel('referenced_by', related, adrId, adrId, [adrId], 'derived');
+      }
     }
     const capabilities = Array.isArray(adr.capabilities) ? adr.capabilities : [];
     for (const cap of capabilities) {
@@ -459,6 +463,7 @@ export function deriveRelationships(
       for (const componentId of asStringArray(c.implemented_by_components)) {
         if (projected.has(componentId)) {
           addRel('implemented_by', capId, componentId, `${adrId}#${capId}`, [adrId]);
+          addRel('implements', componentId, capId, `${adrId}#${capId}`, [adrId], 'derived');
         } else {
           addGap({
             gap_id: `GAP-IMPL-${capId}-${componentId}`,
@@ -481,6 +486,7 @@ export function deriveRelationships(
       for (const invariantId of [...invSet].sort()) {
         if (projected.has(invariantId)) {
           addRel('enforces', decId, invariantId, `${adrId}#${decId}`, [adrId]);
+          addRel('enforced_by', invariantId, decId, `${adrId}#${decId}`, [adrId], 'derived');
         } else {
           addGap({
             gap_id: `GAP-INV-${decId}-${invariantId}`,
@@ -512,7 +518,10 @@ export function deriveRelationships(
         }
       }
       for (const componentId of asStringArray(d.governs_components)) {
-        if (projected.has(componentId)) addRel('governs', decId, componentId, `${adrId}#${decId}`, [adrId]);
+        if (projected.has(componentId)) {
+          addRel('governs', decId, componentId, `${adrId}#${decId}`, [adrId]);
+          addRel('governed_by', componentId, decId, `${adrId}#${decId}`, [adrId], 'derived');
+        }
       }
       for (const target of asStringArray(d.supersedes)) {
         if (projected.has(target)) {
@@ -521,7 +530,10 @@ export function deriveRelationships(
         }
       }
       for (const target of asStringArray(d.refines)) {
-        if (projected.has(target)) addRel('refines', decId, target, `${adrId}#${decId}`, [adrId]);
+        if (projected.has(target)) {
+          addRel('refines', decId, target, `${adrId}#${decId}`, [adrId]);
+          addRel('refined_by', target, decId, `${adrId}#${decId}`, [adrId], 'derived');
+        }
       }
     }
   }
@@ -530,7 +542,10 @@ export function deriveRelationships(
     const invId = asString(inv.id, 'invariant.id');
     if (!projected.has(invId)) continue;
     for (const target of asStringArray(inv.enforced_by)) {
-      if (projected.has(target)) addRel('enforces', invId, target, invId, [invId]);
+      if (projected.has(target)) {
+        addRel('enforces', invId, target, invId, [invId]);
+        addRel('enforced_by', target, invId, invId, [invId], 'derived');
+      }
     }
   }
 
@@ -545,6 +560,7 @@ export function deriveRelationships(
       for (const capabilityId of asStringArray(s.implements_capabilities)) {
         if (projected.has(capabilityId)) {
           addRel('implemented_by', capabilityId, componentId, `${adrId}#${componentId}`, [adrId]);
+          addRel('implements', componentId, capabilityId, `${adrId}#${componentId}`, [adrId], 'derived');
         } else {
           addGap({
             gap_id: `GAP-MISSING-CAP-${componentId}-${capabilityId}`,
@@ -562,6 +578,7 @@ export function deriveRelationships(
         const resolvedSystemId = systemIds.get(systemAdrId) ?? `SYS-${systemAdrId.replace('ADR-PS-', '')}`;
         if (projected.has(resolvedSystemId)) {
           addRel('embodied_in', componentId, resolvedSystemId, `${adrId}#${componentId}`, [adrId]);
+          addRel('embodies', resolvedSystemId, componentId, `${adrId}#${componentId}`, [adrId], 'derived');
         } else {
           addGap({
             gap_id: `GAP-MISSING-SYS-${componentId}-${systemAdrId}`,
@@ -578,13 +595,17 @@ export function deriveRelationships(
       for (const dep of asStringArray(s.dependencies)) {
         if (projected.has(dep)) {
           addRel('related_to', componentId, dep, `${adrId}#${componentId}`, [adrId], 'derived', 0.8);
+          addRel('related_to', dep, componentId, `${adrId}#${componentId}`, [adrId], 'derived', 0.8);
         }
       }
     }
     }
     if (kind === 'physical-system' && Array.isArray(adr.references_components)) {
       for (const componentAdr of asStringArray(adr.references_components)) {
-        if (projected.has(componentAdr)) addRel('related_to', adrId, componentAdr, adrId, [adrId], 'derived', 0.8);
+        if (projected.has(componentAdr)) {
+          addRel('related_to', adrId, componentAdr, adrId, [adrId], 'derived', 0.8);
+          addRel('related_to', componentAdr, adrId, adrId, [adrId], 'derived', 0.8);
+        }
       }
     }
   }
@@ -603,6 +624,7 @@ function projectEntityForDerivation(entity: IrEntity): NormalizedEntity {
     entity_type: entity.entity_type as NormalizedEntity['entity_type'],
     name: entity.name,
     summary: entity.summary,
+    lifecycle_stage: 'active',
     canonical_source: entity.canonical_source,
     source_refs: entity.source_refs,
     metadata: entity.metadata,

@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 760452532dceea1e5a4569cc89a5452720d3f67ad93ca4544191b4bf7e2e519f
-rendered_hash: 2c76399d58736200fbd32c25921a957957d1ba2bdf94a0bd1f936a5062235613
+source_hash: 3b2505bb9e8a57856c8bebebb98e18b03a31f6e7042aa20536afcb008729c351
+rendered_hash: a244434cde1fa53c585474c34d429e42ee431130e8c5c6e15c5864c4936dd9fb
 -->
 
 # ADR-PS-0002: Semantic Extraction Subsystem
@@ -17,7 +17,7 @@ rendered_hash: 2c76399d58736200fbd32c25921a957957d1ba2bdf94a0bd1f936a5062235613
 **Domains:** extraction, recon, normalization  
 **Tags:** extraction, recon, semantic-state  
 **Implements Logical:** ADR-L-0001, ADR-L-0005  
-**Technologies:** typescript, node.js, json, angular, css, cloudformation
+**Technologies:** typescript, node.js, json, angular, css, cloudformation, adr-yaml
 
 **Related ADRs:** ADR-P-0002, ADR-P-0003
 

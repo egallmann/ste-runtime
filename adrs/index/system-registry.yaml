@@ -1,97 +1,97 @@
 schema_version: '1.1'
 type: normalized_entity_registry
 entities:
-  - id: SYS-0001
-    entity_type: system
-    name: Runtime Orchestration and Assistant Integration
-    summary: >-
-      ste-runtime now contains a runtime orchestration boundary that keeps semantic state fresh, exposes
-      assistant-facing MCP tools, performs reconciliation gating and freshness checks, and assembles implementation
-      context and
-    canonical_source:
-      source_type: physical_system_adr
-      source_ref: ADR-PS-0001
-      artifact_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PS-0001
-      implements_logical:
-        - ADR-L-0004
-        - ADR-L-0006
-        - ADR-L-0007
-        - ADR-L-0018
-      technologies:
-        - typescript
-        - node.js
-        - mcp
-        - chokidar
-        - zod
-    relationships:
-      declared_in:
-        - ADR-PS-0001
-      references: []
-      related_to: []
-      enforces: []
-      enabled_by: []
-      enables: []
-      governs: []
-      implemented_by: []
-      embodied_in: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_system_adr
-      source_ref: ADR-PS-0001
-      extraction_phase: extract_system
-      classification: explicit
-      generator: adr-architecture-index
-  - id: SYS-0002
-    entity_type: system
-    name: Semantic Extraction Subsystem
-    summary: >-
-      ste-runtime extraction is now a subsystem containing multiple first-class extractors and normalization flows
-      rather than a pair of isolated physical slices. This ADR groups the implemented extractor estate under a concre
-    canonical_source:
-      source_type: physical_system_adr
-      source_ref: ADR-PS-0002
-      artifact_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PS-0002
-      implements_logical:
-        - ADR-L-0001
-        - ADR-L-0005
-      technologies:
-        - typescript
-        - node.js
-        - json
-        - angular
-        - css
-        - cloudformation
-    relationships:
-      declared_in:
-        - ADR-PS-0002
-      references: []
-      related_to: []
-      enforces: []
-      enabled_by: []
-      enables: []
-      governs: []
-      implemented_by: []
-      embodied_in: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_system_adr
-      source_ref: ADR-PS-0002
-      extraction_phase: extract_system
-      classification: explicit
-      generator: adr-architecture-index
+- id: SYS-0001
+  entity_type: system
+  name: Runtime Orchestration and Assistant Integration
+  summary: ste-runtime now contains a runtime orchestration boundary that keeps semantic
+    state fresh, exposes assistant-facing MCP tools, performs reconciliation gating
+    and freshness checks, and assembles implementation context and
+  canonical_source:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0001
+    artifact_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PS-0001
+    implements_logical:
+    - ADR-L-0004
+    - ADR-L-0006
+    - ADR-L-0007
+    - ADR-L-0018
+    technologies:
+    - typescript
+    - node.js
+    - mcp
+    - chokidar
+    - zod
+  relationships:
+    declared_in:
+    - ADR-PS-0001
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0001
+    extraction_phase: extract_system
+    classification: explicit
+    generator: adr-architecture-index
+- id: SYS-0002
+  entity_type: system
+  name: Semantic Extraction Subsystem
+  summary: ste-runtime extraction is now a subsystem containing multiple first-class
+    extractors and normalization flows rather than a pair of isolated physical slices.
+    This ADR groups the implemented extractor estate under a concre
+  canonical_source:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0002
+    artifact_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
+  source_refs: []
+  metadata:
+    adr_id: ADR-PS-0002
+    implements_logical:
+    - ADR-L-0001
+    - ADR-L-0005
+    technologies:
+    - typescript
+    - node.js
+    - json
+    - angular
+    - css
+    - cloudformation
+    - adr-yaml
+  relationships:
+    declared_in:
+    - ADR-PS-0002
+    references: []
+    related_to: []
+    enforces: []
+    enabled_by: []
+    enables: []
+    governs: []
+    implemented_by: []
+    embodied_in: []
+    supersedes: []
+    superseded_by: []
+    refines: []
+  completeness:
+    status: complete
+    missing_fields: []
+  provenance:
+    source_type: physical_system_adr
+    source_ref: ADR-PS-0002
+    extraction_phase: extract_system
+    classification: explicit
+    generator: adr-architecture-index

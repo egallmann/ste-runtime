@@ -5,6 +5,9 @@ import {
   systemDependencies,
   componentIntegration,
   blastRadiusWorkspace,
+  whatCalls,
+  whatDependsOn,
+  blastRadiusNode,
 } from './canned-queries.js';
 
 function makeGraph(
@@ -273,5 +276,77 @@ describe('blastRadiusWorkspace', () => {
     expect(result.risk).toBe('low');
     expect(result.affectedNodeCount).toBe(1);
     expect(result.tiers.length).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// whatCalls (Section 11 port)
+// ---------------------------------------------------------------------------
+
+describe('whatCalls', () => {
+  it('returns callers on invokes/publishes verbs', () => {
+    const graph = makeGraph(
+      [N('Service:A', 'Service', 'r1'), N('Service:B', 'Service', 'r2'), N('Service:C', 'Service', 'r3')],
+      [E('Service:A', 'Service:C', 'invokes'), E('Service:B', 'Service:C', 'publishes')],
+    );
+    const result = whatCalls(graph, 'Service:C');
+    expect(result.callers).toEqual(['Service:A', 'Service:B']);
+  });
+
+  it('ignores non-call verbs', () => {
+    const graph = makeGraph(
+      [N('Service:A', 'Service', 'r1'), N('Database:B', 'Database', 'r1')],
+      [E('Service:A', 'Database:B', 'reads')],
+    );
+    const result = whatCalls(graph, 'Database:B');
+    expect(result.callers).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// whatDependsOn (Section 11 port)
+// ---------------------------------------------------------------------------
+
+describe('whatDependsOn', () => {
+  it('returns transitive forward closure', () => {
+    const graph = makeGraph(
+      [N('S:A', 'Service', 'r1'), N('S:B', 'Service', 'r2'), N('S:C', 'Service', 'r3')],
+      [E('S:A', 'S:B', 'invokes'), E('S:B', 'S:C', 'reads')],
+    );
+    const result = whatDependsOn(graph, 'S:A');
+    expect(result.dependents).toEqual(['S:B', 'S:C']);
+  });
+
+  it('handles cycles without infinite loop', () => {
+    const graph = makeGraph(
+      [N('S:A', 'Service', 'r1'), N('S:B', 'Service', 'r2')],
+      [E('S:A', 'S:B', 'invokes'), E('S:B', 'S:A', 'invokes')],
+    );
+    const result = whatDependsOn(graph, 'S:A');
+    expect(result.dependents).toEqual(['S:B']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// blastRadiusNode (Section 11 port)
+// ---------------------------------------------------------------------------
+
+describe('blastRadiusNode', () => {
+  it('returns reverse transitive closure', () => {
+    const graph = makeGraph(
+      [N('S:A', 'Service', 'r1'), N('S:B', 'Service', 'r2'), N('S:C', 'Service', 'r3')],
+      [E('S:A', 'S:B', 'invokes'), E('S:B', 'S:C', 'reads')],
+    );
+    const result = blastRadiusNode(graph, 'S:C');
+    expect(result.affected).toEqual(['S:A', 'S:B']);
+  });
+
+  it('returns empty for leaf node with no incoming edges', () => {
+    const graph = makeGraph(
+      [N('S:A', 'Service', 'r1')],
+      [],
+    );
+    const result = blastRadiusNode(graph, 'S:A');
+    expect(result.affected).toEqual([]);
   });
 });

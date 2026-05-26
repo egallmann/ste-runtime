@@ -753,5 +753,26 @@ export function compress(
       return compressComponentIntegration(result, fullConfig);
     case 'blast-radius':
       return compressBlastRadius(result, fullConfig);
+    case 'what-calls':
+    case 'what-depends-on':
+    case 'node-blast-radius':
+      return {
+        nodes: [],
+        edges: [],
+        groups: [],
+        metadata: {
+          level: fullConfig.level,
+          family: 'node-query',
+          intent: result.kind,
+          sourceQuery: result.kind,
+          derivation: 'deterministic' as const,
+          confidence: 'high' as const,
+          nodeCount: 0,
+          edgeCount: 0,
+          compressionRatio: 1,
+          generationHash: '',
+        },
+        sourceResult: result,
+      };
   }
 }

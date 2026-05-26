@@ -117,3 +117,62 @@ describe('loadWorkspaceGraph', () => {
     expect(graph.inAdj.has('A')).toBe(false);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Zod slice validation tests
+// ---------------------------------------------------------------------------
+
+import { validateSlice } from './slice-schema.js';
+
+describe('validateSlice', () => {
+  it('accepts a valid slice with known types and verbs', () => {
+    const doc = {
+      schema_version: '1.0',
+      repo: 'test-repo',
+      generated_by: 'test',
+      generated_at: '2026-01-01T00:00:00Z',
+      nodes: [{ id: 'Service:test:svc', type: 'Service', name: 'TestSvc', provenance: { source_path: 'x', source_ref: 'y' } }],
+      edges: [{ from: 'Service:test:svc', to: 'Lambda:test:fn', verb: 'invokes', provenance: { source_path: 'x', source_ref: 'y' } }],
+    };
+    const result = validateSlice(doc);
+    expect(result.valid).toBe(true);
+    expect(result.warnings).toEqual([]);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('warns on unknown node type in warn mode', () => {
+    const doc = {
+      schema_version: '1.0',
+      repo: 'test-repo',
+      generated_by: 'test',
+      generated_at: '2026-01-01T00:00:00Z',
+      nodes: [{ id: 'Custom:test:x', type: 'CustomType', name: 'X', provenance: { source_path: 'x', source_ref: 'y' } }],
+      edges: [],
+    };
+    const result = validateSlice(doc, 'warn');
+    expect(result.valid).toBe(true);
+    expect(result.warnings.length).toBe(1);
+    expect(result.warnings[0]).toContain('CustomType');
+  });
+
+  it('rejects unknown node type in reject mode', () => {
+    const doc = {
+      schema_version: '1.0',
+      repo: 'test-repo',
+      generated_by: 'test',
+      generated_at: '2026-01-01T00:00:00Z',
+      nodes: [{ id: 'Custom:test:x', type: 'CustomType', name: 'X', provenance: { source_path: 'x', source_ref: 'y' } }],
+      edges: [],
+    };
+    const result = validateSlice(doc, 'reject');
+    expect(result.valid).toBe(false);
+    expect(result.errors.length).toBe(1);
+  });
+
+  it('rejects missing required field', () => {
+    const doc = { nodes: [], edges: [] };
+    const result = validateSlice(doc);
+    expect(result.valid).toBe(false);
+    expect(result.errors.length).toBeGreaterThan(0);
+  });
+});

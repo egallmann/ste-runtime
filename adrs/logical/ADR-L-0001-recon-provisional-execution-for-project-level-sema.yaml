@@ -87,7 +87,7 @@ invariants:
   exceptions: []
 - id: INV-0006
   statement: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
-    E-ADR-005), Angular, CSS/SCSS (see E-ADR-006).'
+    E-ADR-005), Angular, CSS/SCSS (see E-ADR-006), ADR YAML (see ADR-PC-0011).'
   scope: global
   enforcement_level: must
   enforcement_mechanism: design

@@ -104,7 +104,14 @@ export interface RawAssertion {
     | 'angular_template'   // Component HTML templates
     // CSS/SCSS element types (E-ADR-006)
     | 'styles'             // Component styles
-    | 'design_tokens';     // CSS variables, SCSS variables, animations
+    | 'design_tokens'      // CSS variables, SCSS variables, animations
+    // ADR YAML element types (ADR-PC-0010)
+    | 'adr_document'       // ADR document (logical, physical-system, physical-component)
+    | 'adr_invariant'      // Invariant declared in a logical ADR
+    | 'adr_decision'       // Decision declared in an ADR
+    | 'adr_capability'     // Capability declared in a logical ADR
+    | 'adr_component'      // Component spec in a physical-component ADR
+    | 'adr_system';        // System boundary in a physical-system ADR
   file: string;
   line: number;
   end_line?: number;

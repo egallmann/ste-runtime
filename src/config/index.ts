@@ -23,6 +23,7 @@ export const SupportedLanguage = z.enum([
   'angular',  // E-ADR-006: Angular semantic extraction
   'css',      // E-ADR-006: CSS/SCSS extraction (standalone, cross-cutting)
   'csharp',   // MP-4c: C#/.NET extraction
+  'adr-yaml', // ADR-PC-0010: ADR YAML semantic extraction
 ]);
 export type SupportedLanguage = z.infer<typeof SupportedLanguage>;
 
@@ -378,6 +379,14 @@ export async function detectLanguages(projectRoot: string): Promise<SupportedLan
       }
     }
   } catch { /* continue */ }
+
+  // Check for ADR YAML corpus (adrs/manifest.yaml) per ADR-PC-0010
+  try {
+    await fs.access(path.join(projectRoot, 'adrs', 'manifest.yaml'));
+    languages.push('adr-yaml');
+  } catch {
+    // No ADR corpus
+  }
 
   // Check for CSS/SCSS files (styles directory or src/styles) per E-ADR-006
   const cssPaths = ['styles', 'src/styles', 'frontend/src/styles', 'src/assets/styles'];

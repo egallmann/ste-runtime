@@ -70,7 +70,6 @@ function createBundleResult(
       unresolvedRegistry: { path: 'C:/fixture/adrs/index/unresolved-registry.yaml', exists: true, data: {} },
     },
     additiveArtifacts: {
-      architectureGraph: { path: 'C:/fixture/adrs/index/architecture-graph.yaml', exists: false, error: 'File not found' },
       subsetRegistries: [],
     },
     manifest: {
@@ -218,7 +217,7 @@ describe('runArchitectureEvidenceCommand', () => {
     expect(parsed.subjects).toEqual([
       { kind: 'adr_l', id: 'ADR-L-0013', effect: 'validates' },
     ]);
-    expect(parsed.bundle.status).toBe('degraded');
+    expect(parsed.bundle.status).toBe('valid');
     expect(parsed.bundle.warnings).toEqual(expect.any(Array));
     expect(parsed.bundle.errors).toEqual(expect.any(Array));
     expect(parsed.freshness.status).toBe('current');

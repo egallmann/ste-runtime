@@ -63,10 +63,35 @@ export interface WorkspaceBlastRadiusResult {
 // Union type for projection dispatch
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Result types — Section 11 node-level queries
+// ---------------------------------------------------------------------------
+
+export interface WhatCallsResult {
+  kind: 'what-calls';
+  targetId: string;
+  callers: string[];
+}
+
+export interface WhatDependsOnResult {
+  kind: 'what-depends-on';
+  targetId: string;
+  dependents: string[];
+}
+
+export interface NodeBlastRadiusResult {
+  kind: 'node-blast-radius';
+  targetId: string;
+  affected: string[];
+}
+
 export type CannedQueryResult =
   | SystemDependencyResult
   | ComponentIntegrationResult
-  | WorkspaceBlastRadiusResult;
+  | WorkspaceBlastRadiusResult
+  | WhatCallsResult
+  | WhatDependsOnResult
+  | NodeBlastRadiusResult;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -313,4 +338,80 @@ export function blastRadiusWorkspace(
     affectedNodeCount: tierMap.size,
     risk: computeRisk(tierTwoPlus, affectedRepos.length),
   };
+}
+
+// ---------------------------------------------------------------------------
+// Query: whatCalls (Section 11 port)
+// ---------------------------------------------------------------------------
+
+const CALL_VERBS = new Set(['invokes', 'publishes', 'calls', 'triggers', 'publishes_to']);
+
+/**
+ * Depth-1 reverse neighborhood on invokes/publishes/calls/triggers/publishes_to edges.
+ * Port of aos-graph query.py::what_calls.
+ */
+export function whatCalls(
+  graph: WorkspaceGraph,
+  nodeId: string,
+): WhatCallsResult {
+  const inEdges = graph.inAdj.get(nodeId) ?? [];
+  const callers = new Set<string>();
+  for (const edge of inEdges) {
+    if (CALL_VERBS.has(edge.verb)) {
+      callers.add(edge.from);
+    }
+  }
+  return { kind: 'what-calls', targetId: nodeId, callers: [...callers].sort() };
+}
+
+// ---------------------------------------------------------------------------
+// Query: whatDependsOn (Section 11 port)
+// ---------------------------------------------------------------------------
+
+/**
+ * Forward transitive closure on all edges. Cycle-safe.
+ * Port of aos-graph query.py::what_depends_on.
+ */
+export function whatDependsOn(
+  graph: WorkspaceGraph,
+  nodeId: string,
+): WhatDependsOnResult {
+  const seen = new Set<string>();
+  const stack = [nodeId];
+  while (stack.length > 0) {
+    const cur = stack.pop()!;
+    const outEdges = graph.outAdj.get(cur) ?? [];
+    for (const edge of outEdges) {
+      if (seen.has(edge.to) || edge.to === nodeId) continue;
+      seen.add(edge.to);
+      stack.push(edge.to);
+    }
+  }
+  return { kind: 'what-depends-on', targetId: nodeId, dependents: [...seen].sort() };
+}
+
+// ---------------------------------------------------------------------------
+// Query: blastRadiusNode (Section 11 port)
+// ---------------------------------------------------------------------------
+
+/**
+ * Reverse transitive closure on all edges. Cycle-safe.
+ * Port of aos-graph query.py::blast_radius.
+ */
+export function blastRadiusNode(
+  graph: WorkspaceGraph,
+  nodeId: string,
+): NodeBlastRadiusResult {
+  const seen = new Set<string>();
+  const stack = [nodeId];
+  while (stack.length > 0) {
+    const cur = stack.pop()!;
+    const inEdges = graph.inAdj.get(cur) ?? [];
+    for (const edge of inEdges) {
+      if (seen.has(edge.from) || edge.from === nodeId) continue;
+      seen.add(edge.from);
+      stack.push(edge.from);
+    }
+  }
+  return { kind: 'node-blast-radius', targetId: nodeId, affected: [...seen].sort() };
 }

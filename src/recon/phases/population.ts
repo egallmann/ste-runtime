@@ -267,6 +267,13 @@ async function ensureStateDirectories(stateDir: string): Promise<void> {
     path.join(stateDir, 'infrastructure', 'parameters'),
     path.join(stateDir, 'infrastructure', 'outputs'),
     path.join(stateDir, 'infrastructure', 'gsis'),
+    path.join(stateDir, 'architecture'),
+    path.join(stateDir, 'architecture', 'adrs'),
+    path.join(stateDir, 'architecture', 'invariants'),
+    path.join(stateDir, 'architecture', 'decisions'),
+    path.join(stateDir, 'architecture', 'capabilities'),
+    path.join(stateDir, 'architecture', 'components'),
+    path.join(stateDir, 'architecture', 'systems'),
     path.join(stateDir, 'validation'),
     path.join(stateDir, 'validation', 'runs'),
     path.join(stateDir, 'conflicts'),
@@ -296,6 +303,12 @@ async function loadPriorState(stateDir: string): Promise<Map<string, NormalizedA
     path.join(stateDir, 'infrastructure', 'parameters'),
     path.join(stateDir, 'infrastructure', 'outputs'),
     path.join(stateDir, 'infrastructure', 'gsis'),
+    path.join(stateDir, 'architecture', 'adrs'),
+    path.join(stateDir, 'architecture', 'invariants'),
+    path.join(stateDir, 'architecture', 'decisions'),
+    path.join(stateDir, 'architecture', 'capabilities'),
+    path.join(stateDir, 'architecture', 'components'),
+    path.join(stateDir, 'architecture', 'systems'),
   ];
   
   for (const dir of sliceDirs) {
@@ -413,6 +426,28 @@ function getTargetPath(stateDir: string, assertion: NormalizedAssertion): string
     }
     if (type === 'trigger') {
       return path.join(stateDir, 'infrastructure', 'triggers', filename);
+    }
+  }
+  
+  // Architecture domain (ADR YAML entities)
+  if (domain === 'architecture') {
+    if (type === 'adr') {
+      return path.join(stateDir, 'architecture', 'adrs', filename);
+    }
+    if (type === 'invariant') {
+      return path.join(stateDir, 'architecture', 'invariants', filename);
+    }
+    if (type === 'decision') {
+      return path.join(stateDir, 'architecture', 'decisions', filename);
+    }
+    if (type === 'capability') {
+      return path.join(stateDir, 'architecture', 'capabilities', filename);
+    }
+    if (type === 'component') {
+      return path.join(stateDir, 'architecture', 'components', filename);
+    }
+    if (type === 'system') {
+      return path.join(stateDir, 'architecture', 'systems', filename);
     }
   }
   

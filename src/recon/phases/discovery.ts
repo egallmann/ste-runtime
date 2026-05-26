@@ -47,6 +47,12 @@ const LANGUAGE_PATTERNS: Record<SupportedLanguage, string[]> = {
     '**/*.sass',
     '**/*.less',
   ],
+  // ADR-PC-0010: ADR YAML semantic extraction
+  // Pattern is **/*.yaml; the adrs/ prefix comes from the path-based classification
+  // in the discovery loop which checks for files under adrs/ directories.
+  'adr-yaml': [
+    '**/*.yaml',
+  ],
 };
 
 /**
@@ -101,6 +107,11 @@ const LANGUAGE_IGNORES: Record<SupportedLanguage, string[]> = {
     '**/node_modules/**',
     '**/dist/**',
     '**/*.min.css',
+  ],
+  // ADR-PC-0010: ADR YAML ignores (skip derived registries and rendered output)
+  'adr-yaml': [
+    'adrs/index/**',
+    'adrs/rendered/**',
   ],
 };
 
@@ -308,6 +319,22 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
         const ext = path.extname(file).toLowerCase();
         let cfnContent: string | undefined;
         if (ext === '.yaml' || ext === '.yml' || ext === '.json') {
+          // ADR YAML takes precedence for files under adrs/ (path-prefix match)
+          const posixFile = toPosixPath(file);
+          if (languages.includes('adr-yaml') && posixFile.match(/(?:^|\/|\\)adrs\//)) {
+            const isIndexOrRendered = posixFile.match(/(?:^|\/|\\)adrs\/(?:index|rendered)\//);
+            if (!isIndexOrRendered) {
+              language = 'adr-yaml';
+              discoveredFiles.push({
+                path: absolutePath,
+                relativePath: toPosixPath(file),
+                language,
+                changeType: 'unchanged',
+              });
+              continue;
+            }
+          }
+
           // Check for CloudFormation first
           if (languages.includes('cloudformation')) {
             const classification = await classifyCloudFormationTemplate(absolutePath);

@@ -21,7 +21,7 @@ async function writeYaml(relativePath: string, content: string): Promise<void> {
   await writeFile(fullPath, content, 'utf8');
 }
 
-async function writeRequiredBundle(options: { includeArchitectureGraph?: boolean } = {}): Promise<void> {
+async function writeRequiredBundle(_options: Record<string, unknown> = {}): Promise<void> {
   await writeYaml('adrs/index/architecture-index.yaml', `
 schema_version: '1.1'
 type: architecture_index
@@ -55,13 +55,6 @@ decisions:
   - decision_id: DEC-0001
 `);
 
-  if (options.includeArchitectureGraph !== false) {
-    await writeYaml('adrs/index/architecture-graph.yaml', `
-nodes:
-  - id: CAP-0001
-edges: []
-`);
-  }
 }
 
 describe('loadArchitectureBundle', () => {
@@ -75,7 +68,6 @@ describe('loadArchitectureBundle', () => {
     expect(result.manifest.generatedDate).toBe('2026-03-19T00:00:00Z');
     expect(result.manifest.adrCount).toBe(1);
     expect(result.requiredArtifacts.entityRegistry.exists).toBe(true);
-    expect(result.additiveArtifacts.architectureGraph.exists).toBe(true);
   });
 
   it('returns invalid when a required registry is missing', async () => {
@@ -88,14 +80,13 @@ describe('loadArchitectureBundle', () => {
     expect(result.errors.some((error) => error.includes('relationship-registry.yaml'))).toBe(true);
   });
 
-  it('returns degraded when the additive architecture graph is unavailable', async () => {
-    await writeRequiredBundle({ includeArchitectureGraph: false });
+  it('returns valid when only required artifacts are present', async () => {
+    await writeRequiredBundle();
 
     const result = await loadArchitectureBundle(tempDir);
 
-    expect(result.status).toBe('degraded');
+    expect(result.status).toBe('valid');
     expect(result.errors).toEqual([]);
-    expect(result.warnings.some((warning) => warning.includes('Additive architecture graph unavailable'))).toBe(true);
   });
 
   it('does not consult the legacy compatibility registry', async () => {

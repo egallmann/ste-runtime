@@ -24,6 +24,7 @@ import { extractFromJson } from '../../extractors/json/index.js';
 import { extractFromAngular } from '../../extractors/angular/index.js';
 import { extract as extractFromCss } from '../../extractors/css/index.js';
 import { extractFromCsharp } from '../../extractors/csharp/index.js';
+import { extractFromAdrYaml } from '../../extractors/adr-yaml/index.js';
 import { log, warn } from '../../utils/logger.js';
 import {
   type LimitFunction,
@@ -112,7 +113,7 @@ export async function extractAssertions(files: DiscoveredFile[]): Promise<RawAss
     byLanguage.set(file.language, group);
   }
 
-  const [tsAssertions, pyAssertions, cfnAssertions, jsonAssertions, angularAssertions, cssAssertions, csharpAssertions] =
+  const [tsAssertions, pyAssertions, cfnAssertions, jsonAssertions, angularAssertions, cssAssertions, csharpAssertions, adrYamlAssertions] =
     await Promise.all([
       extractLanguageGroup('typescript', byLanguage.get('typescript') ?? [], extractFromTypeScript, cpuLimiter),
       extractPythonBatch(byLanguage.get('python') ?? []),
@@ -121,12 +122,13 @@ export async function extractAssertions(files: DiscoveredFile[]): Promise<RawAss
       extractLanguageGroup('angular', byLanguage.get('angular') ?? [], extractFromAngular, cpuLimiter),
       extractLanguageGroup('css', byLanguage.get('css') ?? [], f => extractFromCss([f], process.cwd()), cpuLimiter),
       extractLanguageGroup('csharp', byLanguage.get('csharp') ?? [], extractFromCsharp, cpuLimiter),
+      extractLanguageGroup('adr-yaml', byLanguage.get('adr-yaml') ?? [], extractFromAdrYaml, ioLimiter),
     ]);
 
   const assertions = [
     ...tsAssertions, ...pyAssertions, ...cfnAssertions,
     ...jsonAssertions, ...angularAssertions, ...cssAssertions,
-    ...csharpAssertions,
+    ...csharpAssertions, ...adrYamlAssertions,
   ];
 
   // Deterministic ordering: sort by elementId for stable output across runs

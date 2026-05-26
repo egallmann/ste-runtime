@@ -70,7 +70,7 @@ function legacyFromNormalized(entity: NormalizedEntity): LegacyEntity | undefine
     entity_type: mapping[entity.entity_type],
     name: entity.name,
     introduced_by: introducedBy,
-    lifecycle_stage: 'active',
+    lifecycle_stage: entity.lifecycle_stage,
     source_path: entity.canonical_source.artifact_path,
     source_artifact_type: sourceArtifactType,
     related_adrs: [...relatedAdrs].sort(),
@@ -85,7 +85,7 @@ function legacyFromNormalized(entity: NormalizedEntity): LegacyEntity | undefine
 export function assembleDiscoveryBundle(model: ArchModelState): DiscoveryBundle {
   const rels = model.relationships;
   const projectedEntities = [...model.entities.values()]
-    .map((e) => projectEntity(e, rels))
+    .map((e) => projectEntity(e, rels, model.entities))
     .filter((e): e is NormalizedEntity => Boolean(e))
     .sort((a, b) => a.entity_type.localeCompare(b.entity_type) || a.id.localeCompare(b.id));
 

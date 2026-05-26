@@ -9,6 +9,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- ADR YAML RECON extractor (`src/extractors/adr-yaml/index.ts`): new `adr-yaml`
+  language added to the RECON pipeline. Extracts ADR YAML source files into
+  first-class graph slices, enabling `find`, `impact`, `usages`, and `similar`
+  queries against architecture decision records, invariants, decisions,
+  capabilities, component specifications, and system boundaries.
+
+- Architecture AI-DOC domain: new `architecture` domain with 6 slice types
+  (`adr`, `invariant`, `decision`, `capability`, `component`, `system`) emitted
+  to `.ste-self/state/architecture/` subdirectories. Slice IDs follow canonical
+  ADR entity ID scheme (`adr:ADR-L-0001`, `invariant:INV-0001`, etc.).
+
+- Architecture inference rules: `declared_in`, `references`, `implements_logical`,
+  `implements_system`, `enables`, `enforces`, `implemented_by`, and `embodied_in`
+  edges inferred from ADR YAML metadata. Tags include `status:*`, `adr-type:*`,
+  `domain:*`, `enforcement:*`, and `scope:*`.
+
+- ADR-PC-0011 (ADR YAML Semantic Extraction): new physical-component ADR
+  governing the ADR YAML extractor component (COMP-0012), documenting the
+  `architecture` domain, 6 element types, and failure-path contracts.
+
+### Changed
+
+- ADR-L-0001 INV-0006: added `ADR YAML (see ADR-PC-0011)` to the multi-language
+  support invariant.
+
+- ADR-PS-0002: added ADR YAML Semantic Extractor as fourth component in the
+  Semantic Extraction Subsystem topology, with `ADR-PC-0011` in
+  `references_components` and `adr-yaml` in technologies.
+
+- Inverse relationship types: 7 new derived inverse types (declares, referenced_by,
+  enforced_by, governed_by, implements, embodies, refined_by) added to the
+  relationship vocabulary. All 12 directional relationship types now have
+  compiler-derived inverse edges emitted with provenance_classification 'derived',
+  enabling bidirectional graph traversal without O(|E|) scans.
+
+- Lifecycle stage on NormalizedEntity: new required `lifecycle_stage` field
+  (proposed | active | deprecated | superseded) derived from ADR metadata.status
+  and propagated to child entities via declared_in parent ADR. Replaces hardcoded
+  'active' value in legacy entity projection.
+
+- ADR graph traversal API (`src/architecture/adr-traversal.ts`): bounded BFS
+  traversal functions `adrDependencies`, `adrDependents`, and `adrBlastRadius`
+  with maxDepth/maxNodes bounds, cycle detection, truncation tracking, and broken
+  edge detection. Mirrors the rss-operations.ts traversal pattern.
+
+- Removed architecture-graph.yaml dangling reference from architecture-bundle
+  loader. Traversal API operates on in-memory ArchModelState; no persisted graph
+  artifact is emitted.
+
+- Workspace graph merge (`src/workspace/workspace-merge.ts`): loads per-repo
+  slices, validates via Zod, merges nodes (first-wins collision detection),
+  filters to high-confidence edges, resolves dangling references, folds
+  cross-repo edges from workspace-edges.yaml, and emits graph.yaml. Wired
+  into workspace RECON as a non-fatal post-processing step.
+
+- Zod slice validation (`src/workspace/slice-schema.ts`): closed vocabulary
+  schemas for workspace graph slices with 10 node types and 12 edge verbs
+  (9 existing + 3 cross-repo: calls, triggers, publishes_to). Starts in
+  warn mode (logs unknown types/verbs but accepts the slice).
+
+- Node-level graph queries (`src/workspace/canned-queries.ts`): `whatCalls`
+  (depth-1 reverse on invoke/publish verbs), `whatDependsOn` (forward
+  transitive closure), `blastRadiusNode` (reverse transitive closure).
+  All are cycle-safe.
+
+- MCP workspace tools: `ws_what_calls`, `ws_what_depends_on`, and
+  `ws_node_blast_radius` registered in mcp-server.ts, exposing the
+  node-level query functions to MCP consumers.
+
 - Semantic Compression Engine (`src/workspace/compression.ts`): deterministic
   aggregation layer that transforms canned-query results into multi-resolution
   `CompressedProjection` at five levels (L0-L4). Implements endpoint path-prefix

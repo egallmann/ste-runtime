@@ -15,7 +15,7 @@ _slice:
   extraction:
     method: static
     confidence: high
-    timestamp: '2026-05-22T21:47:47.777Z'
+    timestamp: '2026-05-26T19:59:53.995Z'
 endpoint:
   id: api-GET-api-users
   method: GET

@@ -1285,6 +1285,214 @@ export function inferRelationships(
       }
     }
     
+    // ============================================================
+    // Architecture: ADR document relationships (ADR-PC-0011)
+    // ============================================================
+    if (slice.type === 'adr' && slice.domain === 'architecture') {
+      // ADR → related ADRs
+      const relatedAdrs = element.related_adrs as string[] | undefined;
+      if (relatedAdrs) {
+        for (const relatedId of relatedAdrs) {
+          const targetId = `adr:${relatedId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'adr', id: targetId });
+          }
+        }
+      }
+      
+      // ADR → supersedes
+      const supersedes = element.supersedes as string[] | undefined;
+      if (supersedes) {
+        for (const supersededId of supersedes) {
+          const targetId = `adr:${supersededId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'adr', id: targetId });
+          }
+        }
+      }
+      
+      // PS/PC ADR → logical ADRs it implements
+      const implementsLogical = element.implements_logical as string[] | undefined;
+      if (implementsLogical) {
+        for (const logicalId of implementsLogical) {
+          const targetId = `adr:${logicalId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'adr', id: targetId });
+          }
+        }
+      }
+      
+      // PC ADR → system ADRs it implements
+      const implementsSystem = element.implements_system as string[] | undefined;
+      if (implementsSystem) {
+        for (const sysAdrId of implementsSystem) {
+          const targetId = `adr:${sysAdrId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'adr', id: targetId });
+          }
+        }
+      }
+      
+      // Tags
+      const adrStatus = element.status as string | undefined;
+      if (adrStatus) tags.push(`status:${adrStatus}`);
+      
+      const adrType = element.adr_type as string | undefined;
+      if (adrType) tags.push(`adr-type:${adrType}`);
+      
+      const adrDomains = element.domains as string[] | undefined;
+      if (adrDomains) {
+        for (const d of adrDomains) {
+          tags.push(`domain:${d}`);
+        }
+      }
+      
+      const adrUserTags = element.tags as string[] | undefined;
+      if (adrUserTags) {
+        for (const t of adrUserTags) {
+          tags.push(t);
+        }
+      }
+    }
+    
+    // ============================================================
+    // Architecture: Invariant relationships (ADR-PC-0011)
+    // ============================================================
+    if (slice.type === 'invariant' && slice.domain === 'architecture') {
+      // Invariant → parent ADR (declared_in)
+      const parentAdr = element.parent_adr as string | undefined;
+      if (parentAdr) {
+        const targetId = `adr:${parentAdr}`;
+        if (byId.has(targetId)) {
+          references.push({ domain: 'architecture', type: 'adr', id: targetId });
+        }
+      }
+      
+      const invStatus = element.status as string | undefined;
+      if (invStatus) tags.push(`status:${invStatus}`);
+      
+      const enforcement = element.enforcement_level as string | undefined;
+      if (enforcement) tags.push(`enforcement:${enforcement}`);
+      
+      const scope = element.scope as string | undefined;
+      if (scope) tags.push(`scope:${scope}`);
+    }
+    
+    // ============================================================
+    // Architecture: Decision relationships (ADR-PC-0011)
+    // ============================================================
+    if (slice.type === 'decision' && slice.domain === 'architecture') {
+      // Decision → parent ADR (declared_in)
+      const parentAdr = element.parent_adr as string | undefined;
+      if (parentAdr) {
+        const targetId = `adr:${parentAdr}`;
+        if (byId.has(targetId)) {
+          references.push({ domain: 'architecture', type: 'adr', id: targetId });
+        }
+      }
+      
+      // Decision → capabilities it enables
+      const enablesCaps = element.enables_capabilities as string[] | undefined;
+      if (enablesCaps) {
+        for (const capId of enablesCaps) {
+          const targetId = `capability:${capId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'capability', id: targetId });
+          }
+        }
+      }
+      
+      // Decision → invariants it enforces
+      const enforcesInvariants = [
+        ...((element.related_invariants as string[] | undefined) ?? []),
+        ...((element.enforces_invariants as string[] | undefined) ?? []),
+      ];
+      for (const invId of enforcesInvariants) {
+        const targetId = `invariant:${invId}`;
+        if (byId.has(targetId)) {
+          references.push({ domain: 'architecture', type: 'invariant', id: targetId });
+        }
+      }
+      
+      const decStatus = element.status as string | undefined;
+      if (decStatus) tags.push(`status:${decStatus}`);
+    }
+    
+    // ============================================================
+    // Architecture: Capability relationships (ADR-PC-0011)
+    // ============================================================
+    if (slice.type === 'capability' && slice.domain === 'architecture') {
+      // Capability → parent ADR (declared_in)
+      const parentAdr = element.parent_adr as string | undefined;
+      if (parentAdr) {
+        const targetId = `adr:${parentAdr}`;
+        if (byId.has(targetId)) {
+          references.push({ domain: 'architecture', type: 'adr', id: targetId });
+        }
+      }
+      
+      // Capability → implementing components
+      const implByComps = element.implemented_by_components as string[] | undefined;
+      if (implByComps) {
+        for (const compId of implByComps) {
+          const targetId = `component:${compId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'component', id: targetId });
+          }
+        }
+      }
+    }
+    
+    // ============================================================
+    // Architecture: Component relationships (ADR-PC-0011)
+    // ============================================================
+    if (slice.type === 'component' && slice.domain === 'architecture') {
+      // Component → parent ADR (declared_in)
+      const parentAdr = element.parent_adr as string | undefined;
+      if (parentAdr) {
+        const targetId = `adr:${parentAdr}`;
+        if (byId.has(targetId)) {
+          references.push({ domain: 'architecture', type: 'adr', id: targetId });
+        }
+      }
+      
+      // Component → system ADRs it implements (embodied_in)
+      const implSystem = element.implements_system as string[] | undefined;
+      if (implSystem) {
+        for (const sysAdrId of implSystem) {
+          const targetId = `adr:${sysAdrId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'adr', id: targetId });
+          }
+        }
+      }
+    }
+    
+    // ============================================================
+    // Architecture: System boundary relationships (ADR-PC-0011)
+    // ============================================================
+    if (slice.type === 'system' && slice.domain === 'architecture') {
+      // System → parent ADR (declared_in)
+      const parentAdr = element.parent_adr as string | undefined;
+      if (parentAdr) {
+        const targetId = `adr:${parentAdr}`;
+        if (byId.has(targetId)) {
+          references.push({ domain: 'architecture', type: 'adr', id: targetId });
+        }
+      }
+      
+      // System → logical ADRs it implements
+      const implLogical = element.implements_logical as string[] | undefined;
+      if (implLogical) {
+        for (const logicalId of implLogical) {
+          const targetId = `adr:${logicalId}`;
+          if (byId.has(targetId)) {
+            references.push({ domain: 'architecture', type: 'adr', id: targetId });
+          }
+        }
+      }
+    }
+    
     // Return enriched assertion
     return {
       ...assertion,
