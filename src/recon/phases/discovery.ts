@@ -296,6 +296,7 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
         absolute: false,
         gitignore: true,
         ignore: excludePatterns,
+        suppressErrors: true,
       });
       
       for (const file of files) {
@@ -394,7 +395,7 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
         }
       }
     } catch (error) {
-      console.error(`[RECON Discovery] Error scanning ${sourceDir}:`, error);
+      console.warn(`[RECON Discovery] Error scanning ${sourceDir} (continuing):`, error);
     }
   }
   

@@ -10,6 +10,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { initRssContext, type RssContext } from '../rss/rss-operations.js';
@@ -118,12 +119,13 @@ describe('Tier 1: MCP Tool Integration', () => {
 // Tier 2: Skill Trigger Accuracy
 // =============================================================================
 
-describe('Tier 2: Skill Trigger Accuracy', () => {
+const workspaceReconSkillPath = path.resolve(__dirname, '../../.cursor/skills/workspace-recon/SKILL.md');
+
+describe.skipIf(!existsSync(workspaceReconSkillPath))('Tier 2: Skill Trigger Accuracy', () => {
   let skillDescription: string;
 
   beforeAll(async () => {
-    const skillPath = path.resolve(__dirname, '../../.cursor/skills/workspace-recon/SKILL.md');
-    const content = await fs.readFile(skillPath, 'utf-8');
+    const content = await fs.readFile(workspaceReconSkillPath, 'utf-8');
     const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     expect(frontmatterMatch).not.toBeNull();
     const descMatch = frontmatterMatch![1].match(/description:\s*"([^"]+)"/);

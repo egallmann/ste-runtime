@@ -262,6 +262,8 @@ export const BUILTIN_IGNORE_PATTERNS = [
   '**/.venv/**',
   '**/__pycache__/**',
   '**/*.egg-info/**',
+  '**/.codex-tmp/**',
+  '**/.codex/**',
   '**/ste-runtime/**',  // Don't scan self by default
 ];
 

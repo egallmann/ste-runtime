@@ -7,7 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it, afterEach, beforeEach } from 'vitest';
 
-import { buildPerRepoConfig, discoverWorkspaceRoot, RepoEntrySchema } from './manifest.js';
+import { buildPerRepoConfig, discoverWorkspaceRoot, mapRepoLang, RepoEntrySchema } from './manifest.js';
 
 let tempDir: string;
 
@@ -110,6 +110,73 @@ describe('output_dir variants', () => {
     expect(stateA).not.toBe(stateB);
     expect(stateA).toContain('repo-alpha');
     expect(stateB).toContain('repo-beta');
+  });
+});
+
+describe('mapRepoLang', () => {
+  it('augments typescript mapping with adr-yaml when adrs/manifest.yaml exists', async () => {
+    const repoRoot = path.join(tempDir, 'typed-repo');
+    await mkdir(path.join(repoRoot, 'adrs'), { recursive: true });
+    await writeFile(path.join(repoRoot, 'adrs', 'manifest.yaml'), 'schema_version: "1.0"\n', 'utf8');
+
+    const languages = await mapRepoLang('typescript', repoRoot);
+    expect(languages).toContain('typescript');
+    expect(languages).toContain('adr-yaml');
+  });
+
+  it('does not add adr-yaml when adrs/manifest.yaml is absent', async () => {
+    const repoRoot = path.join(tempDir, 'no-adr-repo');
+    await mkdir(repoRoot, { recursive: true });
+
+    const languages = await mapRepoLang('typescript', repoRoot);
+    expect(languages).toContain('typescript');
+    expect(languages).not.toContain('adr-yaml');
+  });
+});
+
+describe('buildPerRepoConfig sourceDirs', () => {
+  it('includes adrs when adrs/manifest.yaml exists', async () => {
+    const workspaceRoot = tempDir;
+    const repoRel = 'repo-with-adrs';
+    await mkdir(path.join(workspaceRoot, repoRel, 'adrs'), { recursive: true });
+    await writeFile(
+      path.join(workspaceRoot, repoRel, 'adrs', 'manifest.yaml'),
+      'schema_version: "1.0"\n',
+      'utf8',
+    );
+
+    const repo = RepoEntrySchema.parse({
+      name: 'repo-with-adrs',
+      path: `./${repoRel}`,
+      kind: 'library',
+      lang: 'python',
+    });
+
+    const runtimeDir = path.join(workspaceRoot, 'runtime-stub');
+    await mkdir(runtimeDir, { recursive: true });
+    const cfg = await buildPerRepoConfig(runtimeDir, repo, workspaceRoot, '.ste-workspace/');
+
+    expect(cfg.sourceDirs).toContain('.');
+    expect(cfg.sourceDirs).toContain('adrs');
+  });
+
+  it('does not include adrs when adrs/manifest.yaml is absent', async () => {
+    const workspaceRoot = tempDir;
+    const repoRel = 'repo-no-adrs';
+    await mkdir(path.join(workspaceRoot, repoRel), { recursive: true });
+
+    const repo = RepoEntrySchema.parse({
+      name: 'repo-no-adrs',
+      path: `./${repoRel}`,
+      kind: 'library',
+      lang: 'python',
+    });
+
+    const runtimeDir = path.join(workspaceRoot, 'runtime-stub');
+    await mkdir(runtimeDir, { recursive: true });
+    const cfg = await buildPerRepoConfig(runtimeDir, repo, workspaceRoot, '.ste-workspace/');
+
+    expect(cfg.sourceDirs).toEqual(['.']);
   });
 });
 

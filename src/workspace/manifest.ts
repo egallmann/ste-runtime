@@ -101,6 +101,7 @@ function dedupeLanguages(langs: SupportedLanguage[]): SupportedLanguage[] {
 /**
  * Map manifest `lang` labels to RECON {@link SupportedLanguage} values.
  * Unknown labels fall back to {@link detectLanguages} against the repository root.
+ * Always augments with adr-yaml when adrs/manifest.yaml is present.
  */
 export async function mapRepoLang(
   lang: string,
@@ -108,10 +109,21 @@ export async function mapRepoLang(
 ): Promise<SupportedLanguage[]> {
   const key = lang.trim().toLowerCase();
   const mapped = LANG_MAP[key];
+  let languages: SupportedLanguage[];
   if (mapped && mapped.length > 0) {
-    return dedupeLanguages(mapped);
+    languages = [...mapped];
+  } else {
+    languages = await detectLanguages(projectRoot);
   }
-  return detectLanguages(projectRoot);
+
+  if (!languages.includes('adr-yaml')) {
+    try {
+      await fs.access(path.join(projectRoot, 'adrs', 'manifest.yaml'));
+      languages.push('adr-yaml');
+    } catch { /* no ADR corpus */ }
+  }
+
+  return dedupeLanguages(languages);
 }
 
 async function expandSourceDirsForLang(projectRoot: string, lang: string): Promise<string[]> {
@@ -129,6 +141,12 @@ async function expandSourceDirsForLang(projectRoot: string, lang: string): Promi
       }
     }
   }
+
+  try {
+    await fs.access(path.join(projectRoot, 'adrs', 'manifest.yaml'));
+    dirs.add('adrs');
+  } catch { /* no ADR corpus */ }
+
   return [...dirs];
 }
 
