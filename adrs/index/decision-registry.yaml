@@ -1,846 +1,1008 @@
 schema_version: '1.1'
 type: normalized_entity_registry
 entities:
-- id: DEC-0001
-  entity_type: decision
-  name: RECON executes provisionally, generating semantic pressure without assuming
-    correctness.
-  summary: '### 1. Semantic Pressure Over Semantic Truth RECON exists to **observe
-    how semantic truth breaks under change**, not to declare what truth is. During
-    exploratory development, the extraction algorithms, normalization sche'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#DEC-0001
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#DEC-0001
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0002
-  entity_type: decision
-  name: RECON self-validation is non-blocking, report-only, and exploratory.
-  summary: '### 1. Non-Blocking Preserves Learning If validation blocked execution
-    on every finding, RECON would become unusable during exploratory development.
-    Many validation findings are informational or represent known limitatio'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0002#DEC-0002
-    artifact_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0002
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0002
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0002#DEC-0002
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0003
-  entity_type: decision
-  name: CEM implementation is intentionally deferred.
-  summary: '### 1. CEM Orchestrates Components That Must Exist First CEM''s stages
-    call into foundational components: - **Orientation** calls RSS for context assembly
-    - **Analysis** reads AI-DOC semantic state - **Deliberation** invo'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0003#DEC-0003
-    artifact_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0003
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0003
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0003#DEC-0003
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0004
-  entity_type: decision
-  name: 'ste-runtime is a single process that combines:'
-  summary: '### The Watchdog IS the Conflict Resolution Process When a file moves:
-    1. Watchdog detects the move (authoritative: it observed the file system event)
-    2. Migration detection scores confidence (1.0 = certain same element)'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0004#DEC-0004
-    artifact_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0004
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0004
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0004#DEC-0004
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0005
-  entity_type: decision
-  name: ''
-  summary: ''
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0005#DEC-0005
-    artifact_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0005
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0005
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0005#DEC-0005
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0006
-  entity_type: decision
-  name: 'Implement a Conversational Query Interface (CQI) as a layer above RSS that:'
-  summary: '### 1. Reduces Cognitive Load for Both Humans and AI Without CQI: ```
-    Human: "What would be affected by changing the auth service?" → Human must know:
-    use blast-radius, specify key format, parse output → AI must know: co'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0006#DEC-0006
-    artifact_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0006
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0006
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0006#DEC-0006
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0007
-  entity_type: decision
-  name: Freshness and obligation projection are logical runtime semantics
-  summary: The current runtime models freshness and obligation data in public schemas
-    and assistant-facing responses, so these semantics require canonical documentation
-    above the component layer.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0007#DEC-0007
-    artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0007
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0007
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0007#DEC-0007
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0009
-  entity_type: decision
-  name: Workspace is the universal scope unit
-  summary: Multi-repo analysis cannot be retrofitted onto single-repo scope without
-    pervasive special-casing. Defining workspace as the universal scope from the start
-    eliminates that debt. A workspace containing a single repository
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0009#DEC-0009
-    artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0009
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0009
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0009#DEC-0009
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0010
-  entity_type: decision
-  name: ste init is the canonical one-command install experience
-  summary: Manual onboarding is error-prone and slow. A first-class init command with
-    binding constraints ensures consistent, portable, and safe workspace initialization.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0010#DEC-0010
-    artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0010
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0010
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0010#DEC-0010
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0011
-  entity_type: decision
-  name: ste-runtime conforms to RuntimeAdapter role
-  summary: Explicit role conformance prevents scope leakage across subsystem boundaries
-    and ensures evidence artifacts are schema-compliant.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0011#DEC-0011
-    artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0011
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0011
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0011#DEC-0011
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0012
-  entity_type: decision
-  name: ste-spec is the single schema authority
-  summary: Polyglot subsystems cannot safely maintain independent copies of shared
-    schemas. Centralizing authority in ste-spec eliminates drift and ensures all subsystems
-    validate against the same contract.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0012#DEC-0012
-    artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0012
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0012
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0012#DEC-0012
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0013
-  entity_type: decision
-  name: Persisted paths are POSIX-relative to workspace root
-  summary: Platform-specific paths in persisted artifacts break cross-platform workflows.
-    Enforcing POSIX-relative paths at the serialization boundary ensures portability
-    without constraining internal disk-IO.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0013#DEC-0013
-    artifact_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0013
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0013
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0013#DEC-0013
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0014
-  entity_type: decision
-  name: No private registry references in source or artifacts
-  summary: Private registry URLs are work-context IP that must not appear in version-controlled
-    files. Mechanical enforcement via the scanner prevents accidental leakage.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0014#DEC-0014
-    artifact_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0014
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0014
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0014#DEC-0014
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0015
-  entity_type: decision
-  name: ste-runtime is workspace-agnostic by invariant
-  summary: Workspace-specific references in source code create coupling to a single
-    consumer. By codifying workspace agnosticism as an invariant with automated enforcement
-    (grep-based CI check), the tool remains portable across all
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0015#DEC-0015
-    artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0015
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0015
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0015#DEC-0015
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0016
-  entity_type: decision
-  name: Workspace graph slices follow a defined schema contract
-  summary: Producer-consumer drift between ste-runtime and downstream mergers caused
-    Pydantic validation failures. A defined schema contract with exact field names,
-    shapes, and constraints eliminates this class of integration failu
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0016#DEC-0016
-    artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0016
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0016
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0016#DEC-0016
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0017
-  entity_type: decision
-  name: Mandatory per-repo heartbeat (stdout)
-  summary: Operators need deterministic progress granularity per repository.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0017#DEC-0017
-    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0017
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0017
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0017#DEC-0017
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0018
-  entity_type: decision
-  name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
-  summary: Default runs remain untouched; caches are explicitly requested.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0017#DEC-0018
-    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0017
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0017
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0017#DEC-0018
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0019
-  entity_type: decision
-  name: Opt-in per-repo Promise timeout (--timeout-per-repo)
-  summary: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally
-    out of scope.
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0017#DEC-0019
-    artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0017
-    related_invariants: []
-    enforces_invariants: []
-    enables_capabilities: []
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0017
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0017#DEC-0019
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0020
-  entity_type: decision
-  name: Workspace graph queries are deterministic graph traversal with no LLM inference
-  summary: 'Three standard questions (system dependencies, component integration,
-    blast radius) are answerable purely from the typed verb edges in workspace slices.
-    Making them deterministic: 1. Guarantees reproducibility (same grap'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0018#DEC-0020
-    artifact_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0018
-    related_invariants:
-    - INV-0020
-    - INV-0021
-    enforces_invariants: []
-    enables_capabilities:
-    - CAP-0018
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0018
-    references: []
-    related_to: []
-    enforces:
-    - INV-0020
-    - INV-0021
-    enabled_by: []
-    enables:
-    - CAP-0018
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0018#DEC-0020
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
-- id: DEC-0021
-  entity_type: decision
-  name: Deterministic semantic compression for multi-resolution architecture projections
-  summary: 'The current L4-only projection pipeline produces cognitively unusable
-    output for human readers. Rather than introducing LLM-based summarization, the
-    compression layer uses deterministic algorithms: 1. Endpoint path-prefi'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0019#DEC-0021
-    artifact_path: adrs/logical/ADR-L-0019-multi-resolution-architecture-projection.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0019
-    related_invariants:
-    - INV-0022
-    - INV-0023
-    enforces_invariants: []
-    enables_capabilities:
-    - CAP-0019
-    governs_components: []
-    supersedes: []
-    refines: []
-  relationships:
-    declared_in:
-    - ADR-L-0019
-    references: []
-    related_to: []
-    enforces:
-    - INV-0022
-    - INV-0023
-    enabled_by: []
-    enables:
-    - CAP-0019
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0019#DEC-0021
-    extraction_phase: extract_decision
-    classification: explicit
-    generator: adr-architecture-index
+  - id: DEC-0001
+    entity_type: decision
+    name: RECON executes provisionally, generating semantic pressure without assuming correctness.
+    summary: >-
+      ### 1. Semantic Pressure Over Semantic Truth RECON exists to **observe how semantic truth breaks under change**,
+      not to declare what truth is. During exploratory development, the extraction algorithms, normalization sche
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#DEC-0001
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#DEC-0001
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0002
+    entity_type: decision
+    name: RECON self-validation is non-blocking, report-only, and exploratory.
+    summary: >-
+      ### 1. Non-Blocking Preserves Learning If validation blocked execution on every finding, RECON would become
+      unusable during exploratory development. Many validation findings are informational or represent known limitatio
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0002#DEC-0002
+      artifact_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0002
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0002
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0002#DEC-0002
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0003
+    entity_type: decision
+    name: CEM implementation is intentionally deferred.
+    summary: >-
+      ### 1. CEM Orchestrates Components That Must Exist First CEM's stages call into foundational components: -
+      **Orientation** calls RSS for context assembly - **Analysis** reads AI-DOC semantic state - **Deliberation** invo
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0003#DEC-0003
+      artifact_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0003
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0003
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0003#DEC-0003
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0004
+    entity_type: decision
+    name: 'ste-runtime is a single process that combines:'
+    summary: >-
+      ### The Watchdog IS the Conflict Resolution Process When a file moves: 1. Watchdog detects the move
+      (authoritative: it observed the file system event) 2. Migration detection scores confidence (1.0 = certain same
+      element)
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0004#DEC-0004
+      artifact_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0004
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0004
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0004#DEC-0004
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0005
+    entity_type: decision
+    name: DEC-0005
+    summary: ''
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0005#DEC-0005
+      artifact_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0005
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0005
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0005#DEC-0005
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0006
+    entity_type: decision
+    name: 'Implement a Conversational Query Interface (CQI) as a layer above RSS that:'
+    summary: >-
+      ### 1. Reduces Cognitive Load for Both Humans and AI Without CQI: ``` Human: "What would be affected by changing
+      the auth service?" → Human must know: use blast-radius, specify key format, parse output → AI must know: co
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0006#DEC-0006
+      artifact_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0006
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0006
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0006#DEC-0006
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0007
+    entity_type: decision
+    name: Freshness and obligation projection are logical runtime semantics
+    summary: >-
+      The current runtime models freshness and obligation data in public schemas and assistant-facing responses, so
+      these semantics require canonical documentation above the component layer.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0007#DEC-0007
+      artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0007
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0007
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0007#DEC-0007
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0009
+    entity_type: decision
+    name: Workspace is the universal scope unit
+    summary: >-
+      Multi-repo analysis cannot be retrofitted onto single-repo scope without pervasive special-casing. Defining
+      workspace as the universal scope from the start eliminates that debt. A workspace containing a single repository
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0009#DEC-0009
+      artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0009
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0009
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0009#DEC-0009
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0010
+    entity_type: decision
+    name: ste init is the canonical one-command install experience
+    summary: >-
+      Manual onboarding is error-prone and slow. A first-class init command with binding constraints ensures consistent,
+      portable, and safe workspace initialization.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0010#DEC-0010
+      artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0010
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0010
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0010#DEC-0010
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0011
+    entity_type: decision
+    name: ste-runtime conforms to RuntimeAdapter role
+    summary: >-
+      Explicit role conformance prevents scope leakage across subsystem boundaries and ensures evidence artifacts are
+      schema-compliant.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0011#DEC-0011
+      artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0011
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0011
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0011#DEC-0011
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0012
+    entity_type: decision
+    name: ste-spec is the single schema authority
+    summary: >-
+      Polyglot subsystems cannot safely maintain independent copies of shared schemas. Centralizing authority in
+      ste-spec eliminates drift and ensures all subsystems validate against the same contract.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0012#DEC-0012
+      artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0012
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0012
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0012#DEC-0012
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0013
+    entity_type: decision
+    name: Persisted paths are POSIX-relative to workspace root
+    summary: >-
+      Platform-specific paths in persisted artifacts break cross-platform workflows. Enforcing POSIX-relative paths at
+      the serialization boundary ensures portability without constraining internal disk-IO.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0013#DEC-0013
+      artifact_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0013
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0013
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0013#DEC-0013
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0014
+    entity_type: decision
+    name: No private registry references in source or artifacts
+    summary: >-
+      Private registry URLs are work-context IP that must not appear in version-controlled files. Mechanical enforcement
+      via the scanner prevents accidental leakage.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0014#DEC-0014
+      artifact_path: adrs/logical/ADR-L-0014-private-registry-isolation.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0014
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0014
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0014#DEC-0014
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0015
+    entity_type: decision
+    name: ste-runtime is workspace-agnostic by invariant
+    summary: >-
+      Workspace-specific references in source code create coupling to a single consumer. By codifying workspace
+      agnosticism as an invariant with automated enforcement (grep-based CI check), the tool remains portable across all
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0015#DEC-0015
+      artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0015
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0015
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0015#DEC-0015
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0016
+    entity_type: decision
+    name: Workspace graph slices follow a defined schema contract
+    summary: >-
+      Producer-consumer drift between ste-runtime and workspace graph consumers caused validation failures. A defined
+      contract with required core fields, ratified vocabularies, and explicit extension behavior eliminates this c
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#DEC-0016
+      artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0016
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0016
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#DEC-0016
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0017
+    entity_type: decision
+    name: Mandatory per-repo heartbeat (stdout)
+    summary: Operators need deterministic progress granularity per repository.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#DEC-0017
+      artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0017
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0017
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#DEC-0017
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0018
+    entity_type: decision
+    name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
+    summary: Default runs remain untouched; caches are explicitly requested.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#DEC-0018
+      artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0017
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0017
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#DEC-0018
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0019
+    entity_type: decision
+    name: Opt-in per-repo Promise timeout (--timeout-per-repo)
+    summary: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally out of scope.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#DEC-0019
+      artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0017
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0017
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#DEC-0019
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0020
+    entity_type: decision
+    name: Workspace graph queries are deterministic graph traversal with no LLM inference
+    summary: >-
+      Three standard questions (system dependencies, component integration, blast radius) are answerable purely from the
+      typed verb edges in workspace slices. Making them deterministic: 1. Guarantees reproducibility (same grap
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#DEC-0020
+      artifact_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0018
+      related_invariants:
+        - INV-0020
+        - INV-0021
+      enforces_invariants: []
+      enables_capabilities:
+        - CAP-0018
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0018
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - INV-0020
+        - INV-0021
+      enforced_by: []
+      enabled_by: []
+      enables:
+        - CAP-0018
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#DEC-0020
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0021
+    entity_type: decision
+    name: Deterministic semantic compression for multi-resolution architecture projections
+    summary: >-
+      The current L4-only projection pipeline produces cognitively unusable output for human readers. Rather than
+      introducing LLM-based summarization, the compression layer uses deterministic algorithms: 1. Endpoint path-prefi
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0019#DEC-0021
+      artifact_path: adrs/logical/ADR-L-0019-multi-resolution-architecture-projection.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0019
+      related_invariants:
+        - INV-0022
+        - INV-0023
+      enforces_invariants: []
+      enables_capabilities:
+        - CAP-0019
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0019
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - INV-0022
+        - INV-0023
+      enforced_by: []
+      enabled_by: []
+      enables:
+        - CAP-0019
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0019#DEC-0021
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
