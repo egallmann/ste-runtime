@@ -22,12 +22,17 @@ related_adrs:
 - ADR-L-0013
 context: |
   ste-runtime produces per-repository graph slices during workspace RECON.
-  These slices are consumed by any compliant downstream merger to
-  produce a unified workspace graph. Without a defined schema contract,
-  the producer and consumer drift, causing Pydantic validation failures
-  and broken merge pipelines. ADR-L-0012 established ste-spec as the
-  schema authority; this ADR defines the specific slice output contract
-  as a polyglot interop boundary.
+  These slices are consumed by the runtime-owned workspace merger to produce
+  a unified workspace graph and multi-resolution projections. Without a
+  defined schema contract, producer and consumer drift can break merge
+  pipelines or cause downstream tools to treat partial graph material as
+  authoritative.
+
+  ADR-L-0012 established ste-spec as public cross-repo schema authority.
+  This ADR defines the runtime-owned slice output contract used by
+  ste-runtime's workspace graph pipeline. The slice and merged workspace graph
+  remain derived runtime artifacts, not Architecture IR and not canonical
+  architecture authority.
 capabilities:
 - id: CAP-0016
   name: Schema-compliant slice emission
@@ -38,20 +43,25 @@ capabilities:
 invariants:
 - id: INV-0017
   statement: >
-    Every workspace graph slice emitted by ste-runtime contains exactly
-    the fields defined in the slice schema contract: schema_version, repo,
-    generated_by, generated_at, source_commit, nodes, edges, diagnostics.
+    Every workspace graph slice emitted by ste-runtime contains the required
+    core fields defined in the slice schema contract: schema_version, repo,
+    generated_by, generated_at, nodes, and edges. source_commit and
+    diagnostics are supported standard fields. Consumers may preserve unknown
+    extension fields but must not treat them as portable contract authority.
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
   rationale: >
-    Missing or extra fields cause downstream Pydantic validation failures.
-    The contract must be exact.
+    Required core fields keep the merge path deterministic. Extension tolerance
+    allows polyglot producers to evolve without breaking older consumers, while
+    keeping public authority in documented contract fields.
 - id: INV-0018
   statement: >
-    Only edges with confidence 'high' are emitted. Ambiguous resolutions
-    produce diagnostics, not edges.
+    Runtime-emitted workspace graph edges that assert a resolved relationship
+    use confidence 'high'. Ambiguous resolutions produce diagnostics rather
+    than asserted edges. Consumers must drop non-high edges when they appear in
+    permissive input mode.
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
@@ -64,16 +74,21 @@ constraints:
 - id: CONST-0010
   type: technical
   description: >
-    Node shape: { id: string, type: string, name: string, provenance: { source_path: string, source_ref: string } }.
-    Node ID format follows the Graph Identity Contract (Type:normalized-name).
+    Node shape: { id: string, type: string, name: string, provenance: { source_path: string, source_ref: string, repo?: string }, attributes?: object }.
+    Ratified node types are Service, Lambda, StateMachine, Queue, Topic,
+    Bucket, Database, Schema, Endpoint, and ExternalSystem. Node IDs follow
+    the Graph Identity Contract (Type:normalized-name).
   rationale: >
     Consistent node shape enables merger join logic and identity stability
     across runs.
 - id: CONST-0011
   type: technical
   description: >
-    Edge shape: { from: string, to: string, verb: string, confidence: 'high', provenance: { source_path: string, source_ref: string } }.
-    Verb must be one of the ratified set: reads, writes, publishes, consumes, invokes, deploys_to, has_contract, validates_against, implements.
+    Edge shape: { from: string, to: string, verb: string, confidence?: string, provenance?: { source_path: string, source_ref: string, repo?: string }, attributes?: object }.
+    Ratified verbs are invokes, publishes, consumes, reads, writes,
+    validates_against, implements, deploys_to, has_contract, calls, triggers,
+    and publishes_to. The projection compression layer also recognizes
+    references as a low-tier reference edge when present in merged graph input.
   rationale: >
     Consistent edge shape and ratified verb set prevent schema drift and
     enable reliable graph queries.
@@ -85,14 +100,24 @@ constraints:
     source_commit is git rev-parse HEAD of the scanned repository, or null.
   rationale: >
     Provenance fields must be accurate and reproducible for audit trails.
+- id: CONST-0013
+  type: technical
+  description: >
+    Slice validation supports warn and reject modes. Warn mode accepts unknown
+    node types and edge verbs while surfacing diagnostics; reject mode treats
+    them as validation errors.
+  rationale: >
+    Workspace adoption needs a staged compatibility mode, but strict validation
+    must remain available for contract gates.
 decisions:
 - id: DEC-0016
   summary: Workspace graph slices follow a defined schema contract
   rationale: |
-    Producer-consumer drift between ste-runtime and downstream mergers
-    caused Pydantic validation failures. A defined schema contract with
-    exact field names, shapes, and constraints eliminates this class of
-    integration failures.
+    Producer-consumer drift between ste-runtime and workspace graph consumers
+    caused validation failures. A defined contract with required core fields,
+    ratified vocabularies, and explicit extension behavior eliminates this
+    class of integration failure without pretending derived graph slices are
+    public Architecture IR authority.
 decision: |
   ste-runtime emits workspace graph slices with the following contract:
 
@@ -101,31 +126,39 @@ decision: |
     repo: <repository name from workspace.yaml>
     generated_by: "ste-runtime@<version>" (from package.json)
     generated_at: <ISO-8601 UTC timestamp>
-    source_commit: <git rev-parse HEAD, or null>
     nodes: <array of Node>
     edges: <array of Edge>
+
+  Standard optional fields:
+    source_commit: <git rev-parse HEAD, or null>
     diagnostics: <array of Diagnostic, default []>
 
   Node shape:
     id: <Type:normalized-name>
     type: <one of ratified NodeTypes>
     name: <human-readable name>
-    provenance: { source_path, source_ref }
+    provenance: { source_path, source_ref, repo? }
+    attributes: <optional object>
 
   Edge shape:
     from: <node ID>
     to: <node ID>
     verb: <one of ratified verbs>
-    confidence: "high"
-    provenance: { source_path, source_ref }
+    confidence: "high" when emitted as a resolved runtime assertion
+    provenance: { source_path, source_ref, repo? }
+    attributes: <optional object>
 
-  Only edges with confidence "high" are emitted. Ambiguous resolutions
-  produce diagnostics entries, not edges.
+  Runtime emission asserts only high-confidence resolved edges. Ambiguous
+  resolutions produce diagnostics entries, not edges. The validator preserves
+  extension fields through passthrough parsing and supports warn and reject
+  modes for unknown node types or verbs.
 consequences:
   positive:
   - Downstream mergers can consume slices without validation errors.
   - Schema contract is versioned and auditable.
   - Confidence model ensures the graph does not assert false relationships.
+  - Extension tolerance supports staged workspace adoption without schema forks.
   negative:
   - Any schema change requires an ADR amendment and coordinated update.
   - Strict confidence model may reduce edge count; diagnostics capture the gap.
+  - Warn-mode compatibility requires consumers to avoid treating extension fields as portable authority.

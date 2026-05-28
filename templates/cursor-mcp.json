@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "ste-runtime": {
+      "command": "node",
+      "args": [
+        "<ABSOLUTE_PATH_TO_STE_RUNTIME>/dist/cli/index.js",
+        "watch",
+        "--mcp",
+        "--project-root",
+        "<ABSOLUTE_PATH_TO_WORKSPACE_ROOT>"
+      ],
+      "type": "stdio",
+      "timeout": 60
+    }
+  }
+}

@@ -65,7 +65,7 @@ constraints:
   type: technical
   description: >
     The output directory name is manifest-driven. workspace.yaml declares
-    output_dir (default: .ste-workspace/). No domain-specific directory
+    output_dir (default: .workspace-graph/). No domain-specific directory
     name appears in ste-runtime source code.
   rationale: >
     Domain-specific output directory names (e.g. .my-workspace/) belong in

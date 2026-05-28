@@ -11,7 +11,9 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import fs from 'node:fs/promises';
 import path from 'node:path';
+import yaml from 'js-yaml';
 import { initRssContext, type RssContext } from '../rss/rss-operations.js';
 import { loadAidocGraph } from '../rss/graph-loader.js';
 import { analyzeGraphTopology, saveGraphMetrics, loadGraphMetrics, type GraphMetrics } from './graph-topology-analyzer.js';
@@ -20,6 +22,10 @@ import type { ResolvedConfig } from '../config/index.js';
 // Import tool handlers
 import * as operationalTools from './tools-operational.js';
 import * as optimizedTools from './tools-optimized.js';
+import { loadWorkspaceGraph } from '../workspace/workspace-graph-loader.js';
+import { systemDependencies, componentIntegration, blastRadiusWorkspace, whatCalls, whatDependsOn, blastRadiusNode } from '../workspace/canned-queries.js';
+import { toMermaid, toTable, toMermaidAtResolution, toTableAtResolution } from '../workspace/projections.js';
+import { compress, type ResolutionLevel } from '../workspace/compression.js';
 
 export interface McpServerOptions {
   config: ResolvedConfig;
@@ -78,6 +84,49 @@ export class McpServer {
   }
   
   /**
+   * Resolve the state root for the project graph. If projectRoot contains a
+   * workspace.yaml with an output_dir, use output_dir/state/ (workspace mode).
+   * Otherwise fall back to the single-project rss.stateRoot from config.
+   */
+  private async resolveProjectStateRoot(): Promise<string> {
+    const projectRoot = this.options.projectRoot;
+    for (const name of ['workspace.yaml', 'workspace.yml']) {
+      try {
+        const raw = await fs.readFile(path.join(projectRoot, name), 'utf-8');
+        const manifest = yaml.load(raw) as Record<string, unknown> | null;
+        if (manifest && typeof manifest.output_dir === 'string') {
+          const wsStateRoot = path.resolve(projectRoot, manifest.output_dir, 'state');
+          const stat = await fs.stat(wsStateRoot);
+          if (stat.isDirectory()) {
+            console.error(`[MCP Server] Workspace mode: loading graph from ${wsStateRoot}`);
+            return wsStateRoot;
+          }
+        }
+      } catch { /* no manifest or missing state dir */ }
+    }
+    return path.resolve(projectRoot, this.options.config.rss.stateRoot);
+  }
+
+  /**
+   * Resolve the workspace output directory (the directory containing
+   * workspace-index.yaml and slices/). Falls back to the project root
+   * combined with workspace.yaml output_dir.
+   */
+  private async resolveWorkspaceOutputDir(): Promise<string> {
+    const projectRoot = this.options.projectRoot;
+    for (const name of ['workspace.yaml', 'workspace.yml']) {
+      try {
+        const raw = await fs.readFile(path.join(projectRoot, name), 'utf-8');
+        const manifest = yaml.load(raw) as Record<string, unknown> | null;
+        if (manifest && typeof manifest.output_dir === 'string') {
+          return path.resolve(projectRoot, manifest.output_dir);
+        }
+      } catch { /* no manifest */ }
+    }
+    throw new Error('No workspace.yaml found in project root. Workspace graph tools require a workspace manifest.');
+  }
+
+  /**
    * Initialize RSS context and graph metrics
    */
   async initialize(): Promise<void> {
@@ -85,7 +134,7 @@ export class McpServer {
       return;
     }
     
-    const stateRoot = path.resolve(this.options.projectRoot, this.options.config.rss.stateRoot);
+    const stateRoot = await this.resolveProjectStateRoot();
     
     try {
       // Load parent project RSS context
@@ -100,12 +149,12 @@ export class McpServer {
         const { graph } = await loadAidocGraph(stateRoot);
         this.graphMetrics = await analyzeGraphTopology(graph);
         await saveGraphMetrics(this.graphMetrics, stateRoot);
-        
-        console.error(`[MCP Server] Graph analysis complete:`);
-        console.error(`  - Pattern: ${this.graphMetrics.detectedPattern}`);
-        console.error(`  - Components: ${this.graphMetrics.totalComponents}`);
-        console.error(`  - Recommended depth: ${this.graphMetrics.recommendedDepth}`);
       }
+      
+      console.error(`[MCP Server] Workspace context loaded (${this.rssContext.graph.size} nodes)`);
+      console.error(`  - Pattern: ${this.graphMetrics.detectedPattern}`);
+      console.error(`  - Components: ${this.graphMetrics.totalComponents}`);
+      console.error(`  - Recommended depth: ${this.graphMetrics.recommendedDepth}`);
       
       // Load self-analysis context (.ste-self/state) - optional, may not exist
       const selfStateRoot = path.resolve(this.options.config.runtimeDir, '.ste-self', 'state');
@@ -135,7 +184,7 @@ export class McpServer {
    * Reload RSS context (called after RECON updates)
    */
   async reloadContext(): Promise<void> {
-    const stateRoot = path.resolve(this.options.projectRoot, this.options.config.rss.stateRoot);
+    const stateRoot = await this.resolveProjectStateRoot();
     
     try {
       // Reload parent project RSS context
@@ -191,6 +240,7 @@ export class McpServer {
               includeUsages: { type: 'boolean', description: 'Also show where top result is used', default: false },
               domain: { type: 'string', description: 'Filter by domain (optional)' },
               type: { type: 'string', description: 'Filter by type (optional)' },
+              repo: { type: 'string', description: 'Filter to a specific repo in workspace mode (optional)' },
               scope: { type: 'string', enum: ['project', 'self'], default: 'project' },
             },
             required: ['query'],
@@ -204,6 +254,7 @@ export class McpServer {
             properties: {
               target: { type: 'string', description: 'Key, file path, or symbol name' },
               depth: { type: 'number', description: 'Dependency depth to include', default: 1 },
+              repo: { type: 'string', description: 'Filter to a specific repo in workspace mode (optional)' },
               scope: { type: 'string', enum: ['project', 'self'], default: 'project' },
             },
             required: ['target'],
@@ -217,6 +268,7 @@ export class McpServer {
             properties: {
               target: { type: 'string', description: 'Key or symbol name' },
               maxResults: { type: 'number', description: 'Maximum usages to return', default: 10 },
+              repo: { type: 'string', description: 'Filter to a specific repo in workspace mode (optional)' },
               scope: { type: 'string', enum: ['project', 'self'], default: 'project' },
             },
             required: ['target'],
@@ -230,6 +282,7 @@ export class McpServer {
             properties: {
               target: { type: 'string', description: 'Key or symbol name to analyze' },
               depth: { type: 'number', description: 'Impact depth', default: 2 },
+              repo: { type: 'string', description: 'Filter to a specific repo in workspace mode (optional)' },
               scope: { type: 'string', enum: ['project', 'self'], default: 'project' },
             },
             required: ['target'],
@@ -243,6 +296,7 @@ export class McpServer {
             properties: {
               target: { type: 'string', description: 'Key or description of pattern' },
               maxResults: { type: 'number', description: 'Maximum results', default: 5 },
+              repo: { type: 'string', description: 'Filter to a specific repo in workspace mode (optional)' },
               scope: { type: 'string', enum: ['project', 'self'], default: 'project' },
             },
             required: ['target'],
@@ -255,6 +309,7 @@ export class McpServer {
             type: 'object',
             properties: {
               focus: { type: 'string', description: 'Area to focus on (optional)' },
+              repo: { type: 'string', description: 'Filter to a specific repo in workspace mode (optional)' },
               scope: { type: 'string', enum: ['project', 'self'], default: 'project' },
             },
           },
@@ -282,6 +337,74 @@ export class McpServer {
               scope: { type: 'string', enum: ['full', 'self', 'file'], default: 'full' },
               target: { type: 'string', description: 'File path if scope=file' },
             },
+          },
+        },
+
+        // WORKSPACE GRAPH TOOLS (3)
+        {
+          name: 'ws_dependencies',
+          description: 'Show system-level repo dependency map across all repos in the workspace. Returns a Mermaid diagram and structured table of cross-repo dependencies with verb labels. Supports multi-resolution output (L0-L4).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              resolution: { type: 'string', enum: ['L0', 'L1', 'L2', 'L3', 'L4'], description: 'Resolution level for projection (L0=system context, L4=full fidelity). Defaults to L4.' },
+            },
+          },
+        },
+        {
+          name: 'ws_integration',
+          description: 'Show component integration map for a repo or the full workspace. Groups edges by integration pattern (HTTP API, Event Stream, Shared Database, etc.). Supports multi-resolution output (L0-L4).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              repo: { type: 'string', description: 'Filter to a specific repo (optional; omit for full workspace)' },
+              resolution: { type: 'string', enum: ['L0', 'L1', 'L2', 'L3', 'L4'], description: 'Resolution level for projection (L0=system context, L4=full fidelity). Defaults to L4.' },
+            },
+          },
+        },
+        {
+          name: 'ws_blast_radius',
+          description: 'Analyze blast radius of a workspace node. BFS in both directions to find all affected nodes, classified into tiers with risk assessment.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Workspace node ID (e.g. "Lambda:myrepo:my-fn" or "Database:myrepo:my-table")' },
+              depth: { type: 'number', description: 'Max BFS depth', default: 3 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_what_calls',
+          description: 'Find all nodes that call/invoke a given node (depth-1 reverse on invokes/publishes/calls/triggers/publishes_to verbs).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              node_id: { type: 'string', description: 'Target workspace node ID' },
+            },
+            required: ['node_id'],
+          },
+        },
+        {
+          name: 'ws_what_depends_on',
+          description: 'Forward transitive closure: find all nodes that the given node depends on (reachable via outgoing edges).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              node_id: { type: 'string', description: 'Starting workspace node ID' },
+            },
+            required: ['node_id'],
+          },
+        },
+        {
+          name: 'ws_node_blast_radius',
+          description: 'Reverse transitive closure: find all nodes that depend on the given node (reachable via incoming edges).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              node_id: { type: 'string', description: 'Target workspace node ID' },
+            },
+            required: ['node_id'],
           },
         },
       ],
@@ -332,16 +455,22 @@ export class McpServer {
           
           case 'overview': {
             const ctx = this.getContextForScope(scope);
+            const overviewRoot = scope === 'self'
+              ? this.options.config.runtimeDir
+              : this.options.projectRoot;
             result = await optimizedTools.overview(ctx, toolArgs as any, {
-              projectRoot: this.options.projectRoot,
+              projectRoot: overviewRoot,
             });
             break;
           }
           
           case 'diagnose': {
             const ctx = this.getContextForScope(scope);
+            const diagnoseRoot = scope === 'self'
+              ? this.options.config.runtimeDir
+              : this.options.projectRoot;
             result = await optimizedTools.diagnose(ctx, toolArgs as any, {
-              projectRoot: this.options.projectRoot,
+              projectRoot: diagnoseRoot,
             });
             break;
           }
@@ -361,6 +490,92 @@ export class McpServer {
             break;
           }
           
+          case 'ws_dependencies': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const depsResult = systemDependencies(wsGraph);
+            const depsResolution = (toolArgs as any).resolution as ResolutionLevel | undefined;
+            if (depsResolution && depsResolution !== 'L4') {
+              const compressed = compress(depsResult, { level: depsResolution });
+              result = {
+                mermaid: toMermaidAtResolution(compressed),
+                table: toTableAtResolution(compressed),
+                resolution: depsResolution,
+                metadata: compressed.metadata,
+                meta: { queryTimeMs: 0, nodesTraversed: wsGraph.nodes.size, filesInScope: 0, tokensEstimate: 0, graphVersion: 'workspace' },
+              };
+            } else {
+              result = {
+                mermaid: toMermaid(depsResult),
+                table: toTable(depsResult),
+                resolution: 'L4',
+                meta: { queryTimeMs: 0, nodesTraversed: wsGraph.nodes.size, filesInScope: 0, tokensEstimate: 0, graphVersion: 'workspace' },
+              };
+            }
+            break;
+          }
+
+          case 'ws_integration': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const intResult = componentIntegration(wsGraph, (toolArgs as any).repo ? { repo: (toolArgs as any).repo } : undefined);
+            const intResolution = (toolArgs as any).resolution as ResolutionLevel | undefined;
+            if (intResolution && intResolution !== 'L4') {
+              const compressed = compress(intResult, { level: intResolution });
+              result = {
+                mermaid: toMermaidAtResolution(compressed),
+                table: toTableAtResolution(compressed),
+                resolution: intResolution,
+                metadata: compressed.metadata,
+                meta: { queryTimeMs: 0, nodesTraversed: wsGraph.nodes.size, filesInScope: 0, tokensEstimate: 0, graphVersion: 'workspace' },
+              };
+            } else {
+              result = {
+                mermaid: toMermaid(intResult),
+                table: toTable(intResult),
+                resolution: 'L4',
+                meta: { queryTimeMs: 0, nodesTraversed: wsGraph.nodes.size, filesInScope: 0, tokensEstimate: 0, graphVersion: 'workspace' },
+              };
+            }
+            break;
+          }
+
+          case 'ws_blast_radius': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const blastResult = blastRadiusWorkspace(wsGraph, (toolArgs as any).target, { maxDepth: (toolArgs as any).depth });
+            result = {
+              mermaid: toMermaid(blastResult),
+              table: toTable(blastResult),
+              risk: blastResult.risk,
+              affectedRepos: blastResult.affectedRepos,
+              affectedNodeCount: blastResult.affectedNodeCount,
+              meta: { queryTimeMs: 0, nodesTraversed: wsGraph.nodes.size, filesInScope: 0, tokensEstimate: 0, graphVersion: 'workspace' },
+            };
+            break;
+          }
+
+          case 'ws_what_calls': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            result = whatCalls(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
+          case 'ws_what_depends_on': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            result = whatDependsOn(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
+          case 'ws_node_blast_radius': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            result = blastRadiusNode(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
           default:
             throw new Error(`Unknown tool: ${name}`);
         }

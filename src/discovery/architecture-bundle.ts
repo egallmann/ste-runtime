@@ -43,7 +43,6 @@ export interface ArchitectureBundleResult {
     unresolvedRegistry: ArchitectureBundleArtifact<unknown>;
   };
   additiveArtifacts: {
-    architectureGraph: ArchitectureBundleArtifact<unknown>;
     subsetRegistries: ArchitectureBundleArtifact<unknown>[];
   };
   manifest: ArchitectureBundleManifestSummary;
@@ -66,7 +65,6 @@ const REQUIRED_DEFAULT_PATHS = {
 
 const ARCHITECTURE_INDEX_PATH = 'adrs/index/architecture-index.yaml';
 const MANIFEST_PATH = 'adrs/manifest.yaml';
-const ARCHITECTURE_GRAPH_PATH = 'adrs/index/architecture-graph.yaml';
 const LEGACY_ENTITY_REGISTRY_PATH = 'adrs/entities/registry.yaml';
 
 async function readYamlArtifact<T = unknown>(absolutePath: string): Promise<ArchitectureBundleArtifact<T>> {
@@ -195,11 +193,10 @@ export async function loadArchitectureBundle(scopeRoot: string): Promise<Archite
     warnings,
   );
 
-  const [entityRegistry, relationshipRegistry, unresolvedRegistry, architectureGraph] = await Promise.all([
+  const [entityRegistry, relationshipRegistry, unresolvedRegistry] = await Promise.all([
     readYamlArtifact(entityRegistryPath),
     readYamlArtifact(relationshipRegistryPath),
     readYamlArtifact(unresolvedRegistryPath),
-    readYamlArtifact(normalizeArtifactPath(resolvedRoot, ARCHITECTURE_GRAPH_PATH)),
   ]);
 
   const subsetRegistryArtifacts: ArchitectureBundleArtifact<unknown>[] = [];
@@ -224,9 +221,6 @@ export async function loadArchitectureBundle(scopeRoot: string): Promise<Archite
     }
   }
 
-  if (architectureGraph.error) {
-    warnings.push(`Additive architecture graph unavailable: ${architectureGraph.error}.`);
-  }
   for (const artifact of subsetRegistryArtifacts) {
     if (artifact.error) {
       warnings.push(`Additive subset registry ${path.relative(resolvedRoot, artifact.path)} unavailable: ${artifact.error}.`);
@@ -255,7 +249,6 @@ export async function loadArchitectureBundle(scopeRoot: string): Promise<Archite
       unresolvedRegistry,
     },
     additiveArtifacts: {
-      architectureGraph,
       subsetRegistries: subsetRegistryArtifacts,
     },
     manifest: summarizeManifest(

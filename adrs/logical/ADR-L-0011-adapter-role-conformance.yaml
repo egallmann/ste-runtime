@@ -22,13 +22,13 @@ context: |
 capabilities:
 - id: CAP-0011
   name: ArchitectureEvidence emission
-  description: Emit ArchitectureEvidence v2 at .ste-workspace/evidence/architecture-evidence.json.
+  description: Emit ArchitectureEvidence v2 at .workspace-graph/evidence/architecture-evidence.json.
 architectural_boundaries:
 - id: BOUND-0002
   name: RuntimeAdapter publication surface
   description: |
     Publication surface (stable):
-    .ste-workspace/evidence/architecture-evidence.json
+    .workspace-graph/evidence/architecture-evidence.json
   rationale: Declares the single stable output path for runtime evidence emission.
 decisions:
 - id: DEC-0011

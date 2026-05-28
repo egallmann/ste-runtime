@@ -19,13 +19,36 @@ This document describes the **actual architecture of ste-runtime** — what has 
 **Related Documents:**
 - [STE Architecture Specification](https://github.com/egallmann/ste-spec/tree/main/ste-spec/architecture) — Complete STE Runtime architecture
 - [ADR Kit Records](../adrs/) — Component-level architectural decisions
-- [Architecture Diagrams](../diagrams/README.md) — Visual architecture diagrams
+- [Architecture Diagrams](diagrams/README.md) — Visual architecture diagrams
+
+---
+
+## Current Runtime Surfaces
+
+`ste-runtime` now has four cooperating runtime surfaces:
+
+1. **Single-repo RECON/RSS** - semantic extraction into runtime-owned state and
+   graph traversal over that state.
+2. **Runtime evidence** - `ArchitectureEvidence` payloads that report factual
+   bundle health, freshness, diagnostics, and subject linkage for Kernel
+   consumption.
+3. **Workspace mode** - per-repo RECON orchestration, workspace graph slices,
+   cross-repo edge discovery, merged `graph.yaml`, workspace index output, and
+   deterministic projections.
+4. **Assistant-facing readiness** - MCP tools, targeted preflight freshness
+   checks, obligation projection, and context assembly support.
+
+All graph state, slices, workspace graphs, and projections are derived runtime
+artifacts. They must not be treated as canonical ADR state or public
+Architecture IR.
 
 ---
 
 ## System Overview
 
-ste-runtime is a **single-process semantic extraction and graph traversal toolkit** that transforms codebases into queryable semantic graphs for AI-assisted development.
+ste-runtime is a **single-process semantic extraction, evidence, graph traversal,
+and workspace projection toolkit** that transforms codebases and ADR YAML into
+queryable runtime state for supervised AI-assisted development.
 
 ### Core Value Proposition
 
@@ -316,7 +339,7 @@ Incremental RECON
 - **Deterministic** — Same source → same state
 - **Incremental** — Only changed slices updated
 
-**See:** [Content-Addressable Naming](../reference/content-addressable-naming.md)
+**See:** [Content-Addressable Naming](reference/content-addressable-naming.md)
 
 ### In-Memory RSS Graph
 
@@ -478,7 +501,61 @@ MCP query received
 - `mcp` — MCP server configuration
 - `rss` — RSS query defaults
 
-**See:** [Configuration Reference](../guides/configuration-reference.md)
+**See:** [Configuration Reference](guides/configuration-reference.md)
+
+---
+
+## Current Additions to the Runtime Model
+
+### Runtime evidence
+
+The evidence CLI emits `ArchitectureEvidence` version 2 payloads. Runtime
+evidence is factual only: bundle status, warnings, errors, freshness status,
+reconciliation timestamps, and subject-linked validation or invalidation
+references. It does not admit, reject, waive, or govern. `ste-kernel` owns
+admission decisions, and `ste-spec` owns the public evidence schema.
+
+### Workspace mode
+
+Workspace mode processes repositories declared by a workspace manifest. The
+pipeline builds per-repo RECON configuration, runs RECON, emits per-repo graph
+slices, computes cross-repo edges, merges a derived workspace `graph.yaml`,
+emits a workspace index, and writes deterministic projections.
+
+The slice contract is local to runtime and documented by runtime ADRs. Unknown
+node types or edge verbs can be surfaced as warnings or rejected by validation
+mode. The merged workspace graph remains derived runtime state.
+
+### Multi-resolution projections
+
+Multi-resolution projections compress the same workspace graph into
+deterministic views:
+
+- **L0** - system context, one aggregate node per repo and cross-repo edges.
+- **L1** - service topology with selected infrastructure aggregation.
+- **L2** - capability-domain grouping for human architecture review.
+- **L3** - contract/integration topology with endpoint detail.
+- **L4** - full graph fidelity for machine consumption.
+
+Compression is deterministic. Aggregate nodes retain member IDs and compressed
+edges retain source edge IDs where multiplicity requires it.
+
+### Implementation attribution evidence
+
+RECON can normalize explicit implementation intent metadata into implementation
+attribution evidence. The runtime extracts the claims and provenance; ADR-Kit
+owns attribution semantics and validation against canonical ADR state.
+
+### Preflight and obligation projection
+
+Preflight resolves a change intent to an affected file/slice scope, checks
+freshness against runtime manifests, and can run targeted reconciliation before
+context assembly. Obligation projection identifies declared and graph-derived
+obligations for impacted slices and returns advisory risk, test, and review
+signals.
+
+These surfaces protect reasoning quality, but they are not Kernel admission and
+do not enforce governance policy.
 
 ---
 
@@ -496,7 +573,7 @@ MCP query received
 - Prevents home directory access
 - Validates against `.gitignore` patterns
 
-**See:** [Boundary Enforcement](../security/boundary-enforcement.md)
+**See:** [Boundary Enforcement](security/boundary-enforcement.md)
 
 ---
 
@@ -535,14 +612,18 @@ MCP query received
 
 ### Related Documentation
 
-- [Architecture Diagrams](../diagrams/README.md) — Visual architecture
+- [Architecture Diagrams](diagrams/README.md) — Visual architecture
 - [SYSTEM-OVERVIEW](../SYSTEM-OVERVIEW.md) — User onboarding
-- [Configuration Reference](../guides/configuration-reference.md) — Configuration options
+- [Configuration Reference](guides/configuration-reference.md) — Configuration options
 - [STE Specification Architecture](https://github.com/egallmann/ste-spec/tree/main/ste-spec/architecture) — Complete STE Runtime architecture
 
 ---
 
 ## Version History
+
+- **2026-05-27** - Updated architecture document
+  - Added runtime evidence, workspace graph, multi-resolution projection,
+    implementation attribution, preflight, and obligation projection surfaces
 
 - **2026-01-11** — Initial architecture document
   - Documented RECON, RSS, MCP Server, File Watching components
@@ -551,7 +632,7 @@ MCP query received
 
 ---
 
-**Last Updated:** 2026-01-11  
+**Last Updated:** 2026-05-27  
 **Maintainer:** ste-runtime contributors
 
 

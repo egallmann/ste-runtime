@@ -16,7 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile, initConfig } from '../config/index.js';
-import { executeWorkspaceRecon } from '../workspace/workspace-recon.js';
+import { executeWorkspaceRecon, type WorkspaceReconResult } from '../workspace/workspace-recon.js';
 import {
   parseWorkspaceArgv,
   resolveWorkspaceDirectory,
@@ -182,7 +182,7 @@ async function main() {
     process.exit(0);
   }
 
-  const workspaceResolved = await resolveWorkspaceDirectory(args.workspace, process.cwd());
+  const workspaceResolved = await resolveWorkspaceDirectory(args.workspace, process.cwd(), runtimeDir);
   if (args.workspace !== null && workspaceResolved === null) {
     console.error(
       'recon: workspace mode could not resolve a manifest directory. Pass --workspace <path>, set STE_WORKSPACE_ROOT, or run from a directory tree that contains workspace.yaml (or workspace.yml).',
@@ -230,6 +230,12 @@ async function main() {
         console.log(`  [${r.name}] FAILED  stage=${r.error?.stage ?? '?'}  ${r.error?.message ?? ''}`);
       }
     }
+
+    if (wsResult.projectionResult) {
+      console.log(`  Projections: ${wsResult.projectionResult.fileCount} files written to projections/`);
+    }
+
+    printWorkspaceResult(wsResult);
 
     // Self-pass: always include ste-runtime itself
     const selfResult = await runSelfPass(runtimeDir, false, args.mode);
@@ -320,6 +326,37 @@ function printSelfResult(result: Awaited<ReturnType<typeof executeRecon>>) {
   console.log(`  Unchanged: ${result.aiDocUnchanged}`);
   if (!result.success) {
     console.log(`  Errors: ${result.errors.join('; ')}`);
+  }
+}
+
+function printWorkspaceResult(wsResult: WorkspaceReconResult) {
+  const succeeded = wsResult.repos.filter(r => r.status === 'success');
+  const failed = wsResult.repos.filter(r => r.status === 'failed' || r.status === 'timed_out');
+  const skipped = wsResult.repos.filter(r => r.status === 'skipped');
+
+  const totalNodes = succeeded.reduce((sum, r) => sum + (r.nodeCount ?? 0), 0);
+  const totalEdges = succeeded.reduce((sum, r) => sum + (r.edgeCount ?? 0), 0);
+
+  let created = 0, modified = 0, deleted = 0, unchanged = 0;
+  for (const r of succeeded) {
+    if (r.reconResult) {
+      created += r.reconResult.aiDocCreated;
+      modified += r.reconResult.aiDocModified;
+      deleted += r.reconResult.aiDocDeleted;
+      unchanged += r.reconResult.aiDocUnchanged;
+    }
+  }
+
+  console.log('');
+  console.log('Workspace-Pass (.workspace-graph/):');
+  console.log(`  Repos:       ${succeeded.length} succeeded, ${failed.length} failed, ${skipped.length} skipped`);
+  console.log(`  Graph:       ${totalNodes} nodes, ${totalEdges} edges`);
+  console.log(`  Created:     ${created}`);
+  console.log(`  Modified:    ${modified}`);
+  console.log(`  Deleted:     ${deleted}`);
+  console.log(`  Unchanged:   ${unchanged}`);
+  if (!wsResult.success) {
+    console.log(`  Result:      FAILED`);
   }
 }
 

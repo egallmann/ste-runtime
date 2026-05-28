@@ -21,8 +21,8 @@ describe('slice-emitter', () => {
 
       const result = await emitWorkspaceSlice(
         'repo-alpha',
-        '/workspace/.ste-workspace/state/repo-alpha',
-        '/workspace/.ste-workspace/slices/repo-alpha.yaml',
+        '/workspace/.workspace-graph/state/repo-alpha',
+        '/workspace/.workspace-graph/slices/repo-alpha.yaml',
         '/workspace/repo-alpha',
       );
 
@@ -85,7 +85,7 @@ describe('slice-emitter', () => {
         'repo-alpha', '/state/ra', '/out/ra.yaml', '/ws/ra');
 
       const written = vi.mocked(fs.writeFile).mock.calls[0][1] as string;
-      const domainTerms = /aos|losprocessor|customerreport|jsonschemas|dealer.report/i;
+      const domainTerms = /proprietaryterm|internalservice|legacyreport|internalschemas|vendorreport/i;
       expect(domainTerms.test(written)).toBe(false);
     });
   });

@@ -5,18 +5,18 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 91b9bec1a06e6e686950ae0dce67591da36fa534372e27ae65a6605fa893d175
-rendered_hash: 729060cb077a378a2746ea341e374255848c73d37d8a8d4d8a698bf357919cdc
+source_hash: 124b9a4968efc26746983ee0c404de800bebad79a7c3de716d32bba26622ee51
+rendered_hash: a1849ed793672277c98ea5e292db378b24bdb14d9b1a13fe94bdf16bdd7dec12
 -->
 
 # ADR-PC-0001: MCP Server and Tool Registry
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Modified:** 2026-05-22  **Authors:** ste-runtime  
 **Domains:** mcp, integration, runtime  
 
-**Implements Logical:** ADR-L-0004, ADR-L-0006, ADR-L-0007  
+**Implements Logical:** ADR-L-0004, ADR-L-0006, ADR-L-0007, ADR-L-0018  
 **Technologies:** typescript, node.js, mcp, zod
 
 
@@ -25,8 +25,8 @@ rendered_hash: 729060cb077a378a2746ea341e374255848c73d37d8a8d4d8a698bf357919cdc
 ## Context
 
 This component exposes assistant-facing runtime tools over MCP and binds
-structural, operational, context, optimized, and obligation-oriented tool
-surfaces into one discoverable server boundary.
+structural, operational, context, optimized, obligation-oriented, and
+workspace graph query tool surfaces into one discoverable server boundary.
 
 
 ## Technology Stack
@@ -53,8 +53,8 @@ MCP protocol implementation.
 
 **Responsibilities:**
 - Serve MCP stdio runtime for assistant integration
-- Register structural, operational, context, optimized, and obligation tools
-- Route tool requests onto runtime graph and context services
+- Register structural, operational, context, optimized, obligation, and workspace graph query tools
+- Route tool requests onto runtime graph, context, and workspace query services
 
 
 **Interfaces:**

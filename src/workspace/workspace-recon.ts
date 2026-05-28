@@ -14,6 +14,12 @@ import { emitWorkspaceSlice } from './slice-emitter.js';
 import { computeSourceHash, readSentinel, writeSentinel } from './repo-sentinel.js';
 import type { RepoSourceFingerprintRow } from './repo-sentinel.js';
 import { emitWorkspaceIndex, type RepoIndexEntry } from './workspace-index.js';
+import { computeCrossRepoEdges, writeCrossRepoEdges, enrichSlicesWithBacklinks } from './cross-repo-edges.js';
+import { emitProjections } from './emit-projections.js';
+import type { ProjectionEmitResult } from './emit-projections.js';
+import { emitMultiResProjections } from './emit-multi-res-projections.js';
+import type { MultiResEmitResult } from './emit-multi-res-projections.js';
+import { mergeWorkspaceGraph } from './workspace-merge.js';
 
 export interface WorkspaceReconOptions {
   workspacePath: string;
@@ -39,11 +45,13 @@ export interface WorkspaceReconResult {
   success: boolean;
   repos: RepoResult[];
   workspaceIndexPath: string;
+  projectionResult?: ProjectionEmitResult;
+  multiResProjectionResult?: MultiResEmitResult;
 }
 
 function normalizeOutputDir(raw: string): string {
   const t = raw.trim().replace(/[/\\]+$/, '');
-  return t.length > 0 ? t : '.ste-workspace';
+  return t.length > 0 ? t : '.workspace-graph';
 }
 
 function repoStateSentinelPath(workspaceRoot: string, outputRel: string, repoName: string): string {
@@ -264,9 +272,60 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
     );
   }
 
+  // Post-processing: compute cross-repo edges from all emitted slices
+  const slicesDir = path.join(outputRoot, 'slices');
+  const stateBaseDir = path.join(outputRoot, 'state');
+  try {
+    const manifestRepos = manifest.repos.map(r => ({ name: r.name, kind: r.kind, lang: r.lang }));
+    const crossRepoEdges = await computeCrossRepoEdges(slicesDir, stateBaseDir, manifestRepos);
+    await writeCrossRepoEdges(crossRepoEdges, outputRoot);
+    if (crossRepoEdges.length > 0) {
+      log(`[workspace-recon] Cross-repo edges: ${crossRepoEdges.length} edges discovered`);
+      const { enriched } = await enrichSlicesWithBacklinks(crossRepoEdges, stateBaseDir);
+      if (enriched > 0) {
+        log(`[workspace-recon] Bilateral enrichment: ${enriched} slices updated with backlinks`);
+      }
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Cross-repo edge analysis failed (non-fatal): ${msg}`);
+  }
+
+  try {
+    const mergeResult = await mergeWorkspaceGraph(outputRoot);
+    log(
+      `[workspace-recon] Graph merge: ${mergeResult.graph.nodes.length} nodes, ` +
+        `${mergeResult.graph.edges.length} edges` +
+        (mergeResult.graph.partial_from.length > 0
+          ? ` (partial: ${mergeResult.graph.partial_from.join(', ')})`
+          : ''),
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Graph merge failed (non-fatal): ${msg}`);
+  }
+
   const generatedAt = new Date().toISOString();
   await emitWorkspaceIndex(toRepoIndexEntries(repos), outputRoot, generatedAt);
   const workspaceIndexPath = path.join(outputRoot, 'workspace-index.yaml');
+
+  let projectionResult: ProjectionEmitResult | undefined;
+  try {
+    projectionResult = await emitProjections(outputRoot, manifest);
+    log(`[workspace-recon] Projections: ${projectionResult.fileCount} files written to projections/`);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Projection emission failed (non-fatal): ${msg}`);
+  }
+
+  let multiResProjectionResult: MultiResEmitResult | undefined;
+  try {
+    multiResProjectionResult = await emitMultiResProjections(outputRoot, manifest);
+    log(`[workspace-recon] Multi-resolution projections: ${multiResProjectionResult.fileCount} files written to projections/`);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Multi-resolution projection emission failed (non-fatal): ${msg}`);
+  }
 
   const wsTiming = wsTimer.stop(repos.length);
   log(
@@ -278,5 +337,7 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
     success,
     repos,
     workspaceIndexPath,
+    projectionResult,
+    multiResProjectionResult,
   };
 }

@@ -2,9 +2,10 @@
   "$schema": "./ste.config.schema.json",
   "version": "1.0.0",
   "description": "STE Runtime self-analysis configuration - indexes the runtime's own source code",
-  "languages": ["typescript"],
+  "languages": ["typescript", "adr-yaml"],
   "sourceDirs": [
-    "src"
+    "src",
+    "adrs"
   ],
   "stateDir": ".ste-self/state",
   "ignorePatterns": [

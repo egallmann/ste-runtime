@@ -9,6 +9,7 @@ import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { discoverFiles, discoverFilesLegacy } from './discovery.js';
+import { BUILTIN_IGNORE_PATTERNS } from '../../config/index.js';
 
 let tempDir: string;
 
@@ -187,6 +188,45 @@ describe('discoverFiles', () => {
       });
 
       expect(files).toHaveLength(0);
+    });
+  });
+
+  describe('codex temp directories', () => {
+    it('should discover source files when .codex-tmp exists at repo root', async () => {
+      await createFile('src/module.ts', 'export const x = 1;');
+      await createFile('.codex-tmp/build-env/junk.txt', 'temp');
+
+      const files = await discoverFiles({
+        projectRoot: tempDir,
+        sourceDirs: ['.'],
+        languages: ['typescript'],
+        ignorePatterns: [...BUILTIN_IGNORE_PATTERNS],
+      });
+
+      expect(files.some(f => f.relativePath.includes('src/module.ts'))).toBe(true);
+      expect(files.some(f => f.relativePath.includes('.codex-tmp'))).toBe(false);
+    });
+  });
+
+  describe('ADR YAML discovery', () => {
+    it('should discover ADR YAML via dedicated adrs source directory', async () => {
+      await createFile('adrs/manifest.yaml', 'schema_version: "1.0"\n');
+      await createFile(
+        'adrs/logical/ADR-L-0001-example.yaml',
+        'adr_type: logical\nid: ADR-L-0001\ntitle: Example\n',
+      );
+
+      const files = await discoverFiles({
+        projectRoot: tempDir,
+        sourceDirs: ['.', 'adrs'],
+        languages: ['adr-yaml'],
+        ignorePatterns: [...BUILTIN_IGNORE_PATTERNS],
+      });
+
+      const adrFiles = files.filter(f => f.language === 'adr-yaml');
+      expect(adrFiles.some(f => f.relativePath.includes('adrs/logical/ADR-L-0001-example.yaml'))).toBe(true);
+      expect(adrFiles.some(f => f.relativePath.includes('adrs/manifest.yaml'))).toBe(true);
+      expect(adrFiles.some(f => f.relativePath.includes('adrs/index'))).toBe(false);
     });
   });
 });

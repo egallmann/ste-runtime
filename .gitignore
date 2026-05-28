@@ -1,6 +1,9 @@
 # Cursor IDE workspace and plans
 .cursor/
 
+# Claude local settings (machine-specific paths)
+.claude/
+
 # Dependencies
 node_modules/
 
@@ -57,5 +60,8 @@ test-output.txt
 # Legacy archived docs kept locally only
 documentation/e-adr-archived/
 documentation/plan/
+
+# Experiments (tracked on feature/acs-experimentation only)
+experiments/
 
 

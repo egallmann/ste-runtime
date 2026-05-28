@@ -4,6 +4,22 @@ Common issues and solutions for ste-runtime.
 
 ---
 
+## Command Prerequisite
+
+This guide uses the bare `ste` command (e.g., `ste recon`, `ste rss stats`).
+Since ste-runtime is not published to npm, the `ste` command is only available
+if you link it locally:
+
+```bash
+cd ste-runtime
+npm link
+```
+
+Alternatively, replace any `ste <subcommand>` with `node dist/cli/index.js <subcommand>`
+or the equivalent `npm run` script (e.g., `npm run recon` instead of `ste recon`).
+
+---
+
 ## Table of Contents
 
 - [Installation Issues](#installation-issues)
