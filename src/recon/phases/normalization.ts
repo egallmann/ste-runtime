@@ -34,6 +34,10 @@ function getExtractorName(language: SupportedLanguage): string {
       return 'recon-angular-extractor-v1';  // E-ADR-006
     case 'css':
       return 'recon-css-extractor-v1';  // E-ADR-006
+    case 'csharp':
+      return 'recon-csharp-extractor-v1';
+    case 'adr-yaml':
+      return 'recon-adr-yaml-extractor-v1';
     default:
       return 'recon-unknown-extractor-v1';
   }
@@ -56,6 +60,8 @@ function getFileExtension(language: SupportedLanguage): string {
       return '.ts';  // E-ADR-006: Angular files are TypeScript
     case 'css':
       return '.scss';  // E-ADR-006: Default to SCSS
+    case 'adr-yaml':
+      return '.yaml';  // ADR-PC-0011: ADR YAML files
     default:
       return '';
   }
@@ -93,9 +99,12 @@ export async function normalizeAssertions(
     // Determine language from first assertion (all assertions in file have same language)
     const language = assertions[0]?.language ?? 'typescript';
     
-    const moduleNormalized = normalizeModule(file, assertions, timestamp, language);
-    if (moduleNormalized) {
-      normalized.push(moduleNormalized);
+    // ADR YAML files don't produce module-level entries
+    if (language !== 'adr-yaml') {
+      const moduleNormalized = normalizeModule(file, assertions, timestamp, language);
+      if (moduleNormalized) {
+        normalized.push(moduleNormalized);
+      }
     }
     
     // Also normalize individual elements
@@ -564,6 +573,58 @@ function normalizeElement(
   }
   
   // ============================================================================
+  // ASL (Amazon States Language) extraction types
+  // ============================================================================
+
+  if (assertion.elementType === 'state_machine_definition') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'infrastructure',
+        type: 'state_machine_definition',
+        source_files: [assertion.file],
+      },
+      element: {
+        id: assertion.elementId,
+        comment: assertion.metadata.comment,
+        startAt: assertion.metadata.startAt,
+        stateCount: assertion.metadata.stateCount,
+        filePath: assertion.metadata.filePath,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+
+  if (assertion.elementType === 'asl_lambda_ref') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'infrastructure',
+        type: 'asl_lambda_ref',
+        source_files: [assertion.file],
+      },
+      element: {
+        id: assertion.elementId,
+        functionRef: assertion.metadata.functionRef,
+        sourceFile: assertion.metadata.sourceFile,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+
+  // ============================================================================
   // Python behavioral extraction types
   // These capture runtime behavior patterns that link code to infrastructure
   // ============================================================================
@@ -647,6 +708,8 @@ function normalizeElement(
         instantiatedClasses: assertion.metadata.instantiatedClasses,
         // Summary: all methods called in the file
         calledMethods: assertion.metadata.calledMethods,
+        // HTTP calls for cross-repo edge resolution
+        httpCalls: assertion.metadata.httpCalls,
       },
       provenance: {
         extracted_at: timestamp,
@@ -900,6 +963,199 @@ function normalizeElement(
         scssVariables: assertion.metadata.scssVariables,
         animations: assertion.metadata.animations,
         tokenCount: assertion.metadata.tokenCount,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+  
+  // ============================================================================
+  // ADR YAML element types (ADR-PC-0011)
+  // Domain: architecture | Types: adr, invariant, decision, capability,
+  // component, system
+  // ============================================================================
+  
+  if (assertion.elementType === 'adr_document') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'adr',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.title as string,
+        adr_type: assertion.metadata.adr_type,
+        status: assertion.metadata.status,
+        domains: assertion.metadata.domains,
+        tags: assertion.metadata.tags,
+        related_adrs: assertion.metadata.related_adrs,
+        supersedes: assertion.metadata.supersedes,
+        implements_logical: assertion.metadata.implements_logical,
+        implements_system: assertion.metadata.implements_system,
+        references_components: assertion.metadata.references_components,
+        technologies: assertion.metadata.technologies,
+        authors: assertion.metadata.authors,
+        created_date: assertion.metadata.created_date,
+        invariant_count: assertion.metadata.invariant_count,
+        decision_count: assertion.metadata.decision_count,
+        capability_count: assertion.metadata.capability_count,
+        component_count: assertion.metadata.component_count,
+        system_boundary_count: assertion.metadata.system_boundary_count,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+  
+  if (assertion.elementType === 'adr_invariant') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'invariant',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.statement as string,
+        statement: assertion.metadata.statement,
+        scope: assertion.metadata.scope,
+        enforcement_level: assertion.metadata.enforcement_level,
+        enforcement_mechanism: assertion.metadata.enforcement_mechanism,
+        verification_method: assertion.metadata.verification_method,
+        rationale: assertion.metadata.rationale,
+        compliance_frameworks: assertion.metadata.compliance_frameworks,
+        exceptions: assertion.metadata.exceptions,
+        parent_adr: assertion.metadata.parent_adr,
+        status: assertion.metadata.status,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+  
+  if (assertion.elementType === 'adr_decision') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'decision',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.statement as string,
+        statement: assertion.metadata.statement,
+        rationale: assertion.metadata.rationale,
+        enables_capabilities: assertion.metadata.enables_capabilities,
+        related_invariants: assertion.metadata.related_invariants,
+        enforces_invariants: assertion.metadata.enforces_invariants,
+        parent_adr: assertion.metadata.parent_adr,
+        status: assertion.metadata.status,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+  
+  if (assertion.elementType === 'adr_capability') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'capability',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.name as string,
+        description: assertion.metadata.description,
+        implemented_by_components: assertion.metadata.implemented_by_components,
+        parent_adr: assertion.metadata.parent_adr,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+  
+  if (assertion.elementType === 'adr_component') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'component',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.name as string,
+        component_type: assertion.metadata.type,
+        responsibilities: assertion.metadata.responsibilities,
+        module_path: assertion.metadata.module_path,
+        test_path: assertion.metadata.test_path,
+        parent_adr: assertion.metadata.parent_adr,
+        implements_system: assertion.metadata.implements_system,
+        implements_logical: assertion.metadata.implements_logical,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+  
+  if (assertion.elementType === 'adr_system') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'system',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.name as string,
+        description: assertion.metadata.description,
+        external_dependencies: assertion.metadata.external_dependencies,
+        exposed_interfaces: assertion.metadata.exposed_interfaces,
+        parent_adr: assertion.metadata.parent_adr,
+        implements_logical: assertion.metadata.implements_logical,
       },
       provenance: {
         extracted_at: timestamp,

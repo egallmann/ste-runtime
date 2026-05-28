@@ -1,0 +1,79 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0010
+title: Bootstrap and Init Capability
+status: proposed
+created_date: '2026-04-21'
+authors:
+- ste-runtime
+domains:
+- workspace
+- init
+tags:
+- init
+- bootstrap
+- onboarding
+vision_category: false
+context: |
+  Without a first-class init command, onboarding requires manual file
+  creation and sequencing knowledge. Users must know which files to create,
+  in which order, and which values to populate. This friction slows
+  adoption and increases configuration errors.
+capabilities:
+- id: CAP-0010
+  name: One-command workspace initialization
+  description: |
+    ste setup creates a fully configured workspace (config, MCP, gitignore,
+    initial RECON). ste init remains as the sub-capability for scaffolding
+    workspace.yaml specifically.
+architectural_boundaries:
+- id: BOUND-0001
+  name: Init publication surface
+  description: |
+    Creates .workspace-graph/config.yaml and
+    .workspace-graph/registry.local.yaml.example at the target path.
+  rationale: Defines the exact files produced by init, bounding its write surface.
+constraints:
+- id: CONST-0001
+  type: technical
+  description: Defaults to public registries only (registry.npmjs.org, pypi.org).
+  rationale: Ensures the init command works without corporate network access.
+- id: CONST-0002
+  type: security
+  description: Reads but never persists work-context environment variables.
+  rationale: Prevents accidental leakage of environment-specific values into version-controlled files.
+- id: CONST-0003
+  type: technical
+  description: Generates a gitignored local-override pattern for private mirror opt-in.
+  rationale: Users who need private registries can opt in locally without affecting the shared configuration.
+- id: CONST-0004
+  type: technical
+  description: Fails with a clear actionable error when offline; never silently retries against a hard-coded private host.
+  rationale: Prevents silent network requests to unreachable hosts and provides actionable diagnostics.
+- id: CONST-0005
+  type: technical
+  description: Is idempotent -- running twice produces the same result as running once.
+  rationale: Idempotency ensures safe re-runs and reduces operator anxiety during onboarding.
+decisions:
+- id: DEC-0010
+  summary: ste setup is the canonical one-command install experience
+  rationale: |
+    Manual onboarding is error-prone and slow. A first-class setup command
+    with binding constraints ensures consistent, portable, and safe
+    workspace initialization. ste setup supersedes the narrower ste init
+    by also handling MCP configuration, .gitignore, and initial RECON.
+decision: |
+  ste setup is the canonical one-command install experience for workspace
+  onboarding. It detects workspace type, scaffolds configuration
+  (workspace.yaml or ste.config.json), creates .cursor/mcp.json with
+  correct absolute paths, updates .gitignore, and runs initial RECON.
+  ste init remains available for the narrower task of scaffolding
+  workspace.yaml only. Both commands support --dry-run.
+consequences:
+  positive:
+  - One-command onboarding reduces setup friction.
+  - Generated configuration is consistent and correct by construction.
+  - MCP configuration is automated, eliminating the highest-friction manual step.
+  negative:
+  - The setup command must be maintained as a first-class CLI surface.
+  - Two entry points (setup and init) must be clearly differentiated in documentation.

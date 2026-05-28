@@ -1,0 +1,138 @@
+schema_version: '1.0'
+adr_type: physical-component
+id: ADR-PC-0009
+title: Workspace Graph Query Engine
+status: proposed
+created_date: '2026-05-22'
+authors:
+- erik.gallmann
+domains:
+- workspace
+- graph
+- rss
+tags:
+- workspace
+- graph-traversal
+- canned-queries
+- projections
+introduces_entities:
+- COMP-0010
+realizes_entities:
+- CAP-0018
+implements_system:
+- ADR-PS-0001
+implements_logical:
+- ADR-L-0018
+- ADR-L-0009
+- ADR-L-0016
+technologies:
+- typescript
+- node.js
+- yaml
+context: |
+  ADR-L-0018 established the capability for deterministic workspace graph
+  querying. This component implements the loader, three canned query functions,
+  and three projection renderers that realize that capability. It consumes
+  workspace slices (per ADR-L-0016 schema contract) and exposes results through
+  the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing ste-runtime implementation language.
+- category: library
+  name: js-yaml
+  version: 4.x
+  rationale: YAML parsing for workspace slice files, consistent with existing codebase.
+component_specifications:
+- id: COMP-0010
+  name: Workspace Graph Query Engine
+  type: library
+  responsibilities: |
+    - Load workspace graph slices into typed in-memory WorkspaceGraph
+    - Build outAdj/inAdj adjacency maps at load time for O(1) neighbor lookups
+    - Execute systemDependencies, componentIntegration, blastRadiusWorkspace queries
+    - Render results to Mermaid, table, and adjacency matrix projections
+    - Materialize deterministic projections to output_dir/projections/ on workspace recon (emitProjections)
+  generation_context:
+    purpose: |
+      Deterministic, non-LLM graph traversal over workspace infra slices producing structured results for diagrams and tables.
+    key_responsibilities:
+    - Load workspace-index.yaml and slices/*.yaml into WorkspaceGraph
+    - Traverse typed verb edges to answer system-level questions
+    - Project query results into Mermaid diagrams, row tables, and adjacency matrices
+    - Emit deterministic projection files (system-dependencies.md, component-integration.md, per-repo files, architecture-overview skeleton) to output_dir/projections/ as part of workspace recon
+    constraints:
+    - No LLM inference in any query or projection function
+    - No file system access in query or projection renderer functions (graph is pre-loaded)
+    - emitProjections is the only function that writes to disk; it is called from workspace-recon.ts as a non-fatal post-processing step
+    - Projection emission failure does not affect WorkspaceReconResult.success
+    success_criteria:
+    - Fixture workspace with 2+ repos loads with correct node/edge counts
+    - systemDependencies produces cross-repo RepoDependency entries
+    - blastRadiusWorkspace tier-0 contains exactly the target node
+    - toMermaid output is valid Mermaid syntax
+    - toTable output columns match documented schema per query type
+    - emitProjections writes system-dependencies.md, component-integration.md, per-repo files, and architecture-overview.md to projections/
+    - Empty graph produces valid but minimal projection files
+    - Missing workspace-index.yaml causes emitProjections to throw (caller handles non-fatally)
+  interfaces:
+  - id: IFACE-0010
+    type: library_api
+    specification: |
+      Programmatic API:
+        - loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGraph>
+        - systemDependencies(graph: WorkspaceGraph): SystemDependencyResult
+        - componentIntegration(graph: WorkspaceGraph, opts?: { repo?: string }): ComponentIntegrationResult
+        - blastRadiusWorkspace(graph: WorkspaceGraph, targetId: string, opts?: { maxDepth?: number }): WorkspaceBlastRadiusResult
+        - toMermaid(result: CannedQueryResult): string
+        - toTable(result: CannedQueryResult): Array<Record<string, string>>
+        - toAdjacencyMatrix(result: CannedQueryResult): AdjacencyMatrixResult
+        - emitProjections(outputDir: string, manifest: WorkspaceManifest): Promise<ProjectionEmitResult>
+
+      Resolution-aware API (added by COMP-0011):
+        - compress(result: CannedQueryResult, config: { level: ResolutionLevel }): CompressedProjection
+        - toMermaidAtResolution(projection: CompressedProjection): string
+        - toTableAtResolution(projection: CompressedProjection): Array<Record<string, string>>
+        - emitMultiResProjections(outputDir: string, manifest: WorkspaceManifest): Promise<MultiResEmitResult>
+
+      MCP tools ws_dependencies and ws_integration accept optional resolution parameter (L0|L1|L2|L3|L4, default L4).
+      CLI ws deps and ws integration accept --resolution flag.
+  implementation_identifiers:
+    module_path: src/workspace/workspace-graph-loader.ts
+    additional_modules:
+    - src/workspace/emit-projections.ts
+    - src/workspace/compression.ts
+    - src/workspace/emit-multi-res-projections.ts
+    - src/workspace/projection-families.ts
+    entry_point: src/workspace/index.ts
+    test_path: src/workspace/workspace-graph-loader.test.ts
+    additional_test_paths:
+    - src/workspace/emit-projections.test.ts
+    - src/workspace/compression.test.ts
+    - src/workspace/emit-multi-res-projections.test.ts
+    - src/workspace/projection-families.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: |
+        Throw descriptive errors for missing workspace-index.yaml or non-existent target nodes. Skip unreadable slice files silently.
+    observability:
+      logging:
+        level: info
+        structured: false
+      metrics:
+      - name: workspace_graph_nodes_total
+        type: gauge
+      - name: workspace_query_duration_ms
+        type: histogram
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: |
+        - Loader tests: fixture loading, empty workspace, missing slices, adjacency correctness
+        - Query tests: three functions against in-memory fixture, edge cases (single-repo, no edges, cyclic)
+        - Projection tests: Mermaid syntax, table columns, matrix shape
+  implements_capabilities:
+  - CAP-0018
+  - CAP-0019
+  dependencies:
+  - COMP-0011

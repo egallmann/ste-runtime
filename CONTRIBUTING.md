@@ -31,7 +31,28 @@ npm run rss:stats
 npm run recon:self
 ```
 
-Useful commands:
+Or use the automated bootstrap which checks prerequisites, installs, builds,
+runs initial RECON, and validates the installation:
+
+```bash
+npm run init
+```
+
+### CLI commands on PATH
+
+ste-runtime declares `ste`, `recon`, and `rss` as bin entry points but the
+package is `private: true` and not published to npm. To make these commands
+available on your PATH, link the package locally:
+
+```bash
+npm link
+ste --version
+```
+
+Without linking, use `node dist/cli/index.js <subcommand>` or the `npm run`
+scripts (e.g., `npm run recon:full`).
+
+### Useful commands
 
 ```bash
 npm test

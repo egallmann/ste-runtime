@@ -71,7 +71,7 @@ describe('optimized MCP architecture bundle reporting', () => {
 
     const result = await overview(ctx, {}, { projectRoot: tempDir });
 
-    expect(result.architectureBundle?.status).toBe('degraded');
+    expect(result.architectureBundle?.status).toBe('valid');
     expect(result.architectureBundle?.index.architectureNamespace).toBe('test-runtime');
   });
 
@@ -81,7 +81,7 @@ describe('optimized MCP architecture bundle reporting', () => {
     const result = await diagnose(ctx, { mode: 'health' }, { projectRoot: tempDir });
     const architectureBundle = result.details.architectureBundle as { status: string; manifest: { adrCount?: number } };
 
-    expect(architectureBundle.status).toBe('degraded');
+    expect(architectureBundle.status).toBe('valid');
     expect(architectureBundle.manifest.adrCount).toBe(1);
   });
 });

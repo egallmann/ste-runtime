@@ -1,31 +1,30 @@
 # ste-runtime Project Maturity & Production Readiness
 
-**Current Status:** EXPERIMENTAL / RESEARCH PROTOTYPE
+**Current Status:** PRODUCTION WORKSPACE TOOLING (with known architectural gaps)
 
-**Version:** 0.9.0-experimental
+**Version:** 0.10.0
 
-**Last Updated:** 2026-01-12
+**Last Updated:** 2026-05-28
 
 ---
 
 ## Critical Status Summary
 
-ste-runtime is a **component implementation and research prototype** of the [STE Specification](https://github.com/egallmann/ste-spec).
+ste-runtime is a **component implementation** of the [STE Specification](https://github.com/egallmann/ste-spec), in active production use as workspace tooling within the ste-system and functional in non-STE contexts.
 
 ### What This Is
 
-- ✅ Working implementation of RECON (semantic extraction) and RSS (graph traversal) components
+- ✅ Production workspace tooling for semantic extraction (RECON) and graph traversal (RSS)
+- ✅ General-purpose code-to-graph extraction designed for STE Architecture IR
 - ✅ Functional MCP server for Cursor IDE integration
-- ✅ Research prototype demonstrating AI-DOC architecture concepts
+- ✅ Validated at workspace scale (15 repos, ~952K LOC, ~23s extraction, 70MB state)
 - ✅ Foundation for experimentation and custom implementations
 
-### What This Is NOT
+### Current Limitations
 
-- ❌ **NOT production-ready software**
-- ❌ **NOT autonomous** (requires human-in-loop oversight)
-- ❌ **NOT security-hardened** (no authentication, authorization, or access controls)
-- ❌ **NOT performance-optimized** for large-scale production use
-- ❌ **NOT supported** for mission-critical or compliance-regulated environments
+- ❌ **NOT autonomous** — requires human-in-loop oversight (CEM substrate exists, invariant validation not operationalized)
+- ❌ **NOT security-hardened** — no authentication, authorization, or access controls beyond boundary validation
+- ⚠️ **Error handling not hardened** — no graceful degradation on partial extractor failures or crash recovery
 
 ---
 
@@ -35,16 +34,21 @@ ste-runtime is a **component implementation and research prototype** of the [STE
 
 ### Why No Autonomy?
 
-Per [E-ADR-003: CEM Implementation Deferral](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md):
+The MVC/CEM substrate exists, but invariant-based validation over CEM outputs is not yet operationalized.
 
-- **CEM (domain invariants) not implemented** — No definitions of valid software engineering semantics
-- **RSS invariant mapping missing** — RSS outputs graph + source, but not the invariants that bound LLM reasoning
-- **No governed cognition** — Without invariants, LLM has no constraints on what it can reason over
+**What exists:**
+- ✅ **Bounded context assembly** — RSS assembles task-scoped context from entry points using bounded bidirectional traversal (maxDepth, maxNodes, visited-set convergence)
+- ✅ **Convergent subgraph expansion** — `assembleContext` expands from multiple entry points via `blastRadius`, deduplicating across entries
+- ✅ **Architecture intent traversal** — ADRs, invariants, decisions, capabilities, and components are traversable together within the architecture domain (23 typed relationship types, provenance classification)
+- ⚠️ **Code-to-ADR cross-domain linking** — `implementation_intent` data stored on code slices; edge inference not yet in mainline RSS graph. Active prototyping via implementation-attribution-evidence artifacts.
 
-**CEM's role in ste-runtime:**
-- Defines domain invariants for software engineering semantics (what's valid API, data model, etc.)
-- RSS will map semantic graph to invariants that control AI reasoning
-- RSS output should be: subgraph + source code + **invariants that bound the LLM**
+**What is missing:**
+- ❌ **Formal CEM domain invariant catalog** — definitions of valid software engineering semantics
+- ❌ **RSS reasoning envelope** — output contract consistently emitting subgraph + source provenance + bounding invariants as a first-class reasoning envelope
+- ❌ **Invariant validation engine** — checking assembled context against domain invariants
+- ❌ **Failure classification** — when context violates, lacks, or ambiguously satisfies an invariant
+
+**Assessment:** The MVC/CEM substrate exists. The remaining gap is not the existence of CEM, but the operationalization of invariant-based validation over CEM outputs.
 
 **Note:** Orchestration, trust, and attestation are handled by Gateway/ADF services (not ste-runtime concerns).
 
@@ -60,44 +64,40 @@ All operations require human oversight:
 | File watching | Supervise incremental updates | YES |
 | Code generation | Review all generated code | YES |
 
-**Until CEM invariants are implemented and RSS maps them to output, autonomous execution is prohibited.**
+**Until invariant validation is operationalized over CEM outputs and RSS emits bounding invariants, autonomous execution is prohibited.**
 
 ---
 
-## Production Readiness Assessment
+## Maturity Assessment
 
-### Overall: NOT PRODUCTION-READY (for robust local developer tool)
+### Overall: IN PRODUCTION USE (known gaps remain)
 
-**Context:** ste-runtime is a **local developer tool** (like eslint, prettier) that feeds semantic context to Cursor agents. It's not an infrastructure service - concerns like monitoring, HA, and distributed state are handled by Gateway/ADF services.
+**Context:** ste-runtime is **workspace tooling** that extracts code into a semantic graph and feeds structured context to Cursor agents via MCP. It is in active production use within the ste-system. It is not an infrastructure service -- concerns like monitoring, HA, and distributed state are handled by Gateway/ADF services.
 
-**Production readiness means:** Reliable, accurate, safe for daily development use.
+**Full maturity means:** Governed autonomy (operationalized invariant validation over CEM outputs), robust error handling, and security hardening.
 
-ste-runtime lacks critical components for robust local tool:
+Known gaps for full maturity:
 
 #### 1. Domain Invariant Integration (CEM)
 
-**Status:** NOT IMPLEMENTED
+**Status:** PARTIALLY IMPLEMENTED / VALIDATION NOT YET OPERATIONALIZED
 
-**What's missing:**
-- ❌ **CEM domain invariants** — Definitions of valid software engineering semantics
-- ❌ **RSS invariant mapping** — RSS should output subgraph + source + invariants that bound LLM reasoning
-- ❌ **Invariant validation** — Extracted state should validate against domain invariants
+CEM substrate exists (see [Autonomy Status](#autonomy-status-human-in-loop-required) for full breakdown). Remaining gap: formal invariant catalog, RSS reasoning envelope, invariant validation engine, and failure classification.
 
-**Impact:** RSS currently outputs semantic graph + source code, but not the invariants that constrain what the LLM can reason over. This is the critical missing piece for governed AI assistance.
-
-**Blocker:** CEM deferred per [E-ADR-003](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md)
+**Reference:** [E-ADR-003](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md)
 
 #### 2. Robustness and Performance
 
-**Status:** GOOD (validated on large production systems)
+**Status:** GOOD (validated at workspace scale)
 
 **Demonstrated capability:**
-- ✅ **Large codebase performance** — 107K LOC production system (Python, TypeScript, CloudFormation, HTML, CSS) in 10 seconds, 2.1MB graph
-- ✅ **Memory efficiency** — Even large graphs are small (~2MB)
+- ✅ **Workspace-scale extraction** — 15 repos, ~952K LOC (Python, TypeScript, .NET, CloudFormation, JSON), ~23 seconds, 70MB state, 297 nodes / 444 edges merged graph
+- ✅ **Single-project performance** — 107K LOC in 10 seconds, 2.1MB graph
+- ✅ **Population throughput** — 653-846 slices/sec
 - ⚠️ **Error recovery** — Should recover gracefully from crashes, not corrupt state
 - ❌ **Graceful degradation** — Should handle partial failures (some extractors fail)
 
-**Current state:** Performs well on real production codebases. Needs robustness work (error recovery, partial failures).
+**Current state:** Performs well at workspace scale across 15 production repos. Needs robustness work (error recovery, partial failures). Codebases beyond ~1M LOC are untested.
 
 #### 3. Security (Local Tool Context)
 
@@ -121,15 +121,17 @@ Security concerns for local-only tool:
 
 #### 4. Testing and Validation
 
-**Status:** PARTIAL (67% coverage)
+**Status:** PARTIAL (60.45% overall statement coverage, 915 tests)
 
-Missing components:
+- ✅ **Workspace-scale validation** — 15 repos, ~952K LOC extracted successfully
+- ✅ **915 tests across 76 files** — recon, mcp, watch, rss, extractors, workspace, architecture, cli, task, discovery
+- ⚠️ **1 failing test** — `projection-families.test.ts` (governance-projection compression overrides)
+- ⚠️ **Coverage uneven** — RECON core at 91%, but phases at 50%, CLI at 23%, discovery at 31%
 - ❌ Integration test suite (end-to-end scenarios)
-- ❌ Large project testing (validate on 100K+ LOC codebases)
 - ❌ Failure mode testing (corrupt files, disk full, etc.)
 - ❌ Performance regression testing
 
-**Current state:** Unit tests cover core functionality, but not production failure scenarios or performance.
+**Current state:** Unit tests cover core functionality. Coverage dropped from ~67% to ~60% as new modules (architecture, workspace, discovery) were added without proportional test coverage.
 
 #### 5. Operational Concerns (Service-Level)
 
@@ -150,85 +152,86 @@ These are concerns for Gateway/ADF services, not local developer tools:
 
 ### Core Components
 
-| Component | Status | Test Coverage | Production-Ready? |
-|-----------|--------|---------------|-------------------|
-| **RECON Core** | Stable | 95.73% | NO - missing error recovery, no production validation |
-| **RSS Graph Traversal** | Stable | 70.51% | NO - not stress tested, no distributed state |
-| **MCP Server** | Functional | 29.68% | NO - no security layer, single-process only |
-| **File Watching** | Experimental | 78.42% | NO - not battle-tested, no failure recovery |
-| **CLI Tools** | Minimal | 0% | NO - untested, no error handling |
-| **Configuration** | Stable | ~80% | NO - no validation, no schema versioning |
+**Coverage measured 2026-05-28** (915 tests, 76 files, overall 60.45% statements).
+
+| Component | Status | Stmt Coverage | Gaps |
+|-----------|--------|---------------|------|
+| **RECON Core** | Stable | 91.65% | Error recovery on crash, graceful degradation |
+| **RECON Phases** | Functional | 50.45% | Inference (28%), normalization (35%) need coverage |
+| **RECON Validation** | Stable | 89.24% | Minor gaps in graph/coverage validators |
+| **RSS Graph Traversal** | Stable | 64.56% | Conversational query (20%), graph-traversal (65%) |
+| **MCP Server** | Functional | 67.84% | mcp-server.ts core (20%), operational tools (44%) |
+| **File Watching** | Functional | 70.50% | file-watcher (13%), regression-detector (17%) |
+| **CLI Tools** | Functional | 22.69% | recon-cli (0%), rss-cli (0%); setup/evidence tested |
+| **Architecture** | Functional | 53.69% | context-rationale (0%), dec-gravity (0%), governance-projection (0%) |
+| **Workspace** | Functional | 64.85% | workspace-recon (0%), slice-emitter (21%) |
+| **Discovery** | Experimental | 30.64% | project-discovery (10%) |
+| **Task** | Stable | 100% | -- |
 
 ### Language Extractors
 
-| Extractor | Status | Test Coverage | Production-Ready? | Known Limitations |
-|-----------|--------|---------------|-------------------|-------------------|
-| **TypeScript** | Functional | ~70% | NO | Missing JSDoc extraction, incomplete type inference |
-| **Python** | Functional | 66.29% | NO | Limited validation, basic import resolution |
-| **CloudFormation** | Functional | 91.89% | NO | Some resource types incomplete, no cross-stack refs |
-| **JSON** | Stable | 96.72% | NO | Basic schema inference, no validation |
-| **Angular** | Experimental | 55.53% | NO | Incomplete template parsing, basic component detection |
-| **CSS/SCSS** | Stable | 97.48% | NO | Basic token extraction, limited semantic analysis |
+| Extractor | Status | Stmt Coverage | Known Limitations |
+|-----------|--------|---------------|-------------------|
+| **ADR YAML** | Stable | 100% | -- |
+| **TypeScript** | Functional | 65.58% | Missing JSDoc extraction, incomplete type inference |
+| **Python** | Functional | 64.51% | Limited validation, basic import resolution |
+| **C#/.NET** | Experimental | 0% | Regex-based shallow extraction; no tests; used on dotnet repos |
+| **CloudFormation** | Functional | 84.40% | Some resource types incomplete, no cross-stack refs |
+| **JSON** | Stable | 94.59% | Basic schema inference, no validation |
+| **Angular** | Experimental | 46.05% | Incomplete template parsing, basic component detection |
+| **CSS/SCSS** | Stable | 95.79% | Basic token extraction, limited semantic analysis |
 
 ### Maturity Levels Defined
 
 | Level | Definition | Test Coverage | Production Use |
 |-------|------------|---------------|----------------|
-| **Experimental** | Basic functionality, incomplete coverage | <60% | NO - research only |
-| **Functional** | Core features work, some gaps remain | 60-80% | NO - development only |
-| **Stable** | Well-tested, comprehensive coverage | 80-95% | MAYBE - with caution and oversight |
-| **Production** | Battle-tested, monitored, hardened | >95% | YES - with operational support |
+| **Experimental** | Basic functionality, incomplete coverage | <60% | With oversight only |
+| **Functional** | Core features work, some gaps remain | 60-80% | Yes, with known limitations |
+| **Stable** | Well-tested, comprehensive coverage | 80-95% | Yes |
+| **Hardened** | Battle-tested, robust error handling, security hardened | >95% | Yes, fully autonomous |
 
-**No component is currently at "Production" level.**
-
----
-
-## Prohibited Use Cases
-
-### DO NOT Use ste-runtime For:
-
-❌ **Autonomous agent execution** without human oversight  
-❌ **Production deployments** in business-critical systems  
-❌ **Security-sensitive environments** (no authentication/authorization)  
-❌ **Compliance-regulated systems** (HIPAA, SOC2, GDPR) without extensive additional work  
-❌ **Multi-user or concurrent access** scenarios (single-process architecture)  
-❌ **Mission-critical workflows** (no disaster recovery or rollback)  
-❌ **Large-scale codebases** (>1M LOC) without performance validation  
+**No component is currently at "Hardened" level.** Stable and Functional components are in active production use with human oversight.
 
 ---
 
-## Appropriate Use Cases
+## Use Case Guidance
 
-### ✅ DO Use ste-runtime For:
+### Supported Use Cases
 
-✅ **Local development assistance** with human oversight  
-✅ **Research and experimentation** with AI-DOC architecture  
-✅ **Prototyping semantic extraction** approaches  
-✅ **Learning about semantic graphs** and context assembly  
+✅ **Production workspace tooling** -- semantic extraction and graph-based context for development workflows  
+✅ **STE system integration** -- Architecture IR provider within the ste-system  
+✅ **Non-STE workspace tooling** -- general-purpose code-to-graph extraction in any codebase  
+✅ **MCP-based IDE integration** -- structured context delivery to Cursor agents  
 ✅ **Forking for custom implementations** (encouraged)  
 ✅ **Contributing to STE specification** development  
-✅ **Educational purposes** (understanding AI-assisted development)  
+
+### Not Supported
+
+❌ **Autonomous agent execution** without human oversight (CEM invariant validation not operationalized)  
+❌ **Multi-user or concurrent access** scenarios (single-process, stdio architecture)  
+❌ **Codebases >1M LOC** without performance validation (validated up to ~952K LOC across 15 repos)  
 
 ---
 
-## Path to Production (Future Work Required)
+## Path to Full Maturity
 
-**Note:** "Production" for ste-runtime means **robust local developer tool**, not infrastructure service. Service-level concerns (monitoring, HA, orchestration) are handled by Gateway/ADF components.
+**Note:** ste-runtime is already in production use as workspace tooling. "Full maturity" means governed autonomy (operationalized invariant validation over CEM outputs), robust error handling, and security hardening. Service-level concerns (monitoring, HA, orchestration) are handled by Gateway/ADF components.
 
-To make ste-runtime production-ready **as a local developer tool** would require:
+Remaining gaps:
 
-### 1. Domain Invariant Integration (CEM)
+### 1. Operationalizing CEM Invariant Validation
 
-**Critical Missing Piece:**
+**CEM substrate exists. Validation over outputs is the remaining gap.**
 
-- [ ] CEM domain invariants — Define valid software engineering semantics
-- [ ] RSS invariant mapping — RSS output should include subgraph + source + **invariants that bound LLM reasoning**
-- [ ] Invariant validation — Validate extracted state against domain invariants
-- [ ] Domain/subdomain invariant definitions (API, data, infrastructure, etc.)
+- [x] MVC/CEM substrate (bounded context assembly, convergent subgraph expansion)
+- [x] RSS task-scoped context assembly (bounded bidirectional traversal)
+- [x] ADR integration (intent, invariants, decisions, capabilities traversable together)
+- [ ] Formal CEM domain invariant catalog (valid software engineering semantics)
+- [ ] RSS reasoning envelope (subgraph + source provenance + bounding invariants as output contract)
+- [ ] Invariant validation engine (check assembled context against domain invariants)
+- [ ] Failure classification (violation, absence, ambiguous satisfaction of invariants)
 
-**Why critical:** RSS currently outputs semantic graph + source code. Without invariants, the LLM has no constraints on what it can reason over. CEM provides the domain knowledge that bounds AI cognition.
-
-**Blocker:** CEM deferred per [E-ADR-003](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md)
+**Why critical:** RSS assembles bounded, task-scoped context. Without invariant validation over that output, the LLM has no formal constraints on its reasoning. Operationalizing validation is what enables governed autonomy.
 
 ### 2. Robustness and Error Handling
 
@@ -236,7 +239,7 @@ To make ste-runtime production-ready **as a local developer tool** would require
 - [ ] Error recovery (don't corrupt state on crash)
 - [ ] Progress reporting (long-running RECON feedback)
 
-**Note:** Performance is good - validated on 107K LOC production system (10s, 2.1MB graph).
+**Note:** Performance is good -- validated at workspace scale (~952K LOC across 15 repos in ~23s).
 
 ### 3. Security (Local Tool Context)
 
@@ -255,8 +258,8 @@ Required for local tool:
 
 ### 4. Extractor Maturity
 
-- [ ] Production validation suite (test on real-world projects)
-- [ ] Completeness guarantees (document coverage expectations)
+- [x] Production validation (extractors running on 15 production repos, ~952K LOC across Python, TypeScript, .NET, CloudFormation, JSON)
+- [ ] Completeness guarantees (document coverage expectations per extractor)
 - [ ] Error handling hardening (don't crash on malformed code)
 - [ ] Performance tuning per extractor
 
@@ -264,7 +267,7 @@ Required for local tool:
 
 - [ ] 90%+ test coverage across all components
 - [ ] Integration test suite (end-to-end scenarios)
-- [ ] Large project validation (tested on 107K LOC production system ✓, needs more diversity)
+- [x] Workspace-scale validation (~952K LOC across 15 repos)
 - [ ] Failure mode testing (corrupt files, disk full, etc.)
 - [ ] Performance regression testing
 
@@ -274,73 +277,61 @@ Required for local tool:
 
 ## Why This Status Document Exists
 
-This document exists to prevent misinterpretation of ste-runtime's capabilities and maturity.
+This document exists to set clear expectations about what ste-runtime can and cannot do today, and what architectural gaps remain for full maturity.
 
 ### Common Misinterpretations to Avoid
 
-1. **"MCP server works, so it's production-ready for AI agents"**  
-   → NO. MCP works, but **CEM invariants not implemented**. RSS outputs graph + source, but not the invariants that bound LLM reasoning. Without invariants, no governed AI assistance.
+1. **"It works in production, so it supports autonomous agents"**  
+   → NO. The CEM substrate exists, but invariant validation over CEM outputs is not operationalized. RSS assembles bounded context but does not yet emit bounding invariants as part of its output contract. Without that, no governed autonomy.
 
 2. **"File watching and auto-RECON means it can run autonomously"**  
-   → NO. Human oversight required. CEM invariants missing (can't bound LLM cognition without them).
+   → NO. Human oversight required. Invariant validation not operationalized (can't formally bound LLM cognition without it).
 
-3. **"Version 0.9.0-experimental means almost production-ready"**  
-   → NO. Version reflects architectural maturity, not production readiness. CEM invariants are the blocker.
+3. **"Self-validating architecture means fully hardened"**  
+   → NO. Validation catches schema issues, not domain invariant violations (invariant validation engine not built). Error recovery and graceful degradation still need work.
 
-4. **"Self-validating architecture means production reliability"**  
-   → NO. Validation catches schema issues, not domain invariant violations (CEM not implemented).
-
-5. **"Portable and drop-in means safe for any codebase"**  
-   → PARTIALLY. Safe for local development with supervision. Not for autonomous use (CEM missing).
+4. **"General-purpose extraction means it handles any scale"**  
+   → MOSTLY. Validated up to ~952K LOC across 15 repos (~23s). Codebases beyond ~1M LOC are untested.
 
 ---
 
 ## Questions and Clarifications
 
-### Q: Can I use this in my company's CI/CD pipeline?
+### Q: Can I use this as workspace tooling?
 
-**A:** Not recommended without extensive additional work:
-- Add authentication and access controls
-- Implement monitoring and alerting
-- Add failure recovery and rollback
-- Validate performance at your scale
-- Add compliance logging if required
+**A:** Yes. ste-runtime is in active production use as workspace tooling. It extracts code into a semantic graph and delivers structured context to Cursor agents via MCP. Human oversight is required for all operations.
 
-**Better approach:** Use locally during development, human reviews outputs before committing.
+### Q: Can I use this in a CI/CD pipeline?
 
-### Q: Can I deploy this for my team to use?
+**A:** Not without additional work. ste-runtime is designed for interactive workspace use (stdio-based MCP). CI/CD integration would need error recovery, headless operation mode, and performance validation at your scale.
 
-**A:** Only if:
-- Deployed in trusted, isolated environment (no external access)
-- All users understand it's experimental software
-- Human oversight required for all operations
-- No mission-critical workflows depend on it
-- You have operational support for issues
+### Q: Does this support autonomous agent execution?
 
-**Not recommended** for general deployment.
+**A:** No. The CEM substrate exists (bounded context assembly, ADR integration), but invariant validation over CEM outputs is not operationalized. Until RSS emits bounding invariants and a validation engine checks context against them, all operations require human-in-loop oversight. See the Autonomy Status section.
 
-### Q: When will this be production-ready?
+### Q: Can I use this outside the ste-system?
 
-**A:** No timeline or roadmap. This is a personal research prototype and component implementation of the STE Specification.
+**A:** Yes. The semantic graph is general-purpose code-to-graph extraction. It is designed for STE Architecture IR but works in non-STE contexts.
 
-**Current focus:** Stabilizing foundation components (RECON, RSS, extractors) and validating architectural concepts.
+### Q: Can I fork this?
 
-Production-readiness would require significant additional work (see "Path to Production" above for what's missing).
-
-### Q: Can I fork this for production use?
-
-**A:** Yes, forking is encouraged, but understand:
-- You assume all production hardening work
-- You assume all operational support
-- You assume all security responsibilities (even for local-only use)
-- Significant work required (see "Path to Production" checklist)
-
-**Recommendation:** Use as reference implementation, not production starting point.
+**A:** Yes, forking is encouraged. You assume responsibility for any additional hardening, security, and operational support beyond what's provided.
 
 ---
 
 ## Version History
 
+- **2026-05-28** — Revised to reflect production use and current data
+  - Updated status from EXPERIMENTAL to PRODUCTION WORKSPACE TOOLING
+  - Reframed document from "not production-ready" to "in production with known gaps"
+  - Clarified semantic graph as general-purpose extraction (STE Architecture IR, works in non-STE contexts)
+  - Updated performance benchmarks: 15-repo workspace, ~952K LOC, ~23s extraction, 70MB state
+  - Flagged coverage numbers as stale (January 2026); need regeneration via `npm run test:coverage`
+  - Corrected CEM status from "NOT IMPLEMENTED" to "PARTIALLY IMPLEMENTED" (substrate exists, invariant validation not operationalized)
+  - Removed inapplicable compliance concerns (workspace tooling does not process regulated data)
+  - Consolidated Prohibited/Appropriate use cases into Use Case Guidance
+  - Reframed Path to Production as Path to Full Maturity
+  - Updated Q&A to reflect current usage patterns
 - **2026-01-12** — Initial maturity assessment document
   - Documented experimental status and autonomy boundaries
   - Defined component maturity matrix
@@ -351,16 +342,14 @@ Production-readiness would require significant additional work (see "Path to Pro
 
 ## Related Documentation
 
-- [E-ADR-003: CEM Implementation Deferral](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md) — Why autonomy is not supported
+- [E-ADR-003: CEM Implementation Deferral](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md) — Original deferral context (substrate now exists; validation not operationalized)
 - [CONTRIBUTING.md](CONTRIBUTING.md) — Development status and future contribution process
 - [Architecture Documentation](documentation/architecture.md) — Technical architecture (current implementation)
 - [STE Specification](https://github.com/egallmann/ste-spec) — Complete STE Runtime architecture
 
 ---
 
-**This document establishes the narrative boundary for ste-runtime.**
+**This document establishes the maturity boundary for ste-runtime.**
 
-All claims about capabilities, maturity, and production-readiness should reference this document.
-
-
+All claims about capabilities, maturity, and known gaps should reference this document.
 

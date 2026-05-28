@@ -12,7 +12,7 @@
  *   node scripts/init.js --help       # Show help
  * 
  * For AI Assistants:
- *   cd ste-runtime-private && node scripts/init.js
+ *   cd ste-runtime && node scripts/init.cjs
  */
 
 const { execSync, spawn } = require('node:child_process');
@@ -106,7 +106,7 @@ ${c.cyan}WHAT THIS DOES:${c.reset}
   6. (Optional) Configures MCP for Cursor IDE
 
 ${c.cyan}FOR AI ASSISTANTS:${c.reset}
-  Simply run: cd ste-runtime-private; node scripts/init.cjs
+  Simply run: cd ste-runtime; node scripts/init.cjs
 `);
 }
 
@@ -161,7 +161,7 @@ function checkPrerequisites() {
   // Directory check
   const pkgPath = path.join(process.cwd(), 'package.json');
   if (!fs.existsSync(pkgPath)) {
-    fail('package.json not found. Run from ste-runtime-private directory.');
+    fail('package.json not found. Run from the ste-runtime directory.');
     valid = false;
   } else {
     try {

@@ -24,7 +24,8 @@ import { runSelfValidation } from './self-validation.js';
 import { writeImplementationAttributionEvidence } from '../implementation-intent.js';
 import { updateCoordinator } from '../../watch/update-coordinator.js';
 import { buildFullManifest, writeReconManifest, type ManifestLanguage } from '../../watch/change-detector.js';
-import { log } from '../../utils/logger.js';
+import { log, warn } from '../../utils/logger.js';
+import { PhaseTimer, REQUIRED_TIMED_PHASES, type PhaseTimingRecord } from '../../utils/concurrency.js';
 import path from 'node:path';
 
 /**
@@ -65,6 +66,7 @@ export interface DiscoveredFile {
   relativePath: string;
   language: SupportedLanguage;
   changeType: 'added' | 'modified' | 'deleted' | 'unchanged';
+  cachedContent?: string;
 }
 
 export interface RawAssertion {
@@ -85,6 +87,9 @@ export interface RawAssertion {
     | 'cfn_output'
     | 'cfn_gsi'
     | 'cfn_trigger'          // EventSourceMapping, EventBridge Rules → Lambda
+    // ASL (Amazon States Language) element types
+    | 'state_machine_definition'  // Standalone .asl.json state machine
+    | 'asl_lambda_ref'            // Lambda function referenced from ASL Task states
     // Python behavioral extraction types
     | 'aws_sdk_usage'      // boto3/botocore SDK calls
     | 'env_var_access'     // os.environ/os.getenv usage
@@ -99,7 +104,14 @@ export interface RawAssertion {
     | 'angular_template'   // Component HTML templates
     // CSS/SCSS element types (E-ADR-006)
     | 'styles'             // Component styles
-    | 'design_tokens';     // CSS variables, SCSS variables, animations
+    | 'design_tokens'      // CSS variables, SCSS variables, animations
+    // ADR YAML element types (ADR-PC-0010)
+    | 'adr_document'       // ADR document (logical, physical-system, physical-component)
+    | 'adr_invariant'      // Invariant declared in a logical ADR
+    | 'adr_decision'       // Decision declared in an ADR
+    | 'adr_capability'     // Capability declared in a logical ADR
+    | 'adr_component'      // Component spec in a physical-component ADR
+    | 'adr_system';        // System boundary in a physical-system ADR
   file: string;
   line: number;
   end_line?: number;
@@ -151,9 +163,35 @@ export interface NormalizedAssertion {
 // Conflict interface removed - conflicts don't exist under corrected model
 // See E-ADR-001 §5.4 (corrected 2026-01-07): Slices are pure derived artifacts
 
+function emitTimingSummary(
+  timings: PhaseTimingRecord[],
+  warnings: string[],
+): void {
+  log('\n=== RECON Phase Timing ===');
+  for (const t of timings) {
+    log(
+      `  ${t.phase}: ${t.durationMs.toFixed(1)}ms ` +
+      `(${t.itemCount} items, ${t.throughput.toFixed(0)} items/sec)`
+    );
+  }
+  const totalMs = timings.reduce((sum, t) => sum + t.durationMs, 0);
+  log(`  Total measured: ${totalMs.toFixed(1)}ms`);
+  log('========================\n');
+
+  const recordedPhases = new Set(timings.map(t => t.phase));
+  for (const required of REQUIRED_TIMED_PHASES) {
+    if (!recordedPhases.has(required)) {
+      const msg = `[RECON Timing] INVARIANT VIOLATION: no timing record for required phase "${required}"`;
+      warn(msg);
+      warnings.push(msg);
+    }
+  }
+}
+
 export async function runReconPhases(options: ReconOptions): Promise<ReconResult> {
   const warnings: string[] = [];
   const errors: string[] = [];
+  const timings: PhaseTimingRecord[] = [];
   
   // Start update batch for tracking (E-ADR-007)
   const generation = updateCoordinator.startUpdate([]);
@@ -216,20 +254,29 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   }
   
   // Phase 2: Extraction
+  const extractionTimer = new PhaseTimer('Phase 2: Extraction');
+  extractionTimer.start();
   log('[RECON Phase 2] Extracting assertions...');
   const rawAssertions = await extractAssertions(discoveredFiles);
+  timings.push(extractionTimer.stop(rawAssertions.length));
   log(`[RECON Phase 2] Extracted ${rawAssertions.length} assertions`);
   
   // Phase 4: Normalization (before inference to build lookup structures)
+  const normTimer = new PhaseTimer('Phase 4: Normalization');
+  normTimer.start();
   log('[RECON Phase 4] Normalizing assertions...');
   const normalizedAssertions = await normalizeAssertions(rawAssertions, options.projectRoot);
+  timings.push(normTimer.stop(normalizedAssertions.length));
   log(`[RECON Phase 4] Normalized ${normalizedAssertions.length} assertions`);
   
   // Phase 3: Inference - Build relationships for RSS traversal
+  const inferTimer = new PhaseTimer('Phase 3: Inference');
+  inferTimer.start();
   log('[RECON Phase 3] Inferring relationships for RSS graph...');
   const enrichedAssertions = inferRelationships(normalizedAssertions, rawAssertions);
   const totalRefs = enrichedAssertions.reduce((sum, a) => sum + (a._slice.references?.length ?? 0), 0);
   const totalTags = enrichedAssertions.reduce((sum, a) => sum + (a._slice.tags?.length ?? 0), 0);
+  timings.push(inferTimer.stop(enrichedAssertions.length));
   log(`[RECON Phase 3] Inferred ${totalRefs} relationships, ${totalTags} tags`);
   
   // Determine state root
@@ -243,6 +290,8 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   const processedFiles = discoveredFiles.map(f => f.relativePath);
   
     // Phase 5: Population (with create/update/delete semantics)
+    const popTimer = new PhaseTimer('Phase 5: Population');
+    popTimer.start();
     log('[RECON Phase 5] Populating AI-DOC state...');
     const populationResult = await populateAiDoc(
       enrichedAssertions,
@@ -254,6 +303,9 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
         generation, // E-ADR-007: Track writes for watchdog
       }
     );
+    const popItems = populationResult.created + populationResult.updated
+      + populationResult.deleted + populationResult.unchanged;
+    timings.push(popTimer.stop(popItems));
     log(`[RECON Phase 5] Created: ${populationResult.created}, Updated: ${populationResult.updated}, Deleted: ${populationResult.deleted}, Unchanged: ${populationResult.unchanged}`);
 
     try {
@@ -289,6 +341,8 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
   log(`[RECON Phase 6] Conflicts: 0 (slices are pure derived artifacts)`);
   
   // Phase 7: Self-Validation (non-blocking)
+  const valTimer = new PhaseTimer('Phase 7: Validation');
+  valTimer.start();
   log('[RECON Phase 7] Self-validation...');
   const selfValidationResult = await runSelfValidation(
     enrichedAssertions,
@@ -300,6 +354,7 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
       repeatabilityCheck: options.repeatabilityCheck,
     }
   );
+  timings.push(valTimer.stop(selfValidationResult.summary.total_findings));
   log(`[RECON Phase 7] Validation complete: ${selfValidationResult.summary.total_findings} findings`);
   
   // Phase 8: Write manifest for freshness tracking (non-blocking)
@@ -318,6 +373,9 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
     log(`[RECON Phase 8] Manifest write skipped: ${detail}`);
   }
   
+  // Timing summary and invariant check
+  emitTimingSummary(timings, warnings);
+
   // Complete update batch (E-ADR-007)
   updateCoordinator.completeUpdate(generation);
   
@@ -334,6 +392,7 @@ export async function runReconPhases(options: ReconOptions): Promise<ReconResult
     validationInfo: selfValidationResult.summary.info,
     errors,
     warnings,
+    timings,
   };
   } catch (error) {
     // Complete update batch even on error

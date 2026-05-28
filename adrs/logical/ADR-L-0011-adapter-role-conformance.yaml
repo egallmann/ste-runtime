@@ -1,0 +1,49 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0011
+title: Adapter Role Conformance
+status: proposed
+created_date: '2026-04-21'
+authors:
+- ste-runtime
+domains:
+- architecture
+- integration
+tags:
+- adapter
+- role
+- evidence
+vision_category: false
+context: |
+  STE defines five subsystems. ste-runtime is the RuntimeAdapter. Its role
+  and publication surface must be declared, not assumed. Without explicit
+  conformance, the runtime risks emitting artifacts outside its authority
+  or failing to emit required ones.
+capabilities:
+- id: CAP-0011
+  name: ArchitectureEvidence emission
+  description: Emit ArchitectureEvidence v2 at .workspace-graph/evidence/architecture-evidence.json.
+architectural_boundaries:
+- id: BOUND-0002
+  name: RuntimeAdapter publication surface
+  description: |
+    Publication surface (stable):
+    .workspace-graph/evidence/architecture-evidence.json
+  rationale: Declares the single stable output path for runtime evidence emission.
+decisions:
+- id: DEC-0011
+  summary: ste-runtime conforms to RuntimeAdapter role
+  rationale: |
+    Explicit role conformance prevents scope leakage across subsystem
+    boundaries and ensures evidence artifacts are schema-compliant.
+decision: |
+  ste-runtime conforms to the RuntimeAdapter role per the STE Integration
+  Model. It emits ArchitectureEvidence (version "2") per
+  ste-spec/contracts/architecture-evidence.schema.json. It does not emit
+  Architecture IR, admission assessments, or rule projections.
+consequences:
+  positive:
+  - Role boundaries are explicit and auditable.
+  - Cross-component invariant compliance is tractable.
+  negative:
+  - Any new emission surface requires updating this ADR.

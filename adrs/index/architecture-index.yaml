@@ -1,7 +1,7 @@
 schema_version: '1.1'
 type: architecture_index
 architecture_namespace: ste-runtime
-generated_at: '2026-03-15T15:25:48Z'
+generated_at: '2026-05-27T00:52:37Z'
 generator: adr-architecture-index
 entity_registry_path: adrs/index/entity-registry.yaml
 relationship_registry_path: adrs/index/relationship-registry.yaml
@@ -16,8 +16,8 @@ validation_summary:
   warnings: 0
   unresolved_entries: 0
 source_coverage:
-  logical_adrs: 7
+  logical_adrs: 18
   physical_adrs: 5
   physical_system_adrs: 2
-  physical_component_adrs: 7
+  physical_component_adrs: 11
   standalone_invariants: 0

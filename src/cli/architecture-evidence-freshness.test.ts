@@ -40,7 +40,6 @@ function createBundle(overrides: Partial<ArchitectureBundleResult> = {}): Archit
       unresolvedRegistry: { path: path.join(tempDir, 'adrs/index/unresolved-registry.yaml'), exists: true, data: {} },
     },
     additiveArtifacts: {
-      architectureGraph: { path: path.join(tempDir, 'adrs/index/architecture-graph.yaml'), exists: true, data: {} },
       subsetRegistries: [],
     },
     manifest: {

@@ -66,7 +66,9 @@ evidence
     }
   });
 
-const architecture = program.command('architecture').description('Architecture compiler (ste-runtime compiler of record)');
+const architecture = program
+  .command('architecture')
+  .description('Architecture bundle tooling (public contracts owned by ste-spec)');
 
 architecture
   .command('compile')
@@ -140,6 +142,24 @@ program
       console.log('\nErrors:');
       result.errors.forEach(e => console.log(`  - ${e}`));
     }
+
+    // Self-pass: always keep ste-runtime's own graph fresh
+    const isSelfAnalysis = config.projectRoot === config.runtimeDir;
+    if (!isSelfAnalysis) {
+      console.log('\n--- Self-Pass (ste-runtime) ---');
+      const selfConfig = await loadConfig(runtimeDir, { selfMode: true });
+      const selfResult = await executeRecon({
+        projectRoot: selfConfig.projectRoot,
+        sourceRoot: selfConfig.sourceDirs[0] ?? 'src',
+        stateRoot: selfConfig.stateDir,
+        mode: options.mode as 'full' | 'incremental',
+        config: selfConfig,
+      });
+      console.log(`Self-pass: Created=${selfResult.aiDocCreated} Modified=${selfResult.aiDocModified} Unchanged=${selfResult.aiDocUnchanged}`);
+      if (!selfResult.success) {
+        console.log(`Self-pass errors: ${selfResult.errors.join('; ')}`);
+      }
+    }
   });
 
 program
@@ -192,6 +212,7 @@ program
   .option('--no-watch', 'Disable file watching (MCP server only)')
   .option('--self', 'Self-analysis mode: analyze ste-runtime itself instead of parent project')
   .option('--config <path>', 'Custom config file path')
+  .option('--project-root <path>', 'Explicit project root directory (overrides cwd detection)')
   .action(async (options) => {
     // Import and run watch logic directly
     const { McpServer } = await import('../mcp/mcp-server.js');
@@ -234,6 +255,9 @@ program
           }
         }
       }
+      if (options.projectRoot) {
+        cwd = path.resolve(options.projectRoot);
+      }
       let projectRoot = cwd;
       let config: any;
       
@@ -265,28 +289,46 @@ program
         projectRoot = config.projectRoot;
       }
       
+      // --project-root takes precedence over config-derived projectRoot
+      if (options.projectRoot) {
+        projectRoot = path.resolve(options.projectRoot);
+      }
+      
       log(`[ste watch] Project root: ${projectRoot}`);
       log(`[ste watch] State directory: ${config.stateDir}`);
       
-      // CRITICAL: Resolve stateDir to absolute path for manifest operations
-      // The stateDir from config is relative to projectRoot, so resolve it properly
-      const resolvedStateDir = path.resolve(projectRoot, config.stateDir);
-      log(`[ste watch] Resolved state directory: ${resolvedStateDir}`);
+      // Detect workspace mode: if projectRoot has a workspace.yaml, skip single-project RECON
+      // (workspace recon is run separately via `ste recon --workspace`)
+      let isWorkspaceMode = false;
+      for (const wsName of ['workspace.yaml', 'workspace.yml']) {
+        try {
+          await fs.access(path.join(projectRoot, wsName));
+          isWorkspaceMode = true;
+          log(`[ste watch] Workspace mode detected (${wsName} found)`);
+          break;
+        } catch { /* not found */ }
+      }
       
-      // Check if manifest exists, run full RECON if not
-      // CRITICAL: Use resolvedStateDir, NOT projectRoot - manifest lives INSIDE stateDir
-      const manifest = await loadReconManifest(resolvedStateDir);
-      if (!manifest) {
-        log('[ste watch] No manifest found, running initial RECON...');
-        // Use executeRecon with proper config - this writes to config.stateDir (inside ste-runtime)
-        await executeRecon({
-          projectRoot: config.projectRoot,
-          sourceRoot: config.sourceDirs[0] ?? '.',
-          stateRoot: config.stateDir,
-          mode: 'full',
-          config: config,
-        });
-        log('[ste watch] Initial RECON complete');
+      if (!isWorkspaceMode) {
+        // CRITICAL: Resolve stateDir to absolute path for manifest operations
+        // The stateDir from config is relative to projectRoot, so resolve it properly
+        const resolvedStateDir = path.resolve(projectRoot, config.stateDir);
+        log(`[ste watch] Resolved state directory: ${resolvedStateDir}`);
+        
+        // Check if manifest exists, run full RECON if not
+        // CRITICAL: Use resolvedStateDir, NOT projectRoot - manifest lives INSIDE stateDir
+        const manifest = await loadReconManifest(resolvedStateDir);
+        if (!manifest) {
+          log('[ste watch] No manifest found, running initial RECON...');
+          await executeRecon({
+            projectRoot: config.projectRoot,
+            sourceRoot: config.sourceDirs[0] ?? '.',
+            stateRoot: config.stateDir,
+            mode: 'full',
+            config: config,
+          });
+          log('[ste watch] Initial RECON complete');
+        }
       }
       
       // Create MCP server
@@ -564,6 +606,518 @@ program
     }
     
     console.log('');
+  });
+
+// ─── ste init ───────────────────────────────────────────────
+program
+  .command('init')
+  .description('Scaffold a workspace.yaml with discovered repos and generic defaults')
+  .option('--output <file>', 'Output file path', 'workspace.yaml')
+  .option('--output-dir <dir>', 'Workspace output directory', '.workspace-graph/')
+  .option('--dry-run', 'Print to stdout without writing file', false)
+  .action(async (options) => {
+    const cwd = process.cwd();
+    const fs = await import('node:fs/promises');
+    const fss = await import('node:fs');
+
+    const langHints: Record<string, string> = {
+      'package.json': 'node',
+      'tsconfig.json': 'node',
+      'setup.py': 'python',
+      'pyproject.toml': 'python',
+      'requirements.txt': 'python',
+    };
+
+    const entries = await fs.readdir(cwd, { withFileTypes: true });
+    const repos: Array<{ name: string; path: string; kind: string; lang: string }> = [];
+
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      if (ent.name.startsWith('.') || ent.name === 'node_modules') continue;
+      const dirPath = path.join(cwd, ent.name);
+      const children = await fs.readdir(dirPath).catch(() => [] as string[]);
+
+      let lang = 'unknown';
+      for (const [marker, detected] of Object.entries(langHints)) {
+        if (children.includes(marker)) { lang = detected; break; }
+      }
+      if (lang === 'unknown') {
+        if (children.some(c => c.endsWith('.csproj') || c.endsWith('.sln'))) lang = 'dotnet';
+        if (children.includes('sam') || children.includes('cfn_templates')) {
+          if (lang === 'unknown') lang = 'python';
+        }
+      }
+
+      const hasCfn = children.includes('sam') || children.includes('cfn_templates');
+      const kind = hasCfn ? 'service' : 'library';
+      repos.push({ name: ent.name, path: `./${ent.name}`, kind, lang });
+    }
+
+    if (repos.length === 0) {
+      console.log('[ste init] No repository directories found in current directory.');
+      return;
+    }
+
+    const yamlLines = [
+      `schema_version: "1.0"`,
+      `output_dir: ${options.outputDir}`,
+      `repos:`,
+    ];
+    for (const r of repos) {
+      const pad = Math.max(1, 30 - r.name.length);
+      yamlLines.push(`  - { name: ${r.name},${' '.repeat(pad)}path: ${r.path},${' '.repeat(Math.max(1, 30 - r.path.length))}kind: ${r.kind},${' '.repeat(Math.max(1, 14 - r.kind.length))}lang: ${r.lang} }`);
+    }
+    const content = yamlLines.join('\n') + '\n';
+
+    if (options.dryRun) {
+      console.log(content);
+    } else {
+      const outPath = path.resolve(cwd, options.output);
+      if (fss.existsSync(outPath)) {
+        console.log(`[ste init] ${options.output} already exists. Use --dry-run to preview or delete the file first.`);
+        return;
+      }
+      await fs.writeFile(outPath, content, 'utf-8');
+      console.log(`[ste init] Created ${options.output} with ${repos.length} repos.`);
+      console.log(`[ste init] Review the file, then run: ste recon --workspace`);
+    }
+  });
+
+// ============================================================================
+// Workspace Graph Queries (non-LLM canned traversals)
+// ============================================================================
+
+const ws = program
+  .command('ws')
+  .description('Workspace graph queries (non-LLM canned traversals)');
+
+ws
+  .command('deps')
+  .description('Show system-level repo dependency map')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory (contains slices/ and workspace-index.yaml)')
+  .option('--output <format>', 'Output format: mermaid | table | matrix | json', 'table')
+  .option('--resolution <level>', 'Resolution level: L0 | L1 | L2 | L3 | L4 (default: L4)')
+  .action(async (options: { workspace: string; output: string; resolution?: string }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { systemDependencies } = await import('../workspace/canned-queries.js');
+    const { toMermaid, toTable, toAdjacencyMatrix, toMermaidAtResolution, toTableAtResolution } = await import('../workspace/projections.js');
+    const { compress } = await import('../workspace/compression.js');
+    const resLevel = (options.resolution as 'L0' | 'L1' | 'L2' | 'L3' | 'L4') ?? undefined;
+
+    const graph = await loadWorkspaceGraph(path.resolve(options.workspace));
+    const result = systemDependencies(graph);
+
+    if (resLevel && resLevel !== 'L4') {
+      const compressed = compress(result, { level: resLevel });
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaidAtResolution(compressed));
+          break;
+        case 'json':
+          console.log(JSON.stringify({ compressed: compressed.metadata, nodes: compressed.nodes.length, edges: compressed.edges.length }, null, 2));
+          break;
+        default:
+          console.table(toTableAtResolution(compressed));
+          break;
+      }
+    } else {
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaid(result));
+          break;
+        case 'matrix': {
+          const m = toAdjacencyMatrix(result);
+          console.log(['', ...m.labels].join('\t'));
+          for (let i = 0; i < m.labels.length; i++) {
+            console.log([m.labels[i], ...m.matrix[i]!].join('\t'));
+          }
+          break;
+        }
+        case 'json':
+          console.log(JSON.stringify(result, null, 2));
+          break;
+        default:
+          console.table(toTable(result));
+          break;
+      }
+    }
+  });
+
+ws
+  .command('integration')
+  .description('Show component integration map')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--repo <name>', 'Filter to a specific repo')
+  .option('--output <format>', 'Output format: mermaid | table | matrix | json', 'table')
+  .option('--resolution <level>', 'Resolution level: L0 | L1 | L2 | L3 | L4 (default: L4)')
+  .action(async (options: { workspace: string; repo?: string; output: string; resolution?: string }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { componentIntegration } = await import('../workspace/canned-queries.js');
+    const { toMermaid, toTable, toAdjacencyMatrix, toMermaidAtResolution, toTableAtResolution } = await import('../workspace/projections.js');
+    const { compress } = await import('../workspace/compression.js');
+    const resLevel = (options.resolution as 'L0' | 'L1' | 'L2' | 'L3' | 'L4') ?? undefined;
+
+    const graph = await loadWorkspaceGraph(path.resolve(options.workspace));
+    const result = componentIntegration(graph, options.repo ? { repo: options.repo } : undefined);
+
+    if (resLevel && resLevel !== 'L4') {
+      const compressed = compress(result, { level: resLevel });
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaidAtResolution(compressed));
+          break;
+        case 'json':
+          console.log(JSON.stringify({ compressed: compressed.metadata, nodes: compressed.nodes.length, edges: compressed.edges.length }, null, 2));
+          break;
+        default:
+          console.table(toTableAtResolution(compressed));
+          break;
+      }
+    } else {
+      switch (options.output) {
+        case 'mermaid':
+          console.log(toMermaid(result));
+          break;
+        case 'matrix': {
+          const m = toAdjacencyMatrix(result);
+          console.log(['', ...m.labels].join('\t'));
+          for (let i = 0; i < m.labels.length; i++) {
+            console.log([m.labels[i], ...m.matrix[i]!].join('\t'));
+          }
+          break;
+        }
+        case 'json':
+          console.log(JSON.stringify(result, null, 2));
+          break;
+        default:
+          console.table(toTable(result));
+          break;
+      }
+    }
+  });
+
+ws
+  .command('blast <target>')
+  .description('Show blast radius for a workspace node')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--output <format>', 'Output format: mermaid | table | matrix | json', 'table')
+  .option('--depth <depth>', 'Max BFS depth', (v) => Number.parseInt(v, 10), 3)
+  .action(async (target: string, options: { workspace: string; output: string; depth: number }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { blastRadiusWorkspace } = await import('../workspace/canned-queries.js');
+    const { toMermaid, toTable, toAdjacencyMatrix } = await import('../workspace/projections.js');
+
+    const graph = await loadWorkspaceGraph(path.resolve(options.workspace));
+    const result = blastRadiusWorkspace(graph, target, { maxDepth: options.depth });
+
+    console.log(`Risk: ${result.risk.toUpperCase()} (${result.affectedNodeCount} nodes, ${result.affectedRepos.length} repos)`);
+    console.log('');
+
+    switch (options.output) {
+      case 'mermaid':
+        console.log(toMermaid(result));
+        break;
+      case 'matrix': {
+        const m = toAdjacencyMatrix(result);
+        console.log(['', ...m.labels].join('\t'));
+        for (let i = 0; i < m.labels.length; i++) {
+          console.log([m.labels[i], ...m.matrix[i]!].join('\t'));
+        }
+        break;
+      }
+      case 'json':
+        console.log(JSON.stringify(result, null, 2));
+        break;
+      default:
+        console.table(toTable(result));
+        break;
+    }
+  });
+
+// ─── ste setup ──────────────────────────────────────────────
+program
+  .command('setup')
+  .description('One-command workspace onboarding: detect type, scaffold config, create MCP, update .gitignore, run RECON')
+  .option('--dry-run', 'Preview all changes without writing files', false)
+  .option('--ste-runtime-path <path>', 'Absolute path to ste-runtime (default: auto-detect from this CLI binary)')
+  .option('--skip-recon', 'Skip the initial RECON run', false)
+  .option('--project-root <path>', 'Workspace root to set up (default: cwd)')
+  .action(async (options: { dryRun: boolean; steRuntimePath?: string; skipRecon: boolean; projectRoot?: string }) => {
+    const fs = await import('node:fs/promises');
+    const fss = await import('node:fs');
+    const { execSync } = await import('node:child_process');
+
+    const cwd = options.projectRoot ? path.resolve(options.projectRoot) : process.cwd();
+    const runtimeDir = options.steRuntimePath
+      ? path.resolve(options.steRuntimePath)
+      : path.resolve(__dirname, '..', '..');
+
+    const log = (msg: string) => console.log(msg);
+    const ok = (msg: string) => console.log(`  [ok] ${msg}`);
+    const skip = (msg: string) => console.log(`  [skip] ${msg}`);
+    const action = (msg: string) => console.log(`  [+] ${msg}`);
+
+    log('');
+    log('ste setup — workspace onboarding');
+    log(`  workspace:    ${cwd}`);
+    log(`  ste-runtime:  ${runtimeDir}`);
+    log(`  dry-run:      ${options.dryRun}`);
+    log('');
+
+    // ── Validate ste-runtime directory ──
+    const runtimePkg = path.join(runtimeDir, 'package.json');
+    if (!fss.existsSync(runtimePkg)) {
+      console.error(`[error] Cannot find package.json in ste-runtime path: ${runtimeDir}`);
+      console.error('        Use --ste-runtime-path to specify the correct location.');
+      process.exitCode = 1;
+      return;
+    }
+    const runtimeCli = path.join(runtimeDir, 'dist', 'cli', 'index.js');
+    if (!fss.existsSync(runtimeCli)) {
+      console.error(`[error] dist/cli/index.js not found. Run 'npm run build' in ste-runtime first.`);
+      process.exitCode = 1;
+      return;
+    }
+
+    // ── Step 1: Detect workspace type ──
+    log('Step 1: Detecting workspace type...');
+    const PROJECT_MARKERS = [
+      'package.json', 'tsconfig.json', 'setup.py', 'pyproject.toml',
+      'requirements.txt', 'Cargo.toml', 'go.mod', 'pom.xml',
+    ];
+    const CSPROJ_PATTERN = /\.(csproj|sln|fsproj)$/;
+
+    const langHints: Record<string, string> = {
+      'package.json': 'node', 'tsconfig.json': 'node',
+      'setup.py': 'python', 'pyproject.toml': 'python', 'requirements.txt': 'python',
+      'Cargo.toml': 'rust', 'go.mod': 'go', 'pom.xml': 'java',
+    };
+
+    const entries = await fs.readdir(cwd, { withFileTypes: true });
+    const repos: Array<{ name: string; path: string; kind: string; lang: string }> = [];
+
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      if (ent.name.startsWith('.') || ent.name === 'node_modules') continue;
+      const dirPath = path.join(cwd, ent.name);
+      const children = await fs.readdir(dirPath).catch(() => [] as string[]);
+
+      let isProject = false;
+      let lang = 'unknown';
+
+      for (const marker of PROJECT_MARKERS) {
+        if (children.includes(marker)) {
+          isProject = true;
+          if (langHints[marker]) lang = langHints[marker]!;
+          break;
+        }
+      }
+      if (!isProject && children.some(c => CSPROJ_PATTERN.test(c))) {
+        isProject = true;
+        lang = 'dotnet';
+      }
+
+      if (isProject) {
+        const hasCfn = children.includes('sam') || children.includes('cfn_templates');
+        const kind = hasCfn ? 'service' : 'library';
+        repos.push({ name: ent.name, path: `./${ent.name}`, kind, lang });
+      }
+    }
+
+    const isMultiRepo = repos.length >= 2;
+    const isSteRuntimeSelf = path.resolve(cwd) === path.resolve(runtimeDir);
+
+    if (isMultiRepo) {
+      log(`  Detected multi-repo workspace with ${repos.length} projects.`);
+    } else if (isSteRuntimeSelf) {
+      log('  Detected ste-runtime self-analysis (standalone).');
+    } else {
+      log('  Detected single-repo project.');
+    }
+    log('');
+
+    // Collect all planned writes for dry-run preview
+    const writes: Array<{ file: string; content: string; description: string }> = [];
+    const appends: Array<{ file: string; lines: string[]; description: string }> = [];
+
+    // ── Step 2: Scaffold workspace.yaml or ste.config.json ──
+    log('Step 2: Scaffolding configuration...');
+    if (isMultiRepo) {
+      const wsYaml = path.join(cwd, 'workspace.yaml');
+      if (fss.existsSync(wsYaml)) {
+        skip('workspace.yaml already exists');
+      } else {
+        const yamlLines = [
+          `schema_version: "1.0"`,
+          `output_dir: .workspace-graph/`,
+          `repos:`,
+        ];
+        for (const r of repos) {
+          const pad = Math.max(1, 30 - r.name.length);
+          yamlLines.push(`  - { name: ${r.name},${' '.repeat(pad)}path: ${r.path},${' '.repeat(Math.max(1, 30 - r.path.length))}kind: ${r.kind},${' '.repeat(Math.max(1, 14 - r.kind.length))}lang: ${r.lang} }`);
+        }
+        writes.push({
+          file: wsYaml,
+          content: yamlLines.join('\n') + '\n',
+          description: `workspace.yaml with ${repos.length} repos`,
+        });
+      }
+    } else if (!isSteRuntimeSelf) {
+      const steConfig = path.join(cwd, 'ste.config.json');
+      if (fss.existsSync(steConfig)) {
+        skip('ste.config.json already exists');
+      } else {
+        const config = {
+          projectRoot: '.',
+          outputDir: '.ste/state',
+          extractors: { typescript: { enabled: true }, python: { enabled: true } },
+        };
+        writes.push({
+          file: steConfig,
+          content: JSON.stringify(config, null, 2) + '\n',
+          description: 'ste.config.json with auto-detected defaults',
+        });
+      }
+    }
+
+    // ── Step 3: Create .cursor/mcp.json ──
+    log('Step 3: Creating .cursor/mcp.json...');
+    const cursorDir = path.join(cwd, '.cursor');
+    const mcpPath = path.join(cursorDir, 'mcp.json');
+
+    const cliPath = path.join(runtimeDir, 'dist', 'cli', 'index.js');
+    const mcpArgs = ['watch', '--mcp', '--project-root', cwd];
+
+    const newServerConfig: Record<string, unknown> = {
+      disabled: false,
+      timeout: 60,
+      type: 'stdio',
+      command: 'node',
+      args: [cliPath, ...mcpArgs],
+    };
+
+    let existingMcp: { mcpServers?: Record<string, unknown> } = { mcpServers: {} };
+    if (fss.existsSync(mcpPath)) {
+      try {
+        existingMcp = JSON.parse(fss.readFileSync(mcpPath, 'utf8'));
+        if (!existingMcp.mcpServers) existingMcp.mcpServers = {};
+      } catch {
+        existingMcp = { mcpServers: {} };
+      }
+    }
+
+    if (existingMcp.mcpServers?.['ste-runtime']) {
+      skip('.cursor/mcp.json already has ste-runtime entry');
+    } else {
+      existingMcp.mcpServers!['ste-runtime'] = newServerConfig;
+      writes.push({
+        file: mcpPath,
+        content: JSON.stringify(existingMcp, null, 2) + '\n',
+        description: '.cursor/mcp.json with ste-runtime MCP server',
+      });
+    }
+
+    // ── Step 4: Update .gitignore ──
+    log('Step 4: Updating .gitignore...');
+    const gitignorePath = path.join(cwd, '.gitignore');
+    const ignoreEntries = ['.ste/', '.ste-self/', '.workspace-graph/'];
+    const existingGitignore = fss.existsSync(gitignorePath)
+      ? fss.readFileSync(gitignorePath, 'utf8')
+      : '';
+
+    const missingEntries = ignoreEntries.filter(e => {
+      const lines = existingGitignore.split('\n').map(l => l.trim());
+      return !lines.includes(e) && !lines.includes(e.replace(/\/$/, ''));
+    });
+
+    if (missingEntries.length === 0) {
+      skip('.gitignore already contains all required entries');
+    } else {
+      appends.push({
+        file: gitignorePath,
+        lines: ['', '# ste-runtime generated state', ...missingEntries],
+        description: `.gitignore entries: ${missingEntries.join(', ')}`,
+      });
+    }
+
+    // ── Preview / Write ──
+    log('');
+    if (writes.length === 0 && appends.length === 0) {
+      log('Nothing to do — all configuration files are already in place.');
+    } else if (options.dryRun) {
+      log('=== DRY RUN — the following changes would be made ===');
+      log('');
+      for (const w of writes) {
+        log(`CREATE ${w.file}`);
+        log(`  ${w.description}`);
+        log('  --- content preview ---');
+        const lines = w.content.split('\n');
+        for (const line of lines.slice(0, 20)) {
+          log(`  ${line}`);
+        }
+        if (lines.length > 20) log(`  ... (${lines.length - 20} more lines)`);
+        log('');
+      }
+      for (const a of appends) {
+        log(`APPEND ${a.file}`);
+        log(`  ${a.description}`);
+        for (const line of a.lines) {
+          log(`  ${line}`);
+        }
+        log('');
+      }
+      log('Re-run without --dry-run to apply.');
+      return;
+    } else {
+      for (const w of writes) {
+        const dir = path.dirname(w.file);
+        if (!fss.existsSync(dir)) {
+          await fs.mkdir(dir, { recursive: true });
+        }
+        await fs.writeFile(w.file, w.content, 'utf-8');
+        action(w.description);
+      }
+      for (const a of appends) {
+        const suffix = a.lines.join('\n') + '\n';
+        await fs.appendFile(a.file, suffix, 'utf-8');
+        action(a.description);
+      }
+    }
+
+    // ── Step 5: Run initial RECON ──
+    if (!options.skipRecon && !options.dryRun) {
+      log('');
+      log('Step 5: Running initial RECON...');
+      const reconMode = isMultiRepo ? 'workspace' : (isSteRuntimeSelf ? 'self' : 'full');
+      const reconScript = `recon:${reconMode}`;
+      try {
+        log(`  Running npm run ${reconScript} ...`);
+        execSync(`npm run ${reconScript}`, {
+          cwd: runtimeDir,
+          stdio: 'inherit',
+          env: { ...process.env, STE_PROJECT_ROOT: cwd },
+        });
+        ok('RECON complete');
+      } catch {
+        console.error('  [warn] RECON failed. You can retry later with:');
+        console.error(`         cd ${runtimeDir} && npm run ${reconScript}`);
+      }
+    } else if (options.dryRun) {
+      log('Step 5: (skipped in dry-run) Would run initial RECON.');
+    } else {
+      skip('RECON (--skip-recon)');
+    }
+
+    // ── Step 6: Verification instructions ──
+    log('');
+    log('Step 6: Verification');
+    log('');
+    log('  1. Restart Cursor (or reload the window) so it picks up .cursor/mcp.json');
+    log('  2. Open the Cursor MCP panel and confirm "ste-runtime" appears');
+    log('  3. In Cursor chat, ask: "call the overview tool"');
+    log('     You should see a summary of the semantic graph.');
+    log('');
+    log('Setup complete.');
   });
 
 program.parseAsync();

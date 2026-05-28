@@ -21,51 +21,15 @@ RECON (Reconciliation Engine) is a **portable semantic extraction tool** that ge
 
 ---
 
-## Portability
+## Installation and Portability
 
-RECON is designed to be **dropped into any project** as a self-contained directory:
+See **[documentation/guides/setup.md](../documentation/guides/setup.md)** for
+the full installation and setup guide, including automated setup via
+`ste setup` and manual installation steps.
 
-1. **Copy** the `ste-runtime` folder into your project
-2. **Run** `npm install && npm run build` in `ste-runtime/`
-3. **Execute** `npm run recon` from within `ste-runtime/`
-
-RECON will:
-- **Auto-detect** the parent project root
-- **Auto-detect** languages (TypeScript, Python, CloudFormation, JSON, Angular, CSS/SCSS)
-- **Scan** the parent project's source directories
-- **Generate** AI-DOC state inside `ste-runtime/.ste/state/`
-
-### Self-Contained Design
-
-Everything lives INSIDE `ste-runtime/`:
-
-```
-your-project/
-├── .gitignore                 # Should contain: ste-runtime/
-├── your-source-code/          # RECON analyzes this
-└── ste-runtime/               # Drop-in, fully self-contained
-    ├── ste.config.json        # Optional config (created locally)
-    ├── src/                   # Runtime implementation (modifiable)
-    ├── dist/                  # Compiled JavaScript
-    ├── .ste/                  # Generated state for PARENT project
-    │   └── state/
-    │       ├── graph/         # Module, function, class slices
-    │       ├── api/           # API endpoint slices
-    │       ├── data/          # Data model slices
-    │       ├── infrastructure/# CloudFormation resources
-    │       ├── frontend/      # Angular components, services
-    │       └── validation/    # Validation reports
-    ├── .ste-self/             # Generated state for ste-runtime itself
-    │   └── state/             # (created by `npm run recon:self`)
-    └── python-scripts/        # Python AST parser
-```
-
-**Note:** Developers may modify `ste-runtime/src/` as needed. Use `npm run recon:self` to regenerate self-documentation after changes.
-
-**Portability principle:** The entire `ste-runtime/` directory should be gitignored by the parent project. Copy from a clean source, not between projects.
-
-**Easy to add:** Copy `ste-runtime/` into your project, add `ste-runtime/` to `.gitignore`  
-**Easy to remove:** Delete `ste-runtime/`
+RECON is designed to be portable: clone or copy `ste-runtime` into any project,
+build, and run. See the setup guide for directory layout options and
+`.gitignore` recommendations.
 
 ---
 
@@ -264,6 +228,82 @@ Options:
   --self               Self-documentation mode (scan ste-runtime only)
   --help, -h           Show help message
 ```
+
+---
+
+## Workspace Mode
+
+RECON supports multi-repo workspaces through the `--workspace` flag. Instead
+of analyzing a single parent project, workspace mode reads a `workspace.yaml`
+manifest and runs extraction across all declared repositories.
+
+### Requirements
+
+- A `workspace.yaml` at the workspace root (see
+  [Workspace Initialization Guide](../documentation/guides/workspace-initialization.md)
+  for the full schema)
+- ste-runtime built (`npm run build`)
+
+### Usage
+
+```bash
+cd ste-runtime
+
+# Explicit workspace path
+node dist/cli/recon-cli.js --workspace=/path/to/workspace
+
+# Auto-discover workspace.yaml (walks upward from cwd)
+npm run recon:workspace
+```
+
+### How It Works
+
+1. Reads `workspace.yaml` and resolves repo paths
+2. Runs RECON per repo sequentially, with per-repo isolation
+3. Writes per-repo state to `<output_dir>/state/<repo-name>/`
+4. Emits graph slices to `<output_dir>/slices/<repo-name>.yaml`
+5. Writes `<output_dir>/workspace-index.yaml` summarizing all repos
+
+### Output Directory Structure
+
+Given `output_dir: .my-graph/` in the manifest:
+
+```
+workspace-root/
+├── workspace.yaml
+└── .my-graph/
+    ├── workspace-index.yaml
+    ├── slices/
+    │   ├── repo-a.yaml
+    │   └── repo-b.yaml
+    └── state/
+        ├── repo-a/
+        │   ├── graph/
+        │   ├── api/
+        │   └── validation/
+        └── repo-b/
+            ├── graph/
+            └── validation/
+```
+
+### Resilience
+
+Workspace recon is non-fatal by default: if one repo fails, the remaining
+repos continue processing. Use `--fail-on-any-error` for strict mode.
+
+Use `--skip-unchanged` to skip repos that have not changed since the last
+successful run (based on a content-addressable sentinel).
+
+### Additional Options
+
+```
+--skip-unchanged         Skip repos unchanged since last successful run
+--timeout-per-repo=<ms>  Per-repo time ceiling (0 to disable)
+--fail-on-any-error      Fail entire run if any repo fails
+```
+
+For the full workspace setup workflow (manifest, MCP config, verification),
+see the [Workspace Initialization Guide](../documentation/guides/workspace-initialization.md).
 
 ---
 

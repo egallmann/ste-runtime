@@ -6,8 +6,8 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Version](https://img.shields.io/badge/version-0.9.0--experimental-orange.svg)](package.json)
-[![Status](https://img.shields.io/badge/status-experimental-orange.svg)](MATURITY.md)
+[![Version](https://img.shields.io/badge/version-0.10.0-blue.svg)](package.json)
+[![Status](https://img.shields.io/badge/status-production%20workspace%20tooling-blue.svg)](MATURITY.md)
 
 ---
 
@@ -21,18 +21,18 @@ If you need fast repo orientation, start with [SYSTEM-OVERVIEW.md](SYSTEM-OVERVI
 
 ---
 
-> **⚠️ EXPERIMENTAL STATUS — NOT PRODUCTION-READY**
+> **PRODUCTION WORKSPACE TOOLING — HUMAN-IN-LOOP REQUIRED**
 >
-> ste-runtime is a **research prototype and component implementation** of the STE Specification.
+> ste-runtime is in **active production use** as workspace tooling within the ste-system and functional in non-STE contexts.
 >
-> - **NOT production-ready** — Lacks security hardening, operational tooling, and production validation
-> - **NOT autonomous** — Requires human-in-loop oversight for all operations (CEM not implemented)
-> - **Experimental extractors** — Language extractors at varying maturity levels (see maturity matrix)
+> - **Production-validated** — 15 repos, ~952K LOC, ~23s extraction, 70MB state
+> - **NOT autonomous** — Requires human-in-loop oversight (CEM substrate exists, invariant validation not operationalized)
+> - **NOT security-hardened** — No authentication, authorization, or access controls beyond boundary validation
 >
 > **See [MATURITY.md](MATURITY.md) for complete production readiness assessment and component maturity matrix.**
 >
-> **Appropriate for:** Local development assistance, research, experimentation, forking for custom implementations  
-> **Not appropriate for:** Autonomous execution, production deployment, security-sensitive or compliance-regulated environments
+> **Appropriate for:** Production workspace tooling, STE system integration, non-STE code-to-graph extraction, MCP IDE integration, forking for custom implementations
+> **Not appropriate for:** Autonomous agent execution, multi-user concurrent access, codebases >1M LOC without validation
 
 ---
 
@@ -45,11 +45,16 @@ If you need fast repo orientation, start with [SYSTEM-OVERVIEW.md](SYSTEM-OVERVI
 This repository implements:
 
 1. **RECON** (Reconciliation Protocol) — Extracts semantic state from source code into AI-DOC format
+   - **Single-repo** (`recon:full`) — extracts one project into `.ste/state/`
+   - **Multi-repo workspace** (`recon:workspace`) — extracts each repo in a `workspace.yaml` manifest, then runs cross-repo edge resolution (HTTP call matching, SNS/SQS channels, CFN cross-stack references). Output goes to `.workspace-graph/`.
 2. **RSS** (Runtime State Slicing) — Graph traversal protocol for deterministic context assembly
    - Includes **MVC** (Minimally Viable Context) assembly via `assembleContext` function
    - Basic entry point discovery (`findEntryPoints`) for natural language queries
-3. **MCP Server** — Model Context Protocol integration for AI assistant tooling
+   - Bounded bidirectional traversal (maxDepth, maxNodes, visited-set convergence)
+3. **MCP Server** — Model Context Protocol integration for Cursor IDE
 4. **File Watching** — Incremental RECON triggering on file changes
+5. **Workspace Graph Queries** — Multi-repo system-level traversal (deps, integration, blast radius) with multi-resolution projections (L0-L4)
+6. **Runtime Evidence** — Architecture compiler combining ADR bundles with semantic graph state to emit factual `ArchitectureEvidence` JSON payloads consumed by `ste-kernel`
 
 ### Complete STE Runtime Architecture
 
@@ -58,7 +63,7 @@ The complete STE Runtime system (per [STE Architecture Specification](https://gi
 - **AI-DOC Fabric** — Attestation authority and canonical state resolution
 - **STE Gateway** — Enforcement service for eligibility verification
 - **Trust Registry** — Public key distribution and signature verification
-- **CEM** (Cognitive Execution Model) — 9-stage execution lifecycle (deferred per [ADR-L-0003](adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml))
+- **CEM** (Cognitive Execution Model) — 9-stage execution lifecycle (MVC/CEM substrate exists; invariant validation not operationalized. See [E-ADR-003](documentation/e-adr-archived/E-ADR-003-CEM-Deferral.md))
 - **Task Analysis Protocol** — Full natural language to entry point resolution (basic implementation exists, full protocol not implemented)
 - **Validation Stack** — CEM self-validation, static analysis, MCP validators
 
@@ -70,19 +75,70 @@ ste-runtime transforms codebases into **queryable semantic graphs** that AI assi
 
 **Key insight:** AI assistants work better with structured semantic data than raw text. ste-runtime provides deterministic, queryable representations of your codebase through RECON and RSS components.
 
-**Status:** Experimental research prototype with human-in-loop oversight. See [MATURITY.md](MATURITY.md) for production readiness assessment.
+**Status:** Production workspace tooling with human-in-loop oversight. See [MATURITY.md](MATURITY.md) for complete readiness assessment.
+
+---
+
+## Authority Boundary
+
+Current STE authority split:
+
+| Concern | Owning repo |
+| --- | --- |
+| Public schemas and cross-repo contracts | `ste-spec` |
+| ADR authoring and ADR -> IR compilation | `adr-architecture-kit` |
+| Runtime evidence production | `ste-runtime` |
+| Admission decisions and lifecycle enforcement | `ste-kernel` |
+| Advisory governance rules | `ste-rules-library` |
+
+For this repository, the key rule is simple:
+
+- `ste-runtime` emits evidence only.
+- `ste-runtime` does not emit admission decisions.
+- `ste-runtime` does not own shared IR, evidence, or admission schemas.
+- Public contract authority lives in `ste-spec/contracts/`.
 
 ---
 
 ## Quick Start
 
-### Installation
+### Option 1: Add to an existing project or workspace (recommended)
+
+Clone ste-runtime alongside your project, install, build, then run the
+automated setup from your workspace root:
+
+```bash
+git clone https://github.com/egallmann/ste-runtime.git
+cd ste-runtime && npm install && npm run build
+cd ..
+node ste-runtime/dist/cli/index.js setup
+```
+
+`ste setup` detects whether you have a single-repo project or a multi-repo
+workspace, scaffolds the appropriate config files (`workspace.yaml` or
+`ste.config.json`), creates `.cursor/mcp.json` with correct absolute paths,
+updates `.gitignore`, and runs an initial RECON. Use `--dry-run` to preview
+all changes before writing.
+
+See [documentation/guides/setup.md](documentation/guides/setup.md) for the
+full setup guide.
+
+### Option 2: Clone and explore standalone
+
+Use the automated bootstrap to install, build, run RECON on ste-runtime
+itself, and validate the installation:
 
 ```bash
 git clone https://github.com/egallmann/ste-runtime.git
 cd ste-runtime
-npm install
-npm run build
+npm run init
+```
+
+After bootstrap completes, query the graph:
+
+```bash
+npm run rss:stats
+npm run rss -- search "authentication"
 ```
 
 ### Generate Semantic Graph
@@ -97,8 +153,6 @@ This analyzes your codebase and generates a semantic graph in `.ste/state/`.
 ```bash
 npm run recon:self  # Documents ste-runtime itself
 ```
-
-This demonstrates RECON's capabilities by analyzing its own TypeScript codebase.
 
 ### Query the Graph
 
@@ -155,7 +209,7 @@ $ npm run rss -- context "validateUser"
 # Or query specific relationships:
 $ npm run rss -- search "validateUser"        # Find entry points
 $ npm run rss -- dependencies graph/function/validateUser
-$ npm run rss -- dependents graph/function/validateUser  
+$ npm run rss -- dependents graph/function/validateUser
 $ npm run rss -- blast-radius graph/function/validateUser
 ```
 
@@ -167,20 +221,81 @@ $ npm run rss -- blast-radius graph/function/validateUser
 
 ### RECON — Semantic Extraction
 
-- **Multi-language support**: TypeScript, Python, Angular, CloudFormation, JSON, CSS/SCSS
+- **Multi-language support**: TypeScript, Python, C#/.NET, Angular, CloudFormation, JSON, CSS/SCSS, ADR YAML
 - **Auto-detection**: No config required — drop into any project and run
 - **Incremental updates**: Fast reconciliation after code changes
+- **Cross-repo edge resolution**: HTTP call matching, SNS/SQS channels, CFN cross-stack references
 - **Self-documenting**: Can analyze itself (`npm run recon:self`)
 - **Self-validating**: Schema-level validation and reconciliation (not operational fault tolerance)
 - **Content-addressable**: Deterministic, reproducible state
 
 ### RSS — Graph Traversal
 
-- **Natural language search**: Find components by description
+- **Natural language search**: Find components by description with fuzzy fallback (Levenshtein)
+- **Lookup**: O(1) direct node retrieval by key (`Map.get()`)
+- **By Tag**: Cross-domain queries (e.g., all Lambda handlers, all DynamoDB tables)
 - **Dependency analysis**: Full import/export graph traversal
 - **Blast radius**: Impact analysis before making changes
-- **Context assembly**: Bundle relevant nodes for AI tasks
+- **Context assembly**: Bundle relevant nodes for AI tasks with bounded traversal
 - **Conversational queries**: AI-friendly query interface
+
+### Traversal Model
+
+All graph traversals are bounded by `maxDepth` and `maxNodes` to prevent
+runaway expansion on large graphs. Every edge is bidirectional by construction
+(inference emits both `references` and `referenced_by`), enabling four
+traversal modes:
+
+| Operation | Direction | Use Case |
+|-----------|-----------|----------|
+| `dependencies(key, depth)` | Forward only (`references`) | What does this depend on? |
+| `dependents(key, depth)` | Backward only (`referenced_by`) | What depends on this? |
+| `blastRadius(key, depth)` | Bidirectional (both edges simultaneously) | Full impact surface of a change |
+| `assembleContext(entryPoints)` | Convergent sub-tree | Starts from multiple entry points, expands via bidirectional blast radius, deduplicates via visited set — produces the minimal viable context for a task |
+
+Context assembly is the primary operation for AI-assisted workflows: given a
+natural language task, `findEntryPoints` scores nodes by relevance, then
+`assembleContext` expands from those entry points to produce a bounded,
+deduplicated sub-graph that an agent can consume.
+
+### Adaptive Depth Tuning
+
+The graph topology analyzer runs at MCP server startup and after graph
+reloads. It inspects the actual graph structure — average/P95/max dependency
+depths, fan-out per component, and architectural shape — to detect the
+architecture pattern and recommend an optimal traversal depth:
+
+| Detected Pattern | Base Depth | Characteristics |
+|------------------|------------|-----------------|
+| `component-tree` | 4 | Deep component hierarchies (React, Vue) |
+| `microservices` | 3 | Wide peer services with shared dependencies |
+| `layered` | 2 | Clean layer boundaries |
+| `flat` | 2 | Minimal dependencies (utility libraries) |
+| `mixed` | 3 | No clear pattern (conservative default) |
+
+The final recommended depth is the maximum of the pattern-based and
+data-driven (P95-based) values, capped at 5.
+
+### Workspace Graph Queries
+
+For multi-repo workspaces, a separate query surface operates at the system level:
+- `ws deps` — repo-to-repo dependency map
+- `ws integration` — component integration map across repos
+- `ws blast` — system-level blast radius
+
+Results can be rendered through multi-resolution projections (L0 system through L4 full detail) as Mermaid diagrams, tables, adjacency matrices, or JSON.
+
+### MCP Server and Watchdog
+
+`ste watch --mcp` starts a persistent MCP server that integrates with Cursor:
+- A file watcher monitors the project for changes
+- Incremental RECON keeps the in-memory graph fresh without manual re-runs
+- RSS and workspace query tools are exposed over the MCP protocol
+- Cursor agents can search, traverse, and assemble context directly
+
+### Runtime Evidence
+
+The architecture compiler combines ADR bundles (`adrs/`) with semantic graph state to emit factual `ArchitectureEvidence` JSON payloads consumed by `ste-kernel` for admission decisions. ste-runtime reports bundle health, freshness, and subject linkage — it never makes admission judgments itself.
 
 ### Extractors
 
@@ -188,21 +303,95 @@ $ npm run rss -- blast-radius graph/function/validateUser
 |----------|-------------------|
 | **TypeScript** | Functions, classes, imports, exports, types |
 | **Python** | Functions, classes, Flask/FastAPI endpoints, Pydantic models |
+| **C#/.NET** | Classes, methods, namespaces (regex-based shallow extraction) |
 | **CloudFormation** | Resources, parameters, outputs, GSIs, tables |
 | **JSON** | Schemas, configurations, reference data |
 | **Angular** | Components, services, routes, templates, modules |
 | **CSS/SCSS** | Design tokens, variables, animations, breakpoints |
+| **ADR YAML** | Decisions, invariants, capabilities, components |
 
 ---
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    subgraph sources ["Source Code"]
+        SR["Single Repo"]
+        MR["Multi-Repo Workspace\n(repo-a, repo-b, ...)"]
+    end
+
+    subgraph recon ["RECON (Semantic Extraction)"]
+        direction TB
+        subgraph extractors ["Pluggable Extractors"]
+            TS["TypeScript"]
+            PY["Python"]
+            CFN["CloudFormation"]
+            JSON_E["JSON"]
+            NG["Angular"]
+            CSS_E["CSS/SCSS"]
+        end
+        INF["Phase 3: Inference\n(intra-repo edges)"]
+        RF["recon:full\n(single repo)"]
+        RW["recon:workspace\n(per-repo slices)"]
+        extractors --> INF
+        INF --> RF
+        INF --> RW
+    end
+
+    SR --> RF
+    MR --> RW
+
+    RF --> SS[".ste/state/\n(YAML slices)"]
+    RW --> XEDGE["Cross-Repo Edge\nResolution\n(HTTP calls, SNS/SQS,\nCFN cross-stack)"]
+    XEDGE --> WG[".workspace-graph/\n(merged slices +\ncross-repo edges)"]
+
+    subgraph live ["Watchdog (ste watch --mcp)"]
+        FW["File Watcher\n(chokidar)"] --> IR["Incremental\nRECON"]
+        IR --> Reload["Reload In-Memory\nGraph"]
+    end
+
+    SS -.-> FW
+    Reload -.-> RSS
+
+    subgraph query ["Query Layer"]
+        RSS["RSS\n(Per-Repo Graph\nTraversal)"]
+        WSQ["Workspace Queries\n(ws deps / integration /\nblast)"]
+        MCP["MCP Server\n(Cursor integration)"]
+    end
+
+    SS --> RSS
+    WG --> RSS
+    WG --> WSQ
+    RSS --> MCP
+    WSQ --> Proj
+    RSS --> CLI["CLI / Programmatic API"]
+
+    subgraph projections ["Projections"]
+        Proj["Multi-Resolution\nCompression\n(L0 - L4)"]
+        Proj --> Mermaid["Mermaid Diagrams"]
+        Proj --> Tables["Tables / Matrices"]
+        Proj --> PJSON["JSON"]
+    end
+
+    Proj --> MCP
+    Proj --> CLI
+
+    MCP --> Cursor["Cursor IDE"]
+    CLI --> Results["Query Results"]
+
+    subgraph evidence ["Evidence Emission"]
+        ADRs["ADR Bundles\n(adrs/)"] --> Compiler["Architecture\nCompiler"]
+        SS --> Compiler
+        WG --> Compiler
+        Compiler --> AE["ArchitectureEvidence\n(JSON)"]
+    end
+
+    AE --> Kernel["ste-kernel\n(Admission Decisions)"]
 ```
-Source Code  →  [RECON]  →  .ste/state/  →  [RSS]  →  Query Results
-                                ↓
-                         Semantic Graph
-                         (YAML slices)
-```
+
+**State** is stored as content-addressable YAML slices in `.ste/state/`
+(single repo) or `.workspace-graph/` (multi-repo workspace).
 
 **Semantic graph structure:**
 - `graph/modules/` — Source file metadata
@@ -214,9 +403,39 @@ Source Code  →  [RECON]  →  .ste/state/  →  [RSS]  →  Query Results
 - `frontend/component/` — UI components
 - `validation/` — Self-validation reports
 
+**Extractors** are pluggable, language-specific parsers that RECON invokes
+during extraction. New languages can be added by implementing an extractor.
+
+**Edge generators** produce the graph relationships that make traversal
+possible. Phase 3 inference runs within each repo to resolve intra-repo edges
+(import/export references, function calls, class inheritance). Cross-repo edge
+resolution is a separate post-processing step in workspace mode that matches
+outbound HTTP calls against API endpoint contracts, detects shared SNS/SQS
+event channels, and resolves CloudFormation cross-stack references. Edges carry
+a confidence level (HIGH for bilateral match, MEDIUM for unilateral claim).
+
+**Watchdog** powers the live MCP experience. `ste watch --mcp` monitors the
+filesystem, triggers incremental RECON on changes, reloads the in-memory
+graph, and serves MCP tools — keeping the Cursor integration current without
+manual re-runs.
+
+**Query surfaces** are split by scope: RSS operates on the per-repo semantic
+graph (functions, classes, endpoints), while workspace queries (`ws deps`,
+`ws integration`, `ws blast`) operate on the cross-repo system graph
+(repo-to-repo dependencies, integration maps, system-level blast radius).
+
+**Projections** render workspace query results at configurable resolution
+levels: L0 (system), L1 (domain), L2 (service), L3 (component), L4 (full
+detail). Output formats include Mermaid diagrams, tables, adjacency matrices,
+and JSON.
+
+**Evidence emission** combines ADR bundles with semantic graph state to
+produce factual `ArchitectureEvidence` JSON consumed by `ste-kernel` for
+admission decisions. ste-runtime never makes admission judgments itself.
+
 All state is **content-addressable** and **deterministic** — same source code always produces identical state.
 
-**See:** [Architecture Documentation](documentation/architecture.md) for complete system architecture, component relationships, and design decisions.
+**See:** [Architecture Documentation](documentation/architecture.md) and [instructions/README.md](instructions/README.md#architecture) for complete system architecture.
 
 ---
 
@@ -230,6 +449,9 @@ npm run recon:full
 
 # Incremental update (after changes)
 npm run recon
+
+# Multi-repo workspace extraction
+npm run recon:workspace
 
 # Self-documentation (scan ste-runtime itself)
 npm run recon:self
@@ -262,8 +484,6 @@ This generates semantic state in `.ste-self/state/` containing:
 - All TypeScript functions, classes, and modules in `src/`
 - Import/export relationships within ste-runtime
 - Complete dependency graph of the implementation
-
-**Use case:** After forking and modifying extractors, run `recon:self` to document your changes and use RSS to query your custom implementation.
 
 ### For AI Assistants (Cursor, Copilot, etc.)
 
@@ -300,47 +520,6 @@ const impact = blastRadius(ctx, 'data/entity/UsersTable');
 
 ---
 
-## Documentation
-
-### Architecture Decision Records
-- [System Overview](SYSTEM-OVERVIEW.md) - Generated AI-first orientation for this repo
-- [ADR Directory](adrs/) - Machine-verifiable ADR source records
-- [ADR Manifest](adrs/manifest.yaml) - Generated ADR discovery index
-- [Rendered ADR Docs](adrs/rendered/) - Generated markdown views of ADR source
-- [Migration History](adrs/MIGRATION.md) - E-ADR to ADR Kit migration details
-
-### Architecture
-- [System Architecture](documentation/architecture.md) - Complete technical architecture of ste-runtime
-- [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
-
-### Guides
-- [Guides Index](documentation/guides/README.md) - Curated operational guide set
-- [Configuration Reference](documentation/guides/configuration-reference.md) - Complete `ste.config.json` reference
-- [MCP Setup Guide](documentation/guides/mcp-setup.md) - Set up ste-runtime with Cursor IDE
-- [Troubleshooting Guide](documentation/guides/troubleshooting.md) - Common issues and solutions
-
-### Instructions
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [instructions/RECON-README.md](instructions/RECON-README.md) | RECON installation & configuration | Developers, AI agents |
-| [instructions/RSS-USAGE-GUIDE.md](instructions/RSS-USAGE-GUIDE.md) | RSS CLI usage guide | Human developers |
-| [instructions/RSS-PROGRAMMATIC-API.md](instructions/RSS-PROGRAMMATIC-API.md) | RSS TypeScript API | AI assistants, developers |
-| [instructions/recon-incremental.md](instructions/recon-incremental.md) | Incremental mode internals | Contributors |
-
-### Architecture & Design
-- [System Overview](SYSTEM-OVERVIEW.md) - Fastest correct orientation path
-- [Architecture Decision Records](adrs/) - ADR Kit source authority
-- [Rendered ADR Docs](adrs/rendered/) - Generated markdown projections
-- [Alternatives Comparison](documentation/reference/alternatives-comparison.md) - How ste-runtime compares to tree-sitter, LSP, Kythe, Sourcegraph
-- [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
-
-### Contributing
-- [Contributing Guide](CONTRIBUTING.md) - Development standards and future contribution process
-  - **Note:** External contributions are not currently being accepted. This guide is for future reference.
-- [PROJECT Metadata](PROJECT.yaml) - Repo metadata for ADR Kit tooling
-
----
-
 ## Example: AI-Assisted Development Workflow
 
 ```bash
@@ -364,6 +543,48 @@ npm run rss -- context "rate limiting middleware"
 ```
 
 **Result:** AI gets complete context in one query instead of grep/text search or nested API calls.
+
+---
+
+## Common Commands
+
+```bash
+# Automated bootstrap (install, build, initial RECON, validate)
+npm run init
+
+# Build
+npm run build
+
+# Run tests
+npm test
+
+# Run contract-focused tests
+npm run test:contract-guards
+
+# Full reconciliation
+npm run recon:full
+
+# Incremental reconciliation
+npm run recon
+
+# Multi-repo workspace extraction
+npm run recon:workspace
+
+# Self-document this repo
+npm run recon:self
+
+# Graph stats
+npm run rss:stats
+
+# Scaffold workspace.yaml for a multi-repo workspace
+node dist/cli/index.js init
+
+# Automated setup (detects project type, scaffolds config, runs initial RECON)
+node dist/cli/index.js setup
+
+# Generate ste.config.json with auto-detected defaults
+npm run recon:init
+```
 
 ---
 
@@ -408,8 +629,6 @@ RECON will:
 
 **To remove:** Delete the `ste-runtime/` directory. That's it.
 
-**⚠️ Important:** This portability is for **local development and experimentation only**. Not for production deployment. See [MATURITY.md](MATURITY.md) for production readiness assessment.
-
 ---
 
 ## Testing
@@ -418,9 +637,6 @@ RECON will:
 # Run all tests
 npm test
 
-# Run focused contract guards before push
-npm run test:contract-guards
-
 # Run tests in watch mode
 npm run test:watch
 
@@ -428,7 +644,7 @@ npm run test:watch
 npm run test:coverage
 ```
 
-**Test coverage:** 18 test suites covering extractors, RECON validation, RSS operations, and CLI interfaces.
+**Test coverage:** 915 tests across 76 files, 60.45% overall statement coverage. See [MATURITY.md](MATURITY.md) for per-component breakdown.
 
 ---
 
@@ -437,11 +653,16 @@ npm run test:coverage
 ```
 ste-runtime/
 ├── src/
-│   ├── extractors/         # Language-specific extractors
+│   ├── extractors/         # Language-specific extractors (8 languages)
 │   ├── recon/              # RECON reconciliation engine
 │   ├── rss/                # RSS graph traversal
 │   ├── cli/                # CLI entry points
 │   ├── watch/              # File watcher & change detection
+│   ├── mcp/                # MCP server for Cursor integration
+│   ├── architecture/       # Architecture domain (ADR integration, evidence)
+│   ├── workspace/          # Multi-repo workspace extraction
+│   ├── discovery/          # Project discovery and configuration
+│   ├── task/               # Task analysis protocol
 │   └── config/             # Configuration loader
 ├── python-scripts/         # Python AST parser
 ├── instructions/           # Usage guides
@@ -456,13 +677,76 @@ ste-runtime/
 
 ---
 
-## System of Thought Engineering (STE) Specification
+## Repository Scope vs Full STE System
+
+This repository is not the full STE system.
+
+It implements a subset of the overall workspace responsibilities. In particular, the following are outside this repo's authority:
+- shared contract definition
+- admission decisions
+- system-wide governance authority
+- handbook-style normative documentation
+
+If you want the full current authority model, read:
+- [ste-spec/architecture/authority-map.md](../ste-spec/architecture/authority-map.md)
+- [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md)
+
+For deeper explanatory background on STE and how the repositories fit together, see [ste-handbook](../ste-handbook/). `ste-handbook` is explanatory only; normative contracts and authority remain in `ste-spec`.
+
+---
+
+## Documentation
+
+### Architecture Decision Records
+- [System Overview](SYSTEM-OVERVIEW.md) - Generated AI-first orientation for this repo
+- [ADR Directory](adrs/) - Machine-verifiable ADR source records
+- [ADR Manifest](adrs/manifest.yaml) - Generated ADR discovery index
+- [Rendered ADR Docs](adrs/rendered/) - Generated markdown views of ADR source
+- [Migration History](adrs/MIGRATION.md) - E-ADR to ADR Kit migration details
+
+### Architecture
+- [System Architecture](documentation/architecture.md) - Complete technical architecture of ste-runtime
+- [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
+
+### Guides
+- [Setup Guide](documentation/guides/setup.md) - Setup and onboarding
+- [Guides Index](documentation/guides/README.md) - Curated operational guide set
+- [Configuration Reference](documentation/guides/configuration-reference.md) - Complete `ste.config.json` reference
+- [MCP Setup Guide](documentation/guides/mcp-setup.md) - Set up ste-runtime with Cursor IDE
+- [Troubleshooting Guide](documentation/guides/troubleshooting.md) - Common issues and solutions
+
+### Instructions
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| [instructions/RECON-README.md](instructions/RECON-README.md) | RECON installation & configuration | Developers, AI agents |
+| [instructions/RSS-USAGE-GUIDE.md](instructions/RSS-USAGE-GUIDE.md) | RSS CLI usage guide | Human developers |
+| [instructions/RSS-PROGRAMMATIC-API.md](instructions/RSS-PROGRAMMATIC-API.md) | RSS TypeScript API | AI assistants, developers |
+| [instructions/recon-incremental.md](instructions/recon-incremental.md) | Incremental mode internals | Contributors |
+
+### Architecture & Design
+- [System Overview](SYSTEM-OVERVIEW.md) - Fastest correct orientation path
+- [Architecture Decision Records](adrs/) - ADR Kit source authority
+- [Rendered ADR Docs](adrs/rendered/) - Generated markdown projections
+- [Alternatives Comparison](documentation/reference/alternatives-comparison.md) - How ste-runtime compares to tree-sitter, LSP, Kythe, Sourcegraph
+- [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
+
+### Status & Governance
+- [MATURITY.md](MATURITY.md) - Complete production readiness assessment and component maturity matrix
+- [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md) - Authority boundary for this repo
+
+### Contributing
+- [Contributing Guide](CONTRIBUTING.md) - Development standards and future contribution process
+- [PROJECT Metadata](PROJECT.yaml) - Repo metadata for ADR Kit tooling
+
+---
+
+## STE Specification
 
 ste-runtime implements **components** of the [System of Thought Engineering (STE) Specification](https://github.com/egallmann/ste-spec), specifically the RECON and RSS components for semantic extraction and graph traversal.
 
 The complete STE architecture includes additional runtime services not implemented in this repository:
 - **AI-DOC Fabric** — Attestation authority and canonical state resolution
-- **STE Gateway** — Enforcement service for eligibility verification  
+- **STE Gateway** — Enforcement service for eligibility verification
 - **Trust Registry** — Public key distribution and signature verification
 - **Task Analysis** — Natural language to entry point resolution
 
@@ -482,22 +766,29 @@ The complete STE architecture includes additional runtime services not implement
 ## Related Repositories
 
 - **[ste-spec](https://github.com/egallmann/ste-spec)** — Semantic Truth Engine specification (architectural documentation)
+- **[ste-handbook](../ste-handbook/)** — Explanatory background on STE, subsystem roles, and end-to-end solution structure
 
 ---
 
 ## Roadmap
 
-**Current (v0.x experimental):**
-- ✅ Multi-language semantic extraction (TypeScript, Python, Angular, CFN, JSON, CSS)
+**Current (v0.10.x production workspace tooling):**
+- ✅ Multi-language semantic extraction (TypeScript, Python, C#/.NET, Angular, CFN, JSON, CSS, ADR YAML)
 - ✅ RSS graph traversal with natural language search
-- ✅ RECON 6-phase pipeline with schema-level validation and reconciliation (not operational fault tolerance)
+- ✅ RECON 6-phase pipeline with schema-level validation and reconciliation
 - ✅ Content-addressable deterministic state
 - ✅ CLI and programmatic TypeScript API
 - ✅ One-shot context assembly (`context` command)
+- ✅ Multi-repo workspace extraction with cross-repo edge resolution
+- ✅ Workspace graph queries with multi-resolution projections (L0-L4)
+- ✅ MCP server with file watching and incremental RECON
+- ✅ Architecture evidence compilation (ADR + graph → evidence payloads)
+- ✅ Automated setup wizard (`ste setup`)
 
 **Known Limitations:**
 - ⚠️ TypeScript extractor does not capture JSDoc comments (search by name works, search by purpose limited)
 - ⚠️ RSS search works on function names and paths, not inline documentation text
+- ⚠️ C#/.NET extractor is regex-based shallow extraction (no test coverage)
 
 **In Progress:**
 - JSDoc extraction for TypeScript (description, params, returns, examples)
@@ -505,11 +796,10 @@ The complete STE architecture includes additional runtime services not implement
 - Cross-language documentation standardization
 
 **Planned:**
-- Additional language extractors (Java, Go, Rust, C#)
+- Additional language extractors (Java, Go, Rust)
 - GraphQL API surface extraction
 - Terraform/Pulumi infrastructure analysis
 - React/Vue component extraction
-- Real-time watch mode with live graph updates
 - LLM-powered semantic enrichment
 
 ---
@@ -520,14 +810,12 @@ The complete STE architecture includes additional runtime services not implement
 
 ste-runtime is **designed to be forked and extended**. Expected use cases:
 
-- **Add new language extractors** (Java, Go, Rust, C#, etc.)
+- **Add new language extractors** (Java, Go, Rust, etc.)
 - **Enhance existing extractors** (deeper semantic analysis, additional patterns)
 - **Custom RSS queries** (domain-specific graph traversals)
 - **Project-specific workflows** (custom validation, reporting, integrations)
 
 **The architecture is modular** — extractors, validators, and RSS operations can be added or modified independently.
-
-**⚠️ Production Use Warning:** If forking for production use, understand that extensive additional work is required. See [MATURITY.md](MATURITY.md) for complete production readiness requirements.
 
 ### How to Extend
 
@@ -545,8 +833,6 @@ Use [PROJECT.yaml](PROJECT.yaml), [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md), and 
 **ste-runtime is currently in active development and not accepting external contributions at this time.**
 
 This repository documents a stable implementation that converges with the [STE Specification](https://github.com/egallmann/ste-spec). The codebase is still evolving, and significant changes are planned.
-
-**Project Status:** Experimental research prototype. See [MATURITY.md](MATURITY.md) for maturity assessment and production readiness.
 
 **However:**
 - **Issues welcome** — Bug reports, feature requests, and questions are appreciated
@@ -599,7 +885,3 @@ Built on the shoulders of:
 ---
 
 **Questions?** See [instructions/README.md](instructions/README.md) for detailed guides.
-
-
-
-

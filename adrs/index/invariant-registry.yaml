@@ -1,533 +1,1192 @@
 schema_version: '1.1'
 type: normalized_entity_registry
 entities:
-- id: INV-0001
-  entity_type: invariant
-  name: INV-0001
-  summary: 'Single repository only: RECON discovers files within the current repository.
-    Cross-repository reconciliation is out of scope.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0001
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Single repository only: RECON discovers files within the current repository.
-      Cross-repository reconciliation is out of scope.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0001
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0002
-  entity_type: invariant
-  name: INV-0002
-  summary: 'Incremental reconciliation: Only files that have changed since the last
-    run are re-extracted (when timestamp detection is available).'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0002
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Incremental reconciliation: Only files that have changed since the
-      last run are re-extracted (when timestamp detection is available).'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0002
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0003
-  entity_type: invariant
-  name: INV-0003
-  summary: 'Configurable source directories: Specified via `ste.config.json` or auto-detected.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0003
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Configurable source directories: Specified via `ste.config.json` or
-      auto-detected.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0003
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0004
-  entity_type: invariant
-  name: INV-0004
-  summary: 'Shallow extraction: Extract structural elements (functions, classes, imports,
-    exports) without deep semantic analysis.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0004
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Shallow extraction: Extract structural elements (functions, classes,
-      imports, exports) without deep semantic analysis.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0004
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0005
-  entity_type: invariant
-  name: INV-0005
-  summary: 'No deep semantic analysis: Do not attempt to understand function behavior,
-    side effects, or complex type flows.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0005
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'No deep semantic analysis: Do not attempt to understand function behavior,
-      side effects, or complex type flows.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0005
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0006
-  entity_type: invariant
-  name: INV-0006
-  summary: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
-    E-ADR-005), Angular, CSS/SCSS (see E-ADR-006).'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0006
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
-      E-ADR-005), Angular, CSS/SCSS (see E-ADR-006).'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0006
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0007
-  entity_type: invariant
-  name: INV-0007
-  summary: 'Portable execution: RECON must work when dropped into any project.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0007
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Portable execution: RECON must work when dropped into any project.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0007
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0008
-  entity_type: invariant
-  name: INV-0008
-  summary: 'Provisional mapping: Normalization to AI-DOC schema is best-effort, not
-    canonical.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0008
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Provisional mapping: Normalization to AI-DOC schema is best-effort,
-      not canonical.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0008
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0009
-  entity_type: invariant
-  name: INV-0009
-  summary: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization
-    will change.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0009
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization
-      will change.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0009
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0010
-  entity_type: invariant
-  name: INV-0010
-  summary: 'ID stability: Element IDs should be stable across runs for the same source
-    element.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0010
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'ID stability: Element IDs should be stable across runs for the same
-      source element.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0010
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0011
-  entity_type: invariant
-  name: INV-0011
-  summary: 'State is authoritative, not historical: Each run produces the current
-    truth, not a delta.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0011
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'State is authoritative, not historical: Each run produces the current
-      truth, not a delta.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0011
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0012
-  entity_type: invariant
-  name: INV-0012
-  summary: 'Create/Update/Delete semantics: New slices are created, changed slices
-    are updated, orphaned slices are deleted.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0012
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Create/Update/Delete semantics: New slices are created, changed slices
-      are updated, orphaned slices are deleted.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0012
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
-- id: INV-0013
-  entity_type: invariant
-  name: INV-0013
-  summary: 'Orphan detection: Slices from processed source files that no longer exist
-    in code are removed.'
-  canonical_source:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0013
-    artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-  source_refs: []
-  metadata:
-    adr_id: ADR-L-0001
-    scope: global
-    statement: 'Orphan detection: Slices from processed source files that no longer
-      exist in code are removed.'
-    enforcement_level: must
-    declaration_mode: local
-    upheld_by_decisions: []
-  relationships:
-    declared_in:
-    - ADR-L-0001
-    references: []
-    related_to: []
-    enforces: []
-    enabled_by: []
-    enables: []
-    governs: []
-    implemented_by: []
-    embodied_in: []
-    supersedes: []
-    superseded_by: []
-    refines: []
-  completeness:
-    status: complete
-    missing_fields: []
-  provenance:
-    source_type: logical_adr
-    source_ref: ADR-L-0001#INV-0013
-    extraction_phase: assign_canonical_invariant
-    classification: explicit
-    generator: adr-architecture-index
+  - id: INV-0001
+    entity_type: invariant
+    name: INV-0001
+    summary: >-
+      Single repository only: RECON discovers files within the current repository. Cross-repository reconciliation is
+      out of scope.
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0001
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: >-
+        Single repository only: RECON discovers files within the current repository. Cross-repository reconciliation is
+        out of scope.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0001
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0002
+    entity_type: invariant
+    name: INV-0002
+    summary: >-
+      Incremental reconciliation: Only files that have changed since the last run are re-extracted (when timestamp
+      detection is available).
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0002
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: >-
+        Incremental reconciliation: Only files that have changed since the last run are re-extracted (when timestamp
+        detection is available).
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0002
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0003
+    entity_type: invariant
+    name: INV-0003
+    summary: 'Configurable source directories: Specified via `ste.config.json` or auto-detected.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0003
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'Configurable source directories: Specified via `ste.config.json` or auto-detected.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0003
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0004
+    entity_type: invariant
+    name: INV-0004
+    summary: >-
+      Shallow extraction: Extract structural elements (functions, classes, imports, exports) without deep semantic
+      analysis.
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0004
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: >-
+        Shallow extraction: Extract structural elements (functions, classes, imports, exports) without deep semantic
+        analysis.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0004
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0005
+    entity_type: invariant
+    name: INV-0005
+    summary: 'No deep semantic analysis: Do not attempt to understand function behavior, side effects, or complex type flows.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0005
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'No deep semantic analysis: Do not attempt to understand function behavior, side effects, or complex type flows.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0005
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0006
+    entity_type: invariant
+    name: INV-0006
+    summary: >-
+      Multi-language support: TypeScript, Python, CloudFormation, JSON (see E-ADR-005), Angular, CSS/SCSS (see
+      E-ADR-006), ADR YAML (see ADR-PC-0011).
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0006
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: >-
+        Multi-language support: TypeScript, Python, CloudFormation, JSON (see E-ADR-005), Angular, CSS/SCSS (see
+        E-ADR-006), ADR YAML (see ADR-PC-0011).
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0006
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0007
+    entity_type: invariant
+    name: INV-0007
+    summary: 'Portable execution: RECON must work when dropped into any project.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0007
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'Portable execution: RECON must work when dropped into any project.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0007
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0008
+    entity_type: invariant
+    name: INV-0008
+    summary: 'Provisional mapping: Normalization to AI-DOC schema is best-effort, not canonical.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0008
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'Provisional mapping: Normalization to AI-DOC schema is best-effort, not canonical.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0008
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0009
+    entity_type: invariant
+    name: INV-0009
+    summary: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization will change.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0009
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization will change.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0009
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0010
+    entity_type: invariant
+    name: INV-0010
+    summary: 'ID stability: Element IDs should be stable across runs for the same source element.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0010
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'ID stability: Element IDs should be stable across runs for the same source element.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0010
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0011
+    entity_type: invariant
+    name: INV-0011
+    summary: 'State is authoritative, not historical: Each run produces the current truth, not a delta.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0011
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'State is authoritative, not historical: Each run produces the current truth, not a delta.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0011
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0012
+    entity_type: invariant
+    name: INV-0012
+    summary: 'Create/Update/Delete semantics: New slices are created, changed slices are updated, orphaned slices are deleted.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0012
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'Create/Update/Delete semantics: New slices are created, changed slices are updated, orphaned slices are deleted.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0012
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0013
+    entity_type: invariant
+    name: INV-0013
+    summary: 'Orphan detection: Slices from processed source files that no longer exist in code are removed.'
+    lifecycle_stage: active
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0013
+      artifact_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0001
+      scope: global
+      statement: 'Orphan detection: Slices from processed source files that no longer exist in code are removed.'
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0001
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0001#INV-0013
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0014
+    entity_type: invariant
+    name: INV-0014
+    summary: Scope is a workspace. Size(workspace) >= 1.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0009#INV-0014
+      artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0009
+      scope: global
+      statement: Scope is a workspace. Size(workspace) >= 1.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0009
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0009#INV-0014
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0015
+    entity_type: invariant
+    name: INV-0015
+    summary: >-
+      ste-runtime source code contains zero references to any specific workspace, repository name, output directory
+      name, or domain vocabulary. All such values are derived from workspace.yaml at runtime.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0015#INV-0015
+      artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0015
+      scope: global
+      statement: >-
+        ste-runtime source code contains zero references to any specific workspace, repository name, output directory
+        name, or domain vocabulary. All such values are derived from workspace.yaml at runtime.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0015
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0015#INV-0015
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0016
+    entity_type: invariant
+    name: INV-0016
+    summary: >-
+      Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta) and never reference real workspace
+      repository names.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0015#INV-0016
+      artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0015
+      scope: global
+      statement: >-
+        Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta) and never reference real workspace
+        repository names.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0015
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0015#INV-0016
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0017
+    entity_type: invariant
+    name: INV-0017
+    summary: >-
+      Every workspace graph slice emitted by ste-runtime contains the required core fields defined in the slice schema
+      contract: schema_version, repo, generated_by, generated_at, nodes, and edges. source_commit and diagnostics
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#INV-0017
+      artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0016
+      scope: global
+      statement: >-
+        Every workspace graph slice emitted by ste-runtime contains the required core fields defined in the slice schema
+        contract: schema_version, repo, generated_by, generated_at, nodes, and edges. source_commit and diagnostics are
+        supported standard fields. Consumers may preserve unknown extension fields but must not treat them as portable
+        contract authority.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0016
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#INV-0017
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0018
+    entity_type: invariant
+    name: INV-0018
+    summary: >-
+      Runtime-emitted workspace graph edges that assert a resolved relationship use confidence 'high'. Ambiguous
+      resolutions produce diagnostics rather than asserted edges. Consumers must drop non-high edges when they appear i
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#INV-0018
+      artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0016
+      scope: global
+      statement: >-
+        Runtime-emitted workspace graph edges that assert a resolved relationship use confidence 'high'. Ambiguous
+        resolutions produce diagnostics rather than asserted edges. Consumers must drop non-high edges when they appear
+        in permissive input mode.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0016
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#INV-0018
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0019
+    entity_type: invariant
+    name: INV-0019
+    summary: Workspace RECON emits exactly one progress line per repository before that repository begins processing.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#INV-0019
+      artifact_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0017
+      scope: global
+      statement: Workspace RECON emits exactly one progress line per repository before that repository begins processing.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0017
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0017#INV-0019
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0020
+    entity_type: invariant
+    name: INV-0020
+    summary: >-
+      Canned query functions (systemDependencies, componentIntegration, blastRadiusWorkspace) are pure graph traversal.
+      They do not invoke LLM inference, network calls, or non-deterministic operations.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#INV-0020
+      artifact_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0018
+      scope: global
+      statement: >-
+        Canned query functions (systemDependencies, componentIntegration, blastRadiusWorkspace) are pure graph
+        traversal. They do not invoke LLM inference, network calls, or non-deterministic operations.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0018
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0020
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#INV-0020
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0021
+    entity_type: invariant
+    name: INV-0021
+    summary: >-
+      Projection is separated from query. Query functions return structured data objects. Rendering to Mermaid, table,
+      or matrix is performed by distinct projection functions.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#INV-0021
+      artifact_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0018
+      scope: global
+      statement: >-
+        Projection is separated from query. Query functions return structured data objects. Rendering to Mermaid, table,
+        or matrix is performed by distinct projection functions.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0018
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0020
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#INV-0021
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0022
+    entity_type: invariant
+    name: INV-0022
+    summary: >-
+      Resolution level is a first-class parameter of the projection pipeline. Every MCP tool and CLI command that
+      produces projections accepts an optional resolution parameter (L0|L1|L2|L3|L4) with L4 as the default.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0019#INV-0022
+      artifact_path: adrs/logical/ADR-L-0019-multi-resolution-architecture-projection.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0019
+      scope: global
+      statement: |-
+        Resolution level is a first-class parameter of the projection pipeline.
+        Every MCP tool and CLI command that produces projections accepts an optional
+        resolution parameter (L0|L1|L2|L3|L4) with L4 as the default.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0019
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0021
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0019#INV-0022
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0023
+    entity_type: invariant
+    name: INV-0023
+    summary: >-
+      Compressed projections preserve traceability to source graph nodes. Every aggregate node carries memberIds linking
+      back to the original workspace nodes. Every compressed edge carries sourceEdgeIds when multiplicity > 1.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0019#INV-0023
+      artifact_path: adrs/logical/ADR-L-0019-multi-resolution-architecture-projection.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0019
+      scope: global
+      statement: |-
+        Compressed projections preserve traceability to source graph nodes. Every
+        aggregate node carries memberIds linking back to the original workspace nodes.
+        Every compressed edge carries sourceEdgeIds when multiplicity > 1.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0019
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0021
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0019#INV-0023
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0024
+    entity_type: invariant
+    name: INV-0024
+    summary: >-
+      Every emitted projection file includes projection_level metadata in its YAML frontmatter, identifying the
+      resolution level (L0-L4) at which the projection was generated.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#INV-0024
+      artifact_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0018
+      scope: global
+      statement: >-
+        Every emitted projection file includes projection_level metadata in its YAML frontmatter, identifying the
+        resolution level (L0-L4) at which the projection was generated.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0018
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0018#INV-0024
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index

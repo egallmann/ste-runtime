@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-30T19:17:44.425Z",
+  "files": {
+    "src/module-a.ts": {
+      "path": "src/module-a.ts",
+      "mtimeMs": 1777576341809.6033,
+      "size": 80,
+      "hash": "160b79aa184c5b909bb8f0d86022c1eaa4fc8fda69ecc15c595e5a1be9f77848"
+    }
+  }
+}

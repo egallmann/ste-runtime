@@ -2,6 +2,7 @@ import {
   type IrEntity,
   type IrRelationship,
   type IrUnresolved,
+  type LifecycleStage,
   type NormalizedEntity,
   type RelationshipRecord,
   type RelationshipType,
@@ -9,7 +10,25 @@ import {
   emptyRelationshipBuckets,
 } from './types.js';
 
-const PROJECTABLE = new Set(['adr', 'system', 'component', 'decision', 'capability', 'invariant']);
+const PROJECTABLE = new Set(['adr', 'system', 'component', 'decision', 'capability', 'invariant', 'rule', 'rejection']);
+
+const VALID_LIFECYCLE_STAGES = new Set<string>(['proposed', 'active', 'deprecated', 'superseded']);
+
+function deriveLifecycleStage(entity: IrEntity, allEntities?: Map<string, IrEntity>): LifecycleStage {
+  if (entity.entity_type === 'adr') {
+    const raw = String(entity.metadata.status ?? 'active');
+    return VALID_LIFECYCLE_STAGES.has(raw) ? (raw as LifecycleStage) : 'active';
+  }
+  if (allEntities) {
+    const parentAdrId = entity.canonical_source.source_ref.split('#')[0];
+    const parentAdr = allEntities.get(parentAdrId);
+    if (parentAdr && parentAdr.entity_type === 'adr') {
+      const raw = String(parentAdr.metadata.status ?? 'active');
+      return VALID_LIFECYCLE_STAGES.has(raw) ? (raw as LifecycleStage) : 'active';
+    }
+  }
+  return 'active';
+}
 
 export function buildRelationshipSummary(
   entityId: string,
@@ -27,7 +46,11 @@ export function buildRelationshipSummary(
   return buckets;
 }
 
-export function projectEntity(entity: IrEntity, rels: Map<string, IrRelationship>): NormalizedEntity | undefined {
+export function projectEntity(
+  entity: IrEntity,
+  rels: Map<string, IrRelationship>,
+  allEntities?: Map<string, IrEntity>,
+): NormalizedEntity | undefined {
   if (!PROJECTABLE.has(entity.entity_type)) return undefined;
   const relationships = buildRelationshipSummary(entity.id, rels);
   return {
@@ -35,6 +58,8 @@ export function projectEntity(entity: IrEntity, rels: Map<string, IrRelationship
     entity_type: entity.entity_type as NormalizedEntity['entity_type'],
     name: entity.name,
     summary: entity.summary,
+    lifecycle_stage: deriveLifecycleStage(entity, allEntities),
+    admission_status: 'admitted' as const,
     canonical_source: entity.canonical_source,
     source_refs: [...entity.source_refs].sort(
       (a, b) => a.source_ref.localeCompare(b.source_ref) || a.mention_role.localeCompare(b.mention_role),

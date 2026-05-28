@@ -16,9 +16,37 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile, initConfig } from '../config/index.js';
+import { executeWorkspaceRecon, type WorkspaceReconResult } from '../workspace/workspace-recon.js';
+import {
+  parseWorkspaceArgv,
+  resolveWorkspaceDirectory,
+  WORKSPACE_CLI_AUTO,
+  type ParsedWorkspaceCli,
+} from '../workspace/workspace-cli-args.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+function parseTimeoutPerRepoMs(args: string[]): number {
+  const eq = args.find(a => a.startsWith('--timeout-per-repo='));
+  const fromEq =
+    eq !== undefined ? Number(eq.slice('--timeout-per-repo='.length).trim()) : Number.NaN;
+  if (!Number.isNaN(fromEq) && eq !== undefined) {
+    if (fromEq < 0 || !Number.isFinite(fromEq) || !Number.isInteger(fromEq)) {
+      return Number.NaN;
+    }
+    return fromEq;
+  }
+  const idx = args.indexOf('--timeout-per-repo');
+  if (idx !== -1 && idx + 1 < args.length) {
+    const v = Number(args[idx + 1]);
+    if (Number.isFinite(v) && Number.isInteger(v) && v >= 0) {
+      return v;
+    }
+    return Number.NaN;
+  }
+  return 0;
+}
 
 function parseArgs(args: string[]): {
   mode: 'incremental' | 'full';
@@ -26,13 +54,32 @@ function parseArgs(args: string[]): {
   self: boolean;
   help: boolean;
   config: string | null;
+  workspace: ParsedWorkspaceCli;
+  failOnAnyError: boolean;
+  skipUnchanged: boolean;
+  timeoutPerRepoMs: number;
+  parseError: string | null;
 } {
+  const rawMode = args.find(a => a.startsWith('--mode='))?.split('=')[1] ?? 'incremental';
+  const mode = rawMode === 'full' ? 'full' : 'incremental';
+  const timeoutPerRepoMs = parseTimeoutPerRepoMs(args);
+  let parseError: string | null = null;
+  if (Number.isNaN(timeoutPerRepoMs)) {
+    parseError =
+      'recon: invalid --timeout-per-repo (expected non-negative integer milliseconds, ' +
+      'e.g. --timeout-per-repo=60000)';
+  }
   return {
-    mode: args.find(a => a.startsWith('--mode='))?.split('=')[1] as 'incremental' | 'full' ?? 'incremental',
+    mode,
     init: args.includes('--init'),
     self: args.includes('--self'),
     help: args.includes('--help') || args.includes('-h'),
     config: args.find(a => a.startsWith('--config='))?.split('=')[1] ?? null,
+    workspace: parseWorkspaceArgv(args),
+    failOnAnyError: args.includes('--fail-on-any-error'),
+    skipUnchanged: args.includes('--skip-unchanged'),
+    timeoutPerRepoMs: Number.isNaN(timeoutPerRepoMs) ? 0 : timeoutPerRepoMs,
+    parseError,
   };
 }
 
@@ -48,8 +95,23 @@ Options:
   --mode=full          Full reconciliation
   --config=<file>      Use specific config file (e.g., ste-self.config.json)
   --init               Create ste.config.json in project root
-  --self               Self-documentation mode (scan ste-runtime only)
+  --self               Self-documentation mode (scan ste-runtime only, skip project)
+  --workspace=<path>   Multi-repository mode: path to workspace directory or workspace.yaml
+  --workspace <path>   Same as --workspace=<path>
+  --workspace          Discover workspace.yaml / workspace.yml upward from cwd (or use STE_WORKSPACE_ROOT)
+  --workspace=auto     Same as bare --workspace
+  --fail-on-any-error  Strict mode: fail workspace run if any repo fails
+                       (default: succeed if at least one repo succeeds)
+  --skip-unchanged     Workspace only: skip repos unchanged since last successful run with matching sentinel
+  --timeout-per-repo=<ms>
+                       Workspace only: per-repo ceiling in ms (omit or use 0 to disable). Example: --timeout-per-repo=60000
+  --timeout-per-repo <ms>
   --help, -h           Show this help message
+
+Self-pass:
+  Every RECON invocation automatically includes a self-pass that
+  updates ste-runtime's own graph in .ste-self/state (dogfooding).
+  This runs after the primary target (project, workspace, or --self).
 
 Configuration:
   RECON uses auto-detection by default - no config needed.
@@ -69,6 +131,15 @@ Portability:
   2. Auto-detect languages (TypeScript, Python)
   3. Scan the project and generate AI-DOC state
 
+Workspace examples (paths illustrative only):
+  recon --workspace /path/to/workspace-root
+  recon --workspace              # discovers workspace.yaml upward from cwd
+  STE_WORKSPACE_ROOT=/path/to/root recon --workspace
+
+  Reads workspace.yaml (or workspace.yml); writes output under manifest output_dir
+
+Environment:
+  STE_WORKSPACE_ROOT   When set, used by bare --workspace / --workspace=auto instead of discovery.
 Output:
   AI-DOC state is written to .ste/state/ (or configured stateDir)
   Validation reports are written to .ste/state/validation/
@@ -79,10 +150,23 @@ Per E-ADR-001 §5.4: Slices are pure derived artifacts, always regenerated.
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  
+
+  if (args.parseError) {
+    console.error(args.parseError);
+    process.exit(1);
+  }
+
   if (args.help) {
     printHelp();
     process.exit(0);
+  }
+
+  if (
+    args.workspace !== null &&
+    (args.self || args.init || args.config !== null)
+  ) {
+    console.error('recon: --workspace cannot be used with --self, --init, or --config.');
+    process.exit(1);
   }
   
   // Determine ste-runtime directory
@@ -96,6 +180,72 @@ async function main() {
     console.log('Edit ste.config.json to customize RECON behavior.');
     console.log('Set sourceDirs to match your project structure.');
     process.exit(0);
+  }
+
+  const workspaceResolved = await resolveWorkspaceDirectory(args.workspace, process.cwd(), runtimeDir);
+  if (args.workspace !== null && workspaceResolved === null) {
+    console.error(
+      'recon: workspace mode could not resolve a manifest directory. Pass --workspace <path>, set STE_WORKSPACE_ROOT, or run from a directory tree that contains workspace.yaml (or workspace.yml).',
+    );
+    process.exit(1);
+  }
+
+  if (workspaceResolved !== null) {
+    if (args.workspace === WORKSPACE_CLI_AUTO) {
+      console.log(`recon: workspace root (resolved): ${workspaceResolved}`);
+    }
+    console.log('='.repeat(60));
+    console.log('RECON - Workspace Mode (workspace.yaml)');
+    if (args.failOnAnyError) {
+      console.log('  Mode: STRICT (--fail-on-any-error)');
+    }
+    if (args.skipUnchanged) {
+      console.log('  Incremental: --skip-unchanged enabled');
+    }
+    if (args.timeoutPerRepoMs > 0) {
+      console.log(`  Timeout: ${args.timeoutPerRepoMs}ms per repo (--timeout-per-repo)`);
+    }
+    console.log('='.repeat(60));
+    console.log('');
+    const wsResult = await executeWorkspaceRecon({
+      workspacePath: workspaceResolved,
+      mode: args.mode,
+      runtimeDir,
+      failOnAnyError: args.failOnAnyError,
+      skipUnchanged: args.skipUnchanged,
+      timeoutPerRepoMs: args.timeoutPerRepoMs,
+    });
+    console.log(`Workspace index: ${wsResult.workspaceIndexPath}`);
+    console.log('');
+    for (const r of wsResult.repos) {
+      if (r.status === 'success') {
+        console.log(
+          `  [${r.name}] OK  nodes=${r.nodeCount ?? 0} edges=${r.edgeCount ?? 0} slice=${r.slicePath ?? ''}`,
+        );
+      } else if (r.status === 'skipped') {
+        console.log(`  [${r.name}] SKIPPED (unchanged)`);
+      } else if (r.status === 'timed_out') {
+        console.log(`  [${r.name}] TIMEOUT  stage=${r.error?.stage ?? '?'}  ${r.error?.message ?? ''}`);
+      } else {
+        console.log(`  [${r.name}] FAILED  stage=${r.error?.stage ?? '?'}  ${r.error?.message ?? ''}`);
+      }
+    }
+
+    if (wsResult.projectionResult) {
+      console.log(`  Projections: ${wsResult.projectionResult.fileCount} files written to projections/`);
+    }
+
+    printWorkspaceResult(wsResult);
+
+    // Self-pass: always include ste-runtime itself
+    const selfResult = await runSelfPass(runtimeDir, false, args.mode);
+    if (selfResult) {
+      printSelfResult(selfResult);
+    }
+
+    console.log('');
+    const allSuccess = wsResult.success && (!selfResult || selfResult.success);
+    process.exit(allSuccess ? 0 : 1);
   }
   
   // Normal operation: auto-detect project and use config
@@ -128,7 +278,86 @@ async function main() {
   });
 
   printResult(result, config.projectRoot, config.stateDir);
-  process.exit(result.success ? 0 : 1);
+
+  // Always run self-pass (dogfooding) unless the primary run already was self
+  const selfResult = await runSelfPass(runtimeDir, isSelfAnalysis, args.mode);
+  if (selfResult) {
+    printSelfResult(selfResult);
+  }
+
+  const allSuccess = result.success && (!selfResult || selfResult.success);
+  process.exit(allSuccess ? 0 : 1);
+}
+
+/**
+ * Run RECON self-pass on ste-runtime itself into .ste-self/state.
+ * Skipped when the primary RECON already targeted ste-runtime (isSelfAnalysis).
+ */
+async function runSelfPass(
+  runtimeDir: string,
+  isSelfAnalysis: boolean,
+  mode: 'incremental' | 'full',
+): Promise<Awaited<ReturnType<typeof executeRecon>> | null> {
+  if (isSelfAnalysis) {
+    return null;
+  }
+
+  console.log('');
+  console.log('-'.repeat(60));
+  console.log('RECON - Self-Pass (ste-runtime dogfooding)');
+  console.log('-'.repeat(60));
+
+  const selfConfig = await loadConfig(runtimeDir, { selfMode: true });
+  return executeRecon({
+    projectRoot: selfConfig.projectRoot,
+    sourceRoot: selfConfig.sourceDirs[0] ?? 'src',
+    stateRoot: selfConfig.stateDir,
+    mode,
+    config: selfConfig,
+  });
+}
+
+function printSelfResult(result: Awaited<ReturnType<typeof executeRecon>>) {
+  console.log('');
+  console.log('Self-Pass (.ste-self/state):');
+  console.log(`  Created:   ${result.aiDocCreated}`);
+  console.log(`  Modified:  ${result.aiDocModified}`);
+  console.log(`  Deleted:   ${result.aiDocDeleted}`);
+  console.log(`  Unchanged: ${result.aiDocUnchanged}`);
+  if (!result.success) {
+    console.log(`  Errors: ${result.errors.join('; ')}`);
+  }
+}
+
+function printWorkspaceResult(wsResult: WorkspaceReconResult) {
+  const succeeded = wsResult.repos.filter(r => r.status === 'success');
+  const failed = wsResult.repos.filter(r => r.status === 'failed' || r.status === 'timed_out');
+  const skipped = wsResult.repos.filter(r => r.status === 'skipped');
+
+  const totalNodes = succeeded.reduce((sum, r) => sum + (r.nodeCount ?? 0), 0);
+  const totalEdges = succeeded.reduce((sum, r) => sum + (r.edgeCount ?? 0), 0);
+
+  let created = 0, modified = 0, deleted = 0, unchanged = 0;
+  for (const r of succeeded) {
+    if (r.reconResult) {
+      created += r.reconResult.aiDocCreated;
+      modified += r.reconResult.aiDocModified;
+      deleted += r.reconResult.aiDocDeleted;
+      unchanged += r.reconResult.aiDocUnchanged;
+    }
+  }
+
+  console.log('');
+  console.log('Workspace-Pass (.workspace-graph/):');
+  console.log(`  Repos:       ${succeeded.length} succeeded, ${failed.length} failed, ${skipped.length} skipped`);
+  console.log(`  Graph:       ${totalNodes} nodes, ${totalEdges} edges`);
+  console.log(`  Created:     ${created}`);
+  console.log(`  Modified:    ${modified}`);
+  console.log(`  Deleted:     ${deleted}`);
+  console.log(`  Unchanged:   ${unchanged}`);
+  if (!wsResult.success) {
+    console.log(`  Result:      FAILED`);
+  }
 }
 
 function printResult(result: Awaited<ReturnType<typeof executeRecon>>, _projectRoot: string, _stateRoot: string) {

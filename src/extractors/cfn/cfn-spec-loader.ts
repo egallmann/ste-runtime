@@ -75,8 +75,8 @@ interface CachedSpec {
   spec: CloudFormationSpec;
 }
 
-// In-memory cache
-let memoryCache: CachedSpec | null = null;
+// Promise-based singleton cache to prevent concurrent load races
+let memoryCachePromise: Promise<CachedSpec> | null = null;
 
 /**
  * Get the cache file path
@@ -160,41 +160,41 @@ async function fetchFromAWS(): Promise<CloudFormationSpec> {
  * Uses in-memory cache for repeated calls within same process.
  */
 export async function loadCfnSpec(runtimeDir: string): Promise<CloudFormationSpec> {
-  // Check in-memory cache first
-  if (memoryCache) {
-    return memoryCache.spec;
+  if (!memoryCachePromise) {
+    memoryCachePromise = loadCfnSpecImpl(runtimeDir);
   }
-  
+  const cached = await memoryCachePromise;
+  return cached.spec;
+}
+
+async function loadCfnSpecImpl(runtimeDir: string): Promise<CachedSpec> {
   // Check file cache
   const cached = await loadFromCache(runtimeDir);
   if (cached) {
     console.log(`[CFN Spec] Using cached version ${cached.version}`);
-    memoryCache = cached;
-    return cached.spec;
+    return cached;
   }
-  
+
   // Fetch from AWS
   try {
     const spec = await fetchFromAWS();
     await saveToCache(runtimeDir, spec);
-    
-    memoryCache = {
+
+    return {
       loadedAt: new Date().toISOString(),
       version: spec.ResourceSpecificationVersion,
       spec,
     };
-    
-    return spec;
   } catch (error) {
     console.error('[CFN Spec] Failed to fetch from AWS:', error);
-    
+
     // Try to use expired cache as fallback
     try {
       const cachePath = getCachePath(runtimeDir);
       const content = await fs.readFile(cachePath, 'utf-8');
-      const cached = JSON.parse(content) as CachedSpec;
-      console.log(`[CFN Spec] Using expired cache (version ${cached.version}) as fallback`);
-      return cached.spec;
+      const expiredCached = JSON.parse(content) as CachedSpec;
+      console.log(`[CFN Spec] Using expired cache (version ${expiredCached.version}) as fallback`);
+      return expiredCached;
     } catch {
       throw new Error('CFN spec not available: fetch failed and no cache exists');
     }
@@ -266,7 +266,7 @@ export function getReferenceProperties(spec: CloudFormationSpec, resourceType: s
  * Clear the in-memory cache (useful for testing or forced refresh)
  */
 export function clearCache(): void {
-  memoryCache = null;
+  memoryCachePromise = null;
 }
 
 

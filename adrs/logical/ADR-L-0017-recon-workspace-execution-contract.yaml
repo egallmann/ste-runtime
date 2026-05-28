@@ -1,0 +1,90 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0017
+title: RECON Workspace Execution Contract
+status: proposed
+created_date: '2026-04-30'
+authors:
+- ste-runtime
+domains:
+- workspace
+- recon
+tags:
+- workspace
+- recon
+- reliability
+vision_category: false
+related_adrs:
+- ADR-L-0009
+- ADR-L-0013
+context: |
+  ADR-L-0009 fixes workspace as the universal scope unit. This ADR records
+  how workspace RECON execution behaves for observability, optional
+  incremental cross-run skips, and optional per-repository timeouts without
+  changing slice schemas or merge semantics. Persisted sentinel paths obey
+  ADR-L-0013 POSIX-relative projections from the workspace root. The semantic
+  extraction subsystem (ADR-PS-0002) remains the authoritative boundary for
+  phase-level extraction behavior; workspace orchestration layered here only
+  coordinates repos and aggregates outcomes.
+
+implements_physical_system_ref:
+  id: ADR-PS-0002
+
+invariants:
+- id: INV-0019
+  statement: Workspace RECON emits exactly one progress line per repository before that repository begins processing.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: manual
+  rationale: Silence during long workspace runs cannot be distinguished from a hang without per-repo heartbeat output.
+
+constraints:
+- id: CONST-0015
+  type: technical
+  description: Cross-run sentinel file path under workspace output directory is OUTPUT/state/REPO/recon-run-sentinel.json relative to workspace root for persistence (POSIX-relative), where REPO is the manifest repo name key used elsewhere for slice paths.
+  rationale: Matches existing per-repository state layout and avoids scattering ad hoc paths.
+
+- id: CONST-0016
+  type: technical
+  description: Incremental skip is allowed only when both source fingerprint hash and bundled ste-runtime version in the sentinel match the current computation.
+  rationale: Algorithm or tooling changes invalidate stale skip decisions safely.
+
+- id: CONST-0017
+  type: technical
+  description: >
+    Optional per-repository timeout yields timed_out repo status without aborting
+    sibling repos. timed_out participates in aggregate workspace failures the same way
+    standard failed repos do under existing CLI success rules.
+  rationale: Stall isolation without killing the workspace process outright.
+
+decisions:
+- id: DEC-0017
+  summary: Mandatory per-repo heartbeat (stdout)
+  rationale: Operators need deterministic progress granularity per repository.
+  decision: |
+    Workspace RECON MUST emit a progress line naming each repo before RECON phases
+    for that repo begin.
+
+- id: DEC-0018
+  summary: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
+  rationale: Default runs remain untouched; caches are explicitly requested.
+  decision: |
+    When --skip-unchanged is set, repos whose sentinel fingerprint and recon_version match
+    are skipped with skipped status without running RECON. After every successful workspace
+    repo run (not only when the flag is set), the sentinel is rewritten so later runs may use
+    incremental skip once the caller passes --skip-unchanged.
+
+- id: DEC-0019
+  summary: Opt-in per-repo Promise timeout (--timeout-per-repo)
+  rationale: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally out of scope.
+  decision: |
+    When --timeout-per-repo is supplied with a positive millisecond bound, exceeding the bound yields
+    timed_out for that repository, logs a subprocess-linger advisory to stderr, and continues other repos.
+
+consequences:
+  positive:
+  - Workspace runs expose liveness signals and tolerate slow or stuck individual repos safely.
+  - Repeat runs can avoid redundant extraction when explicitly requested.
+  negative:
+  - Fingerprint hashing based on mtimes skips subtle content-only restores with unchanged metadata.

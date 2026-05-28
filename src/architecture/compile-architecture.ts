@@ -44,6 +44,7 @@ export async function compileArchitecture(options: CompileArchitectureOptions): 
       ['adrs/index/invariant-registry.yaml', renderYamlDocument(bundle.invariantRegistry)],
       ['adrs/index/component-registry.yaml', renderYamlDocument(bundle.componentRegistry)],
       ['adrs/index/system-registry.yaml', renderYamlDocument(bundle.systemRegistry)],
+      ['adrs/index/rule-registry.yaml', renderYamlDocument(bundle.ruleRegistry)],
       [
         'adrs/entities/registry.yaml',
         renderLegacyEntityRegistry(renderYamlDocument(bundle.legacyEntityRegistry)),
