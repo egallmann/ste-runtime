@@ -16,7 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile, initConfig } from '../config/index.js';
-import { executeWorkspaceRecon } from '../workspace/workspace-recon.js';
+import { executeWorkspaceRecon, type WorkspaceReconResult } from '../workspace/workspace-recon.js';
 import {
   parseWorkspaceArgv,
   resolveWorkspaceDirectory,
@@ -235,6 +235,8 @@ async function main() {
       console.log(`  Projections: ${wsResult.projectionResult.fileCount} files written to projections/`);
     }
 
+    printWorkspaceResult(wsResult);
+
     // Self-pass: always include ste-runtime itself
     const selfResult = await runSelfPass(runtimeDir, false, args.mode);
     if (selfResult) {
@@ -324,6 +326,37 @@ function printSelfResult(result: Awaited<ReturnType<typeof executeRecon>>) {
   console.log(`  Unchanged: ${result.aiDocUnchanged}`);
   if (!result.success) {
     console.log(`  Errors: ${result.errors.join('; ')}`);
+  }
+}
+
+function printWorkspaceResult(wsResult: WorkspaceReconResult) {
+  const succeeded = wsResult.repos.filter(r => r.status === 'success');
+  const failed = wsResult.repos.filter(r => r.status === 'failed' || r.status === 'timed_out');
+  const skipped = wsResult.repos.filter(r => r.status === 'skipped');
+
+  const totalNodes = succeeded.reduce((sum, r) => sum + (r.nodeCount ?? 0), 0);
+  const totalEdges = succeeded.reduce((sum, r) => sum + (r.edgeCount ?? 0), 0);
+
+  let created = 0, modified = 0, deleted = 0, unchanged = 0;
+  for (const r of succeeded) {
+    if (r.reconResult) {
+      created += r.reconResult.aiDocCreated;
+      modified += r.reconResult.aiDocModified;
+      deleted += r.reconResult.aiDocDeleted;
+      unchanged += r.reconResult.aiDocUnchanged;
+    }
+  }
+
+  console.log('');
+  console.log('Workspace-Pass (.workspace-graph/):');
+  console.log(`  Repos:       ${succeeded.length} succeeded, ${failed.length} failed, ${skipped.length} skipped`);
+  console.log(`  Graph:       ${totalNodes} nodes, ${totalEdges} edges`);
+  console.log(`  Created:     ${created}`);
+  console.log(`  Modified:    ${modified}`);
+  console.log(`  Deleted:     ${deleted}`);
+  console.log(`  Unchanged:   ${unchanged}`);
+  if (!wsResult.success) {
+    console.log(`  Result:      FAILED`);
   }
 }
 

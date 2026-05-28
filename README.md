@@ -3,11 +3,12 @@
 `ste-runtime` is the runtime evidence and semantic extraction repository in the STE workspace.
 
 It provides:
-- RECON semantic extraction over source code
-- RSS graph traversal and context assembly
-- a local MCP server and CLI surfaces for developer workflows
-- runtime-owned machine artifacts such as architecture bundle outputs
-- factual `ArchitectureEvidence` payloads consumed by `ste-kernel`
+- RECON semantic extraction over source code (6 language extractors, single-repo and multi-repo workspace modes)
+- Inference and cross-repo edge resolution (HTTP call matching, SNS/SQS channels, CFN cross-stack references)
+- RSS graph traversal and context assembly for AI-assisted development
+- Workspace-level graph queries with multi-resolution projections (L0-L4)
+- A persistent MCP server with file watching and incremental RECON for Cursor integration
+- Factual `ArchitectureEvidence` payloads consumed by `ste-kernel`
 
 It does not define public cross-repo contracts, admission semantics, or governance authority.
 
@@ -49,79 +50,102 @@ The detailed readiness assessment remains in [MATURITY.md](MATURITY.md).
 
 ## What This Repo Does
 
-### RECON
+### RECON (Semantic Extraction)
 
-RECON extracts semantic state from a codebase into `.ste/state/`.
+RECON analyzes source code through pluggable, language-specific extractors
+(TypeScript, Python, CloudFormation, JSON, Angular, CSS/SCSS) and produces a
+semantic graph stored as content-addressable YAML slices.
 
-Examples of extracted material include:
-- modules
-- functions
-- classes
-- API endpoints
-- data entities
-- infrastructure resources
-- validation artifacts
+It operates in two modes:
 
-### RSS
+- **Single-repo** (`recon:full`) -- extracts one project into `.ste/state/`
+- **Multi-repo workspace** (`recon:workspace`) -- extracts each repo in a
+  `workspace.yaml` manifest, then runs cross-repo edge resolution to match
+  HTTP calls against API endpoints, detect shared SNS/SQS event channels,
+  and resolve CloudFormation cross-stack references. Output goes to
+  `.workspace-graph/`.
 
-RSS traverses the generated graph so humans and agents can ask for:
-- search results
-- dependency paths
-- dependents
-- blast radius
-- assembled context for a task
+An inference phase builds intra-repo graph edges (imports, function calls,
+class inheritance) so that traversal operations work.
+
+### RSS (Graph Traversal)
+
+RSS traverses the semantic graph so humans and agents can ask for:
+- search results (natural language discovery)
+- dependency and dependent paths
+- blast radius (impact analysis)
+- assembled context for a task (bundled nodes for an AI prompt)
+- lookup by key or tag
+
+### Workspace Graph Queries
+
+For multi-repo workspaces, a separate query surface operates at the system
+level:
+- `ws deps` -- repo-to-repo dependency map
+- `ws integration` -- component integration map across repos
+- `ws blast` -- system-level blast radius
+
+Results can be rendered through multi-resolution projections (L0 system
+through L4 full detail) as Mermaid diagrams, tables, adjacency matrices, or
+JSON.
+
+### MCP Server and Watchdog
+
+`ste watch --mcp` starts a persistent MCP server that integrates with Cursor:
+- A file watcher monitors the project for changes
+- Incremental RECON keeps the in-memory graph fresh without manual re-runs
+- RSS and workspace query tools are exposed over the MCP protocol
+- Cursor agents can search, traverse, and assemble context directly
 
 ### Runtime Evidence
 
-`ste-runtime` also loads architecture bundle artifacts and emits factual `ArchitectureEvidence` JSON that `ste-kernel` can consume.
+The architecture compiler combines ADR bundles (`adrs/`) with semantic graph
+state to emit factual `ArchitectureEvidence` JSON payloads consumed by
+`ste-kernel` for admission decisions. ste-runtime reports bundle health,
+freshness, and subject linkage -- it never makes admission judgments itself.
 
-That evidence reports things like:
-- bundle health
-- freshness
-- subject linkage
-
-It does not report admission eligibility or final governance decisions.
+For the full architecture diagram, see
+[instructions/README.md](instructions/README.md#architecture).
 
 ## Quick Start
 
-### Install
+### Option 1: Add to an existing project or workspace (recommended)
+
+Clone ste-runtime alongside your project, install, build, then run the
+automated setup from your workspace root:
+
+```bash
+git clone https://github.com/egallmann/ste-runtime.git
+cd ste-runtime && npm install && npm run build
+cd ..
+node ste-runtime/dist/cli/index.js setup
+```
+
+`ste setup` detects whether you have a single-repo project or a multi-repo
+workspace, scaffolds the appropriate config files (`workspace.yaml` or
+`ste.config.json`), creates `.cursor/mcp.json` with correct absolute paths,
+updates `.gitignore`, and runs an initial RECON. Use `--dry-run` to preview
+all changes before writing.
+
+See [documentation/guides/setup.md](documentation/guides/setup.md) for the
+full setup guide.
+
+### Option 2: Clone and explore standalone
+
+Use the automated bootstrap to install, build, run RECON on ste-runtime
+itself, and validate the installation:
 
 ```bash
 git clone https://github.com/egallmann/ste-runtime.git
 cd ste-runtime
-npm install
-npm run build
+npm run init
 ```
 
-### Generate semantic state
-
-```bash
-npm run recon:full
-```
-
-This generates `.ste/state/` for the current project.
-
-### Document ste-runtime itself
-
-```bash
-npm run recon:self
-```
-
-This generates `.ste-self/state/` for the repository itself.
-
-### Query the graph
+After bootstrap completes, query the graph:
 
 ```bash
 npm run rss:stats
 npm run rss -- search "authentication"
-node dist/cli/rss-cli.js dependencies graph/function/validateUser
-node dist/cli/rss-cli.js blast-radius data/entity/UsersTable
-```
-
-### Emit runtime evidence
-
-```bash
-node dist/cli/index.js evidence architecture --project-root .
 ```
 
 ## Programmatic API
@@ -142,6 +166,9 @@ See [instructions/RSS-PROGRAMMATIC-API.md](instructions/RSS-PROGRAMMATIC-API.md)
 ## Common Commands
 
 ```bash
+# Automated bootstrap (install, build, initial RECON, validate)
+npm run init
+
 # Build
 npm run build
 
@@ -162,6 +189,12 @@ npm run recon:self
 
 # Graph stats
 npm run rss:stats
+
+# Scaffold workspace.yaml for a multi-repo workspace
+node dist/cli/index.js init
+
+# Generate ste.config.json with auto-detected defaults
+npm run recon:init
 ```
 
 ## Repository Scope vs Full STE System
@@ -183,6 +216,7 @@ For deeper explanatory background on STE and how the repositories fit together, 
 ## Documentation
 
 Start here:
+- [documentation/guides/setup.md](documentation/guides/setup.md) -- setup and onboarding
 - [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md)
 - [MATURITY.md](MATURITY.md)
 - [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md)

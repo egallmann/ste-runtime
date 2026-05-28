@@ -19,6 +19,7 @@ export interface DiscoveryBundle {
   invariantRegistry: { schema_version: string; type: string; entities: NormalizedEntity[] };
   componentRegistry: { schema_version: string; type: string; entities: NormalizedEntity[] };
   systemRegistry: { schema_version: string; type: string; entities: NormalizedEntity[] };
+  ruleRegistry: { schema_version: string; type: string; entities: NormalizedEntity[] };
   legacyEntityRegistry: { schema_version: string; type: string; entities: LegacyEntity[] };
 }
 
@@ -44,6 +45,7 @@ function legacyFromNormalized(entity: NormalizedEntity): LegacyEntity | undefine
     component: 'component',
     decision: 'decision',
     invariant: 'invariant',
+    rule: 'rule',
   };
   if (!(entity.entity_type in mapping)) return undefined;
   if (entity.entity_type === 'component' && entity.id !== (entity.metadata.legacy_component_id ?? entity.id)) {
@@ -117,6 +119,7 @@ export function assembleDiscoveryBundle(model: ArchModelState): DiscoveryBundle 
     invariant_registry_path: 'adrs/index/invariant-registry.yaml',
     component_registry_path: 'adrs/index/component-registry.yaml',
     system_registry_path: 'adrs/index/system-registry.yaml',
+    rule_registry_path: 'adrs/index/rule-registry.yaml',
     validation_summary: validation,
     source_coverage: model.coverage,
   };
@@ -140,6 +143,7 @@ export function assembleDiscoveryBundle(model: ArchModelState): DiscoveryBundle 
     invariantRegistry: { ...baseRegistry, entities: filterByType(projectedEntities, 'invariant') },
     componentRegistry: { ...baseRegistry, entities: filterByType(projectedEntities, 'component') },
     systemRegistry: { ...baseRegistry, entities: filterByType(projectedEntities, 'system') },
+    ruleRegistry: { ...baseRegistry, entities: filterByType(projectedEntities, 'rule') },
     legacyEntityRegistry: { schema_version: '1.1', type: 'entity_registry', entities: legacyEntities },
   };
 }

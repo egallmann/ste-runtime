@@ -49,7 +49,7 @@ export const ExternalSystemEntrySchema = z.object({
 
 export const WorkspaceManifestSchema = z.object({
   schema_version: z.string(),
-  output_dir: z.string().optional().default('.ste-workspace/'),
+  output_dir: z.string().optional().default('.workspace-graph/'),
   seed_scope: z.array(z.string()).optional(),
   repos: z.array(RepoEntrySchema).min(1),
   external_systems: z.array(ExternalSystemEntrySchema).optional().default([]),
@@ -126,20 +126,67 @@ export async function mapRepoLang(
   return dedupeLanguages(languages);
 }
 
+/**
+ * Discover infrastructure directories at up to 2 levels of nesting.
+ * Handles monorepo patterns like apps/admin/cfn_templates/ without
+ * full recursive traversal.
+ */
+async function discoverInfraDirs(projectRoot: string): Promise<string[]> {
+  const found: string[] = [];
+
+  for (const d of INFRA_SOURCE_SUBDIRS) {
+    // Level 0: top-level (e.g., cfn_templates/)
+    try {
+      const st = await fs.stat(path.join(projectRoot, d));
+      if (st.isDirectory()) {
+        found.push(d);
+      }
+    } catch { /* missing */ }
+
+    // Level 1-2: nested (e.g., apps/admin/cfn_templates/)
+    // Scan immediate subdirectories for nested infra
+    try {
+      const topEntries = await fs.readdir(projectRoot, { withFileTypes: true });
+      for (const entry of topEntries) {
+        if (!entry.isDirectory()) continue;
+        if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist') continue;
+
+        // Level 1: <subdir>/cfn_templates/
+        const level1 = path.join(entry.name, d);
+        try {
+          const st = await fs.stat(path.join(projectRoot, level1));
+          if (st.isDirectory()) {
+            found.push(level1);
+          }
+        } catch { /* missing */ }
+
+        // Level 2: <subdir>/<subdir>/cfn_templates/ (e.g., apps/admin/cfn_templates/)
+        try {
+          const innerEntries = await fs.readdir(path.join(projectRoot, entry.name), { withFileTypes: true });
+          for (const inner of innerEntries) {
+            if (!inner.isDirectory()) continue;
+            if (inner.name.startsWith('.') || inner.name === 'node_modules') continue;
+            const level2 = path.join(entry.name, inner.name, d);
+            try {
+              const st = await fs.stat(path.join(projectRoot, level2));
+              if (st.isDirectory()) {
+                found.push(level2);
+              }
+            } catch { /* missing */ }
+          }
+        } catch { /* can't read inner dir */ }
+      }
+    } catch { /* can't read project root */ }
+  }
+
+  return found;
+}
+
 async function expandSourceDirsForLang(projectRoot: string, lang: string): Promise<string[]> {
   const dirs = new Set<string>(['.']);
-  const lower = lang.trim().toLowerCase();
-  if (lower === 'dotnet' || lower === 'csharp') {
-    for (const d of INFRA_SOURCE_SUBDIRS) {
-      try {
-        const st = await fs.stat(path.join(projectRoot, d));
-        if (st.isDirectory()) {
-          dirs.add(d);
-        }
-      } catch {
-        /* directory missing */
-      }
-    }
+  const infraDirs = await discoverInfraDirs(projectRoot);
+  for (const d of infraDirs) {
+    dirs.add(d);
   }
 
   try {
@@ -231,7 +278,7 @@ export async function buildPerRepoConfig(
 ): Promise<ResolvedConfig> {
   const resolvedRuntime = path.resolve(runtimeDir);
   const projectRoot = path.resolve(workspaceRoot, repo.path);
-  const normalizedOutput = outputDir.replace(/[/\\]+$/, '') || '.ste-workspace';
+  const normalizedOutput = outputDir.replace(/[/\\]+$/, '') || '.workspace-graph';
   const stateAbsPath = path.resolve(workspaceRoot, normalizedOutput, 'state', repo.name);
   const repoAbsPath = path.resolve(projectRoot);
 
@@ -251,6 +298,12 @@ export async function buildPerRepoConfig(
 
   const languages = await mapRepoLang(repo.lang, projectRoot);
   const sourceDirs = await expandSourceDirsForLang(projectRoot, repo.lang);
+
+  // If infra directories were discovered, ensure cloudformation is in the language list
+  const infraDirs = await discoverInfraDirs(projectRoot);
+  if (infraDirs.length > 0 && !languages.includes('cloudformation')) {
+    languages.push('cloudformation');
+  }
 
   const stateDir = relativeStateDir;
 

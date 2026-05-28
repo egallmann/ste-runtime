@@ -20,7 +20,7 @@ afterEach(async () => {
 });
 
 describe('buildPerRepoConfig', () => {
-  it('places resolved state outside projectRoot for default .ste-workspace layout (Invariant 2)', async () => {
+  it('places resolved state outside projectRoot for default .workspace-graph layout (Invariant 2)', async () => {
     const workspaceRoot = tempDir;
     const repoRel = 'repo-alpha';
     await mkdir(path.join(workspaceRoot, repoRel), { recursive: true });
@@ -35,12 +35,12 @@ describe('buildPerRepoConfig', () => {
 
     const runtimeDir = path.join(workspaceRoot, 'runtime-stub');
     await mkdir(runtimeDir, { recursive: true });
-    const cfg = await buildPerRepoConfig(runtimeDir, repo, workspaceRoot, '.ste-workspace/');
+    const cfg = await buildPerRepoConfig(runtimeDir, repo, workspaceRoot, '.workspace-graph/');
 
     const projectRoot = path.resolve(workspaceRoot, repoRel);
     const stateResolved = path.resolve(projectRoot, cfg.stateDir);
     expect(stateResolved.startsWith(projectRoot + path.sep)).toBe(false);
-    expect(stateResolved).toBe(path.join(workspaceRoot, '.ste-workspace', 'state', 'repo-alpha'));
+    expect(stateResolved).toBe(path.join(workspaceRoot, '.workspace-graph', 'state', 'repo-alpha'));
   });
 
   it('throws when output_dir would place state under the scanned repository', async () => {
@@ -102,8 +102,8 @@ describe('output_dir variants', () => {
 
     const runtimeDir = path.join(workspaceRoot, 'runtime-stub');
     await mkdir(runtimeDir, { recursive: true });
-    const cfgA = await buildPerRepoConfig(runtimeDir, repoA, workspaceRoot, '.ste-workspace/');
-    const cfgB = await buildPerRepoConfig(runtimeDir, repoB, workspaceRoot, '.ste-workspace/');
+    const cfgA = await buildPerRepoConfig(runtimeDir, repoA, workspaceRoot, '.workspace-graph/');
+    const cfgB = await buildPerRepoConfig(runtimeDir, repoB, workspaceRoot, '.workspace-graph/');
 
     const stateA = path.resolve(path.resolve(workspaceRoot, 'repo-alpha'), cfgA.stateDir);
     const stateB = path.resolve(path.resolve(workspaceRoot, 'repo-beta'), cfgB.stateDir);

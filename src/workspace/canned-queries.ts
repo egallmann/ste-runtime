@@ -348,7 +348,7 @@ const CALL_VERBS = new Set(['invokes', 'publishes', 'calls', 'triggers', 'publis
 
 /**
  * Depth-1 reverse neighborhood on invokes/publishes/calls/triggers/publishes_to edges.
- * Port of aos-graph query.py::what_calls.
+ * Port of the legacy workspace-graph query module (what_calls).
  */
 export function whatCalls(
   graph: WorkspaceGraph,
@@ -370,7 +370,7 @@ export function whatCalls(
 
 /**
  * Forward transitive closure on all edges. Cycle-safe.
- * Port of aos-graph query.py::what_depends_on.
+ * Port of the legacy workspace-graph query module (what_depends_on).
  */
 export function whatDependsOn(
   graph: WorkspaceGraph,
@@ -396,7 +396,7 @@ export function whatDependsOn(
 
 /**
  * Reverse transitive closure on all edges. Cycle-safe.
- * Port of aos-graph query.py::blast_radius.
+ * Port of the legacy workspace-graph query module (blast_radius).
  */
 export function blastRadiusNode(
   graph: WorkspaceGraph,

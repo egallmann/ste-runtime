@@ -91,8 +91,8 @@ compression engine before rendering.
 ## CLI Usage
 
 ```bash
-ste ws deps --workspace .ste-workspace --resolution L0 --output mermaid
-ste ws integration --workspace .ste-workspace --resolution L2 --output table
+ste ws deps --workspace .workspace-graph --resolution L0 --output mermaid
+ste ws integration --workspace .workspace-graph --resolution L2 --output table
 ```
 
 ## Compression Algorithms

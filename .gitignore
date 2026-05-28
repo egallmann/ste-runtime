@@ -61,4 +61,7 @@ test-output.txt
 documentation/e-adr-archived/
 documentation/plan/
 
+# Experiments (tracked on feature/acs-experimentation only)
+experiments/
+
 

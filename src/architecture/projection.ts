@@ -10,7 +10,7 @@ import {
   emptyRelationshipBuckets,
 } from './types.js';
 
-const PROJECTABLE = new Set(['adr', 'system', 'component', 'decision', 'capability', 'invariant']);
+const PROJECTABLE = new Set(['adr', 'system', 'component', 'decision', 'capability', 'invariant', 'rule', 'rejection']);
 
 const VALID_LIFECYCLE_STAGES = new Set<string>(['proposed', 'active', 'deprecated', 'superseded']);
 
@@ -59,6 +59,7 @@ export function projectEntity(
     name: entity.name,
     summary: entity.summary,
     lifecycle_stage: deriveLifecycleStage(entity, allEntities),
+    admission_status: 'admitted' as const,
     canonical_source: entity.canonical_source,
     source_refs: [...entity.source_refs].sort(
       (a, b) => a.source_ref.localeCompare(b.source_ref) || a.mention_role.localeCompare(b.mention_role),

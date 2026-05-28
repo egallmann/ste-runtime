@@ -9,6 +9,138 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `ste setup` CLI command: one-command workspace onboarding that detects
+  workspace type (multi-repo vs single-repo), scaffolds `workspace.yaml` or
+  `ste.config.json`, creates workspace-level `.cursor/mcp.json` with correct
+  absolute paths and `--project-root`, updates `.gitignore`, and runs initial
+  RECON. Supports `--dry-run` and `--ste-runtime-path` flags.
+
+- `documentation/guides/setup.md`: single authoritative setup guide
+  consolidating fragments from README, WORKSPACE-SETUP, RECON-README, and
+  mcp-setup guides.
+
+- Unit and integration tests for `ste setup` command (11 tests covering
+  workspace-type detection, MCP config generation, .gitignore idempotency,
+  and --dry-run mode).
+
+### Changed
+
+- MATURITY.md revised to reflect current production use and verified data:
+  - Status updated from EXPERIMENTAL to PRODUCTION WORKSPACE TOOLING
+  - CEM assessment corrected from "NOT IMPLEMENTED" to "PARTIALLY IMPLEMENTED"
+    (substrate exists via bounded context assembly, convergent subgraph expansion,
+    ADR integration; invariant validation not operationalized)
+  - Performance benchmarks updated to workspace scale (15 repos, ~952K LOC, ~23s)
+  - Coverage numbers flagged as stale (January 2026); CLI Tools now has tests
+  - Removed inapplicable compliance concerns
+  - Consolidated use case guidance; reframed path to full maturity
+
+### Fixed
+
+- Replaced stale `ste-runtime-private` references with `ste-runtime` in
+  `scripts/init.cjs`.
+
+- Updated MATURITY.md version from `0.9.0-experimental` to
+  `0.10.0-experimental` to match package.json.
+
+- Added "Command Prerequisite" note to troubleshooting guide explaining that
+  bare `ste` commands require `npm link` since the package is not published.
+
+- Added `npm link` documentation and `npm run init` instructions to
+  CONTRIBUTING.md Local Development section.
+
+### Changed
+
+- Rewrote README Quick Start to present exactly two setup paths: add-to-project
+  via `ste setup` and standalone via `npm run init`.
+
+- Documented existing automation commands (`npm run init`, `ste init`,
+  `npm run recon:init`) in README Common Commands and workspace initialization
+  guide.
+
+- Consolidated setup guide references: instructions/WORKSPACE-SETUP.md now
+  redirects to `documentation/guides/setup.md`; duplicate Quick Starts removed
+  from instructions/README.md and RECON-README.md.
+
+- Rewrote `SYSTEM-OVERVIEW.md` to accurately describe ste-runtime capabilities
+  (RECON, RSS, MCP, CLI, extractors, workspace mode) and standalone operation.
+  Previous content was a misplaced copy from adr-architecture-kit referencing
+  Python paths and `src/adr_kit/`.
+
+### Added
+
+- Phase 2 semantic enrichment: `contradicts` symmetric relationship type for
+  detecting contradictory decisions. Emits bidirectional edges from author-
+  declared `contradicts` fields on decisions.
+
+- Phase 2 `rule` entity type (`RULE-NNNN`): first-class architecture rules
+  extracted from logical ADR `rules[]` sections. Rules are evaluable
+  conditions (distinct from invariants, which are static constraints).
+  Includes `enforces`/`governs` relationship derivation for rules.
+
+- Phase 2 ADR subgraph projection (`adrSubgraph`): entity-type filtering,
+  relationship-type filtering, domain scoping, and ADR-scoped subgraph
+  extraction over the compiled ADR model.
+
+- Phase 2 `admission_status` field on NormalizedEntity: `candidate`,
+  `admitted`, or `rejected`. Defaults to `admitted` for all compiled
+  entities. Reserved for ste-kernel admission signal integration.
+
+- Phase 2 DEC lifecycle metadata on decision entities: typed
+  `dec_lifecycle_stage`, `reevaluation_conditions`, and
+  `accumulated_consequences` fields extracted from ADR YAML, replacing
+  untyped metadata bag storage.
+
+- Phase 3 `architectureMerge` wired with real `ReconArchitectureSnapshot`
+  data (version `1`). Attribution records from RECON evidence are merged
+  into entity metadata as `embodiment_count`, `attributed_code_slices`,
+  and `enforcing_code_slices`.
+
+- Phase 3 Architecture Consequence Surface (`consequenceSurface`): computes
+  transitive consequence closure for change-impact queries, distinguishing
+  hard consequences (enforces, governs, implements, supersedes, contradicts)
+  from soft consequences (related_to, references, refines, enables).
+
+- Phase 3 embodiment density projection (`computeEmbodimentDensity`):
+  per-ADR, per-capability, per-system, per-component, per-invariant
+  coverage metrics based on attribution evidence. Reports covered, partial,
+  and unlinked entities with coverage ratio summary.
+
+- Phase 3 governance projection (`buildGovernanceProjection`): reads
+  authority boundaries, invariant coverage, and decision governance chains
+  directly from ADR entity/relationship registries. Replaces the stub that
+  previously delegated to `componentIntegration`.
+
+- Phase 4 (experimental) negative-space entity extraction: `rejection`
+  entity type (`REJ-NNNN`) extracted from logical ADR `rejections[]`
+  sections. Linked to decisions via `rejects`/`rejected_by` relationship
+  types.
+
+- Phase 4 (experimental) DEC gravity computation (`computeDecGravity`):
+  scores decisions by downstream dependency count, invariant enforcement
+  count, component governance count, capability enablement count, and
+  accumulated consequence count. Weighted composite score for change-risk
+  assessment.
+
+- Phase 4 (experimental) MVC context assembly rationale
+  (`assembleContextWithRationale`): extends traversal API to return
+  inclusion/exclusion rationale for every entity (traversal path, boundary
+  reason, domain filter, entity type filter, broken edge).
+
+### Changed
+
+- `ReconArchitectureSnapshot` type upgraded from stub (version `0`) to
+  real data carrier (version `1`) with `attribution_records` array.
+
+- `governance-projection` family source query changed from
+  `componentIntegration` to `governanceFromArchitecture`.
+
+- Legacy workspace-graph package retired: `merge` and `emit-evidence` CLI commands emit
+  runtime deprecation warnings. Package reclassified as archived read-only
+  query shim.
+
+### Added
+
 - ADR YAML RECON extractor (`src/extractors/adr-yaml/index.ts`): new `adr-yaml`
   language added to the RECON pipeline. Extracts ADR YAML source files into
   first-class graph slices, enabling `find`, `impact`, `usages`, and `similar`

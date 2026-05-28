@@ -1,5 +1,5 @@
 /**
- * Workspace graph merge -- TypeScript port of aos-graph/merger.py.
+ * Workspace graph merge -- TypeScript port of the legacy workspace-graph merger.
  *
  * Loads per-repo slices, validates via Zod, merges nodes (first-wins collision),
  * filters to high-confidence edges, resolves dangling references, folds

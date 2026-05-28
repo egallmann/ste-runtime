@@ -219,33 +219,48 @@ function resolveBilateral(
     contractsByRepo.set(contract.repo, existing);
   }
 
-  // Try to match each claim against all contracts in other repos
+  // Try to match each claim against all contracts in other repos, picking the most specific match
   for (let i = 0; i < claims.length; i++) {
     const claim = claims[i];
+    let bestContract: EndpointContract | null = null;
+    let bestRepo = '';
+    let bestSpecificity = -1;
 
     for (const [targetRepo, repoContracts] of contractsByRepo) {
       if (targetRepo === claim.repo) continue;
 
       const matchedContract = findMatchingContract(claim, repoContracts);
       if (matchedContract) {
-        edges.push({
-          from: `Service:${claim.repo}`,
-          to: `Endpoint:${targetRepo}:${matchedContract.method}:${matchedContract.path}`,
-          verb: 'calls',
-          confidence: 'high',
-          provenance: {
-            source_repo: claim.repo,
-            target_repo: targetRepo,
-            evidence: `Bilateral: httpCalls ${claim.method} ${claim.urlPattern} matches endpoint ${matchedContract.method} ${matchedContract.path}`,
-          },
-          attributes: {
-            protocol: 'HTTP',
-            url_patterns: [claim.urlPattern],
-          },
-        });
-        matchedClaims.add(i);
-        break; // One claim matches one endpoint
+        const contractPathNorm = normalizePath(matchedContract.path);
+        const contractSegments = contractPathNorm.split('/').filter(Boolean);
+        const specificity = contractSegments.filter(
+          s => !s.startsWith(':') && !s.startsWith('{') && !s.startsWith('['),
+        ).length;
+        if (specificity > bestSpecificity) {
+          bestSpecificity = specificity;
+          bestContract = matchedContract;
+          bestRepo = targetRepo;
+        }
       }
+    }
+
+    if (bestContract) {
+      edges.push({
+        from: `Service:${claim.repo}`,
+        to: `Endpoint:${bestRepo}:${bestContract.method}:${bestContract.path}`,
+        verb: 'calls',
+        confidence: 'high',
+        provenance: {
+          source_repo: claim.repo,
+          target_repo: bestRepo,
+          evidence: `Bilateral: httpCalls ${claim.method} ${claim.urlPattern} matches endpoint ${bestContract.method} ${bestContract.path}`,
+        },
+        attributes: {
+          protocol: 'HTTP',
+          url_patterns: [claim.urlPattern],
+        },
+      });
+      matchedClaims.add(i);
     }
   }
 
@@ -298,24 +313,35 @@ function findMatchingContract(claim: HttpCallClaim, contracts: EndpointContract[
   // Require minimum 2 path segments to avoid short-path false positives
   if (claimSegments.length < 2) return null;
 
+  let bestMatch: EndpointContract | null = null;
+  let bestSpecificity = -1;
+
   for (const contract of contracts) {
     if (contract.method !== claimMethod) continue;
 
     const contractPathNorm = normalizePath(contract.path);
     const contractSegments = contractPathNorm.split('/').filter(Boolean);
 
-    // Exact match
+    // Exact match always wins
     if (contractPathNorm === claimPathNorm) return contract;
 
-    // Path-suffix alignment: claim path is a suffix of contract path
-    // e.g., claim "/customer/isUsernameTaken" matches contract "api/customer/isUsernameTaken"
-    if (isSuffixMatch(claimSegments, contractSegments)) return contract;
+    let matched = false;
+    if (isSuffixMatch(claimSegments, contractSegments)) matched = true;
+    if (isSuffixMatch(contractSegments, claimSegments)) matched = true;
 
-    // Reverse: contract path is a suffix of claim path
-    if (isSuffixMatch(contractSegments, claimSegments)) return contract;
+    if (matched) {
+      // Prefer contracts with more literal (non-param) segments
+      const specificity = contractSegments.filter(
+        s => !s.startsWith(':') && !s.startsWith('{') && !s.startsWith('['),
+      ).length;
+      if (specificity > bestSpecificity) {
+        bestSpecificity = specificity;
+        bestMatch = contract;
+      }
+    }
   }
 
-  return null;
+  return bestMatch;
 }
 
 /**
@@ -333,6 +359,7 @@ function isSuffixMatch(needle: string[], haystack: string[]): boolean {
     // Parameterized segments match anything
     if (n.startsWith(':') || h.startsWith(':')) continue;
     if (n.startsWith('{') || h.startsWith('{')) continue;
+    if (n.startsWith('[') || h.startsWith('[')) continue;
     if (n !== h) return false;
   }
   return true;
@@ -343,7 +370,7 @@ function normalizePath(p: string): string {
     .toLowerCase()
     .replace(/^\/+|\/+$/g, '')
     .replace(/\{[^}]+\}/g, ':param')
-    .replace(/\[action\]/g, ':action')
+    .replace(/\[[^\]]+\]/g, ':param')
     .replace(/\/+/g, '/');
 }
 

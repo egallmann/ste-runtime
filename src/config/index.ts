@@ -315,6 +315,7 @@ export async function detectLanguages(projectRoot: string): Promise<SupportedLan
   }
   
   // Check for CloudFormation (look for cloudformation directory or template files)
+  // Checks top-level and one level of nesting (e.g., apps/*/cfn_templates)
   const cfnPaths = [
     'cloudformation',
     'backend/cloudformation',
@@ -323,17 +324,58 @@ export async function detectLanguages(projectRoot: string): Promise<SupportedLan
     'cfn_templates',
     'sam',
   ];
+  let cfnFound = false;
   for (const cfnPath of cfnPaths) {
+    if (cfnFound) break;
     try {
       const fullPath = path.join(projectRoot, cfnPath);
       const stat = await fs.stat(fullPath);
       if (stat.isDirectory()) {
         languages.push('cloudformation');
-        break;
+        cfnFound = true;
       }
     } catch {
       // Continue
     }
+  }
+  // Nested discovery: scan immediate subdirectories for infra dirs
+  if (!cfnFound) {
+    try {
+      const topEntries = await fs.readdir(projectRoot, { withFileTypes: true });
+      for (const entry of topEntries) {
+        if (cfnFound) break;
+        if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist') continue;
+        for (const cfnDir of cfnPaths) {
+          try {
+            const nested = path.join(projectRoot, entry.name, cfnDir);
+            const st = await fs.stat(nested);
+            if (st.isDirectory()) {
+              languages.push('cloudformation');
+              cfnFound = true;
+              break;
+            }
+          } catch { /* continue */ }
+          // Two levels deep (e.g., apps/admin/cfn_templates)
+          if (cfnFound) break;
+          try {
+            const innerEntries = await fs.readdir(path.join(projectRoot, entry.name), { withFileTypes: true });
+            for (const inner of innerEntries) {
+              if (!inner.isDirectory() || inner.name.startsWith('.')) continue;
+              try {
+                const deep = path.join(projectRoot, entry.name, inner.name, cfnDir);
+                const st = await fs.stat(deep);
+                if (st.isDirectory()) {
+                  languages.push('cloudformation');
+                  cfnFound = true;
+                  break;
+                }
+              } catch { /* continue */ }
+            }
+          } catch { /* continue */ }
+          if (cfnFound) break;
+        }
+      }
+    } catch { /* can't read root */ }
   }
   
   // Check for JSON data files (controls, schemas, etc.) per E-ADR-005

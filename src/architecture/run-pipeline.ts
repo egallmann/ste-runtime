@@ -117,6 +117,9 @@ function addNamespaceBoundary(entities: Map<string, IrEntity>, namespace: string
       superseded_by: [],
       refines: [],
       refined_by: [],
+      contradicts: [],
+      rejects: [],
+      rejected_by: [],
     },
   });
 }

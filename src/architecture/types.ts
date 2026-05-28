@@ -22,6 +22,9 @@ export const RELATIONSHIP_TYPES = [
   'superseded_by',
   'refines',
   'refined_by',
+  'contradicts',
+  'rejects',
+  'rejected_by',
 ] as const;
 
 export type RelationshipType = (typeof RELATIONSHIP_TYPES)[number];
@@ -47,6 +50,9 @@ export function emptyRelationshipBuckets(): Record<RelationshipType, string[]> {
     superseded_by: [],
     refines: [],
     refined_by: [],
+    contradicts: [],
+    rejects: [],
+    rejected_by: [],
   };
 }
 
@@ -129,13 +135,15 @@ export interface ValidationSummary {
 }
 
 export type LifecycleStage = 'proposed' | 'active' | 'deprecated' | 'superseded';
+export type AdmissionStatus = 'candidate' | 'admitted' | 'rejected';
 
 export interface NormalizedEntity {
   id: string;
-  entity_type: 'adr' | 'system' | 'component' | 'decision' | 'capability' | 'invariant';
+  entity_type: 'adr' | 'system' | 'component' | 'decision' | 'capability' | 'invariant' | 'rule' | 'rejection';
   name: string;
   summary: string;
   lifecycle_stage: LifecycleStage;
+  admission_status: AdmissionStatus;
   canonical_source: CanonicalSource;
   source_refs: SourceRef[];
   metadata: Record<string, unknown>;
@@ -183,6 +191,7 @@ export interface ArchitectureIndexPayload {
   invariant_registry_path: string;
   component_registry_path: string;
   system_registry_path: string;
+  rule_registry_path: string;
   validation_summary: ValidationSummary;
   source_coverage: SourceCoverageSummary;
 }
@@ -222,6 +231,15 @@ export interface ArchModelState {
   standaloneInvariants: Array<{ inv: Record<string, unknown>; path: string }>;
 }
 
+export type DecLifecycleStage = 'candidate' | 'proposed' | 'accepted' | 'governing' | 'superseded';
+
+export interface DecisionMetadata {
+  dec_lifecycle_stage?: DecLifecycleStage;
+  reevaluation_conditions?: string[];
+  accumulated_consequences?: string[];
+  gravity_score?: number;
+}
+
 export interface CompileDiagnostic {
   level: 'ERROR' | 'WARNING';
   code: string;
@@ -229,6 +247,20 @@ export interface CompileDiagnostic {
   source_ref?: string;
 }
 
+export interface AttributionRecord {
+  implementation_entity_id: string;
+  implementation_entity_type: string;
+  attributed_adrs: string[];
+  enforced_invariants: string[];
+  provenance: {
+    source_file: string;
+    extractor: string;
+    commit: string | null;
+  };
+  metadata: Record<string, unknown>;
+}
+
 export interface ReconArchitectureSnapshot {
-  readonly version: '0';
+  readonly version: '1';
+  attribution_records: AttributionRecord[];
 }

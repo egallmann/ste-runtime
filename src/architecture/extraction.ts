@@ -117,6 +117,14 @@ export function extractLogicalEntities(
       const sourceRef = `${id}#${decId}`;
       const decSummary = asOptionalString(d.summary) ?? decId;
       const decRationale = asOptionalString(d.rationale) ?? '';
+
+      const decLifecycleStage = asOptionalString(d.dec_lifecycle_stage);
+      const reevaluationConditions = asStringArray(d.reevaluation_conditions);
+      const consequences = d.consequences as Record<string, unknown> | undefined;
+      const positiveConsequences = consequences ? asStringArray(consequences.positive) : [];
+      const negativeConsequences = consequences ? asStringArray(consequences.negative) : [];
+      const accumulatedConsequences = [...positiveConsequences, ...negativeConsequences];
+
       entities.push({
         entity: newIrEntity({
           id: decId,
@@ -132,6 +140,10 @@ export function extractLogicalEntities(
             governs_components: asStringArray(d.governs_components),
             supersedes: asStringArray(d.supersedes),
             refines: asStringArray(d.refines),
+            contradicts: asStringArray(d.contradicts),
+            dec_lifecycle_stage: decLifecycleStage ?? undefined,
+            reevaluation_conditions: reevaluationConditions.length > 0 ? reevaluationConditions : undefined,
+            accumulated_consequences: accumulatedConsequences.length > 0 ? accumulatedConsequences : undefined,
           },
           completeness: scoreCompleteness(),
           provenance: makeProvenance('logical_adr', sourceRef, 'extract_decision', 'explicit'),
@@ -165,6 +177,60 @@ export function extractLogicalEntities(
         source_ref: `${id}#${invId}`,
       });
       invariantMentions.set(invId, list);
+    }
+
+    const rejections = Array.isArray(adr.rejections) ? adr.rejections : [];
+    for (const rejection of rejections) {
+      const rej = asRecord(rejection, 'rejection');
+      const rejId = asString(rej.id, 'rejection.id');
+      const rejSourceRef = `${id}#${rejId}`;
+      const rejStatement = asOptionalString(rej.statement) ?? asOptionalString(rej.description) ?? '';
+      entities.push({
+        entity: newIrEntity({
+          id: rejId,
+          entity_type: 'rejection',
+          name: asOptionalString(rej.name) ?? rejId,
+          summary: summarizeText(rejStatement),
+          canonical_source: makeCanonical('logical_adr', rejSourceRef, artifact),
+          metadata: {
+            adr_id: id,
+            statement: rejStatement,
+            rationale: asOptionalString(rej.rationale),
+            alternatives_considered: asStringArray(rej.alternatives_considered),
+            related_decisions: asStringArray(rej.related_decisions),
+          },
+          completeness: scoreCompleteness(),
+          provenance: makeProvenance('logical_adr', rejSourceRef, 'extract_rejection', 'explicit'),
+        }),
+      });
+    }
+
+    const rules = Array.isArray(adr.rules) ? adr.rules : [];
+    for (const rule of rules) {
+      const r = asRecord(rule, 'rule');
+      const ruleId = asString(r.id, 'rule.id');
+      const sourceRef = `${id}#${ruleId}`;
+      const ruleStatement = asOptionalString(r.statement) ?? asOptionalString(r.description) ?? '';
+      entities.push({
+        entity: newIrEntity({
+          id: ruleId,
+          entity_type: 'rule',
+          name: asOptionalString(r.name) ?? ruleId,
+          summary: summarizeText(ruleStatement),
+          canonical_source: makeCanonical('logical_adr', sourceRef, artifact),
+          metadata: {
+            adr_id: id,
+            statement: ruleStatement,
+            scope: asOptionalString(r.scope),
+            enforcement_level: asOptionalString(r.enforcement_level),
+            evaluation_method: asOptionalString(r.evaluation_method),
+            related_invariants: asStringArray(r.related_invariants),
+            governs_components: asStringArray(r.governs_components),
+          },
+          completeness: scoreCompleteness(),
+          provenance: makeProvenance('logical_adr', sourceRef, 'extract_rule', 'explicit'),
+        }),
+      });
     }
 
     const gaps = Array.isArray(adr.gaps) ? adr.gaps : [];
@@ -535,6 +601,42 @@ export function deriveRelationships(
           addRel('refined_by', target, decId, `${adrId}#${decId}`, [adrId], 'derived');
         }
       }
+      for (const target of asStringArray(d.contradicts)) {
+        if (projected.has(target)) {
+          addRel('contradicts', decId, target, `${adrId}#${decId}`, [adrId]);
+          addRel('contradicts', target, decId, `${adrId}#${decId}`, [adrId], 'derived');
+        }
+      }
+    }
+
+    const rules = Array.isArray(adr.rules) ? adr.rules : [];
+    for (const rule of rules) {
+      const r = asRecord(rule, 'rule');
+      const ruleId = asString(r.id, 'rule.id');
+      for (const invariantId of asStringArray(r.related_invariants)) {
+        if (projected.has(invariantId)) {
+          addRel('enforces', ruleId, invariantId, `${adrId}#${ruleId}`, [adrId]);
+          addRel('enforced_by', invariantId, ruleId, `${adrId}#${ruleId}`, [adrId], 'derived');
+        }
+      }
+      for (const componentId of asStringArray(r.governs_components)) {
+        if (projected.has(componentId)) {
+          addRel('governs', ruleId, componentId, `${adrId}#${ruleId}`, [adrId]);
+          addRel('governed_by', componentId, ruleId, `${adrId}#${ruleId}`, [adrId], 'derived');
+        }
+      }
+    }
+
+    const rejections = Array.isArray(adr.rejections) ? adr.rejections : [];
+    for (const rejection of rejections) {
+      const rej = asRecord(rejection, 'rejection');
+      const rejId = asString(rej.id, 'rejection.id');
+      for (const decisionId of asStringArray(rej.related_decisions)) {
+        if (projected.has(decisionId)) {
+          addRel('rejects', rejId, decisionId, `${adrId}#${rejId}`, [adrId]);
+          addRel('rejected_by', decisionId, rejId, `${adrId}#${rejId}`, [adrId], 'derived');
+        }
+      }
     }
   }
 
@@ -615,7 +717,7 @@ export function deriveRelationships(
 }
 
 function isProjectable(entityType: string): boolean {
-  return ['adr', 'system', 'component', 'decision', 'capability', 'invariant'].includes(entityType);
+  return ['adr', 'system', 'component', 'decision', 'capability', 'invariant', 'rule', 'rejection'].includes(entityType);
 }
 
 function projectEntityForDerivation(entity: IrEntity): NormalizedEntity {
@@ -625,6 +727,7 @@ function projectEntityForDerivation(entity: IrEntity): NormalizedEntity {
     name: entity.name,
     summary: entity.summary,
     lifecycle_stage: 'active',
+    admission_status: 'admitted',
     canonical_source: entity.canonical_source,
     source_refs: entity.source_refs,
     metadata: entity.metadata,

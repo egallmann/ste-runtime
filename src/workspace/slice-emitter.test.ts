@@ -21,8 +21,8 @@ describe('slice-emitter', () => {
 
       const result = await emitWorkspaceSlice(
         'repo-alpha',
-        '/workspace/.ste-workspace/state/repo-alpha',
-        '/workspace/.ste-workspace/slices/repo-alpha.yaml',
+        '/workspace/.workspace-graph/state/repo-alpha',
+        '/workspace/.workspace-graph/slices/repo-alpha.yaml',
         '/workspace/repo-alpha',
       );
 

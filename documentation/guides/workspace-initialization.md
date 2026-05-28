@@ -27,8 +27,20 @@ npm run build
 
 ## 1. Create `workspace.yaml`
 
-Create a `workspace.yaml` file at the root of your multi-repo workspace
-directory. This file declares all repositories and their metadata.
+You can scaffold `workspace.yaml` automatically using the built-in init command.
+From the workspace root directory (the parent of your repo directories):
+
+```bash
+node /path/to/ste-runtime/dist/cli/index.js init
+```
+
+This scans subdirectories for project markers (`package.json`, `pyproject.toml`,
+`.csproj`, etc.), detects the primary language, and writes a `workspace.yaml`
+with sensible defaults. Review the generated file and adjust `kind`, `lang`, or
+`seed_scope` as needed.
+
+Alternatively, create `workspace.yaml` by hand at the root of your multi-repo
+workspace directory. This file declares all repositories and their metadata.
 
 ### Schema
 

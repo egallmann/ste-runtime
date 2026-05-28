@@ -22,13 +22,16 @@ context: |
 capabilities:
 - id: CAP-0010
   name: One-command workspace initialization
-  description: ste init <target> creates a fully configured workspace.
+  description: |
+    ste setup creates a fully configured workspace (config, MCP, gitignore,
+    initial RECON). ste init remains as the sub-capability for scaffolding
+    workspace.yaml specifically.
 architectural_boundaries:
 - id: BOUND-0001
   name: Init publication surface
   description: |
-    Creates .ste-workspace/config.yaml and
-    .ste-workspace/registry.local.yaml.example at the target path.
+    Creates .workspace-graph/config.yaml and
+    .workspace-graph/registry.local.yaml.example at the target path.
   rationale: Defines the exact files produced by init, bounding its write surface.
 constraints:
 - id: CONST-0001
@@ -53,17 +56,24 @@ constraints:
   rationale: Idempotency ensures safe re-runs and reduces operator anxiety during onboarding.
 decisions:
 - id: DEC-0010
-  summary: ste init is the canonical one-command install experience
+  summary: ste setup is the canonical one-command install experience
   rationale: |
-    Manual onboarding is error-prone and slow. A first-class init command
+    Manual onboarding is error-prone and slow. A first-class setup command
     with binding constraints ensures consistent, portable, and safe
-    workspace initialization.
+    workspace initialization. ste setup supersedes the narrower ste init
+    by also handling MCP configuration, .gitignore, and initial RECON.
 decision: |
-  ste init <target> is a first-class CLI command and the canonical
-  one-command install experience. Phase 3d implements it.
+  ste setup is the canonical one-command install experience for workspace
+  onboarding. It detects workspace type, scaffolds configuration
+  (workspace.yaml or ste.config.json), creates .cursor/mcp.json with
+  correct absolute paths, updates .gitignore, and runs initial RECON.
+  ste init remains available for the narrower task of scaffolding
+  workspace.yaml only. Both commands support --dry-run.
 consequences:
   positive:
   - One-command onboarding reduces setup friction.
   - Generated configuration is consistent and correct by construction.
+  - MCP configuration is automated, eliminating the highest-friction manual step.
   negative:
-  - The init command must be maintained as a first-class CLI surface.
+  - The setup command must be maintained as a first-class CLI surface.
+  - Two entry points (setup and init) must be clearly differentiated in documentation.

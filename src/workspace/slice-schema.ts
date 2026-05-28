@@ -1,7 +1,7 @@
 /**
  * Zod schemas for workspace graph slice validation.
  *
- * Closed vocabularies are ported from aos-graph/schema.py to ensure parity.
+ * Closed vocabularies are ported from the legacy workspace-graph schema to ensure parity.
  * Cross-repo verbs (calls, triggers, publishes_to) from workspace-edges.yaml
  * are included alongside the 9 existing slice verbs.
  *

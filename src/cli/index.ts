@@ -613,7 +613,7 @@ program
   .command('init')
   .description('Scaffold a workspace.yaml with discovered repos and generic defaults')
   .option('--output <file>', 'Output file path', 'workspace.yaml')
-  .option('--output-dir <dir>', 'Workspace output directory', '.ste-workspace/')
+  .option('--output-dir <dir>', 'Workspace output directory', '.workspace-graph/')
   .option('--dry-run', 'Print to stdout without writing file', false)
   .action(async (options) => {
     const cwd = process.cwd();
@@ -832,6 +832,292 @@ ws
         console.table(toTable(result));
         break;
     }
+  });
+
+// ─── ste setup ──────────────────────────────────────────────
+program
+  .command('setup')
+  .description('One-command workspace onboarding: detect type, scaffold config, create MCP, update .gitignore, run RECON')
+  .option('--dry-run', 'Preview all changes without writing files', false)
+  .option('--ste-runtime-path <path>', 'Absolute path to ste-runtime (default: auto-detect from this CLI binary)')
+  .option('--skip-recon', 'Skip the initial RECON run', false)
+  .option('--project-root <path>', 'Workspace root to set up (default: cwd)')
+  .action(async (options: { dryRun: boolean; steRuntimePath?: string; skipRecon: boolean; projectRoot?: string }) => {
+    const fs = await import('node:fs/promises');
+    const fss = await import('node:fs');
+    const { execSync } = await import('node:child_process');
+
+    const cwd = options.projectRoot ? path.resolve(options.projectRoot) : process.cwd();
+    const runtimeDir = options.steRuntimePath
+      ? path.resolve(options.steRuntimePath)
+      : path.resolve(__dirname, '..', '..');
+
+    const log = (msg: string) => console.log(msg);
+    const ok = (msg: string) => console.log(`  [ok] ${msg}`);
+    const skip = (msg: string) => console.log(`  [skip] ${msg}`);
+    const action = (msg: string) => console.log(`  [+] ${msg}`);
+
+    log('');
+    log('ste setup — workspace onboarding');
+    log(`  workspace:    ${cwd}`);
+    log(`  ste-runtime:  ${runtimeDir}`);
+    log(`  dry-run:      ${options.dryRun}`);
+    log('');
+
+    // ── Validate ste-runtime directory ──
+    const runtimePkg = path.join(runtimeDir, 'package.json');
+    if (!fss.existsSync(runtimePkg)) {
+      console.error(`[error] Cannot find package.json in ste-runtime path: ${runtimeDir}`);
+      console.error('        Use --ste-runtime-path to specify the correct location.');
+      process.exitCode = 1;
+      return;
+    }
+    const runtimeCli = path.join(runtimeDir, 'dist', 'cli', 'index.js');
+    if (!fss.existsSync(runtimeCli)) {
+      console.error(`[error] dist/cli/index.js not found. Run 'npm run build' in ste-runtime first.`);
+      process.exitCode = 1;
+      return;
+    }
+
+    // ── Step 1: Detect workspace type ──
+    log('Step 1: Detecting workspace type...');
+    const PROJECT_MARKERS = [
+      'package.json', 'tsconfig.json', 'setup.py', 'pyproject.toml',
+      'requirements.txt', 'Cargo.toml', 'go.mod', 'pom.xml',
+    ];
+    const CSPROJ_PATTERN = /\.(csproj|sln|fsproj)$/;
+
+    const langHints: Record<string, string> = {
+      'package.json': 'node', 'tsconfig.json': 'node',
+      'setup.py': 'python', 'pyproject.toml': 'python', 'requirements.txt': 'python',
+      'Cargo.toml': 'rust', 'go.mod': 'go', 'pom.xml': 'java',
+    };
+
+    const entries = await fs.readdir(cwd, { withFileTypes: true });
+    const repos: Array<{ name: string; path: string; kind: string; lang: string }> = [];
+
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      if (ent.name.startsWith('.') || ent.name === 'node_modules') continue;
+      const dirPath = path.join(cwd, ent.name);
+      const children = await fs.readdir(dirPath).catch(() => [] as string[]);
+
+      let isProject = false;
+      let lang = 'unknown';
+
+      for (const marker of PROJECT_MARKERS) {
+        if (children.includes(marker)) {
+          isProject = true;
+          if (langHints[marker]) lang = langHints[marker]!;
+          break;
+        }
+      }
+      if (!isProject && children.some(c => CSPROJ_PATTERN.test(c))) {
+        isProject = true;
+        lang = 'dotnet';
+      }
+
+      if (isProject) {
+        const hasCfn = children.includes('sam') || children.includes('cfn_templates');
+        const kind = hasCfn ? 'service' : 'library';
+        repos.push({ name: ent.name, path: `./${ent.name}`, kind, lang });
+      }
+    }
+
+    const isMultiRepo = repos.length >= 2;
+    const isSteRuntimeSelf = path.resolve(cwd) === path.resolve(runtimeDir);
+
+    if (isMultiRepo) {
+      log(`  Detected multi-repo workspace with ${repos.length} projects.`);
+    } else if (isSteRuntimeSelf) {
+      log('  Detected ste-runtime self-analysis (standalone).');
+    } else {
+      log('  Detected single-repo project.');
+    }
+    log('');
+
+    // Collect all planned writes for dry-run preview
+    const writes: Array<{ file: string; content: string; description: string }> = [];
+    const appends: Array<{ file: string; lines: string[]; description: string }> = [];
+
+    // ── Step 2: Scaffold workspace.yaml or ste.config.json ──
+    log('Step 2: Scaffolding configuration...');
+    if (isMultiRepo) {
+      const wsYaml = path.join(cwd, 'workspace.yaml');
+      if (fss.existsSync(wsYaml)) {
+        skip('workspace.yaml already exists');
+      } else {
+        const yamlLines = [
+          `schema_version: "1.0"`,
+          `output_dir: .workspace-graph/`,
+          `repos:`,
+        ];
+        for (const r of repos) {
+          const pad = Math.max(1, 30 - r.name.length);
+          yamlLines.push(`  - { name: ${r.name},${' '.repeat(pad)}path: ${r.path},${' '.repeat(Math.max(1, 30 - r.path.length))}kind: ${r.kind},${' '.repeat(Math.max(1, 14 - r.kind.length))}lang: ${r.lang} }`);
+        }
+        writes.push({
+          file: wsYaml,
+          content: yamlLines.join('\n') + '\n',
+          description: `workspace.yaml with ${repos.length} repos`,
+        });
+      }
+    } else if (!isSteRuntimeSelf) {
+      const steConfig = path.join(cwd, 'ste.config.json');
+      if (fss.existsSync(steConfig)) {
+        skip('ste.config.json already exists');
+      } else {
+        const config = {
+          projectRoot: '.',
+          outputDir: '.ste/state',
+          extractors: { typescript: { enabled: true }, python: { enabled: true } },
+        };
+        writes.push({
+          file: steConfig,
+          content: JSON.stringify(config, null, 2) + '\n',
+          description: 'ste.config.json with auto-detected defaults',
+        });
+      }
+    }
+
+    // ── Step 3: Create .cursor/mcp.json ──
+    log('Step 3: Creating .cursor/mcp.json...');
+    const cursorDir = path.join(cwd, '.cursor');
+    const mcpPath = path.join(cursorDir, 'mcp.json');
+
+    const cliPath = path.join(runtimeDir, 'dist', 'cli', 'index.js');
+    const mcpArgs = ['watch', '--mcp', '--project-root', cwd];
+
+    const newServerConfig: Record<string, unknown> = {
+      disabled: false,
+      timeout: 60,
+      type: 'stdio',
+      command: 'node',
+      args: [cliPath, ...mcpArgs],
+    };
+
+    let existingMcp: { mcpServers?: Record<string, unknown> } = { mcpServers: {} };
+    if (fss.existsSync(mcpPath)) {
+      try {
+        existingMcp = JSON.parse(fss.readFileSync(mcpPath, 'utf8'));
+        if (!existingMcp.mcpServers) existingMcp.mcpServers = {};
+      } catch {
+        existingMcp = { mcpServers: {} };
+      }
+    }
+
+    if (existingMcp.mcpServers?.['ste-runtime']) {
+      skip('.cursor/mcp.json already has ste-runtime entry');
+    } else {
+      existingMcp.mcpServers!['ste-runtime'] = newServerConfig;
+      writes.push({
+        file: mcpPath,
+        content: JSON.stringify(existingMcp, null, 2) + '\n',
+        description: '.cursor/mcp.json with ste-runtime MCP server',
+      });
+    }
+
+    // ── Step 4: Update .gitignore ──
+    log('Step 4: Updating .gitignore...');
+    const gitignorePath = path.join(cwd, '.gitignore');
+    const ignoreEntries = ['.ste/', '.ste-self/', '.workspace-graph/'];
+    const existingGitignore = fss.existsSync(gitignorePath)
+      ? fss.readFileSync(gitignorePath, 'utf8')
+      : '';
+
+    const missingEntries = ignoreEntries.filter(e => {
+      const lines = existingGitignore.split('\n').map(l => l.trim());
+      return !lines.includes(e) && !lines.includes(e.replace(/\/$/, ''));
+    });
+
+    if (missingEntries.length === 0) {
+      skip('.gitignore already contains all required entries');
+    } else {
+      appends.push({
+        file: gitignorePath,
+        lines: ['', '# ste-runtime generated state', ...missingEntries],
+        description: `.gitignore entries: ${missingEntries.join(', ')}`,
+      });
+    }
+
+    // ── Preview / Write ──
+    log('');
+    if (writes.length === 0 && appends.length === 0) {
+      log('Nothing to do — all configuration files are already in place.');
+    } else if (options.dryRun) {
+      log('=== DRY RUN — the following changes would be made ===');
+      log('');
+      for (const w of writes) {
+        log(`CREATE ${w.file}`);
+        log(`  ${w.description}`);
+        log('  --- content preview ---');
+        const lines = w.content.split('\n');
+        for (const line of lines.slice(0, 20)) {
+          log(`  ${line}`);
+        }
+        if (lines.length > 20) log(`  ... (${lines.length - 20} more lines)`);
+        log('');
+      }
+      for (const a of appends) {
+        log(`APPEND ${a.file}`);
+        log(`  ${a.description}`);
+        for (const line of a.lines) {
+          log(`  ${line}`);
+        }
+        log('');
+      }
+      log('Re-run without --dry-run to apply.');
+      return;
+    } else {
+      for (const w of writes) {
+        const dir = path.dirname(w.file);
+        if (!fss.existsSync(dir)) {
+          await fs.mkdir(dir, { recursive: true });
+        }
+        await fs.writeFile(w.file, w.content, 'utf-8');
+        action(w.description);
+      }
+      for (const a of appends) {
+        const suffix = a.lines.join('\n') + '\n';
+        await fs.appendFile(a.file, suffix, 'utf-8');
+        action(a.description);
+      }
+    }
+
+    // ── Step 5: Run initial RECON ──
+    if (!options.skipRecon && !options.dryRun) {
+      log('');
+      log('Step 5: Running initial RECON...');
+      const reconMode = isMultiRepo ? 'workspace' : (isSteRuntimeSelf ? 'self' : 'full');
+      const reconScript = `recon:${reconMode}`;
+      try {
+        log(`  Running npm run ${reconScript} ...`);
+        execSync(`npm run ${reconScript}`, {
+          cwd: runtimeDir,
+          stdio: 'inherit',
+          env: { ...process.env, STE_PROJECT_ROOT: cwd },
+        });
+        ok('RECON complete');
+      } catch {
+        console.error('  [warn] RECON failed. You can retry later with:');
+        console.error(`         cd ${runtimeDir} && npm run ${reconScript}`);
+      }
+    } else if (options.dryRun) {
+      log('Step 5: (skipped in dry-run) Would run initial RECON.');
+    } else {
+      skip('RECON (--skip-recon)');
+    }
+
+    // ── Step 6: Verification instructions ──
+    log('');
+    log('Step 6: Verification');
+    log('');
+    log('  1. Restart Cursor (or reload the window) so it picks up .cursor/mcp.json');
+    log('  2. Open the Cursor MCP panel and confirm "ste-runtime" appears');
+    log('  3. In Cursor chat, ask: "call the overview tool"');
+    log('     You should see a summary of the semantic graph.');
+    log('');
+    log('Setup complete.');
   });
 
 program.parseAsync();

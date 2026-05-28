@@ -14,7 +14,7 @@ export interface ProjectionFamily {
   id: string;
   name: string;
   supportedLevels: ResolutionLevel[];
-  sourceQuery: 'systemDependencies' | 'componentIntegration' | 'blastRadiusWorkspace';
+  sourceQuery: 'systemDependencies' | 'componentIntegration' | 'blastRadiusWorkspace' | 'governanceFromArchitecture';
   compressionOverrides?: Partial<ResolutionConfig>;
   fileNamePattern: (level: ResolutionLevel, repo?: string) => string;
 }
@@ -75,10 +75,8 @@ const governanceProjection: ProjectionFamily = {
   id: 'governance-projection',
   name: 'Governance Projection',
   supportedLevels: ['L0', 'L1'],
-  sourceQuery: 'componentIntegration',
-  compressionOverrides: {
-    suppressAlarmTopics: true,
-  },
+  sourceQuery: 'governanceFromArchitecture',
+  compressionOverrides: { suppressAlarmTopics: true },
   fileNamePattern: (level) => `governance-projection-${level}.md`,
 };
 

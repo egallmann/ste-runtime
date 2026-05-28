@@ -6,6 +6,7 @@ Keep only guides that are current, operational, and specific to using `ste-runti
 
 ## Current Guides
 
+- [Setup Guide](./setup.md) - Start here. Single authoritative guide for onboarding and installation.
 - [Workspace Initialization](./workspace-initialization.md) - Multi-repo workspace setup end-to-end.
 - [Configuration Reference](./configuration-reference.md) - Runtime configuration and `ste.config.json` behavior.
 - [MCP Setup Guide](./mcp-setup.md) - MCP integration and editor setup.

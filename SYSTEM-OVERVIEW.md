@@ -4,204 +4,259 @@ audience: ai-first
 project: ste-runtime
 status: active
 purpose: >
-  Orientation for AI and human contributors working in ste-runtime. Use this
-  file first to discover runtime authority, public surface boundaries,
-  canonical workflows, required tools, and safe extension points.
+  Single-file orientation for AI and human contributors. Use this file first to discover project authority, public surface boundaries, canonical workflows, required tools, and safe extension points before making changes.
 authority_order:
-  - ste-spec public contracts and doctrine
-  - ste-runtime ADRs under adrs/
-  - runtime source under src/
-  - generated runtime state under .ste*/ and workspace output directories
+  - ste-spec doctrine
+  - PROJECT.yaml project authority
+  - ADRs under adrs/
+  - code under src/ as implementation
 first_read: true
-last_updated: 2026-05-27
-generation_note: >
-  Corrected manually because adr-architecture-kit generate-system-overview is
-  not scope-aware in this workspace and currently emits adr-architecture-kit
-  content when invoked for ste-runtime.
+last_updated: 2026-05-28
 -->
 
 # SYSTEM-OVERVIEW
 
 ## Why This File Exists
 
-This file is the fastest correct orientation path for an AI working in
-`ste-runtime`.
+This file is the fastest correct orientation path for an AI working in this repository.
 
-Its job is to prevent three failures:
+Its job is to prevent two common failures:
 
-1. Treating runtime graph state as canonical architecture authority.
-2. Folding Kernel admission or public schema authority into runtime code.
-3. Missing existing runtime workflows for RECON, RSS, evidence emission,
-   workspace graph construction, and projection generation.
+1. Missing project-native capabilities that already exist, such as extractors, CLI commands, and MCP tools.
+2. Making path, scope, or artifact assumptions that conflict with repository authority.
+
+Read this file before writing code, generating artifacts, or modifying repository outputs.
 
 ## System Purpose
 
-`ste-runtime` is the runtime evidence and semantic extraction repository for
-STE.
+`ste-runtime` is a semantic extraction and graph traversal tool for software projects.
 
 It provides:
 
-- RECON semantic extraction over source, infrastructure, API, data, and ADR YAML
-  material.
-- RSS graph traversal and context assembly over runtime-owned state.
-- Local CLI and MCP surfaces for querying runtime-owned graph state.
-- `ArchitectureEvidence` payloads for runtime bundle health, freshness, and
-  subject-linked factual evidence.
-- Workspace-mode orchestration across repositories, including per-repo slices,
-  cross-repo edges, merged workspace graph output, and deterministic
-  multi-resolution projections.
-- Implementation attribution evidence extracted from explicit implementation
-  intent metadata, such as `@implements_adr` and `@enforces_invariant`.
+- **RECON** -- semantic extraction over source code into a structured graph (`.ste/state/`)
+- **RSS** -- graph traversal, search, dependency analysis, blast radius, and context assembly
+- **MCP server** -- Model Context Protocol integration for AI assistants (Cursor, etc.)
+- **CLI** -- developer-facing commands for extraction, querying, and evidence production
+- **Architecture evidence** -- factual `ArchitectureEvidence` JSON from ADR bundles
+- **Workspace mode** -- multi-repository extraction and cross-repo graph queries
 
-It does not define STE doctrine, public cross-repo schemas, or admission
-semantics. Those authorities remain in `ste-spec` and `ste-kernel`.
+`ste-runtime` delivers value as a standalone tool on any codebase. It can also participate in the broader STE ecosystem when `ste-spec` contracts and `adr-architecture-kit` ADR authoring are available.
 
 ## Authority Hierarchy
 
 Use this order when resolving ambiguity:
 
-1. `ste-spec` - public contracts, schema authority, artifact classification,
-   and STE doctrine.
-2. `ste-runtime/adrs/` - runtime-local architecture authority for extraction,
-   workspace graph, evidence, and projection behavior.
-3. `ste-runtime/src/` - current implementation of runtime behavior.
-4. Runtime state and workspace graph outputs - derived artifacts useful for
-   evidence, queries, and projections; not canonical intent.
+1. `ste-spec`
+   Normative doctrine and shared contracts. This repo must not override them. When `ste-spec` is unavailable, `ste-runtime` operates independently using its own ADRs and bundled schema fixtures.
+2. [`PROJECT.yaml`](PROJECT.yaml)
+   Project-local quality gates, metadata, and operating policy.
+3. [`adrs/`](adrs/)
+   Architectural authority for this repository.
+4. [`src/`](src/)
+   Current implementation of the above.
 
-If runtime code and runtime ADRs disagree, treat the ADRs as authoritative
-unless the task is explicitly to correct stale ADRs. If runtime ADRs and
-`ste-spec` disagree on public contract semantics, `ste-spec` wins.
+If code and ADRs disagree, treat the ADRs and project policy as authoritative unless the task is explicitly to correct the ADRs.
 
 ## First Discovery Order
 
-When entering this repo cold, use this order:
+When an AI enters this repo cold, use this order:
 
-1. Read this file.
-2. Read [`README.md`](README.md) for repository boundary and authority split.
-3. Read [`COMPILER-AUTHORITY.md`](COMPILER-AUTHORITY.md) for runtime compiler
-   posture and graph/ADR boundary rules.
-4. Inspect [`package.json`](package.json) for supported scripts and CLI entry
-   points.
-5. Inspect [`src/cli/`](src/cli/) for `ste`, `recon`, `rss`, and evidence
-   command surfaces.
-6. Inspect [`src/recon/`](src/recon/) before changing extraction behavior.
-7. Inspect [`src/workspace/`](src/workspace/) before changing workspace graph,
-   slice, merge, query, or projection behavior.
-8. Inspect [`src/mcp/`](src/mcp/) before changing assistant-facing runtime
-   tools.
-9. Inspect `ste-spec/contracts/` before changing any public handoff shape.
+1. Read [`PROJECT.yaml`](PROJECT.yaml).
+2. Read this file.
+3. Inspect [`package.json`](package.json) for scripts, dependencies, and bin entrypoints.
+4. Inspect the CLI entrypoints: [`src/cli/index.ts`](src/cli/index.ts) and [`src/cli/recon-cli.ts`](src/cli/recon-cli.ts).
+5. Inspect extractors in [`src/extractors/`](src/extractors/).
+6. Inspect MCP tools in [`src/mcp/`](src/mcp/).
+7. Inspect RECON phases in [`src/recon/phases/`](src/recon/phases/).
+8. Only then decide whether new code is needed.
 
-Do not start by editing derived graph state. Change canonical artifacts or
-runtime implementation, then regenerate through the owning workflow.
+Do not start by hand-writing state artifacts if an extractor or RECON phase already covers the target.
 
-## Canonical Runtime Capabilities
+## Canonical Capabilities
 
-Core implementation areas:
+### Extractors (`src/extractors/`)
 
-- RECON orchestration: [`src/recon/index.ts`](src/recon/index.ts)
-- RECON CLI: [`src/cli/recon-cli.ts`](src/cli/recon-cli.ts)
-- RSS CLI and operations: [`src/cli/rss-cli.ts`](src/cli/rss-cli.ts),
-  [`src/rss/`](src/rss/)
-- Runtime evidence CLI: [`src/cli/evidence-command.ts`](src/cli/evidence-command.ts)
-- Architecture compile path: [`src/architecture/`](src/architecture/)
-- Workspace RECON orchestration: [`src/workspace/workspace-recon.ts`](src/workspace/workspace-recon.ts)
-- Workspace slice contract: [`src/workspace/slice-schema.ts`](src/workspace/slice-schema.ts)
-- Workspace graph merge: [`src/workspace/workspace-merge.ts`](src/workspace/workspace-merge.ts)
-- Multi-resolution projection compression:
-  [`src/workspace/compression.ts`](src/workspace/compression.ts)
-- Multi-resolution projection emission:
-  [`src/workspace/emit-multi-res-projections.ts`](src/workspace/emit-multi-res-projections.ts)
-- Implementation attribution evidence:
-  [`src/recon/implementation-intent.ts`](src/recon/implementation-intent.ts)
-- MCP preflight and obligation projection:
-  [`src/mcp/preflight.ts`](src/mcp/preflight.ts),
-  [`src/mcp/obligation-projector.ts`](src/mcp/obligation-projector.ts)
+Language-specific semantic extraction:
 
-Primary commands:
+- **Python:** [`python/python-extractor.ts`](src/extractors/python/python-extractor.ts) -- Flask, FastAPI, Django routes; functions, classes
+- **C#:** [`csharp/index.ts`](src/extractors/csharp/index.ts) -- .NET controllers, services
+- **CloudFormation:** [`cfn/`](src/extractors/cfn/) + [`recon/phases/extraction-cloudformation.ts`](src/recon/phases/extraction-cloudformation.ts) -- Lambda, S3, DynamoDB, Step Functions, IAM
+- **JSON:** [`json/json-extractor.ts`](src/extractors/json/json-extractor.ts) -- schemas, config files, data entities
+- **Angular/CSS:** [`angular/`](src/extractors/angular/), [`css/`](src/extractors/css/) -- component trees, style analysis
+- **ADR YAML:** [`adr-yaml/`](src/extractors/adr-yaml/) -- architecture decision records
 
-- `npm run build`
-- `npm test`
-- `npm run test:integration`
-- `npm run test:contract-guards`
-- `ste evidence architecture --project-root <repo>`
-- `ste architecture compile --project-root <repo>`
-- `recon --self`
-- `recon --workspace <workspace.yaml>`
-- `rss stats|search|lookup|dependencies|dependents|blast-radius|by-tag|context`
+### RECON Phases (`src/recon/phases/`)
+
+Extraction pipeline stages: discovery, population, extraction, inference, normalization, self-validation, divergence detection.
+
+### RSS (`src/rss/`)
+
+Graph operations: [`graph-loader.ts`](src/rss/graph-loader.ts), [`graph-traversal.ts`](src/rss/graph-traversal.ts), [`rss-operations.ts`](src/rss/rss-operations.ts) (search, dependencies, dependents, blast radius, context assembly).
+
+### MCP Server (`src/mcp/`)
+
+Tools exposed to AI assistants: [`mcp-server.ts`](src/mcp/mcp-server.ts), structural tools, context tools, obligation tools, operational tools, optimized architecture tools.
+
+### Architecture Pipeline (`src/architecture/`)
+
+ADR bundle compilation: [`compile-architecture.ts`](src/architecture/compile-architecture.ts), [`adr-traversal.ts`](src/architecture/adr-traversal.ts), [`bundle.ts`](src/architecture/bundle.ts), evidence emission.
+
+### Workspace (`src/workspace/`)
+
+Multi-repo orchestration: manifest parsing, workspace RECON, graph merging, cross-repo edge detection, slice emission, projections.
+
+### CLI Entrypoints
+
+- `ste` -- primary CLI ([`src/cli/index.ts`](src/cli/index.ts)): watch, init, architecture compile, evidence
+- `recon` -- extraction CLI ([`src/cli/recon-cli.ts`](src/cli/recon-cli.ts)): full, incremental, self, workspace modes
+- `rss` -- graph query CLI: stats, search, dependencies, context
 
 ## Artifact Model
 
 Repository artifact classes:
 
-- Runtime ADRs: [`adrs/`](adrs/)
-- Runtime source: [`src/`](src/)
-- Python helper extractors: [`python-scripts/`](python-scripts/)
-- Runtime docs: [`documentation/`](documentation/)
-- Fixture state and snapshots: committed proof fixtures where intentionally
-  tracked; otherwise runtime state is derived.
-- Runtime state: `.ste/`, `.ste-self/`, `.ste-workspace/`, workspace `state/`,
-  `slices/`, `graph.yaml`, `workspace-index.yaml`, `workspace-edges.yaml`, and
-  `projections/` are derived runtime artifacts.
+- RECON state: `.ste/state/` (modules, functions, API endpoints, data entities, infrastructure, validation)
+- Self-documentation state: `.ste-self/state/` (ste-runtime documenting itself)
+- ADRs: [`adrs/logical/`](adrs/logical/), [`adrs/physical/`](adrs/physical/), [`adrs/physical-component/`](adrs/physical-component/), [`adrs/physical-system/`](adrs/physical-system/)
+- Registries and discovery: [`adrs/index/`](adrs/index/)
+- Manifest: [`adrs/manifest.yaml`](adrs/manifest.yaml)
+- Rendered ADR markdown: [`adrs/rendered/`](adrs/rendered/)
+- Project metadata: [`PROJECT.yaml`](PROJECT.yaml)
+- Architecture evidence: JSON output from `ste evidence architecture`
 
-Workspace graph slices and merged workspace graphs are runtime-owned derived
-views. They are not public Architecture IR, not canonical ADR state, and not a
-substitute for `ste-spec` contracts.
+## ADR Taxonomy
+
+Use this type model when reasoning about repository architecture artifacts:
+
+- `ADR-L-XXXX`: Logical design -- capabilities, boundaries, contracts, constraints, invariants.
+- `ADR-P-XXXX`: Physical implementation specifications.
+- `ADR-PS-XXXX`: Physical-System ADRs -- high-level system design with major component boxes and relationships.
+- `ADR-PC-XXXX`: Physical-Component ADRs -- implementation-ready executable architecture.
 
 ## Canonical Workflows
 
-### Validate runtime code
+### Extract semantic state from a project
 
-Run `npm run build` and the relevant test script. Use
-`npm run test:contract-guards` when evidence or spec-mirrored contract behavior
-changes.
+```bash
+npm run recon:full        # full extraction to .ste/state/
+npm run recon             # incremental extraction
+npm run recon:self        # self-documentation of ste-runtime
+npm run recon:workspace   # multi-repo workspace extraction
+```
 
-### Compile runtime-owned architecture artifacts
+### Query the graph
 
-For ADR-backed runtime machine artifacts, use:
+```bash
+npm run rss:stats
+npm run rss -- search "authentication"
+node dist/cli/rss-cli.js dependencies graph/function/validateUser
+node dist/cli/rss-cli.js blast-radius data/entity/UsersTable
+```
+
+### Compile architecture evidence
 
 ```bash
 ste architecture compile --project-root .
+ste evidence architecture --project-root .
 ```
 
-This path writes runtime-owned generated architecture artifacts. It does not
-make `ste-runtime` the public Architecture IR schema authority.
+### Build and test
 
-### Run workspace RECON
+```bash
+npm run build             # TypeScript compilation
+npm test                  # vitest suite
+npm run test:contract-guards  # contract-focused tests
+npm run lint              # eslint
+```
 
-Use `recon --workspace <workspace.yaml>` to process declared repositories,
-emit per-repo slices, compute cross-repo edges, merge a workspace graph, and
-emit deterministic projections. Use `--fail-on-any-error` for strict gates and
-`--skip-unchanged` when sentinel freshness is acceptable.
+### Start the MCP server
+
+Configure via `.cursor/mcp.json` pointing at `dist/cli/index.js`. See [`documentation/guides/mcp-setup.md`](documentation/guides/mcp-setup.md).
+
+### Commit at meaningful boundaries
+
+After a coherent implementation slice is verified, commit it before continuing. Do not accumulate unrelated unverified changes.
 
 ## Tooling Priority Rules
 
-1. Treat `ste-spec` as public contract authority.
-2. Treat runtime ADRs as local architecture authority.
-3. Treat `.ste*` and workspace graph outputs as derived state.
-4. Prefer existing RECON, RSS, evidence, and workspace commands over ad hoc
-   graph manipulation.
-5. Do not add admission decisions to runtime evidence or MCP outputs.
-6. Do not duplicate `adr-architecture-kit` or `ste-spec` schema logic in
-   runtime unless it is an explicit mirrored fixture with a contract guard.
-7. Preserve deterministic output where projections or graph artifacts are used
-   in tests or governance.
+These are operational rules for AI contributors:
+
+1. If an extractor exists for the target language, use or extend it before hand-crafting extraction output.
+2. If a RECON phase covers the data type, prefer it over ad hoc scripts.
+3. If a CLI command exposes the workflow, prefer it over ad hoc scripts.
+4. If an MCP tool provides the capability, use it rather than reimplementing the logic.
+5. If frontmatter identifies artifact type, trust frontmatter over folder naming.
+6. If public contract authority is relevant, treat `ste-spec` as normative and this repo as a producer/consumer, not a competing schema authority.
+
+## Path and Scope Rules
+
+These rules are mandatory:
+
+1. Derive artifact paths from explicit scope roots and configuration (`ste.config.json`, `ste-self.config.json`).
+2. Keep generated and temporary test artifacts inside scope-owned ignored paths.
+3. Treat workspace repositories as separate scopes unless workspace mode is explicitly invoked.
+4. Never classify artifacts by path shape when authoritative document metadata already exists.
+
+## High-Value Invariants
+
+Start here when you need the non-negotiables (from [`adrs/index/invariant-registry.yaml`](adrs/index/invariant-registry.yaml)):
+
+- **INV-0015 (Workspace Agnosticism):** Source code contains zero references to any specific workspace, repository name, output directory name, or domain vocabulary. All such values are derived from `workspace.yaml` at runtime.
+- **INV-0014 (Private Registry Isolation):** All dependencies resolve from public registries only.
+- Schema-invalid artifacts are not acceptable.
+- Derived artifacts must be regenerated, not manually drifted.
+
+## Standalone Operation
+
+`ste-runtime` works independently on any codebase without requiring the broader STE ecosystem:
+
+- **No external dependencies on `ste-spec`:** Bundled schema fixtures in [`test/fixtures/`](test/fixtures/) allow standalone operation. When `ste-spec` is available as a sibling, contract guard tests verify schema alignment.
+- **No dependency on `adr-architecture-kit`:** The architecture pipeline reads ADR YAML directly. ADR authoring tools are optional.
+- **No dependency on `ste-kernel`:** Evidence JSON is emitted as files. A consuming kernel is optional.
+- **Workspace-agnostic:** Works on any project with any language supported by the extractor set. Multi-repo workspace mode activates only when a `workspace.yaml` manifest is present.
+
+## Fast Target Discovery
+
+Use these heuristics before implementing:
+
+- "Need to extract from a new language":
+  Check [`src/extractors/`](src/extractors/) for existing extractors, then [`src/extractors/base-extractor.ts`](src/extractors/base-extractor.ts) for the extension pattern.
+- "Need to add a new graph query":
+  Check [`src/rss/rss-operations.ts`](src/rss/rss-operations.ts) and MCP tools before writing new query logic.
+- "Need to expose a new capability to AI assistants":
+  Add it as an MCP tool in [`src/mcp/`](src/mcp/).
+- "Need to add workspace-level analysis":
+  Check [`src/workspace/`](src/workspace/) for existing projections and canned queries.
+- "Need to understand the architecture":
+  Read ADRs under [`adrs/`](adrs/), then [`documentation/architecture.md`](documentation/architecture.md).
+
+## Common Failure Modes
+
+Avoid these:
+
+- hand-crafting `.ste/state/` YAML when RECON extraction already covers the target
+- using folder names as type authority when ADR frontmatter identifies the type
+- computing relative paths without an explicit scope root
+- introducing workspace-specific names (repo names, domain terms) into source code (violates INV-0015)
+- leaving manifest output stale after artifact changes
+- hand-editing rendered ADR markdown instead of regenerating it
+- treating this repo's internal registries as if they were the normative public schema (that is `ste-spec`)
 
 ## Completion Criteria
 
-A change is not complete unless relevant checks were run:
+A change is not complete unless relevant checks were run.
 
-- `npm run build` for TypeScript changes.
-- Targeted `npm test` or `npm run test:integration` for behavior changes.
-- `npm run test:contract-guards` for public contract or mirrored schema changes.
-- `ste architecture compile --project-root .` after runtime ADR changes that
-  affect generated architecture artifacts.
-- `ste evidence architecture --project-root .` when validating evidence payload
-  behavior.
-- Workspace RECON when workspace graph, slice, cross-repo edge, or projection
-  behavior changes.
+Minimum close-out expectation:
+
+- run targeted tests for the changed area (`npm test`)
+- run `npm run build` to verify TypeScript compilation
+- run `npm run lint` for style compliance
+- commit each meaningful verified implementation boundary before starting the next slice
+- update `README.md` when workflow-facing behavior or orientation guidance changed
+- regenerate derived artifacts if their sources changed
 
 ## One-Line Orientation
 
-`ste-runtime` observes, extracts, packages evidence, and builds derived runtime
-graph/projection state. It does not own public STE doctrine, public schema
-authority, or Kernel admission.
+If you only remember one thing:
+
+This repository is extractor-first, graph-first, workspace-agnostic, and capable of delivering full semantic extraction and traversal value on its own.

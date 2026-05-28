@@ -51,7 +51,7 @@ export interface WorkspaceReconResult {
 
 function normalizeOutputDir(raw: string): string {
   const t = raw.trim().replace(/[/\\]+$/, '');
-  return t.length > 0 ? t : '.ste-workspace';
+  return t.length > 0 ? t : '.workspace-graph';
 }
 
 function repoStateSentinelPath(workspaceRoot: string, outputRel: string, repoName: string): string {
