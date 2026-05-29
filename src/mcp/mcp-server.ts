@@ -15,7 +15,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
 import { initRssContext, type RssContext } from '../rss/rss-operations.js';
-import { loadAidocGraph } from '../rss/graph-loader.js';
 import { analyzeGraphTopology, saveGraphMetrics, loadGraphMetrics, type GraphMetrics } from './graph-topology-analyzer.js';
 import type { ResolvedConfig } from '../config/index.js';
 
@@ -137,17 +136,19 @@ export class McpServer {
     const stateRoot = await this.resolveProjectStateRoot();
     
     try {
-      // Load parent project RSS context
+      // Load parent project RSS context (single graph load)
       this.rssContext = await initRssContext(stateRoot);
       
-      // Try to load existing graph metrics
+      // Try to load existing graph metrics and check staleness
       this.graphMetrics = await loadGraphMetrics(stateRoot);
       
-      // If no metrics exist or they're stale, analyze graph
-      if (!this.graphMetrics) {
+      const metricsStale = this.graphMetrics &&
+        Math.abs(this.graphMetrics.totalComponents - this.rssContext.graph.size) >
+        this.rssContext.graph.size * 0.1;
+
+      if (!this.graphMetrics || metricsStale) {
         console.error('[MCP Server] Analyzing graph topology...');
-        const { graph } = await loadAidocGraph(stateRoot);
-        this.graphMetrics = await analyzeGraphTopology(graph);
+        this.graphMetrics = await analyzeGraphTopology(this.rssContext.graph);
         await saveGraphMetrics(this.graphMetrics, stateRoot);
       }
       
@@ -162,9 +163,12 @@ export class McpServer {
         this.selfContext = await initRssContext(selfStateRoot);
         this.selfGraphMetrics = await loadGraphMetrics(selfStateRoot);
         
-        if (!this.selfGraphMetrics) {
-          const { graph } = await loadAidocGraph(selfStateRoot);
-          this.selfGraphMetrics = await analyzeGraphTopology(graph);
+        const selfStale = this.selfGraphMetrics &&
+          Math.abs(this.selfGraphMetrics.totalComponents - this.selfContext.graph.size) >
+          this.selfContext.graph.size * 0.1;
+
+        if (!this.selfGraphMetrics || selfStale) {
+          this.selfGraphMetrics = await analyzeGraphTopology(this.selfContext.graph);
           await saveGraphMetrics(this.selfGraphMetrics, selfStateRoot);
         }
         
@@ -187,14 +191,12 @@ export class McpServer {
     const stateRoot = await this.resolveProjectStateRoot();
     
     try {
-      // Reload parent project RSS context
+      // Reload parent project RSS context (single graph load)
       this.rssContext = await initRssContext(stateRoot);
       
-      // Reanalyze graph topology
-      const { graph } = await loadAidocGraph(stateRoot);
-      const newMetrics = await analyzeGraphTopology(graph);
+      // Reanalyze graph topology using the already-loaded graph
+      const newMetrics = await analyzeGraphTopology(this.rssContext.graph);
       
-      // Check if recommended depth changed significantly
       if (this.graphMetrics && Math.abs(newMetrics.recommendedDepth - this.graphMetrics.recommendedDepth) >= 1) {
         console.error(`[MCP Server] Graph structure changed:`);
         console.error(`  - Old depth: ${this.graphMetrics.recommendedDepth}`);
@@ -205,8 +207,7 @@ export class McpServer {
       const selfStateRoot = path.resolve(this.options.config.runtimeDir, '.ste-self', 'state');
       try {
         this.selfContext = await initRssContext(selfStateRoot);
-        const { graph: selfGraph } = await loadAidocGraph(selfStateRoot);
-        this.selfGraphMetrics = await analyzeGraphTopology(selfGraph);
+        this.selfGraphMetrics = await analyzeGraphTopology(this.selfContext.graph);
         await saveGraphMetrics(this.selfGraphMetrics, selfStateRoot);
       } catch {
         // Self-analysis not available, that's OK

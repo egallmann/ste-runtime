@@ -14,6 +14,7 @@ import type {
   ComponentIntegrationResult,
   WorkspaceBlastRadiusResult,
 } from './canned-queries.js';
+import { AUXILIARY_NODE_TYPES } from './cfn-type-mapping.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -90,6 +91,7 @@ const VERB_TIER: Record<string, number> = {
   consumes: 1,
   deploys_to: 2,
   invokes: 2,
+  contains: 2,
   has_contract: 3,
   reads: 4,
   writes: 4,
@@ -152,6 +154,14 @@ function titleCase(s: string): string {
 function isAlarmTopic(node: WorkspaceNode): boolean {
   const lower = node.id.toLowerCase();
   return node.type === 'Topic' && (lower.includes('alarm') || lower.includes('monitor'));
+}
+
+function isAuxiliaryInfraNode(node: WorkspaceNode): boolean {
+  return AUXILIARY_NODE_TYPES.has(node.type);
+}
+
+function isSuppressedAtOverview(node: WorkspaceNode): boolean {
+  return isAlarmTopic(node) || isAuxiliaryInfraNode(node);
 }
 
 // ---------------------------------------------------------------------------
@@ -223,7 +233,7 @@ function compressComponentIntegration(
   if (config.suppressAlarmTopics) {
     const suppressed = new Set<string>();
     workingNodes = workingNodes.filter(n => {
-      if (isAlarmTopic(n)) {
+      if (isSuppressedAtOverview(n)) {
         suppressed.add(n.id);
         return false;
       }
@@ -234,7 +244,7 @@ function compressComponentIntegration(
   const filteredEdges = allEdges.filter(e => {
     const from = nodeMap.get(e.from);
     const to = nodeMap.get(e.to);
-    if (config.suppressAlarmTopics && (from && isAlarmTopic(from)) || (to && isAlarmTopic(to))) {
+    if (config.suppressAlarmTopics && ((from && isSuppressedAtOverview(from)) || (to && isSuppressedAtOverview(to)))) {
       return false;
     }
     return isEdgeAllowed(e, level, from, to);

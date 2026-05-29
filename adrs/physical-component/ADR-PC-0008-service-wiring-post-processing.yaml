@@ -42,6 +42,7 @@ component_specifications:
     - Build Lambda-handler-to-function maps from CFN handler metadata
     - Resolve cross-stack parameter chains through nested stack topology (ParamResolutionTable)
     - Follow master-to-child GetAtt ChildStack.Outputs.X references through to originating resource logical IDs
+    - Map all extracted CFN resources to graph IDs using the shared cfn-type-mapping module (InfraResource fallback for unmapped types)
     - All maps keyed by structural type, never by repository name
   generation_context:
     purpose: Provide cross-domain join maps for edge wiring.
@@ -84,6 +85,8 @@ component_specifications:
   name: Slice Emitter Edge Wiring
   type: library
   responsibilities: |
+    - Emit all extracted CFN resources as workspace graph nodes (no allowlist gate; InfraResource fallback for unmapped types)
+    - Emit Stack nodes from infrastructure/template slices with contains edges to child resources
     - Produce reads/writes edges by joining SDK usage with infrastructure resources via env-var bridge
     - Produce publishes edges for SQS/SNS SDK usage
     - Improve consumes edge resolution via CFN logical ID lookup
@@ -153,7 +156,17 @@ constraints:
   rationale: >
     Nominal matching by repo name would couple wiring to a specific
     workspace and violate the workspace agnosticism invariant.
-implementation_decisions: []
+implementation_decisions:
+- id: IMPL-0008
+  summary: >
+    Resource-to-node emission policy: all RECON-extracted infrastructure
+    resources become slice nodes. The previous silent omission of unmapped
+    CFN types is replaced by diagnostic-aware emission via the shared
+    cfn-type-mapping module. Unmapped types produce InfraResource nodes
+    with cfn_type preserved in attributes.
+  rationale: >
+    Silent omission caused frontend and MFE monorepo infrastructure to
+    disappear from the workspace graph. The graph must be pattern-agnostic.
 gaps: []
 consequences:
   positive:

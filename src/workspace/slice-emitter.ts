@@ -17,20 +17,10 @@ import { atomicWriteFile } from '../utils/atomic-write.js';
 import { buildResourceResolverFromState, type ResourceResolverResult } from './resource-resolver.js';
 import { buildStackTopology } from './cfn-stack-resolver.js';
 import type { ExternalSystemEntry } from './manifest.js';
+import { getCfnGraphType, NODE_NAME_KEYS, AUXILIARY_NODE_TYPES } from './cfn-type-mapping.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../../package.json') as { name: string; version: string };
-
-const CFN_TO_GRAPH: Record<string, string> = {
-  'AWS::SQS::Queue': 'Queue',
-  'AWS::SNS::Topic': 'Topic',
-  'AWS::Lambda::Function': 'Lambda',
-  'AWS::Serverless::Function': 'Lambda',
-  'AWS::StepFunctions::StateMachine': 'StateMachine',
-  'AWS::Serverless::StateMachine': 'StateMachine',
-  'AWS::S3::Bucket': 'Bucket',
-  'AWS::DynamoDB::Table': 'Database',
-};
 
 export interface SliceEmitResult {
   nodeCount: number;
@@ -93,46 +83,20 @@ function pickCfnDisplayName(
   return null;
 }
 
-function resourceGraphId(cfnType: string, el: Record<string, unknown>, repoName?: string): string | null {
-  const graphType = CFN_TO_GRAPH[cfnType];
-  if (!graphType) {
-    return null;
-  }
+function resourceGraphId(cfnType: string, el: Record<string, unknown>, repoName?: string): string {
+  const graphType = getCfnGraphType(cfnType);
   const logicalId = String(el.logicalId ?? '');
-  let name: string | null = null;
-  switch (cfnType) {
-    case 'AWS::SQS::Queue':
-      name = pickCfnDisplayName(el, logicalId, 'queueName');
-      break;
-    case 'AWS::SNS::Topic':
-      name = pickCfnDisplayName(el, logicalId, 'topicName');
-      break;
-    case 'AWS::Lambda::Function':
-    case 'AWS::Serverless::Function':
-      name = pickCfnDisplayName(el, logicalId, 'functionName');
-      break;
-    case 'AWS::StepFunctions::StateMachine':
-    case 'AWS::Serverless::StateMachine':
-      name = pickCfnDisplayName(el, logicalId, 'stateMachineName');
-      break;
-    case 'AWS::S3::Bucket':
-      name = pickCfnDisplayName(el, logicalId, 'bucketName');
-      break;
-    case 'AWS::DynamoDB::Table':
-      name = pickCfnDisplayName(el, logicalId, 'tableName');
-      break;
-    default:
-      name = null;
-  }
-  if (!name) {
-    return null;
-  }
-  const norm = normalizeGraphToken(name);
-  if (!norm) {
-    return null;
-  }
+
+  const nameKeys = NODE_NAME_KEYS[graphType];
+  const name = nameKeys
+    ? pickCfnDisplayName(el, logicalId, ...nameKeys)
+    : pickCfnDisplayName(el, logicalId);
+
+  const displayName = name ?? logicalId;
+  const norm = normalizeGraphToken(displayName);
+  const finalNorm = norm || normalizeGraphToken(logicalId) || 'unknown';
   const repoPrefix = repoName ? `${normalizeGraphToken(repoName)}:` : '';
-  return `${graphType}:${repoPrefix}${norm}`;
+  return `${graphType}:${repoPrefix}${finalNorm}`;
 }
 
 function endpointGraphId(repoName: string, el: Record<string, unknown>): string | null {
@@ -731,14 +695,19 @@ export async function emitWorkspaceSlice(
 
     if (domain === 'infrastructure' && sliceType === 'resource') {
       const cfnType = String(element.type ?? '');
-      const gid = resourceGraphId(cfnType, element, repoName);
-      if (gid) {
+      if (cfnType) {
+        const gid = resourceGraphId(cfnType, element, repoName);
+        const graphType = getCfnGraphType(cfnType);
+        const attrs: Record<string, unknown> = { cfn_type: cfnType, logical_id: element.logicalId };
+        if (AUXILIARY_NODE_TYPES.has(graphType)) {
+          attrs.auxiliary = true;
+        }
         nodes.set(gid, {
           id: gid,
-          type: CFN_TO_GRAPH[cfnType]!,
+          type: graphType,
           name: gid.split(':').slice(1).join(':'),
           provenance: { source_path: srcFile, source_ref: String(element.logicalId ?? ''), repo: repoName },
-          attributes: { cfn_type: cfnType, logical_id: element.logicalId },
+          attributes: attrs,
         });
       }
     }
@@ -808,6 +777,60 @@ export async function emitWorkspaceSlice(
   // NS-4: Compute topology once per repo (R7), pass to resolver
   const { topology } = await buildStackTopology(stateFiles, stateDir, _repoPath || undefined);
   const resolver = await buildResourceResolverFromState(stateFiles, stateDir, topology, _repoPath || undefined, repoName);
+
+  // Emit Stack nodes from infrastructure/template slices
+  for (const sf of stateFiles) {
+    const domain = String(sf.slice.domain ?? '');
+    const sliceType = String(sf.slice.type ?? '');
+    if (domain !== 'infrastructure' || sliceType !== 'template') continue;
+
+    const templatePath = String(sf.element.templatePath ?? sf.provenance?.file ?? sf.relativePath);
+    const templateName = templatePath.split('/').pop()?.replace(/\.(yaml|yml|json|template)$/i, '') ?? 'unknown';
+    const stackNorm = normalizeGraphToken(templateName);
+    if (!stackNorm) continue;
+
+    const repoPrefix = repoName ? `${normalizeGraphToken(repoName)}:` : '';
+    const stackGid = `Stack:${repoPrefix}${stackNorm}`;
+    if (!nodes.has(stackGid)) {
+      nodes.set(stackGid, {
+        id: stackGid,
+        type: 'Stack',
+        name: templateName,
+        provenance: { source_path: templatePath, source_ref: 'template', repo: repoName },
+        attributes: { template_path: templatePath },
+      });
+    }
+  }
+
+  // Emit contains edges from stack topology (stackId = parentTemplatePath#logicalId)
+  if (topology) {
+    const repoPrefix = repoName ? `${normalizeGraphToken(repoName)}:` : '';
+    for (const [_stackId, child] of Object.entries(topology.children)) {
+      const parentTemplatePath = _stackId.split('#')[0] ?? '';
+      const parentTemplateName = parentTemplatePath.split('/').pop()?.replace(/\.(yaml|yml|json|template)$/i, '') ?? '';
+      const parentNorm = normalizeGraphToken(parentTemplateName);
+      if (!parentNorm) continue;
+      const parentStackGid = `Stack:${repoPrefix}${parentNorm}`;
+
+      const childTemplateName = child.templatePath.split('/').pop()?.replace(/\.(yaml|yml|json|template)$/i, '') ?? child.logicalId;
+      const childNorm = normalizeGraphToken(childTemplateName);
+      if (!childNorm) continue;
+      const childStackGid = `Stack:${repoPrefix}${childNorm}`;
+
+      if (nodes.has(parentStackGid) && nodes.has(childStackGid) && parentStackGid !== childStackGid) {
+        const exists = edges.some(e => e.from === parentStackGid && e.to === childStackGid && e.verb === 'contains');
+        if (!exists) {
+          edges.push({
+            from: parentStackGid,
+            to: childStackGid,
+            verb: 'contains',
+            confidence: 'high',
+            provenance: { source_path: parentTemplatePath, source_ref: `nested:${child.logicalId}` },
+          });
+        }
+      }
+    }
+  }
 
   wireReadWriteEdges(resolver, nodes, edges, diagnostics);
   wirePublishEdges(resolver, nodes, edges, diagnostics);

@@ -7,7 +7,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import type { AidocGraph, AidocNode } from '../rss/graph-loader.js';
+import type { AidocGraph } from '../rss/graph-loader.js';
 
 export type ArchitecturePattern =
   | 'layered'        // Clean layer boundaries, moderate depth
@@ -45,7 +45,13 @@ export interface GraphMetrics {
 }
 
 /**
- * Analyze graph topology and calculate optimal traversal parameters
+ * Analyze graph topology and calculate optimal traversal parameters.
+ *
+ * Uses a single-pass BFS (Kahn's algorithm) to compute forward dependency
+ * depths in O(N+E). Backward depth metrics (avgDependentDepth,
+ * maxDependentDepth) are retained at 0 for serialized cache compatibility
+ * but are not computed -- they were never consumed by detectPattern() or
+ * calculateOptimalDepth().
  */
 export async function analyzeGraphTopology(graph: AidocGraph): Promise<GraphMetrics> {
   const metrics: GraphMetrics = {
@@ -72,38 +78,26 @@ export async function analyzeGraphTopology(graph: AidocGraph): Promise<GraphMetr
     return metrics;
   }
   
-  // 1. Count components by domain/type
+  // 1. Count components by domain/type and collect width stats in O(N)
+  const dependencyCounts: number[] = [];
+  const dependentCounts: number[] = [];
+
   for (const node of graph.values()) {
     metrics.componentsByDomain[node.domain] = 
       (metrics.componentsByDomain[node.domain] || 0) + 1;
     metrics.componentsByType[node.type] = 
       (metrics.componentsByType[node.type] || 0) + 1;
-  }
-  
-  // 2. Calculate depth statistics
-  const forwardDepths: number[] = [];
-  const backwardDepths: number[] = [];
-  const dependencyCounts: number[] = [];
-  const dependentCounts: number[] = [];
-  
-  for (const node of graph.values()) {
-    // Measure forward depth (dependencies)
-    const forwardDepth = measureDepth(graph, node.key, 'forward');
-    forwardDepths.push(forwardDepth);
     dependencyCounts.push(node.references.length);
-    
-    // Measure backward depth (dependents)
-    const backwardDepth = measureDepth(graph, node.key, 'backward');
-    backwardDepths.push(backwardDepth);
     dependentCounts.push(node.referencedBy.length);
   }
   
-  metrics.avgDependencyDepth = mean(forwardDepths);
-  metrics.maxDependencyDepth = Math.max(...forwardDepths, 0);
-  metrics.p95DependencyDepth = percentile(forwardDepths, 0.95);
+  // 2. Compute forward dependency depths via single-pass BFS (Kahn's algorithm) -- O(N+E)
+  const depths = computeForwardDepths(graph);
+  const forwardDepths = [...depths.values()];
   
-  metrics.avgDependentDepth = mean(backwardDepths);
-  metrics.maxDependentDepth = Math.max(...backwardDepths, 0);
+  metrics.avgDependencyDepth = mean(forwardDepths);
+  metrics.maxDependencyDepth = forwardDepths.length > 0 ? Math.max(...forwardDepths) : 0;
+  metrics.p95DependencyDepth = percentile(forwardDepths, 0.95);
   
   metrics.avgDependenciesPerComponent = mean(dependencyCounts);
   metrics.avgDependentsPerComponent = mean(dependentCounts);
@@ -122,39 +116,48 @@ export async function analyzeGraphTopology(graph: AidocGraph): Promise<GraphMetr
 }
 
 /**
- * Measure depth from a node in a given direction
+ * Compute forward dependency depth for every node using Kahn's algorithm
+ * (topological BFS). Runs in O(N+E) -- single pass, no per-node DFS.
+ *
+ * Nodes in cycles never reach in-degree 0 and receive depth 0 (conservative).
  */
-function measureDepth(
-  graph: AidocGraph,
-  startKey: string,
-  direction: 'forward' | 'backward',
-  visited: Set<string> = new Set()
-): number {
-  if (visited.has(startKey)) {
-    return 0;
+export function computeForwardDepths(graph: AidocGraph): Map<string, number> {
+  const depths = new Map<string, number>();
+  const inDegree = new Map<string, number>();
+
+  for (const node of graph.values()) {
+    inDegree.set(node.key, node.referencedBy.length);
   }
-  
-  visited.add(startKey);
-  const node: AidocNode | undefined = graph.get(startKey);
-  
-  if (!node) {
-    return 0;
+
+  const queue: string[] = [];
+  for (const [key, deg] of inDegree) {
+    if (deg === 0) {
+      queue.push(key);
+      depths.set(key, 0);
+    }
   }
-  
-  const edges = direction === 'forward' ? node.references : node.referencedBy;
-  
-  if (edges.length === 0) {
-    return 0;
+
+  let head = 0;
+  while (head < queue.length) {
+    const key = queue[head++];
+    const node = graph.get(key);
+    if (!node) continue;
+    const currentDepth = depths.get(key) ?? 0;
+    for (const edge of node.references) {
+      const targetKey = `${edge.domain}/${edge.type}/${edge.id}`;
+      const newDepth = currentDepth + 1;
+      depths.set(targetKey, Math.max(depths.get(targetKey) ?? 0, newDepth));
+      const remaining = (inDegree.get(targetKey) ?? 1) - 1;
+      inDegree.set(targetKey, remaining);
+      if (remaining <= 0) queue.push(targetKey);
+    }
   }
-  
-  let maxDepth = 0;
-  for (const edge of edges) {
-    const targetKey = `${edge.domain}/${edge.type}/${edge.id}`;
-    const depth = measureDepth(graph, targetKey, direction, visited);
-    maxDepth = Math.max(maxDepth, depth);
+
+  // Nodes in cycles or not reachable from roots get depth 0
+  for (const node of graph.values()) {
+    if (!depths.has(node.key)) depths.set(node.key, 0);
   }
-  
-  return maxDepth + 1;
+  return depths;
 }
 
 /**
