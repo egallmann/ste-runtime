@@ -5,7 +5,7 @@ title: Obligation Projection and Context Assembly
 status: proposed
 created_date: '2026-03-15'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - obligations
 - context

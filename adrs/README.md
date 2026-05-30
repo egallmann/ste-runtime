@@ -96,6 +96,14 @@ npm run rss:search "RECON decisions"
 
 ## Updating ADRs
 
+### Authors
+
+`authors` records **who wrote the decision** (human accountability), not repo ownership.
+For this repository, use **`erik.gallmann`**. Do not use `ste-runtime`, `system`, or package
+names — ownership is already expressed in `PROJECT.yaml` and `architecture_namespace`.
+
+After `adr scaffold` or generator commands, set `authors` before committing.
+
 1. Edit YAML file directly
 2. Validate: `python -m adr_kit.validator adrs/logical/ADR-L-0001.yaml`
 3. Regenerate manifest: `python -m adr_kit.generators.manifest_generator adrs/`

@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: c523151bf8959a8d66ababb36b18b046eb4102885cf9da5f8eace503bc39bf63
-rendered_hash: 7e871c053e9ef5fa15390dea764ceb74c64424133fdfa84f775aeb5a430b56ab
+source_hash: 79a6a7cfa373569b4dbe1188223d58efb29f9b2b4cb4fe8016d18982e8144008
+rendered_hash: f935a91b7b20f061a974dacbd4b284735de2c1f5d38d2479dc0b9d0346e0c389
 -->
 
 # ADR-PC-0007: CloudFormation Semantic Extraction
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** extraction, cloudformation, recon  
 
 **Implements Logical:** ADR-L-0001  

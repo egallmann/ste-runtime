@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 08563fb3d721fe653e31daed41cf81d473dc4ce01f3929700b972375eca6d5ca
-rendered_hash: 5daa87bd7631944f11f816b0c38447aa40a9569a8a355ba2f1f5935149e071e6
+source_hash: b51dc98f2c6b885e4105f06bc181bbc53bf768df6fd84f4730dae6bb78f2af62
+rendered_hash: 7f590fcb9c663266b24e75a2184eb77ae71e01e07033451ed396d2bb9a0716d7
 -->
 
 # ADR-PC-0005: JSON Semantic Extraction
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** extraction, json, recon  
 
 **Implements Logical:** ADR-L-0001  

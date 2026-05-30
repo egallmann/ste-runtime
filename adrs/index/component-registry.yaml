@@ -8,6 +8,7 @@ entities:
       - Serve MCP stdio runtime for assistant integration - Register structural, operational, context, optimized,
       obligation, and workspace graph query tools - Route tool requests onto runtime graph, context, and workspace que
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0001#COMP-0001
@@ -47,6 +48,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -63,6 +67,7 @@ entities:
       - Watch source and state changes - Detect coherent edit transactions - Coordinate update batches and
       reconciliation triggers - Protect runtime behavior from unsafe write loops
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0002#COMP-0002
@@ -101,6 +106,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -117,6 +125,7 @@ entities:
       - Resolve intent scope - Evaluate graph freshness - Determine whether reconciliation is required - Surface
       freshness status for downstream tools
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0003#COMP-0003
@@ -155,6 +164,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -171,6 +183,7 @@ entities:
       - Project obligations from change intent and graph state - Surface invalidated validations and advisories - Load
       source-backed implementation context - Format runtime context for assistant consumption
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0004#COMP-0004
@@ -209,6 +222,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -225,6 +241,7 @@ entities:
       - Detect semantically relevant JSON files - Extract controls, schemas, and configuration semantics - Provide
       RECON-ready assertions for normalization
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0005#COMP-0005
@@ -263,6 +280,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -279,6 +299,7 @@ entities:
       - Extract Angular component, service, route, and template semantics - Extract CSS/SCSS tokens, styles, and related
       frontend semantics - Provide frontend assertions for RECON normalization
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0006#COMP-0006
@@ -318,6 +339,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -334,6 +358,7 @@ entities:
       - Extract template, parameter, resource, and output semantics - Derive infrastructure relationships and API/data
       model evidence - Preserve template-level implementation intent metadata - Detect nested stack topology via 
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0007#COMP-0007
@@ -373,6 +398,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -389,6 +417,7 @@ entities:
       - Build env-var-to-CFN-resource join maps from per-repo RECON state - Build SDK-service-to-graph-type maps
       (dynamodb->Database, s3->Bucket, etc.) - Build Lambda-handler-to-function maps from CFN handler metadata - Resolv
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0008#COMP-0008
@@ -427,6 +456,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -440,9 +472,10 @@ entities:
     entity_type: component
     name: Slice Emitter Edge Wiring
     summary: >-
-      - Produce reads/writes edges by joining SDK usage with infrastructure resources via env-var bridge - Produce
-      publishes edges for SQS/SNS SDK usage - Improve consumes edge resolution via CFN logical ID lookup - Produce de
+      - Emit all extracted CFN resources as workspace graph nodes (no allowlist gate; InfraResource fallback for
+      unmapped types) - Emit Stack nodes from infrastructure/template slices with contains edges to child resources - P
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0008#COMP-0009
@@ -481,6 +514,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -497,6 +533,7 @@ entities:
       - Load workspace graph slices into typed in-memory WorkspaceGraph - Build outAdj/inAdj adjacency maps at load time
       for O(1) neighbor lookups - Execute systemDependencies, componentIntegration, blastRadiusWorkspace querie
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0009#COMP-0010
@@ -541,6 +578,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -557,6 +597,7 @@ entities:
       - Compress CannedQueryResult into CompressedProjection at configurable resolution levels (L0-L4) - Group endpoints
       by capability domain using path-prefix extraction - Aggregate same-type nodes above threshold into count-
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0010#COMP-0011
@@ -599,6 +640,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -615,6 +659,7 @@ entities:
       - Detect and classify ADR YAML files via path-prefix and content sniffing - Parse ADR YAML using js-yaml - Extract
       ADR documents, invariants, decisions, capabilities, component specifications, and system boundaries as Ra
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0011#COMP-0012
@@ -654,6 +699,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []

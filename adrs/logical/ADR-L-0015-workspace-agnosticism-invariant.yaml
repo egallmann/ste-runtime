@@ -5,7 +5,7 @@ title: Workspace Agnosticism Invariant
 status: proposed
 created_date: '2026-04-24'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - workspace
 - portability

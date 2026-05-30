@@ -1,6 +1,6 @@
 schema_version: '1.0'
 type: manifest
-generated_date: '2026-05-27T05:44:06Z'
+generated_date: '2026-05-30T19:23:29Z'
 generated_from: adrs/**/*.yaml
 adrs:
   - id: ADR-L-0001
@@ -343,7 +343,7 @@ adrs:
     implements_logical: []
     technologies: []
     decision_count: 1
-    invariant_count: 2
+    invariant_count: 3
     gap_count: 0
     blocking_gaps: 0
     component_count: 0
@@ -440,6 +440,32 @@ adrs:
       - mvc
       - provenance
       - deterministic
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 3
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: ADR-L-0021
+    type: logical
+    title: Experimental MVC-D to MVC-S Contract Consumption
+    status: proposed
+    file_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    domains:
+      - mvc
+      - contracts
+      - runtime
+      - provenance
+    tags:
+      - mvc-d
+      - mvc-s
+      - contract-consumption
+      - candidate-surface
+      - provenance
     implements_logical: []
     technologies: []
     decision_count: 1
@@ -653,7 +679,7 @@ adrs:
       - zod
     decision_count: 0
     invariant_count: 0
-    gap_count: 0
+    gap_count: 1
     blocking_gaps: 0
     component_count: 1
     related_reviews: []
@@ -995,20 +1021,20 @@ decision_ledgers: []
 objection_overrides: []
 steelman_reviews: []
 gaps_summary:
-  total: 3
+  total: 4
   blocking: 0
   by_adr: {}
 statistics:
-  total_adrs: 37
-  logical_adrs: 19
+  total_adrs: 38
+  logical_adrs: 20
   physical_adrs: 5
   physical_system_adrs: 2
   physical_component_adrs: 11
   decision_adrs: 0
-  total_decisions: 21
-  total_invariants: 27
+  total_decisions: 22
+  total_invariants: 31
   total_components: 19
-  total_gaps: 3
+  total_gaps: 4
   blocking_gaps: 0
   total_entities: 0
   total_requirements_snapshots: 0

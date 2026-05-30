@@ -8,6 +8,7 @@ entities:
       ### 1. Semantic Pressure Over Semantic Truth RECON exists to **observe how semantic truth breaks under change**,
       not to declare what truth is. During exploratory development, the extraction algorithms, normalization sche
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#DEC-0001
@@ -21,6 +22,18 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - RECON can execute immediately, generating learning pressure
+        - Conflicts surface early, before they become entrenched
+        - Developers maintain full control over semantic state acceptance
+        - Extraction algorithms can evolve without breaking workflows
+        - No automated enforcement of semantic consistency
+        - Conflicts may accumulate if not reviewed
+        - Provisional state cannot be used for authoritative downstream systems
+        - Document all conflicts for periodic human review
+        - Track conflict patterns to improve extraction algorithms
+        - Plan transition to canonical execution once algorithms stabilize
     relationships:
       declared_in:
         - ADR-L-0001
@@ -42,6 +55,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -58,6 +74,7 @@ entities:
       ### 1. Non-Blocking Preserves Learning If validation blocked execution on every finding, RECON would become
       unusable during exploratory development. Many validation findings are informational or represent known limitatio
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0002#DEC-0002
@@ -71,6 +88,19 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Continuous quality visibility without workflow disruption
+        - Historical trend data for extraction algorithm improvement
+        - Early detection of regression in extractors
+        - Developer confidence through transparency
+        - Findings may be ignored if too numerous
+        - No enforcement of quality gates
+        - Report accumulation without review
+        - Periodic finding review as part of development process
+        - Track finding counts over time for trend analysis
+        - Prioritize ERROR findings for immediate investigation
+        - Use findings to guide extractor improvements
     relationships:
       declared_in:
         - ADR-L-0002
@@ -92,6 +122,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -108,6 +141,7 @@ entities:
       ### 1. CEM Orchestrates Components That Must Exist First CEM's stages call into foundational components: -
       **Orientation** calls RSS for context assembly - **Analysis** reads AI-DOC semantic state - **Deliberation** invo
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0003#DEC-0003
@@ -121,6 +155,18 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Foundation components can be built and tested independently
+        - API surfaces stabilize before CEM integration
+        - Reduced rework and premature abstraction
+        - Faster iteration on extraction/inference/traversal
+        - Autonomous agent execution blocked until CEM exists
+        - Formal governance auditing deferred
+        - Potential for API drift if CEM requirements not considered
+        - Document CEM's expected API contracts in ste-spec
+        - Periodically review foundation components against CEM needs
+        - Use execution pressure to surface integration gaps
     relationships:
       declared_in:
         - ADR-L-0003
@@ -142,6 +188,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -159,6 +208,7 @@ entities:
       (authoritative: it observed the file system event) 2. Migration detection scores confidence (1.0 = certain same
       element)
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0004#DEC-0004
@@ -172,6 +222,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0004
@@ -193,6 +244,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -207,6 +261,7 @@ entities:
     name: DEC-0005
     summary: ''
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0005#DEC-0005
@@ -220,6 +275,42 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Drop into any project and run immediately
+        - No setup time, no learning curve
+        - Immediate value delivery
+        - Works with any project structure
+        - Works with any naming convention
+        - Works with any framework combination
+        - Understands project context automatically
+        - Tags and relationships use actual project names
+        - Output reflects real architecture
+        - Reduces barrier to entry dramatically
+        - Eliminates configuration errors
+        - Enables rapid experimentation
+        - Discovery output shows what was found
+        - Users understand what runtime sees
+        - Transparent behavior
+        - Discovery engine requires careful design
+        - Edge cases need handling
+        - More code to maintain
+        - 4 weeks vs 2 weeks for manual config
+        - Delays other features
+        - Higher upfront investment
+        - Heuristics may fail for unusual structures
+        - Need robust fallback mechanisms
+        - Requires extensive testing
+        - Clear abstractions and interfaces
+        - Comprehensive unit test coverage
+        - Well-documented heuristics
+        - Investment justified by adoption gains
+        - Phased implementation with validation gates
+        - Early user testing
+        - Confidence scoring system
+        - Graceful fallback to safe defaults
+        - Optional configuration override for edge cases
+        - Clear discovery debugging output
     relationships:
       declared_in:
         - ADR-L-0005
@@ -241,6 +332,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -257,6 +351,7 @@ entities:
       ### 1. Reduces Cognitive Load for Both Humans and AI Without CQI: ``` Human: "What would be affected by changing
       the auth service?" → Human must know: use blast-radius, specify key format, parse output → AI must know: co
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0006#DEC-0006
@@ -270,6 +365,19 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - '**Seamless UX**: Both humans and AI agents use natural language'
+        - '**Performance**: Sub-5ms queries, <0.3ms cached'
+        - '**Discoverability**: Suggested queries guide exploration'
+        - '**Dual output**: Same engine serves terminal and programmatic use'
+        - '**Foundation for MCP**: CQI becomes the MCP tool interface'
+        - '**Pattern maintenance**: New intent patterns require code changes'
+        - '**Cache staleness**: Risk of stale results if cache not invalidated'
+        - '**Abstraction cost**: Hides RSS complexity (may hinder advanced use)'
+        - Expose raw RSS API for power users
+        - Document intent patterns explicitly
+        - Integrate with Watchdog for automatic cache invalidation
     relationships:
       declared_in:
         - ADR-L-0006
@@ -291,6 +399,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -307,6 +418,7 @@ entities:
       The current runtime models freshness and obligation data in public schemas and assistant-facing responses, so
       these semantics require canonical documentation above the component layer.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0007#DEC-0007
@@ -320,6 +432,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0007
@@ -341,6 +454,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -357,6 +473,7 @@ entities:
       Multi-repo analysis cannot be retrofitted onto single-repo scope without pervasive special-casing. Defining
       workspace as the universal scope from the start eliminates that debt. A workspace containing a single repository
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0009#DEC-0009
@@ -370,6 +487,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0009
@@ -391,6 +509,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -402,11 +523,13 @@ entities:
       generator: adr-architecture-index
   - id: DEC-0010
     entity_type: decision
-    name: ste init is the canonical one-command install experience
+    name: ste setup is the canonical one-command install experience
     summary: >-
-      Manual onboarding is error-prone and slow. A first-class init command with binding constraints ensures consistent,
-      portable, and safe workspace initialization.
+      Manual onboarding is error-prone and slow. A first-class setup command with binding constraints ensures
+      consistent, portable, and safe workspace initialization. ste setup supersedes the narrower ste init by also
+      handling
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0010#DEC-0010
@@ -420,6 +543,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0010
@@ -441,6 +565,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -457,6 +584,7 @@ entities:
       Explicit role conformance prevents scope leakage across subsystem boundaries and ensures evidence artifacts are
       schema-compliant.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0011#DEC-0011
@@ -470,6 +598,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0011
@@ -491,6 +620,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -507,6 +639,7 @@ entities:
       Polyglot subsystems cannot safely maintain independent copies of shared schemas. Centralizing authority in
       ste-spec eliminates drift and ensures all subsystems validate against the same contract.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0012#DEC-0012
@@ -520,6 +653,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0012
@@ -541,6 +675,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -557,6 +694,7 @@ entities:
       Platform-specific paths in persisted artifacts break cross-platform workflows. Enforcing POSIX-relative paths at
       the serialization boundary ensures portability without constraining internal disk-IO.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0013#DEC-0013
@@ -570,6 +708,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0013
@@ -591,6 +730,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -607,6 +749,7 @@ entities:
       Private registry URLs are work-context IP that must not appear in version-controlled files. Mechanical enforcement
       via the scanner prevents accidental leakage.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0014#DEC-0014
@@ -620,6 +763,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0014
@@ -641,6 +785,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -657,6 +804,7 @@ entities:
       Workspace-specific references in source code create coupling to a single consumer. By codifying workspace
       agnosticism as an invariant with automated enforcement (grep-based CI check), the tool remains portable across all
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015#DEC-0015
@@ -670,6 +818,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0015
@@ -691,6 +840,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -707,6 +859,7 @@ entities:
       Producer-consumer drift between ste-runtime and workspace graph consumers caused validation failures. A defined
       contract with required core fields, ratified vocabularies, and explicit extension behavior eliminates this c
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016#DEC-0016
@@ -720,6 +873,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0016
@@ -741,6 +895,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -755,6 +912,7 @@ entities:
     name: Mandatory per-repo heartbeat (stdout)
     summary: Operators need deterministic progress granularity per repository.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#DEC-0017
@@ -768,6 +926,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0017
@@ -789,6 +948,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -803,6 +965,7 @@ entities:
     name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
     summary: Default runs remain untouched; caches are explicitly requested.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#DEC-0018
@@ -816,6 +979,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0017
@@ -837,6 +1001,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -851,6 +1018,7 @@ entities:
     name: Opt-in per-repo Promise timeout (--timeout-per-repo)
     summary: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally out of scope.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#DEC-0019
@@ -864,6 +1032,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0017
@@ -885,6 +1054,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -901,6 +1073,7 @@ entities:
       Three standard questions (system dependencies, component integration, blast radius) are answerable purely from the
       typed verb edges in workspace slices. Making them deterministic: 1. Guarantees reproducibility (same grap
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#DEC-0020
@@ -917,6 +1090,14 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Three standard questions answered without LLM cost or latency.
+        - Results are reproducible and testable with in-memory fixtures.
+        - Multiple output projections (Mermaid, table, matrix) from one query.
+        - Serves CLI, MCP, and programmatic API surfaces from the same engine.
+        - New loader required (workspace slices were previously unloadable).
+        - No natural language flexibility; exact node IDs required for blast radius target.
     relationships:
       declared_in:
         - ADR-L-0018
@@ -941,6 +1122,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -957,6 +1141,7 @@ entities:
       The current L4-only projection pipeline produces cognitively unusable output for human readers. Rather than
       introducing LLM-based summarization, the compression layer uses deterministic algorithms: 1. Endpoint path-prefi
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019#DEC-0021
@@ -973,6 +1158,14 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Five resolution levels serve distinct audiences (executive, platform, domain, integration, machine)
+        - All views derive from the same graph substrate ensuring consistency
+        - Deterministic output enables CI diffing and fixture-based testing
+        - Existing L4 projections are fully preserved for backward compatibility
+        - Additional code surface (compression engine, resolution-aware renderers)
+        - Capability domain heuristic (path-prefix grouping) may not perfectly match business domains
     relationships:
       declared_in:
         - ADR-L-0019
@@ -997,6 +1190,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1013,6 +1209,7 @@ entities:
       Entity URI resolution is necessary but not sufficient for IDE and conversation-engine reasoning. ste-runtime must
       assemble a correctness-first CEM bundle, derive a bounded MVC projection, and validate the MVC against the
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#DEC-0022
@@ -1030,6 +1227,14 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - IDE agents can traverse the graph and retrieve authoritative source artifacts
+        - MVC bundles remain small while preserving provenance to CEM and source
+        - Source freshness and graph freshness can be validated before reasoning
+        - Future ste-kernel can consume runtime-produced CEM/MVC validation state
+        - Additional runtime artifact surface and tests
+        - More explicit stale and partial-state diagnostics for consumers to handle
     relationships:
       declared_in:
         - ADR-L-0020
@@ -1055,12 +1260,83 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0020#DEC-0022
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0023
+    entity_type: decision
+    name: Add an experimental contract-consumption builder for MVC-D to MVC-S fixtures
+    summary: >-
+      A narrow fixture validator gives ste-runtime a contract-safe baseline before implementing RSS traversal or kernel
+      handoff. All candidate material is fully supplied to the builder; runtime does not reconstruct architectur
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#DEC-0023
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      related_invariants:
+        - INV-0030
+        - INV-0031
+        - INV-0032
+      enforces_invariants: []
+      enables_capabilities:
+        - CAP-0021
+      governs_components: []
+      supersedes: []
+      refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Runtime can validate ste-spec MVC contracts locally
+        - Candidate-only semantics are executable and testable
+        - Code provenance can link implementation to this ADR
+        - Additional experimental surface must remain clearly separated from legacy CEM/MVC
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - INV-0030
+        - INV-0031
+        - INV-0032
+      enforced_by: []
+      enabled_by: []
+      enables:
+        - CAP-0021
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#DEC-0023
       extraction_phase: extract_decision
       classification: explicit
       generator: adr-architecture-index

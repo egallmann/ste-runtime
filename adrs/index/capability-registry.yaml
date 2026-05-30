@@ -6,6 +6,7 @@ entities:
     name: Surface graph freshness and obligation projection semantics
     summary: Provide canonical freshness, invalidation, and obligation semantics for runtime consumers.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0007#CAP-0007
@@ -40,6 +41,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -54,6 +58,7 @@ entities:
     name: Workspace-scoped analysis
     summary: All reconnaissance and evidence emission operates on workspace scope.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0009#CAP-0009
@@ -87,6 +92,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -99,8 +107,11 @@ entities:
   - id: CAP-0010
     entity_type: capability
     name: One-command workspace initialization
-    summary: ste init <target> creates a fully configured workspace.
+    summary: >-
+      ste setup creates a fully configured workspace (config, MCP, gitignore, initial RECON). ste init remains as the
+      sub-capability for scaffolding workspace.yaml specifically.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0010#CAP-0010
@@ -134,6 +145,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -146,8 +160,9 @@ entities:
   - id: CAP-0011
     entity_type: capability
     name: ArchitectureEvidence emission
-    summary: Emit ArchitectureEvidence v2 at .ste-workspace/evidence/architecture-evidence.json.
+    summary: Emit ArchitectureEvidence v2 at .workspace-graph/evidence/architecture-evidence.json.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0011#CAP-0011
@@ -181,6 +196,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -197,6 +215,7 @@ entities:
       ste-runtime consumes architecture-evidence.schema.json via fixture sync in test/fixtures/. Drift is detected by
       spec-schema-fixture-sync.test.ts.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0012#CAP-0012
@@ -230,6 +249,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -246,6 +268,7 @@ entities:
       ste-runtime operates identically in any workspace without source code changes. All workspace-specific values (repo
       names, output directories, domain vocabulary) are derived from workspace.yaml at runtime.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015#CAP-0015
@@ -280,6 +303,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -296,6 +322,7 @@ entities:
       ste-runtime emits workspace graph slices that conform to a defined schema contract, enabling any compliant merger
       to consume them without validation errors.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016#CAP-0016
@@ -330,6 +357,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -346,6 +376,7 @@ entities:
       Load workspace infra graph slices into a typed in-memory graph and execute deterministic, non-LLM traversal
       queries that answer standard workspace-level questions (system dependencies, component integration, blast radius
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#CAP-0018
@@ -386,6 +417,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -402,6 +436,7 @@ entities:
       Produce architecture projections at five deterministic resolution levels (L0-L4) from the same workspace graph
       substrate, using semantic compression (endpoint grouping, same-type aggregation, edge tier filtering) to opti
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019#CAP-0019
@@ -442,6 +477,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -458,6 +496,7 @@ entities:
       Resolve workspace graph entities to authoritative source artifacts through stable URI locators, assemble CEM
       bundles with provenance and validation state, derive bounded MVC bundles, and validate MVC bundles against thei
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#CAP-0020
@@ -500,12 +539,71 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0020#CAP-0020
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: CAP-0021
+    entity_type: capability
+    name: Experimental MVC-D to MVC-S candidate emission
+    summary: >-
+      Consume ste-spec-owned MVC-D and MVC-S contracts in tests and emit deterministic factual MVC-S candidate snapshots
+      from fully supplied fixture inputs.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#CAP-0021
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      domains:
+        - mvc
+        - contracts
+        - runtime
+        - provenance
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - DEC-0023
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#CAP-0021
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index

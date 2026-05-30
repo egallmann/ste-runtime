@@ -8,6 +8,7 @@ entities:
       The STE Architecture Specification defines RECON (Reconciliation Engine) as the mechanism for extracting semantic
       state from source code and populating AI-DOC. The question arose: How should RECON operate during the expl
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001
@@ -65,6 +66,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -81,6 +85,7 @@ entities:
       RECON generates AI-DOC state from source code extraction. The question arose: How should RECON validate its own
       output to ensure consistency and quality? Key tensions: 1. **Blocking vs. Non-Blocking:** Should validation 
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0002
@@ -122,6 +127,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -138,6 +146,7 @@ entities:
       The STE Architecture Specification (ste-spec) defines a 9-stage Cognitive Execution Model (CEM): ``` Perception →
       Orientation → Analysis → Deliberation → Planning → Execution → Observation → Reflection → Adaptation ``` C
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0003
@@ -179,6 +188,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -195,6 +207,7 @@ entities:
       Per STE Architecture (Section 3.1), STE operates across two distinct governance boundaries: 1. **Workspace
       Development Boundary** - Provisional state, soft + hard enforcement, post-reasoning validation 2. **Runtime Execu
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0004
@@ -236,6 +249,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -250,6 +266,7 @@ entities:
     name: Self-Configuring Domain Discovery
     summary: ''
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0005
@@ -288,6 +305,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -304,6 +324,7 @@ entities:
       E-ADR-004 established the RSS CLI and TypeScript API as the foundation for graph traversal and context assembly.
       However, a gap exists between: 1. **Raw RSS operations** (search, dependencies, blast-radius) - require kno
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0006
@@ -345,6 +366,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -361,6 +385,7 @@ entities:
       ste-runtime now exposes graph freshness checks, invalidated validation signals, change intent handling, and
       obligation projection behavior through RSS and MCP tooling. These semantics are broader than implementation deta
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0007
@@ -403,6 +428,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -419,6 +447,7 @@ entities:
       Reconnaissance tools traditionally assume a single repository as the unit of analysis. Multi-repo systems require
       scope to expand to the workspace level so that cross-repo relationships, shared configuration, and aggrega
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0009
@@ -463,6 +492,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -479,6 +511,7 @@ entities:
       Without a first-class init command, onboarding requires manual file creation and sequencing knowledge. Users must
       know which files to create, in which order, and which values to populate. This friction slows adoption and
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0010
@@ -517,6 +550,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -533,6 +569,7 @@ entities:
       STE defines five subsystems. ste-runtime is the RuntimeAdapter. Its role and publication surface must be declared,
       not assumed. Without explicit conformance, the runtime risks emitting artifacts outside its authority or 
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0011
@@ -571,6 +608,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -587,6 +627,7 @@ entities:
       STE subsystems are written in different languages. On-disk artifacts are the only interop boundary. Neither
       runtime invents schema. Without a single schema authority, subsystems risk copying, re-deriving, or hand-maintai
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0012
@@ -611,6 +652,7 @@ entities:
       references: []
       referenced_by:
         - ADR-L-0016
+        - ADR-L-0021
       related_to: []
       enforces: []
       enforced_by: []
@@ -626,6 +668,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -642,6 +687,7 @@ entities:
       Windows, macOS, and Linux represent paths differently. Any path persisted to a file, logged, or used as an
       identifier must be portable. src/utils/paths.ts already implements the correct helpers (toPosixPath, getRelativeP
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0013
@@ -682,6 +728,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -698,6 +747,7 @@ entities:
       Enterprise environments route package installs through private registry instances. These hosts are unreachable
       outside the corporate network and their URLs are work-context IP. Source code, configuration, generated artif
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0014
@@ -736,6 +786,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -752,6 +805,7 @@ entities:
       ste-runtime is an OSS tool that operates on arbitrary workspaces. Each workspace declares its own repository list,
       output directory, and domain vocabulary in workspace.yaml. The runtime must never contain references to a
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015
@@ -797,6 +851,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -813,6 +870,7 @@ entities:
       ste-runtime produces per-repository graph slices during workspace RECON. These slices are consumed by the
       runtime-owned workspace merger to produce a unified workspace graph and multi-resolution projections. Without a de
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016
@@ -838,6 +896,7 @@ entities:
         - DEC-0016
         - INV-0017
         - INV-0018
+        - INV-0025
       references:
         - ADR-L-0009
         - ADR-L-0012
@@ -846,6 +905,7 @@ entities:
         - ADR-L-0018
         - ADR-L-0019
         - ADR-L-0020
+        - ADR-L-0021
       related_to: []
       enforces: []
       enforced_by: []
@@ -861,6 +921,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -877,6 +940,7 @@ entities:
       ADR-L-0009 fixes workspace as the universal scope unit. This ADR records how workspace RECON execution behaves for
       observability, optional incremental cross-run skips, and optional per-repository timeouts without changin
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017
@@ -920,6 +984,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -936,6 +1003,7 @@ entities:
       The workspace semantic graph (verb-typed edges in slices/*.yaml, produced per ADR-L-0016) already contains the
       relationships needed to answer standard system-level questions such as "show me the repo dependency map," "sh
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018
@@ -986,6 +1054,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1002,6 +1073,7 @@ entities:
       ADR-L-0018 established deterministic workspace graph querying with L4 (full fidelity) projection rendering. The
       resulting projections prove the pipeline works but produce cognitively unusable output for human readers. Ev
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019
@@ -1050,6 +1122,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1066,6 +1141,7 @@ entities:
       The workspace graph currently supports deterministic traversal and projection, but graph entities need stable,
       portable links back to authoritative source artifacts before the graph can safely support IDE-native reasonin
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020
@@ -1101,6 +1177,75 @@ entities:
         - ADR-L-0017
         - ADR-L-0018
         - ADR-L-0019
+      referenced_by:
+        - ADR-L-0021
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020
+      extraction_phase: extract_adr
+      classification: explicit
+      generator: adr-architecture-index
+  - id: ADR-L-0021
+    entity_type: adr
+    name: Experimental MVC-D to MVC-S Contract Consumption
+    summary: >-
+      ste-spec now defines draft MVC-D and MVC-S schemas as part of the MVC evolution contract surface. ste-runtime
+      needs an experimental contract-consumption slice that proves it can validate MVC-D fixtures and emit factual M
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      status: proposed
+      domains:
+        - mvc
+        - contracts
+        - runtime
+        - provenance
+      tags:
+        - mvc-d
+        - mvc-s
+        - contract-consumption
+        - candidate-surface
+        - provenance
+      related_reviews: []
+      related_overrides: []
+    relationships:
+      declared_in: []
+      declares:
+        - CAP-0021
+        - DEC-0023
+        - INV-0030
+        - INV-0031
+        - INV-0032
+      references:
+        - ADR-L-0012
+        - ADR-L-0016
+        - ADR-L-0020
       referenced_by: []
       related_to: []
       enforces: []
@@ -1117,12 +1262,15 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
-      source_ref: ADR-L-0020
+      source_ref: ADR-L-0021
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
@@ -1133,6 +1281,7 @@ entities:
       The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing) as the component responsible
       for graph traversal and context assembly from AI-DOC state. RSS provides six core operations: | Operation | 
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: physical_adr
       source_ref: ADR-P-0001
@@ -1171,6 +1320,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1187,6 +1339,7 @@ entities:
       Many enterprise codebases contain JSON files with semantic value beyond simple configuration: | Category |
       Examples | Semantic Value | |----------|----------|----------------| | Controls/Rules Catalog | Security controls
     lifecycle_stage: superseded
+    admission_status: admitted
     canonical_source:
       source_type: physical_adr
       source_ref: ADR-P-0002
@@ -1225,6 +1378,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1241,6 +1397,7 @@ entities:
       The TypeScript extractor currently processes Angular files as standard TypeScript, capturing: - Functions and
       their signatures - Classes and their methods - Import/export relationships - Module structure However, Angular
     lifecycle_stage: superseded
+    admission_status: admitted
     canonical_source:
       source_type: physical_adr
       source_ref: ADR-P-0003
@@ -1280,6 +1437,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1296,6 +1456,7 @@ entities:
       Per STE Architecture Section 3.1, the Workspace Development Boundary requires: - **Provisional state** maintenance
       (pre-merge, feature branches) - **Soft + hard enforcement** (LLM instruction-following + validation tools
     lifecycle_stage: superseded
+    admission_status: admitted
     canonical_source:
       source_type: physical_adr
       source_ref: ADR-P-0004
@@ -1334,6 +1495,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1348,6 +1512,7 @@ entities:
     name: Extractor Validation Requirements
     summary: ''
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: physical_adr
       source_ref: ADR-P-0005
@@ -1385,6 +1550,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1401,6 +1569,7 @@ entities:
       This component exposes assistant-facing runtime tools over MCP and binds structural, operational, context,
       optimized, obligation-oriented, and workspace graph query tool surfaces into one discoverable server boundary.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0001
@@ -1437,6 +1606,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1453,6 +1625,7 @@ entities:
       This component monitors changes, detects transactions, coordinates update batches, and safeguards write-triggered
       reconciliation behavior for the runtime boundary.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0002
@@ -1489,6 +1662,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1505,6 +1681,7 @@ entities:
       This component evaluates file freshness, intent scope, and reconciliation requirements before runtime actions rely
       on semantic graph state.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0003
@@ -1541,6 +1718,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1557,6 +1737,7 @@ entities:
       This component projects invalidated validations and change-driven obligations, assembles implementation context,
       and loads source-backed evidence for assistant-facing reasoning.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0004
@@ -1593,6 +1774,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1609,6 +1793,7 @@ entities:
       JSON semantic extraction captures controls, schemas, and configuration semantics from JSON sources and feeds them
       into RECON normalization.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0005
@@ -1645,6 +1830,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1661,6 +1849,7 @@ entities:
       Frontend semantic extraction captures Angular and CSS/SCSS-specific semantics beyond generic TypeScript structure
       and feeds them into RECON normalization.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0006
@@ -1697,6 +1886,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1714,6 +1906,7 @@ entities:
       relationships, and template-level implementation intent from CloudFormation sources. This includes nested stack
       topolo
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0007
@@ -1750,6 +1943,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1766,6 +1962,7 @@ entities:
       RECON produces rich per-repository state (call graphs, SDK usage, env vars, CFN resources, triggers) but the
       workspace slice emitter collapsed this to a skeleton with only has_contract edges. Cross-domain joins (SDK usag
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0008
@@ -1802,6 +1999,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1818,6 +2018,7 @@ entities:
       ADR-L-0018 established the capability for deterministic workspace graph querying. This component implements the
       loader, three canned query functions, and three projection renderers that realize that capability. It consum
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0009
@@ -1858,6 +2059,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1874,6 +2078,7 @@ entities:
       ADR-L-0019 established the capability for multi-resolution architecture projection using deterministic semantic
       compression. This component implements the compression engine, resolution-aware renderers, multi-resolution 
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0010
@@ -1914,6 +2119,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1930,6 +2138,7 @@ entities:
       ADR YAML semantic extraction converts Architecture Decision Records authored in the ADR-kit YAML schema into
       first-class RECON graph slices. This enables the MCP query tools (find, impact, usages, similar) to operate ove
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0011
@@ -1966,6 +2175,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -1983,6 +2195,7 @@ entities:
       assistant-facing MCP tools, performs reconciliation gating and freshness checks, and assembles implementation
       context and
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_system_adr
       source_ref: ADR-PS-0001
@@ -2028,6 +2241,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2044,6 +2260,7 @@ entities:
       ste-runtime extraction is now a subsystem containing multiple first-class extractors and normalization flows
       rather than a pair of isolated physical slices. This ADR groups the implemented extractor estate under a concre
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_system_adr
       source_ref: ADR-PS-0002
@@ -2086,6 +2303,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2100,6 +2320,7 @@ entities:
     name: Surface graph freshness and obligation projection semantics
     summary: Provide canonical freshness, invalidation, and obligation semantics for runtime consumers.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0007#CAP-0007
@@ -2134,6 +2355,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2148,6 +2372,7 @@ entities:
     name: Workspace-scoped analysis
     summary: All reconnaissance and evidence emission operates on workspace scope.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0009#CAP-0009
@@ -2181,6 +2406,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2193,8 +2421,11 @@ entities:
   - id: CAP-0010
     entity_type: capability
     name: One-command workspace initialization
-    summary: ste init <target> creates a fully configured workspace.
+    summary: >-
+      ste setup creates a fully configured workspace (config, MCP, gitignore, initial RECON). ste init remains as the
+      sub-capability for scaffolding workspace.yaml specifically.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0010#CAP-0010
@@ -2228,6 +2459,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2240,8 +2474,9 @@ entities:
   - id: CAP-0011
     entity_type: capability
     name: ArchitectureEvidence emission
-    summary: Emit ArchitectureEvidence v2 at .ste-workspace/evidence/architecture-evidence.json.
+    summary: Emit ArchitectureEvidence v2 at .workspace-graph/evidence/architecture-evidence.json.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0011#CAP-0011
@@ -2275,6 +2510,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2291,6 +2529,7 @@ entities:
       ste-runtime consumes architecture-evidence.schema.json via fixture sync in test/fixtures/. Drift is detected by
       spec-schema-fixture-sync.test.ts.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0012#CAP-0012
@@ -2324,6 +2563,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2340,6 +2582,7 @@ entities:
       ste-runtime operates identically in any workspace without source code changes. All workspace-specific values (repo
       names, output directories, domain vocabulary) are derived from workspace.yaml at runtime.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015#CAP-0015
@@ -2374,6 +2617,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2390,6 +2636,7 @@ entities:
       ste-runtime emits workspace graph slices that conform to a defined schema contract, enabling any compliant merger
       to consume them without validation errors.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016#CAP-0016
@@ -2424,6 +2671,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2440,6 +2690,7 @@ entities:
       Load workspace infra graph slices into a typed in-memory graph and execute deterministic, non-LLM traversal
       queries that answer standard workspace-level questions (system dependencies, component integration, blast radius
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#CAP-0018
@@ -2480,6 +2731,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2496,6 +2750,7 @@ entities:
       Produce architecture projections at five deterministic resolution levels (L0-L4) from the same workspace graph
       substrate, using semantic compression (endpoint grouping, same-type aggregation, edge tier filtering) to opti
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019#CAP-0019
@@ -2536,6 +2791,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2552,6 +2810,7 @@ entities:
       Resolve workspace graph entities to authoritative source artifacts through stable URI locators, assemble CEM
       bundles with provenance and validation state, derive bounded MVC bundles, and validate MVC bundles against thei
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#CAP-0020
@@ -2594,12 +2853,71 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0020#CAP-0020
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: CAP-0021
+    entity_type: capability
+    name: Experimental MVC-D to MVC-S candidate emission
+    summary: >-
+      Consume ste-spec-owned MVC-D and MVC-S contracts in tests and emit deterministic factual MVC-S candidate snapshots
+      from fully supplied fixture inputs.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#CAP-0021
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      domains:
+        - mvc
+        - contracts
+        - runtime
+        - provenance
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - DEC-0023
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#CAP-0021
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
@@ -2610,6 +2928,7 @@ entities:
       - Serve MCP stdio runtime for assistant integration - Register structural, operational, context, optimized,
       obligation, and workspace graph query tools - Route tool requests onto runtime graph, context, and workspace que
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0001#COMP-0001
@@ -2649,6 +2968,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2665,6 +2987,7 @@ entities:
       - Watch source and state changes - Detect coherent edit transactions - Coordinate update batches and
       reconciliation triggers - Protect runtime behavior from unsafe write loops
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0002#COMP-0002
@@ -2703,6 +3026,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2719,6 +3045,7 @@ entities:
       - Resolve intent scope - Evaluate graph freshness - Determine whether reconciliation is required - Surface
       freshness status for downstream tools
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0003#COMP-0003
@@ -2757,6 +3084,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2773,6 +3103,7 @@ entities:
       - Project obligations from change intent and graph state - Surface invalidated validations and advisories - Load
       source-backed implementation context - Format runtime context for assistant consumption
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0004#COMP-0004
@@ -2811,6 +3142,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2827,6 +3161,7 @@ entities:
       - Detect semantically relevant JSON files - Extract controls, schemas, and configuration semantics - Provide
       RECON-ready assertions for normalization
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0005#COMP-0005
@@ -2865,6 +3200,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2881,6 +3219,7 @@ entities:
       - Extract Angular component, service, route, and template semantics - Extract CSS/SCSS tokens, styles, and related
       frontend semantics - Provide frontend assertions for RECON normalization
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0006#COMP-0006
@@ -2920,6 +3259,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2936,6 +3278,7 @@ entities:
       - Extract template, parameter, resource, and output semantics - Derive infrastructure relationships and API/data
       model evidence - Preserve template-level implementation intent metadata - Detect nested stack topology via 
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0007#COMP-0007
@@ -2975,6 +3318,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -2991,6 +3337,7 @@ entities:
       - Build env-var-to-CFN-resource join maps from per-repo RECON state - Build SDK-service-to-graph-type maps
       (dynamodb->Database, s3->Bucket, etc.) - Build Lambda-handler-to-function maps from CFN handler metadata - Resolv
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0008#COMP-0008
@@ -3029,6 +3376,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3042,9 +3392,10 @@ entities:
     entity_type: component
     name: Slice Emitter Edge Wiring
     summary: >-
-      - Produce reads/writes edges by joining SDK usage with infrastructure resources via env-var bridge - Produce
-      publishes edges for SQS/SNS SDK usage - Improve consumes edge resolution via CFN logical ID lookup - Produce de
+      - Emit all extracted CFN resources as workspace graph nodes (no allowlist gate; InfraResource fallback for
+      unmapped types) - Emit Stack nodes from infrastructure/template slices with contains edges to child resources - P
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0008#COMP-0009
@@ -3083,6 +3434,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3099,6 +3453,7 @@ entities:
       - Load workspace graph slices into typed in-memory WorkspaceGraph - Build outAdj/inAdj adjacency maps at load time
       for O(1) neighbor lookups - Execute systemDependencies, componentIntegration, blastRadiusWorkspace querie
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0009#COMP-0010
@@ -3143,6 +3498,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3159,6 +3517,7 @@ entities:
       - Compress CannedQueryResult into CompressedProjection at configurable resolution levels (L0-L4) - Group endpoints
       by capability domain using path-prefix extraction - Aggregate same-type nodes above threshold into count-
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0010#COMP-0011
@@ -3201,6 +3560,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3217,6 +3579,7 @@ entities:
       - Detect and classify ADR YAML files via path-prefix and content sniffing - Parse ADR YAML using js-yaml - Extract
       ADR documents, invariants, decisions, capabilities, component specifications, and system boundaries as Ra
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
       source_ref: ADR-PC-0011#COMP-0012
@@ -3256,6 +3619,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3272,6 +3638,7 @@ entities:
       ### 1. Semantic Pressure Over Semantic Truth RECON exists to **observe how semantic truth breaks under change**,
       not to declare what truth is. During exploratory development, the extraction algorithms, normalization sche
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#DEC-0001
@@ -3285,6 +3652,18 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - RECON can execute immediately, generating learning pressure
+        - Conflicts surface early, before they become entrenched
+        - Developers maintain full control over semantic state acceptance
+        - Extraction algorithms can evolve without breaking workflows
+        - No automated enforcement of semantic consistency
+        - Conflicts may accumulate if not reviewed
+        - Provisional state cannot be used for authoritative downstream systems
+        - Document all conflicts for periodic human review
+        - Track conflict patterns to improve extraction algorithms
+        - Plan transition to canonical execution once algorithms stabilize
     relationships:
       declared_in:
         - ADR-L-0001
@@ -3306,6 +3685,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3322,6 +3704,7 @@ entities:
       ### 1. Non-Blocking Preserves Learning If validation blocked execution on every finding, RECON would become
       unusable during exploratory development. Many validation findings are informational or represent known limitatio
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0002#DEC-0002
@@ -3335,6 +3718,19 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Continuous quality visibility without workflow disruption
+        - Historical trend data for extraction algorithm improvement
+        - Early detection of regression in extractors
+        - Developer confidence through transparency
+        - Findings may be ignored if too numerous
+        - No enforcement of quality gates
+        - Report accumulation without review
+        - Periodic finding review as part of development process
+        - Track finding counts over time for trend analysis
+        - Prioritize ERROR findings for immediate investigation
+        - Use findings to guide extractor improvements
     relationships:
       declared_in:
         - ADR-L-0002
@@ -3356,6 +3752,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3372,6 +3771,7 @@ entities:
       ### 1. CEM Orchestrates Components That Must Exist First CEM's stages call into foundational components: -
       **Orientation** calls RSS for context assembly - **Analysis** reads AI-DOC semantic state - **Deliberation** invo
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0003#DEC-0003
@@ -3385,6 +3785,18 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Foundation components can be built and tested independently
+        - API surfaces stabilize before CEM integration
+        - Reduced rework and premature abstraction
+        - Faster iteration on extraction/inference/traversal
+        - Autonomous agent execution blocked until CEM exists
+        - Formal governance auditing deferred
+        - Potential for API drift if CEM requirements not considered
+        - Document CEM's expected API contracts in ste-spec
+        - Periodically review foundation components against CEM needs
+        - Use execution pressure to surface integration gaps
     relationships:
       declared_in:
         - ADR-L-0003
@@ -3406,6 +3818,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3423,6 +3838,7 @@ entities:
       (authoritative: it observed the file system event) 2. Migration detection scores confidence (1.0 = certain same
       element)
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0004#DEC-0004
@@ -3436,6 +3852,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0004
@@ -3457,6 +3874,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3471,6 +3891,7 @@ entities:
     name: DEC-0005
     summary: ''
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0005#DEC-0005
@@ -3484,6 +3905,42 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Drop into any project and run immediately
+        - No setup time, no learning curve
+        - Immediate value delivery
+        - Works with any project structure
+        - Works with any naming convention
+        - Works with any framework combination
+        - Understands project context automatically
+        - Tags and relationships use actual project names
+        - Output reflects real architecture
+        - Reduces barrier to entry dramatically
+        - Eliminates configuration errors
+        - Enables rapid experimentation
+        - Discovery output shows what was found
+        - Users understand what runtime sees
+        - Transparent behavior
+        - Discovery engine requires careful design
+        - Edge cases need handling
+        - More code to maintain
+        - 4 weeks vs 2 weeks for manual config
+        - Delays other features
+        - Higher upfront investment
+        - Heuristics may fail for unusual structures
+        - Need robust fallback mechanisms
+        - Requires extensive testing
+        - Clear abstractions and interfaces
+        - Comprehensive unit test coverage
+        - Well-documented heuristics
+        - Investment justified by adoption gains
+        - Phased implementation with validation gates
+        - Early user testing
+        - Confidence scoring system
+        - Graceful fallback to safe defaults
+        - Optional configuration override for edge cases
+        - Clear discovery debugging output
     relationships:
       declared_in:
         - ADR-L-0005
@@ -3505,6 +3962,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3521,6 +3981,7 @@ entities:
       ### 1. Reduces Cognitive Load for Both Humans and AI Without CQI: ``` Human: "What would be affected by changing
       the auth service?" → Human must know: use blast-radius, specify key format, parse output → AI must know: co
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0006#DEC-0006
@@ -3534,6 +3995,19 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - '**Seamless UX**: Both humans and AI agents use natural language'
+        - '**Performance**: Sub-5ms queries, <0.3ms cached'
+        - '**Discoverability**: Suggested queries guide exploration'
+        - '**Dual output**: Same engine serves terminal and programmatic use'
+        - '**Foundation for MCP**: CQI becomes the MCP tool interface'
+        - '**Pattern maintenance**: New intent patterns require code changes'
+        - '**Cache staleness**: Risk of stale results if cache not invalidated'
+        - '**Abstraction cost**: Hides RSS complexity (may hinder advanced use)'
+        - Expose raw RSS API for power users
+        - Document intent patterns explicitly
+        - Integrate with Watchdog for automatic cache invalidation
     relationships:
       declared_in:
         - ADR-L-0006
@@ -3555,6 +4029,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3571,6 +4048,7 @@ entities:
       The current runtime models freshness and obligation data in public schemas and assistant-facing responses, so
       these semantics require canonical documentation above the component layer.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0007#DEC-0007
@@ -3584,6 +4062,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0007
@@ -3605,6 +4084,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3621,6 +4103,7 @@ entities:
       Multi-repo analysis cannot be retrofitted onto single-repo scope without pervasive special-casing. Defining
       workspace as the universal scope from the start eliminates that debt. A workspace containing a single repository
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0009#DEC-0009
@@ -3634,6 +4117,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0009
@@ -3655,6 +4139,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3666,11 +4153,13 @@ entities:
       generator: adr-architecture-index
   - id: DEC-0010
     entity_type: decision
-    name: ste init is the canonical one-command install experience
+    name: ste setup is the canonical one-command install experience
     summary: >-
-      Manual onboarding is error-prone and slow. A first-class init command with binding constraints ensures consistent,
-      portable, and safe workspace initialization.
+      Manual onboarding is error-prone and slow. A first-class setup command with binding constraints ensures
+      consistent, portable, and safe workspace initialization. ste setup supersedes the narrower ste init by also
+      handling
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0010#DEC-0010
@@ -3684,6 +4173,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0010
@@ -3705,6 +4195,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3721,6 +4214,7 @@ entities:
       Explicit role conformance prevents scope leakage across subsystem boundaries and ensures evidence artifacts are
       schema-compliant.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0011#DEC-0011
@@ -3734,6 +4228,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0011
@@ -3755,6 +4250,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3771,6 +4269,7 @@ entities:
       Polyglot subsystems cannot safely maintain independent copies of shared schemas. Centralizing authority in
       ste-spec eliminates drift and ensures all subsystems validate against the same contract.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0012#DEC-0012
@@ -3784,6 +4283,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0012
@@ -3805,6 +4305,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3821,6 +4324,7 @@ entities:
       Platform-specific paths in persisted artifacts break cross-platform workflows. Enforcing POSIX-relative paths at
       the serialization boundary ensures portability without constraining internal disk-IO.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0013#DEC-0013
@@ -3834,6 +4338,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0013
@@ -3855,6 +4360,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3871,6 +4379,7 @@ entities:
       Private registry URLs are work-context IP that must not appear in version-controlled files. Mechanical enforcement
       via the scanner prevents accidental leakage.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0014#DEC-0014
@@ -3884,6 +4393,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0014
@@ -3905,6 +4415,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3921,6 +4434,7 @@ entities:
       Workspace-specific references in source code create coupling to a single consumer. By codifying workspace
       agnosticism as an invariant with automated enforcement (grep-based CI check), the tool remains portable across all
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015#DEC-0015
@@ -3934,6 +4448,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0015
@@ -3955,6 +4470,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -3971,6 +4489,7 @@ entities:
       Producer-consumer drift between ste-runtime and workspace graph consumers caused validation failures. A defined
       contract with required core fields, ratified vocabularies, and explicit extension behavior eliminates this c
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016#DEC-0016
@@ -3984,6 +4503,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0016
@@ -4005,6 +4525,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4019,6 +4542,7 @@ entities:
     name: Mandatory per-repo heartbeat (stdout)
     summary: Operators need deterministic progress granularity per repository.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#DEC-0017
@@ -4032,6 +4556,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0017
@@ -4053,6 +4578,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4067,6 +4595,7 @@ entities:
     name: Opt-in cross-run incremental skip via --skip-unchanged and sentinel CONST-0015/CONST-0016.
     summary: Default runs remain untouched; caches are explicitly requested.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#DEC-0018
@@ -4080,6 +4609,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0017
@@ -4101,6 +4631,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4115,6 +4648,7 @@ entities:
     name: Opt-in per-repo Promise timeout (--timeout-per-repo)
     summary: Bounded wait per repo frees concurrency slots; subprocess kill is intentionally out of scope.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#DEC-0019
@@ -4128,6 +4662,7 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
     relationships:
       declared_in:
         - ADR-L-0017
@@ -4149,6 +4684,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4165,6 +4703,7 @@ entities:
       Three standard questions (system dependencies, component integration, blast radius) are answerable purely from the
       typed verb edges in workspace slices. Making them deterministic: 1. Guarantees reproducibility (same grap
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#DEC-0020
@@ -4181,6 +4720,14 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Three standard questions answered without LLM cost or latency.
+        - Results are reproducible and testable with in-memory fixtures.
+        - Multiple output projections (Mermaid, table, matrix) from one query.
+        - Serves CLI, MCP, and programmatic API surfaces from the same engine.
+        - New loader required (workspace slices were previously unloadable).
+        - No natural language flexibility; exact node IDs required for blast radius target.
     relationships:
       declared_in:
         - ADR-L-0018
@@ -4205,6 +4752,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4221,6 +4771,7 @@ entities:
       The current L4-only projection pipeline produces cognitively unusable output for human readers. Rather than
       introducing LLM-based summarization, the compression layer uses deterministic algorithms: 1. Endpoint path-prefi
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019#DEC-0021
@@ -4237,6 +4788,14 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Five resolution levels serve distinct audiences (executive, platform, domain, integration, machine)
+        - All views derive from the same graph substrate ensuring consistency
+        - Deterministic output enables CI diffing and fixture-based testing
+        - Existing L4 projections are fully preserved for backward compatibility
+        - Additional code surface (compression engine, resolution-aware renderers)
+        - Capability domain heuristic (path-prefix grouping) may not perfectly match business domains
     relationships:
       declared_in:
         - ADR-L-0019
@@ -4261,6 +4820,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4277,6 +4839,7 @@ entities:
       Entity URI resolution is necessary but not sufficient for IDE and conversation-engine reasoning. ste-runtime must
       assemble a correctness-first CEM bundle, derive a bounded MVC projection, and validate the MVC against the
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#DEC-0022
@@ -4294,6 +4857,14 @@ entities:
       governs_components: []
       supersedes: []
       refines: []
+      contradicts: []
+      accumulated_consequences:
+        - IDE agents can traverse the graph and retrieve authoritative source artifacts
+        - MVC bundles remain small while preserving provenance to CEM and source
+        - Source freshness and graph freshness can be validated before reasoning
+        - Future ste-kernel can consume runtime-produced CEM/MVC validation state
+        - Additional runtime artifact surface and tests
+        - More explicit stale and partial-state diagnostics for consumers to handle
     relationships:
       declared_in:
         - ADR-L-0020
@@ -4319,12 +4890,83 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0020#DEC-0022
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0023
+    entity_type: decision
+    name: Add an experimental contract-consumption builder for MVC-D to MVC-S fixtures
+    summary: >-
+      A narrow fixture validator gives ste-runtime a contract-safe baseline before implementing RSS traversal or kernel
+      handoff. All candidate material is fully supplied to the builder; runtime does not reconstruct architectur
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#DEC-0023
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      related_invariants:
+        - INV-0030
+        - INV-0031
+        - INV-0032
+      enforces_invariants: []
+      enables_capabilities:
+        - CAP-0021
+      governs_components: []
+      supersedes: []
+      refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Runtime can validate ste-spec MVC contracts locally
+        - Candidate-only semantics are executable and testable
+        - Code provenance can link implementation to this ADR
+        - Additional experimental surface must remain clearly separated from legacy CEM/MVC
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - INV-0030
+        - INV-0031
+        - INV-0032
+      enforced_by: []
+      enabled_by: []
+      enables:
+        - CAP-0021
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#DEC-0023
       extraction_phase: extract_decision
       classification: explicit
       generator: adr-architecture-index
@@ -4335,6 +4977,7 @@ entities:
       Single repository only: RECON discovers files within the current repository. Cross-repository reconciliation is
       out of scope.
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0001
@@ -4370,6 +5013,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4386,6 +5032,7 @@ entities:
       Incremental reconciliation: Only files that have changed since the last run are re-extracted (when timestamp
       detection is available).
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0002
@@ -4421,6 +5068,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4435,6 +5085,7 @@ entities:
     name: INV-0003
     summary: 'Configurable source directories: Specified via `ste.config.json` or auto-detected.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0003
@@ -4468,6 +5119,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4484,6 +5138,7 @@ entities:
       Shallow extraction: Extract structural elements (functions, classes, imports, exports) without deep semantic
       analysis.
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0004
@@ -4519,6 +5174,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4533,6 +5191,7 @@ entities:
     name: INV-0005
     summary: 'No deep semantic analysis: Do not attempt to understand function behavior, side effects, or complex type flows.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0005
@@ -4566,6 +5225,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4582,6 +5244,7 @@ entities:
       Multi-language support: TypeScript, Python, CloudFormation, JSON (see E-ADR-005), Angular, CSS/SCSS (see
       E-ADR-006), ADR YAML (see ADR-PC-0011).
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0006
@@ -4617,6 +5280,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4631,6 +5297,7 @@ entities:
     name: INV-0007
     summary: 'Portable execution: RECON must work when dropped into any project.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0007
@@ -4664,6 +5331,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4678,6 +5348,7 @@ entities:
     name: INV-0008
     summary: 'Provisional mapping: Normalization to AI-DOC schema is best-effort, not canonical.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0008
@@ -4711,6 +5382,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4725,6 +5399,7 @@ entities:
     name: INV-0009
     summary: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization will change.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0009
@@ -4758,6 +5433,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4772,6 +5450,7 @@ entities:
     name: INV-0010
     summary: 'ID stability: Element IDs should be stable across runs for the same source element.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0010
@@ -4805,6 +5484,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4819,6 +5501,7 @@ entities:
     name: INV-0011
     summary: 'State is authoritative, not historical: Each run produces the current truth, not a delta.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0011
@@ -4852,6 +5535,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4866,6 +5552,7 @@ entities:
     name: INV-0012
     summary: 'Create/Update/Delete semantics: New slices are created, changed slices are updated, orphaned slices are deleted.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0012
@@ -4899,6 +5586,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4913,6 +5603,7 @@ entities:
     name: INV-0013
     summary: 'Orphan detection: Slices from processed source files that no longer exist in code are removed.'
     lifecycle_stage: active
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0001#INV-0013
@@ -4946,6 +5637,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -4960,6 +5654,7 @@ entities:
     name: INV-0014
     summary: Scope is a workspace. Size(workspace) >= 1.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0009#INV-0014
@@ -4993,6 +5688,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5009,6 +5707,7 @@ entities:
       ste-runtime source code contains zero references to any specific workspace, repository name, output directory
       name, or domain vocabulary. All such values are derived from workspace.yaml at runtime.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015#INV-0015
@@ -5044,6 +5743,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5060,6 +5762,7 @@ entities:
       Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta) and never reference real workspace
       repository names.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0015#INV-0016
@@ -5095,6 +5798,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5111,6 +5817,7 @@ entities:
       Every workspace graph slice emitted by ste-runtime contains the required core fields defined in the slice schema
       contract: schema_version, repo, generated_by, generated_at, nodes, and edges. source_commit and diagnostics
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016#INV-0017
@@ -5148,6 +5855,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5164,6 +5874,7 @@ entities:
       Runtime-emitted workspace graph edges that assert a resolved relationship use confidence 'high'. Ambiguous
       resolutions produce diagnostics rather than asserted edges. Consumers must drop non-high edges when they appear i
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0016#INV-0018
@@ -5200,6 +5911,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5214,6 +5928,7 @@ entities:
     name: INV-0019
     summary: Workspace RECON emits exactly one progress line per repository before that repository begins processing.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0017#INV-0019
@@ -5247,6 +5962,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5263,6 +5981,7 @@ entities:
       Canned query functions (systemDependencies, componentIntegration, blastRadiusWorkspace) are pure graph traversal.
       They do not invoke LLM inference, network calls, or non-deterministic operations.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#INV-0020
@@ -5299,6 +6018,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5315,6 +6037,7 @@ entities:
       Projection is separated from query. Query functions return structured data objects. Rendering to Mermaid, table,
       or matrix is performed by distinct projection functions.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#INV-0021
@@ -5351,6 +6074,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5367,6 +6093,7 @@ entities:
       Resolution level is a first-class parameter of the projection pipeline. Every MCP tool and CLI command that
       produces projections accepts an optional resolution parameter (L0|L1|L2|L3|L4) with L4 as the default.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019#INV-0022
@@ -5404,6 +6131,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5420,6 +6150,7 @@ entities:
       Compressed projections preserve traceability to source graph nodes. Every aggregate node carries memberIds linking
       back to the original workspace nodes. Every compressed edge carries sourceEdgeIds when multiplicity > 1.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0019#INV-0023
@@ -5457,6 +6188,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5473,6 +6207,7 @@ entities:
       Every emitted projection file includes projection_level metadata in its YAML frontmatter, identifying the
       resolution level (L0-L4) at which the projection was generated.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0018#INV-0024
@@ -5508,12 +6243,72 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0018#INV-0024
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0025
+    entity_type: invariant
+    name: INV-0025
+    summary: >-
+      All infrastructure resources extracted by RECON are emitted as workspace graph nodes. No extracted resource is
+      silently dropped by the slice emitter. Resources not covered by an explicit CFN-to-graph-type mapping are emi
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#INV-0025
+      artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0016
+      scope: global
+      statement: >-
+        All infrastructure resources extracted by RECON are emitted as workspace graph nodes. No extracted resource is
+        silently dropped by the slice emitter. Resources not covered by an explicit CFN-to-graph-type mapping are
+        emitted as InfraResource nodes with the original cfn_type preserved in attributes. The logicalId is the
+        last-resort display name; a null name never causes a node to be dropped.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0016
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0016#INV-0025
       extraction_phase: assign_canonical_invariant
       classification: explicit
       generator: adr-architecture-index
@@ -5524,6 +6319,7 @@ entities:
       Workspace graph entities may carry source locator metadata, but graph artifacts must not embed full canonical ADR,
       DEC, invariant, contract, or source documents by default.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#INV-0027
@@ -5561,6 +6357,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5577,6 +6376,7 @@ entities:
       Every MVC bundle must retain provenance back to its parent CEM bundle, graph snapshot, traversal operation,
       selected source artifacts, embodiment evidence, and validation state.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#INV-0028
@@ -5614,6 +6414,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5630,6 +6433,7 @@ entities:
       Source locator generation, graph traversal, CEM assembly, MVC derivation, and MVC validation are deterministic for
       identical workspace graph, source, locator registry, and traversal inputs.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
       source_ref: ADR-L-0020#INV-0029
@@ -5667,12 +6471,186 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0020#INV-0029
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0030
+    entity_type: invariant
+    name: INV-0030
+    summary: >-
+      ste-runtime MUST treat MVC-D and MVC-S schemas as external ste-spec contracts. Runtime tests may mirror schema
+      fixtures for local validation, but runtime code MUST NOT redefine the public schema authority.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#INV-0030
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      scope: global
+      statement: |-
+        ste-runtime MUST treat MVC-D and MVC-S schemas as external ste-spec contracts.
+        Runtime tests may mirror schema fixtures for local validation, but runtime
+        code MUST NOT redefine the public schema authority.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0023
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#INV-0030
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0031
+    entity_type: invariant
+    name: INV-0031
+    summary: >-
+      Experimental MVC-S candidate emission MUST NOT include admission decisions, caller-facing eligibility, enforcement
+      outcomes, kernel verdicts, governance state, or admitted payloads.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#INV-0031
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      scope: global
+      statement: |-
+        Experimental MVC-S candidate emission MUST NOT include admission decisions,
+        caller-facing eligibility, enforcement outcomes, kernel verdicts, governance
+        state, or admitted payloads.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0023
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#INV-0031
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0032
+    entity_type: invariant
+    name: INV-0032
+    summary: >-
+      Experimental MVC-S candidate emission MUST be deterministic for identical MVC-D, candidate refs, selector refs,
+      topology metrics, rationale, and negative-space inputs. Fingerprints MUST be computed over canonicalized inp
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#INV-0032
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0021
+      scope: global
+      statement: |-
+        Experimental MVC-S candidate emission MUST be deterministic for identical
+        MVC-D, candidate refs, selector refs, topology metrics, rationale, and
+        negative-space inputs. Fingerprints MUST be computed over canonicalized input.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0021
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0023
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0021#INV-0032
       extraction_phase: assign_canonical_invariant
       classification: explicit
       generator: adr-architecture-index
@@ -5684,6 +6662,7 @@ entities:
       assistant-facing MCP tools, performs reconciliation gating and freshness checks, and assembles implementation
       context and
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_system_adr
       source_ref: ADR-PS-0001
@@ -5729,6 +6708,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
@@ -5745,6 +6727,7 @@ entities:
       ste-runtime extraction is now a subsystem containing multiple first-class extractors and normalization flows
       rather than a pair of isolated physical slices. This ADR groups the implemented extractor estate under a concre
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_system_adr
       source_ref: ADR-PS-0002
@@ -5790,6 +6773,9 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []

@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 16f231caa57ccd42229fc0a2e3b8e4dc656349b64a42efab17b112d4b705166f
-rendered_hash: 1271837befca44fec7578b9435d47ce3f7bbb95c2be6774739fd896bdd631936
+source_hash: 8bbdb43158a3ab78b90ca9675c4761158f7a7abdebacec92206517a8d2f3bf24
+rendered_hash: 77e069aecaf967c7d73e43f3f4f881bbc7e64797f765af3baaf4186e22e6b776
 -->
 
 # ADR-PC-0002: Watchdog and Update Coordination
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** watch, runtime, reconciliation  
 
 **Implements Logical:** ADR-L-0004  

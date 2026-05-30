@@ -130,6 +130,18 @@ entities:
       depends_on: []
       implements: []
       realizes: []
+  - entity_id: CAP-0021
+    entity_type: capability
+    name: Experimental MVC-D to MVC-S candidate emission
+    introduced_by: ADR-L-0021
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
   - entity_id: COMP-0001
     entity_type: component
     name: MCP Server and Tool Registry
@@ -374,7 +386,7 @@ entities:
       realizes: []
   - entity_id: DEC-0010
     entity_type: decision
-    name: ste init is the canonical one-command install experience
+    name: ste setup is the canonical one-command install experience
     introduced_by: ADR-L-0010
     lifecycle_stage: proposed
     source_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
@@ -538,6 +550,22 @@ entities:
         - INV-0027
         - INV-0028
         - INV-0029
+  - entity_id: DEC-0023
+    entity_type: decision
+    name: Add an experimental contract-consumption builder for MVC-D to MVC-S fixtures
+    introduced_by: ADR-L-0021
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements:
+        - CAP-0021
+      realizes:
+        - INV-0030
+        - INV-0031
+        - INV-0032
   - entity_id: INV-0001
     entity_type: invariant
     name: INV-0001
@@ -826,6 +854,18 @@ entities:
       depends_on: []
       implements: []
       realizes: []
+  - entity_id: INV-0025
+    entity_type: invariant
+    name: INV-0025
+    introduced_by: ADR-L-0016
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
   - entity_id: INV-0027
     entity_type: invariant
     name: INV-0027
@@ -856,6 +896,42 @@ entities:
     introduced_by: ADR-L-0020
     lifecycle_stage: proposed
     source_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0030
+    entity_type: invariant
+    name: INV-0030
+    introduced_by: ADR-L-0021
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0031
+    entity_type: invariant
+    name: INV-0031
+    introduced_by: ADR-L-0021
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0032
+    entity_type: invariant
+    name: INV-0032
+    introduced_by: ADR-L-0021
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
     source_artifact_type: logical_adr
     related_adrs: []
     relationships:
