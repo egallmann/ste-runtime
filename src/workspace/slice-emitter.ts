@@ -20,6 +20,7 @@ import type { ExternalSystemEntry } from './manifest.js';
 import { getCfnGraphType, NODE_NAME_KEYS, AUXILIARY_NODE_TYPES } from './cfn-type-mapping.js';
 import { entityUri, workspaceUri } from './source-uri.js';
 import { computeFileHash } from './source-locator-registry.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../../package.json') as { name: string; version: string };
@@ -704,7 +705,15 @@ export async function loadRepoState(stateDir: string): Promise<ParsedStateFile[]
 /**
  * Emit a workspace graph slice YAML file from RECON state under {@code stateDir}.
  */
-export async function emitWorkspaceSlice(
+export const emitWorkspaceSlice: (
+  repoName: string,
+  stateDir: string,
+  outputPath: string,
+  _repoPath: string,
+  externalSystems?: ExternalSystemEntry[],
+) => Promise<SliceEmitResult> = implements_adr(
+  'ADR-L-0016',
+)(enforces_invariant('INV-0017', 'INV-0025')(async function emitWorkspaceSlice(
   repoName: string,
   stateDir: string,
   outputPath: string,
@@ -899,4 +908,4 @@ export async function emitWorkspaceSlice(
     edgeCount: edges.length,
     contentHash,
   };
-}
+}));

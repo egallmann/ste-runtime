@@ -1,3 +1,5 @@
+import { implements_adr } from '../architecture/intent-decorators.js';
+
 export interface LineRange {
   start: number;
   end: number;
@@ -30,7 +32,9 @@ function normalizeRepo(repo: string): string {
   return trimmed;
 }
 
-export function normalizePortablePath(input: string): string {
+export const normalizePortablePath: (input: string) => string = implements_adr(
+  'ADR-L-0013',
+)(function normalizePortablePath(input: string): string {
   const raw = input.trim().replace(/\\/g, '/');
   if (!raw) {
     throw new Error('Source URI path must be non-empty');
@@ -43,7 +47,7 @@ export function normalizePortablePath(input: string): string {
     throw new Error(`Source URI path is not portable: ${input}`);
   }
   return parts.join('/');
-}
+});
 
 function formatLineRange(lineRange?: LineRange): string {
   if (!lineRange) return '';
@@ -58,12 +62,14 @@ function formatLineRange(lineRange?: LineRange): string {
   return `#L${lineRange.start}-L${lineRange.end}`;
 }
 
-export function workspaceUri(repo: string, sourcePath: string, lineRange?: LineRange): string {
+export const workspaceUri: (repo: string, sourcePath: string, lineRange?: LineRange) => string = implements_adr(
+  'ADR-L-0013',
+)(function workspaceUri(repo: string, sourcePath: string, lineRange?: LineRange): string {
   const normalizedRepo = normalizeRepo(repo);
   const normalizedPath = normalizePortablePath(sourcePath);
   const encodedPath = normalizedPath.split('/').map(encodePathSegment).join('/');
   return `workspace://${encodePathSegment(normalizedRepo)}/${encodedPath}${formatLineRange(lineRange)}`;
-}
+});
 
 export function entityUri(entityId: string): string {
   const trimmed = entityId.trim();

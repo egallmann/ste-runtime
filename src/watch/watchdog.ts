@@ -35,6 +35,9 @@ export interface WatchdogStats {
  * and incremental RECON triggering.
  */
 export class Watchdog extends EventEmitter {
+  static readonly __implements_adrs__ = Object.freeze(['ADR-L-0004'] as const);
+  static readonly __enforces_invariants__ = Object.freeze([] as const);
+
   private options: WatchdogOptions;
   private watcher: chokidar.FSWatcher | null = null;
   private editQueue: EditQueueManager;

@@ -7,6 +7,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import type { ResolvedConfig } from '../config/index.js';
 import { executeRecon } from '../recon/index.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 import { discoverFilesFromConfig } from '../recon/phases/discovery.js';
 import { log } from '../utils/logger.js';
 import { PhaseTimer, repoLimiter, type PhaseTimingRecord } from '../utils/concurrency.js';
@@ -138,7 +139,14 @@ function repoIsFailure(r: RepoResult): boolean {
 /**
  * Run RECON once per repository in manifest order; write slices and workspace index at workspace root.
  */
-export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Promise<WorkspaceReconResult> {
+export const executeWorkspaceRecon: (
+  options: WorkspaceReconOptions,
+) => Promise<WorkspaceReconResult> = implements_adr(
+  'ADR-L-0017',
+  'ADR-L-0009',
+)(enforces_invariant('INV-0019')(async function executeWorkspaceRecon(
+  options: WorkspaceReconOptions,
+): Promise<WorkspaceReconResult> {
   const wsTimer = new PhaseTimer('Workspace Orchestration');
   wsTimer.start();
 
@@ -376,4 +384,4 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
     multiResProjectionResult,
     orchestrationTiming: wsTiming,
   };
-}
+}));

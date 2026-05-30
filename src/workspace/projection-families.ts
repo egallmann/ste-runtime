@@ -5,6 +5,7 @@
  */
 
 import type { ResolutionLevel, ResolutionConfig } from './compression.js';
+import { implements_adr } from '../architecture/intent-decorators.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -25,9 +26,11 @@ export interface ProjectionFamily {
 
 const families = new Map<string, ProjectionFamily>();
 
-export function registerFamily(family: ProjectionFamily): void {
+export const registerFamily: (family: ProjectionFamily) => void = implements_adr(
+  'ADR-L-0019',
+)(function registerFamily(family: ProjectionFamily): void {
   families.set(family.id, family);
-}
+});
 
 export function getFamily(id: string): ProjectionFamily | undefined {
   return families.get(id);

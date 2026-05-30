@@ -167,6 +167,132 @@ describe('extractAssertions', () => {
       });
     });
 
+    it('should extract implementation intent from class static __implements_adrs__ metadata (Watchdog pattern)', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/watchdog.ts',
+        relativePath: 'watchdog.ts',
+        language: 'typescript',
+      };
+
+      const tsContent = `
+        export class Watchdog {
+          static readonly __implements_adrs__ = Object.freeze(['ADR-L-0004'] as const);
+          static readonly __enforces_invariants__ = Object.freeze([] as const);
+
+          start(): void {}
+        }
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const watchdogClass = assertions.find(
+        a => a.elementType === 'class' && a.metadata.name === 'Watchdog',
+      );
+
+      expect(watchdogClass?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0004'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'metadata',
+      });
+    });
+
+    it('should extract implementation intent from class static __implements_adrs__ metadata (ConversationalQueryEngine pattern)', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/conversational-query.ts',
+        relativePath: 'conversational-query.ts',
+        language: 'typescript',
+      };
+
+      const tsContent = `
+        export class ConversationalQueryEngine {
+          static readonly __implements_adrs__ = Object.freeze(['ADR-L-0006'] as const);
+          static readonly __enforces_invariants__ = Object.freeze([] as const);
+
+          async query(input: string): Promise<string> {
+            return input;
+          }
+        }
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const engineClass = assertions.find(
+        a => a.elementType === 'class' && a.metadata.name === 'ConversationalQueryEngine',
+      );
+
+      expect(engineClass?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0006'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'metadata',
+      });
+    });
+
+    it('should extract implementation intent from implements_adr_method on class methods', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/cqi-method.ts',
+        relativePath: 'cqi-method.ts',
+        language: 'typescript',
+      };
+
+      const tsContent = `
+        export class ConversationalQueryEngine {
+          @implements_adr_method('ADR-L-0006')
+          async query(input: string): Promise<string> {
+            return input;
+          }
+        }
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const queryMethod = assertions.find(
+        a => a.elementType === 'function' && a.metadata.name === 'query',
+      );
+
+      expect(queryMethod?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0006'],
+        enforced_invariants: [],
+        confidence: 'declared',
+        source: 'decorator',
+      });
+    });
+
+    it('should extract implementation intent from call-expression linkage wrappers on exported const functions', async () => {
+      const tsFile: DiscoveredFile = {
+        path: '/test/wrapper.ts',
+        relativePath: 'wrapper.ts',
+        language: 'typescript'
+      };
+
+      const tsContent = `
+        export const buildSnapshot = implements_adr('ADR-L-0021')(
+          enforces_invariant('INV-0031', 'INV-0032')(
+            function buildSnapshot(input: string): string {
+              return input;
+            }
+          )
+        );
+      `;
+
+      vi.mocked(fs.readFile).mockResolvedValue(tsContent);
+
+      const assertions = await extractAssertions([tsFile]);
+      const func = assertions.find(a => a.elementType === 'function' && a.metadata.name === 'buildSnapshot');
+
+      expect(func).toBeDefined();
+      expect(func?.metadata.implementationIntent).toEqual({
+        implements_adrs: ['ADR-L-0021'],
+        enforced_invariants: ['INV-0031', 'INV-0032'],
+        confidence: 'declared',
+        source: 'decorator',
+      });
+    });
+
     it('should ignore non-literal TypeScript decorator arguments for implementation intent', async () => {
       const tsFile: DiscoveredFile = {
         path: '/test/nonliteral.ts',

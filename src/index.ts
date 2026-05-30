@@ -154,6 +154,21 @@ export {
   type AdjacencyMatrixResult,
 } from './workspace/index.js';
 
+export {
+  assertMvcDefinitionContract,
+  assertMvcSnapshotCandidateOnly,
+  buildMvcSnapshotCandidate,
+  canonicalMvcFingerprintInput,
+  type BuildMvcSnapshotInput,
+  type MvcDefinition,
+  type MvcNegativeSpace,
+  type MvcRationale,
+  type MvcRef,
+  type MvcRefWithHash,
+  type MvcSnapshot,
+  type MvcTopologyMetrics,
+} from './workspace/mvc-evolution.js';
+
 // ============================================================================
 // Architecture compiler (ADR → registries / index / manifest)
 // ============================================================================

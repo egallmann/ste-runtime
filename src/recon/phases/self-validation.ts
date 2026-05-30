@@ -17,6 +17,7 @@ import { validateIdentity } from '../validation/identity-validator.js';
 import { validateCoverage } from '../validation/coverage-validator.js';
 import { generateReport, type ReportVerbosity } from '../validation/report-generator.js';
 import { log } from '../../utils/logger.js';
+import { implements_adr } from '../../architecture/intent-decorators.js';
 
 export interface SelfValidationOptions {
   validationVerbosity?: ReportVerbosity;
@@ -34,12 +35,20 @@ export interface SelfValidationOptions {
  * - Report-only: generates evidence, not verdicts
  * - Categorized: all findings are ERROR/WARNING/INFO
  */
-export async function runSelfValidation(
+export const runSelfValidation: (
   assertions: NormalizedAssertion[],
   projectRoot: string,
   stateRoot: string,
   sourceRoot: string,
-  options: SelfValidationOptions = {}
+  options?: SelfValidationOptions,
+) => Promise<ValidationResult> = implements_adr(
+  'ADR-L-0002',
+)(async function runSelfValidation(
+  assertions: NormalizedAssertion[],
+  projectRoot: string,
+  stateRoot: string,
+  sourceRoot: string,
+  options: SelfValidationOptions = {},
 ): Promise<ValidationResult> {
   const verbosity = options.validationVerbosity ?? 'summary';
   const repeatabilityCheck = options.repeatabilityCheck ?? false;
@@ -143,5 +152,5 @@ export async function runSelfValidation(
       ],
     };
   }
-}
+});
 

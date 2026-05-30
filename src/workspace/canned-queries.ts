@@ -4,6 +4,7 @@
  */
 
 import type { WorkspaceGraph, WorkspaceNode, WorkspaceEdge } from './workspace-graph-loader.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 // ---------------------------------------------------------------------------
 // Result types — systemDependencies
@@ -129,7 +130,9 @@ function computeRisk(
  * Collect cross-repo edges, group by repo pair, and produce a repo-level
  * dependency DAG.
  */
-export function systemDependencies(graph: WorkspaceGraph): SystemDependencyResult {
+export const systemDependencies: (graph: WorkspaceGraph) => SystemDependencyResult = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0020')(function systemDependencies(graph: WorkspaceGraph): SystemDependencyResult {
   const repoNodes = new Map<string, Map<string, number>>();
 
   for (const node of graph.nodes.values()) {
@@ -184,7 +187,7 @@ export function systemDependencies(graph: WorkspaceGraph): SystemDependencyResul
     .sort((a, b) => b.count - a.count);
 
   return { kind: 'system-dependencies', repos, dependencies: deps, connectionTypes };
-}
+}));
 
 // ---------------------------------------------------------------------------
 // Query: componentIntegration
@@ -194,7 +197,12 @@ export function systemDependencies(graph: WorkspaceGraph): SystemDependencyResul
  * Collect the subgraph scoped to a single repo or the full workspace,
  * grouping edges by integration pattern.
  */
-export function componentIntegration(
+export const componentIntegration: (
+  graph: WorkspaceGraph,
+  opts?: { repo?: string },
+) => ComponentIntegrationResult = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0020')(function componentIntegration(
   graph: WorkspaceGraph,
   opts?: { repo?: string },
 ): ComponentIntegrationResult {
@@ -245,7 +253,7 @@ export function componentIntegration(
       patterns,
     },
   };
-}
+}));
 
 // ---------------------------------------------------------------------------
 // Query: blastRadiusWorkspace
@@ -255,7 +263,13 @@ export function componentIntegration(
  * BFS from the target node in both directions, classifying reachable nodes
  * into blast-radius tiers.
  */
-export function blastRadiusWorkspace(
+export const blastRadiusWorkspace: (
+  graph: WorkspaceGraph,
+  targetId: string,
+  opts?: { maxDepth?: number },
+) => WorkspaceBlastRadiusResult = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0020')(function blastRadiusWorkspace(
   graph: WorkspaceGraph,
   targetId: string,
   opts?: { maxDepth?: number },
@@ -338,7 +352,7 @@ export function blastRadiusWorkspace(
     affectedNodeCount: tierMap.size,
     risk: computeRisk(tierTwoPlus, affectedRepos.length),
   };
-}
+}));
 
 // ---------------------------------------------------------------------------
 // Query: whatCalls (Section 11 port)

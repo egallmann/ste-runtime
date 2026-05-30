@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/egallmann/ste-spec/contracts/mvc/mvc-snapshot.schema.json",
+  "title": "MVCSnapshot (MVC-S, DRAFT)",
+  "description": "Draft candidate task-relevant architectural reality surface prior to admission. Pre-normative.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mvc_s_id",
+    "fingerprint",
+    "mvc_d_ref",
+    "ir_snapshot_ref",
+    "graph_snapshot_refs",
+    "linkage_surface_refs",
+    "selector_version_refs",
+    "candidate_entities",
+    "candidate_relationships",
+    "candidate_evidence",
+    "candidate_constraints",
+    "topology_metrics",
+    "inclusion_rationale",
+    "exclusion_rationale",
+    "negative_space",
+    "mvc_s_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "mvc_s_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "fingerprint": {
+      "$ref": "#/$defs/sha256"
+    },
+    "mvc_d_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "ir_snapshot_ref": {
+      "$ref": "#/$defs/refWithHash"
+    },
+    "graph_snapshot_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/refWithHash"
+      }
+    },
+    "linkage_surface_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/refWithHash"
+      }
+    },
+    "selector_version_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      },
+      "minItems": 1
+    },
+    "candidate_entities": {
+      "$ref": "#/$defs/refArray"
+    },
+    "candidate_relationships": {
+      "$ref": "#/$defs/refArray"
+    },
+    "candidate_evidence": {
+      "$ref": "#/$defs/refArray"
+    },
+    "candidate_constraints": {
+      "$ref": "#/$defs/refArray"
+    },
+    "topology_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_count", "edge_count", "branching_factor", "convergence_score"],
+      "properties": {
+        "node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "edge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "branching_factor": {
+          "type": "number"
+        },
+        "convergence_score": {
+          "type": "number"
+        },
+        "recommended_depth": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "inclusion_rationale": {
+      "$ref": "#/$defs/rationaleArray"
+    },
+    "exclusion_rationale": {
+      "$ref": "#/$defs/rationaleArray"
+    },
+    "negative_space": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/negativeSpace"
+      }
+    },
+    "mvc_s_boundary": {
+      "type": "string",
+      "enum": ["candidate_surface_prior_to_admission"]
+    }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._:/-]*$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "refWithHash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "snapshot_hash": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "refArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      }
+    },
+    "rationaleArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rationale"
+      }
+    },
+    "rationale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "selector_path"],
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "selector_path": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "persona_ref": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "task_ref": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "negativeSpace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "reason"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}

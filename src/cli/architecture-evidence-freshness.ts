@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import { implements_adr } from '../architecture/intent-decorators.js';
 import type { ArchitectureBundleResult } from '../discovery/architecture-bundle.js';
 
 export type ArchitectureEvidenceFreshnessStatus = 'current' | 'stale-unknown' | 'stale-confirmed';
@@ -80,7 +81,12 @@ function resolveBundleTimestamp(
   return { timestamp: null, source: null };
 }
 
-export async function resolveArchitectureEvidenceFreshness(
+export const resolveArchitectureEvidenceFreshness: (
+  scopeRoot: string,
+  bundle: Pick<ArchitectureBundleResult, 'scopeRoot' | 'index' | 'manifest'>,
+) => Promise<ArchitectureEvidenceFreshnessResult> = implements_adr(
+  'ADR-L-0007',
+)(async function resolveArchitectureEvidenceFreshness(
   scopeRoot: string,
   bundle: Pick<ArchitectureBundleResult, 'scopeRoot' | 'index' | 'manifest'>,
 ): Promise<ArchitectureEvidenceFreshnessResult> {
@@ -166,4 +172,4 @@ export async function resolveArchitectureEvidenceFreshness(
     errors,
     sourceFiles,
   };
-}
+});

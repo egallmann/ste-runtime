@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import type { WorkspaceGraph, WorkspaceNode } from './workspace-graph-loader.js';
 import type { SourceLocator, SourceLocatorRegistry } from './source-locator-registry.js';
 import { resolveLocator } from './source-locator-registry.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 export interface CemDiagnostic {
   kind: string;
@@ -143,7 +144,17 @@ function traverse(graph: WorkspaceGraph, startId: string, maxDepth: number, maxN
   };
 }
 
-export function assembleCemBundle(args: {
+export const assembleCemBundle: (args: {
+  graph: WorkspaceGraph;
+  registry: SourceLocatorRegistry;
+  query: string;
+  generatedAt?: string;
+  generatedBy?: string;
+  maxDepth?: number;
+  maxNodes?: number;
+}) => CemBundle = implements_adr(
+  'ADR-L-0020',
+)(enforces_invariant('INV-0027', 'INV-0029')(function assembleCemBundle(args: {
   graph: WorkspaceGraph;
   registry: SourceLocatorRegistry;
   query: string;
@@ -238,12 +249,20 @@ export function assembleCemBundle(args: {
     unresolved_risks: [...negativeSpace],
     partial_state_diagnostics: partialStateDiagnostics,
   };
-}
+}));
 
-export function deriveMvcBundle(cem: CemBundle, options: {
-  generatedAt?: string;
-  maxSourceRefs?: number;
-} = {}): MvcBundle {
+export const deriveMvcBundle: (
+  cem: CemBundle,
+  options?: { generatedAt?: string; maxSourceRefs?: number },
+) => MvcBundle = implements_adr(
+  'ADR-L-0020',
+)(enforces_invariant('INV-0028', 'INV-0029')(function deriveMvcBundle(
+  cem: CemBundle,
+  options: {
+    generatedAt?: string;
+    maxSourceRefs?: number;
+  } = {},
+): MvcBundle {
   const generatedAt = options.generatedAt ?? new Date().toISOString();
   const maxSourceRefs = options.maxSourceRefs ?? 8;
   const selectedSourceRefs = cem.authoritative_source_refs.slice(0, maxSourceRefs);
@@ -300,9 +319,14 @@ export function deriveMvcBundle(cem: CemBundle, options: {
     unresolved_risk_summary: cem.unresolved_risks,
     token_or_size_budget: { max_source_refs: maxSourceRefs },
   };
-}
+}));
 
-export function validateMvcBundle(mvc: MvcBundle, cem: CemBundle): MvcValidationResult {
+export const validateMvcBundle: (mvc: MvcBundle, cem: CemBundle) => MvcValidationResult = implements_adr(
+  'ADR-L-0020',
+)(enforces_invariant('INV-0028')(function validateMvcBundle(
+  mvc: MvcBundle,
+  cem: CemBundle,
+): MvcValidationResult {
   const warnings: string[] = [];
   const errors: string[] = [];
 
@@ -357,4 +381,4 @@ export function validateMvcBundle(mvc: MvcBundle, cem: CemBundle): MvcValidation
     warnings,
     errors,
   };
-}
+}));

@@ -8,6 +8,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { loadWorkspaceGraph } from './workspace-graph-loader.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 import { systemDependencies, componentIntegration } from './canned-queries.js';
 import type { SystemDependencyResult, ComponentIntegrationResult } from './canned-queries.js';
 import { toMermaid, toTable } from './projections.js';
@@ -149,7 +150,12 @@ function assembleSkeleton(
 // Public API
 // ---------------------------------------------------------------------------
 
-export async function emitProjections(
+export const emitProjections: (
+  outputDir: string,
+  manifest: WorkspaceManifest,
+) => Promise<ProjectionEmitResult> = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0024')(async function emitProjections(
   outputDir: string,
   manifest: WorkspaceManifest,
 ): Promise<ProjectionEmitResult> {
@@ -194,4 +200,4 @@ export async function emitProjections(
   filePaths.push(skeletonPath);
 
   return { fileCount: filePaths.length, filePaths };
-}
+}));

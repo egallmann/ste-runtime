@@ -4,6 +4,7 @@ import path from 'node:path';
 import yaml from 'js-yaml';
 
 import { entityUri, parseSourceUri, workspaceUri, type LineRange } from './source-uri.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 export interface SourceLocator {
   entity_uri: string;
@@ -200,7 +201,11 @@ async function locatorsFromArchitectureRegistry(
   return locators;
 }
 
-export async function emitSourceLocatorRegistry(
+export const emitSourceLocatorRegistry: (
+  options: EmitSourceLocatorRegistryOptions,
+) => Promise<{ registry: SourceLocatorRegistry; registryPath: string }> = implements_adr(
+  'ADR-L-0020',
+)(enforces_invariant('INV-0027', 'INV-0029')(async function emitSourceLocatorRegistry(
   options: EmitSourceLocatorRegistryOptions,
 ): Promise<{ registry: SourceLocatorRegistry; registryPath: string }> {
   const repos = repoPathMap(options);
@@ -252,7 +257,7 @@ export async function emitSourceLocatorRegistry(
   const registryPath = path.join(options.outputDir, 'source-locator-registry.yaml');
   await fs.writeFile(registryPath, yaml.dump(registry, { lineWidth: 120, noRefs: true }), 'utf-8');
   return { registry, registryPath };
-}
+}));
 
 export async function loadSourceLocatorRegistry(outputDir: string): Promise<SourceLocatorRegistry> {
   const raw = await fs.readFile(path.join(outputDir, 'source-locator-registry.yaml'), 'utf-8');

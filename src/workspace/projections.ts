@@ -24,6 +24,7 @@ import type {
   ResolutionConfig,
   ResolutionLevel,
 } from './compression.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 // ---------------------------------------------------------------------------
 // Mermaid helpers
@@ -57,7 +58,9 @@ function mermaidNodeDef(node: WorkspaceNode): string {
 // toMermaid
 // ---------------------------------------------------------------------------
 
-export function toMermaid(result: CannedQueryResult): string {
+export const toMermaid: (result: CannedQueryResult) => string = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0021')(function toMermaid(result: CannedQueryResult): string {
   switch (result.kind) {
     case 'system-dependencies':
       return mermaidSystemDeps(result);
@@ -72,7 +75,7 @@ export function toMermaid(result: CannedQueryResult): string {
     case 'node-blast-radius':
       return mermaidNodeList(result.targetId, 'affected', result.affected);
   }
-}
+}));
 
 function mermaidNodeList(targetId: string, label: string, nodes: string[]): string {
   const lines: string[] = ['flowchart TD'];
@@ -178,7 +181,9 @@ function mermaidBlastRadius(result: WorkspaceBlastRadiusResult): string {
 // toTable
 // ---------------------------------------------------------------------------
 
-export function toTable(result: CannedQueryResult): Array<Record<string, string>> {
+export const toTable: (result: CannedQueryResult) => Array<Record<string, string>> = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0021')(function toTable(result: CannedQueryResult): Array<Record<string, string>> {
   switch (result.kind) {
     case 'system-dependencies':
       return tableSystemDeps(result);
@@ -193,7 +198,7 @@ export function toTable(result: CannedQueryResult): Array<Record<string, string>
     case 'node-blast-radius':
       return tableNodeList(result.targetId, 'affected', result.affected);
   }
-}
+}));
 
 function tableSystemDeps(result: SystemDependencyResult): Array<Record<string, string>> {
   const rows: Array<Record<string, string>> = [];
@@ -247,7 +252,9 @@ export interface AdjacencyMatrixResult {
   matrix: string[][];
 }
 
-export function toAdjacencyMatrix(result: CannedQueryResult): AdjacencyMatrixResult {
+export const toAdjacencyMatrix: (result: CannedQueryResult) => AdjacencyMatrixResult = implements_adr(
+  'ADR-L-0018',
+)(enforces_invariant('INV-0021')(function toAdjacencyMatrix(result: CannedQueryResult): AdjacencyMatrixResult {
   switch (result.kind) {
     case 'system-dependencies':
       return matrixSystemDeps(result);
@@ -260,7 +267,7 @@ export function toAdjacencyMatrix(result: CannedQueryResult): AdjacencyMatrixRes
     case 'node-blast-radius':
       return { labels: [], matrix: [] };
   }
-}
+}));
 
 function matrixSystemDeps(result: SystemDependencyResult): AdjacencyMatrixResult {
   const labels = result.repos.map(r => r.name).sort();
@@ -359,7 +366,9 @@ function navigationBar(currentLevel: ResolutionLevel): string {
   return `> **Resolution:** ${parts.join(' | ')}`;
 }
 
-export function toMermaidAtResolution(projection: CompressedProjection): string {
+export const toMermaidAtResolution: (projection: CompressedProjection) => string = implements_adr(
+  'ADR-L-0019',
+)(enforces_invariant('INV-0022', 'INV-0021')(function toMermaidAtResolution(projection: CompressedProjection): string {
   const { nodes, edges, groups, metadata } = projection;
   const level = metadata.level;
   const lines: string[] = ['flowchart TD'];
@@ -427,9 +436,13 @@ export function toMermaidAtResolution(projection: CompressedProjection): string 
   }
 
   return lines.join('\n');
-}
+}));
 
-export function toTableAtResolution(
+export const toTableAtResolution: (
+  projection: CompressedProjection,
+) => Array<Record<string, string>> = implements_adr(
+  'ADR-L-0019',
+)(enforces_invariant('INV-0022', 'INV-0021')(function toTableAtResolution(
   projection: CompressedProjection,
 ): Array<Record<string, string>> {
   const { nodes, edges, groups, metadata } = projection;
@@ -487,6 +500,6 @@ export function toTableAtResolution(
     'Via': e.verb,
     'Count': String(e.multiplicity),
   }));
-}
+}));
 
 export { navigationBar };
