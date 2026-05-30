@@ -10,6 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {
   analyzeGraphTopology,
+  computeForwardDepths,
   saveGraphMetrics,
   loadGraphMetrics,
   type GraphMetrics,
@@ -260,6 +261,56 @@ describe('Graph Topology Analyzer', () => {
 
       expect(metrics.lastAnalyzed).toBeTruthy();
       expect(new Date(metrics.lastAnalyzed).getTime()).toBeLessThanOrEqual(Date.now());
+    });
+
+    it('should complete within 100ms on a 5000-node synthetic graph', async () => {
+      const graph: AidocGraph = new Map();
+      const N = 5000;
+
+      // Build a chain with branching: node_i depends on node_(i+1) and node_(i+2)
+      const nodes: AidocNode[] = [];
+      for (let i = 0; i < N; i++) {
+        nodes.push(createNode(`n${i}`, 'infra', 'resource'));
+      }
+
+      for (let i = 0; i < N - 1; i++) {
+        const next = nodes[i + 1];
+        nodes[i].references.push({ domain: next.domain, type: next.type, id: next.id });
+        next.referencedBy.push({ domain: nodes[i].domain, type: nodes[i].type, id: nodes[i].id });
+        if (i + 2 < N) {
+          const skip = nodes[i + 2];
+          nodes[i].references.push({ domain: skip.domain, type: skip.type, id: skip.id });
+          skip.referencedBy.push({ domain: nodes[i].domain, type: nodes[i].type, id: nodes[i].id });
+        }
+      }
+
+      for (const node of nodes) graph.set(node.key, node);
+
+      const start = performance.now();
+      const metrics = await analyzeGraphTopology(graph);
+      const elapsed = performance.now() - start;
+
+      expect(elapsed).toBeLessThan(100);
+      expect(metrics.totalComponents).toBe(N);
+      expect(metrics.maxDependencyDepth).toBeGreaterThan(0);
+    });
+  });
+
+  describe('computeForwardDepths', () => {
+    it('does not explode queue size when duplicate edges reference the same target', () => {
+      const graph: AidocGraph = new Map();
+      const root = createNode('root', 'graph', 'function');
+      const leaf = createNode('leaf', 'graph', 'function');
+      const dupEdge = { domain: 'graph', type: 'function', id: 'leaf' };
+      root.references = [dupEdge, dupEdge, dupEdge];
+      leaf.referencedBy = [dupEdge, dupEdge, dupEdge];
+      graph.set(root.key, root);
+      graph.set(leaf.key, leaf);
+
+      const depths = computeForwardDepths(graph);
+
+      expect(depths.get(root.key)).toBe(0);
+      expect(depths.get(leaf.key)).toBe(1);
     });
   });
 

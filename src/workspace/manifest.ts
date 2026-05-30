@@ -31,7 +31,17 @@ const LANG_MAP: Record<string, SupportedLanguage[]> = {
   node: ['typescript', 'json'],
   typescript: ['typescript', 'json'],
   java: ['cloudformation', 'json'],
+  markdown: ['markdown'],
+  documentation: ['markdown'],
 };
+
+/** Maintainer-only paths excluded when scanning documentation repositories. */
+export const DOCUMENTATION_IGNORE_PATTERNS = [
+  '**/_internal-references/**',
+  '**/.writing-rules/**',
+  '**/.ste-writing-system/**',
+  '**/.editorial/**',
+] as const;
 
 export const RepoEntrySchema = z.object({
   name: z.string().min(1),
@@ -305,6 +315,11 @@ export async function buildPerRepoConfig(
     languages.push('cloudformation');
   }
 
+  const ignorePatterns = [...BUILTIN_IGNORE_PATTERNS];
+  if (repo.kind === 'documentation' || repo.lang.trim().toLowerCase() === 'markdown') {
+    ignorePatterns.push(...DOCUMENTATION_IGNORE_PATTERNS);
+  }
+
   const stateDir = relativeStateDir;
 
   const rss: ResolvedConfig['rss'] = {
@@ -318,7 +333,7 @@ export async function buildPerRepoConfig(
     runtimeDir: resolvedRuntime,
     languages,
     sourceDirs,
-    ignorePatterns: [...BUILTIN_IGNORE_PATTERNS],
+    ignorePatterns,
     stateDir,
     jsonPatterns: {},
     angularPatterns: {},

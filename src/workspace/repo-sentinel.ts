@@ -4,7 +4,7 @@
 
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
-import path from 'node:path';
+import { atomicWriteFile } from '../utils/atomic-write.js';
 
 export interface RepoSentinel {
   schema_version: '1.0';
@@ -51,10 +51,5 @@ export async function readSentinel(sentinelPath: string): Promise<RepoSentinel |
 }
 
 export async function writeSentinel(sentinelPath: string, data: RepoSentinel): Promise<void> {
-  await fs.mkdir(path.dirname(sentinelPath), { recursive: true });
-  const dir = path.dirname(sentinelPath);
-  const base = path.basename(sentinelPath);
-  const tempPath = path.join(dir, `.${base}.${process.pid}.${Date.now()}.tmp`);
-  await fs.writeFile(tempPath, JSON.stringify(data), 'utf-8');
-  await fs.rename(tempPath, sentinelPath);
+  await atomicWriteFile(sentinelPath, JSON.stringify(data));
 }

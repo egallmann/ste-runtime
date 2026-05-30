@@ -533,6 +533,7 @@ entities:
       implements:
         - CAP-0018
         - CAP-0019
+        - CAP-0020
       embodied_in:
         - SYS-0001
       embodies: []
@@ -590,6 +591,7 @@ entities:
       implements:
         - CAP-0018
         - CAP-0019
+        - CAP-0020
       embodied_in:
         - SYS-0001
       embodies: []

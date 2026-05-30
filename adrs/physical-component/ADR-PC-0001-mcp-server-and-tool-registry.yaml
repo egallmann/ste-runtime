@@ -82,5 +82,63 @@ component_specifications:
       integration_tests: |
         - MCP server startup
         - Tool registration and execution
-implementation_decisions: []
-gaps: []
+implementation_decisions:
+- id: IMPL-0001
+  summary: >
+    Graph topology analysis uses single-pass BFS layering (Kahn's algorithm)
+    computing forward dependency depths in O(N+E). The original per-node
+    recursive DFS (O(N x (N+E))) caused the MCP server to hang at startup
+    when the graph exceeded ~500 nodes. Backward depth metrics are dead
+    (never consumed by detectPattern() or calculateOptimalDepth()); fields
+    retained at zero for cache compatibility. Alternatives rejected: (1)
+    increase sampling threshold -- constant factor improvement only, (2) skip
+    topology analysis -- loses pattern detection and recommended depth.
+  rationale: >
+    Infrastructure domain expansion (ADR-L-0016 INV-0025) grew the graph
+    from ~200 to ~1200 nodes, triggering the O(N*DFS) hang. Linear-time
+    analysis is required for the IR substrate to grow to 5K-10K+ nodes.
+- id: IMPL-0002
+  summary: >
+    MCP startup loads the RECON graph exactly once per initialization or
+    reload cycle. rssContext.graph (already in memory from initRssContext) is
+    passed directly to analyzeGraphTopology(). The redundant second call to
+    loadAidocGraph on cache miss and on every reloadContext() is eliminated.
+  rationale: >
+    At N=5000 with sequential YAML I/O, each redundant loadAidocGraph call
+    added ~50 seconds. Eliminating the double load halves cold-start I/O.
+- id: IMPL-0003
+  summary: >
+    Graph metrics cache (graph-metrics.json) is validated by node-count
+    delta: recompute when |cached.totalComponents - graph.size| exceeds 10%
+    of graph.size. The check is O(1); recomputation is O(N+E) per IMPL-0001.
+  rationale: >
+    Previously graph-metrics.json was accepted without staleness validation.
+    A stale cache could silently produce incorrect topology metadata after
+    graph growth, leading to suboptimal traversal parameter tuning.
+invariants:
+- id: INV-0026
+  statement: >
+    MCP startup graph topology analysis completes in O(N+E) time where N is
+    the node count and E is the edge count of the loaded RECON state graph.
+    Per-node recursive traversal is prohibited.
+  scope: component
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: >
+    The O(N x DFS) algorithm caused MCP server startup to hang beyond ~500
+    nodes. Linear-time analysis is required for growth to 5K-10K+ nodes.
+    Enforced by IMPL-0001 (BFS layering) and verified by the 5000-node
+    performance test completing under 100ms.
+gaps:
+- id: GAP-0001
+  question: >
+    The O(N*DFS) topology analysis caused MCP server startup to hang when
+    graph size exceeded ~500 nodes. Was there a performance bound for
+    startup graph analysis?
+  impact: high
+  blocking: false
+  status: closed
+  resolution: >
+    Resolved by IMPL-PC0001-01 (BFS layering in O(N+E)) and INV-0026
+    (prohibiting per-node recursive traversal on startup).

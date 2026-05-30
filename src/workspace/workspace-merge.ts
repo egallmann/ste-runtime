@@ -18,6 +18,13 @@ export interface MergedNode {
   type: string;
   name: string;
   repo: string;
+  entity_uri?: string;
+  source_uri?: string;
+  source_hash?: string;
+  source_locator_ref?: string;
+  canonical?: boolean;
+  authority?: string;
+  graph_snapshot_hash?: string;
   attributes?: Record<string, unknown>;
   provenance: { source_path: string; source_ref: string; repo?: string };
 }
@@ -52,6 +59,13 @@ interface SliceDoc {
     type: string;
     name: string;
     attributes?: Record<string, unknown>;
+    entity_uri?: string;
+    source_uri?: string;
+    source_hash?: string;
+    source_locator_ref?: string;
+    canonical?: boolean;
+    authority?: string;
+    graph_snapshot_hash?: string;
     provenance: { source_path: string; source_ref: string; repo?: string };
   }>;
   edges?: Array<{
@@ -133,6 +147,13 @@ export async function mergeWorkspaceGraph(
             type: node.type,
             name: node.name ?? node.id,
             repo: node.provenance?.repo ?? sliceRepo,
+            entity_uri: node.entity_uri,
+            source_uri: node.source_uri,
+            source_hash: node.source_hash,
+            source_locator_ref: node.source_locator_ref,
+            canonical: node.canonical,
+            authority: node.authority,
+            graph_snapshot_hash: node.graph_snapshot_hash,
             attributes: node.attributes,
             provenance: node.provenance,
           });

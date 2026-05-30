@@ -118,6 +118,18 @@ entities:
       depends_on: []
       implements: []
       realizes: []
+  - entity_id: CAP-0020
+    entity_type: capability
+    name: Source-aware CEM and MVC assembly
+    introduced_by: ADR-L-0020
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
   - entity_id: COMP-0001
     entity_type: component
     name: MCP Server and Tool Registry
@@ -510,6 +522,22 @@ entities:
       realizes:
         - INV-0022
         - INV-0023
+  - entity_id: DEC-0022
+    entity_type: decision
+    name: Use source locators as foundational infrastructure for CEM and MVC
+    introduced_by: ADR-L-0020
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements:
+        - CAP-0020
+      realizes:
+        - INV-0027
+        - INV-0028
+        - INV-0029
   - entity_id: INV-0001
     entity_type: invariant
     name: INV-0001
@@ -792,6 +820,42 @@ entities:
     introduced_by: ADR-L-0018
     lifecycle_stage: proposed
     source_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0027
+    entity_type: invariant
+    name: INV-0027
+    introduced_by: ADR-L-0020
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0028
+    entity_type: invariant
+    name: INV-0028
+    introduced_by: ADR-L-0020
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0029
+    entity_type: invariant
+    name: INV-0029
+    introduced_by: ADR-L-0020
+    lifecycle_stage: proposed
+    source_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
     source_artifact_type: logical_adr
     related_adrs: []
     relationships:

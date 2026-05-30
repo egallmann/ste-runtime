@@ -51,7 +51,7 @@ jobs:
           # architecture sub-type prefixes (PC-nnnn, PS-nnnn, etc.).
           # Exclude known product/architecture identifiers via lookahead:
           SAFE='ADR-|INV-|CAP-|DEC-|REL-|COMP-|CONST-|SYS-|SHA-|ISO-'
-          SAFE+='|BOUND-|SYSBOUND-|IFACE-|GAP-|CTR-'
+          SAFE+='|BOUND-|SYSBOUND-|IFACE-|GAP-|CTR-|IMPL-'
           PAT_JIRA="\b(?!${SAFE})[A-Z]{3,}-[0-9]{3,}\b"
           if git grep -nP "$PAT_JIRA" -- "${GLOBAL_EXCLUDES[@]}" ; then
             fail "$PAT_JIRA"

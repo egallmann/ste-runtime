@@ -15,6 +15,7 @@ import {
   type ParamResolution,
   type UnresolvedResolution,
 } from './cfn-stack-resolver.js';
+import { getCfnGraphType, NODE_NAME_KEYS } from './cfn-type-mapping.js';
 
 const SDK_SERVICE_TO_GRAPH_TYPE: Record<string, string> = {
   dynamodb: 'Database',
@@ -86,56 +87,20 @@ function isIntrinsicEl(value: unknown): boolean {
 /**
  * Same naming rule as slice-emitter `resourceGraphId`: prefer plain string
  * physical names; when those are intrinsics, fall back to logical ID.
+ * Uses the shared NODE_NAME_KEYS for generic resolution across all types.
  */
 function displayNameForGraphId(cfnType: string, el: Record<string, unknown>, logicalId: string): string {
-  switch (cfnType) {
-    case 'AWS::SQS::Queue': {
-      const q = el.queueName;
-      if (typeof q === 'string' && !isIntrinsicEl(q)) return q;
-      return logicalId;
+  const graphType = getCfnGraphType(cfnType);
+  const nameKeys = NODE_NAME_KEYS[graphType];
+  if (nameKeys) {
+    for (const key of nameKeys) {
+      const v = el[key];
+      if (typeof v === 'string' && !isIntrinsicEl(v)) return v;
     }
-    case 'AWS::SNS::Topic': {
-      const t = el.topicName;
-      if (typeof t === 'string' && !isIntrinsicEl(t)) return t;
-      return logicalId;
-    }
-    case 'AWS::Lambda::Function':
-    case 'AWS::Serverless::Function': {
-      const f = el.functionName;
-      if (typeof f === 'string' && !isIntrinsicEl(f)) return f;
-      return logicalId;
-    }
-    case 'AWS::StepFunctions::StateMachine':
-    case 'AWS::Serverless::StateMachine': {
-      const s = el.stateMachineName;
-      if (typeof s === 'string' && !isIntrinsicEl(s)) return s;
-      return logicalId;
-    }
-    case 'AWS::S3::Bucket': {
-      const b = el.bucketName;
-      if (typeof b === 'string' && !isIntrinsicEl(b)) return b;
-      return logicalId;
-    }
-    case 'AWS::DynamoDB::Table': {
-      const d = el.tableName;
-      if (typeof d === 'string' && !isIntrinsicEl(d)) return d;
-      return logicalId;
-    }
-    default:
-      return logicalId;
   }
+  return logicalId;
 }
 
-const CFN_TO_GRAPH: Record<string, string> = {
-  'AWS::SQS::Queue': 'Queue',
-  'AWS::SNS::Topic': 'Topic',
-  'AWS::Lambda::Function': 'Lambda',
-  'AWS::Serverless::Function': 'Lambda',
-  'AWS::StepFunctions::StateMachine': 'StateMachine',
-  'AWS::Serverless::StateMachine': 'StateMachine',
-  'AWS::S3::Bucket': 'Bucket',
-  'AWS::DynamoDB::Table': 'Database',
-};
 
 function extractRefTarget(value: unknown): string | null {
   if (typeof value === 'string') {
@@ -360,7 +325,7 @@ export async function buildResourceResolverFromState(
     if (domain === 'infrastructure' && sliceType === 'resource') {
       const cfnType = String(element.type ?? '');
       const logicalId = String(element.logicalId ?? '');
-      const graphType = CFN_TO_GRAPH[cfnType];
+      const graphType = getCfnGraphType(cfnType);
 
       if (logicalId) {
         logicalIdToCfnType.set(logicalId, cfnType);
@@ -376,14 +341,13 @@ export async function buildResourceResolverFromState(
         }
       }
 
-      if (graphType && logicalId) {
+      if (logicalId && cfnType) {
         const el = element as Record<string, unknown>;
         const name = displayNameForGraphId(cfnType, el, logicalId);
         const norm = normalizeToken(name);
-        if (norm) {
-          const repoPrefix = repoName ? `${normalizeToken(repoName)}:` : '';
-          logicalIdToGraphId.set(logicalId, `${graphType}:${repoPrefix}${norm}`);
-        }
+        const finalNorm = norm || normalizeToken(logicalId) || 'unknown';
+        const repoPrefix = repoName ? `${normalizeToken(repoName)}:` : '';
+        logicalIdToGraphId.set(logicalId, `${graphType}:${repoPrefix}${finalNorm}`);
       }
 
       if (cfnType === 'AWS::Lambda::Function' || cfnType === 'AWS::Serverless::Function') {
@@ -554,12 +518,9 @@ export async function buildResourceResolverFromState(
     const resolvedParamMap = new Map<string, string>();
     for (const entry of paramResolutionTable) {
       if (entry.confidence !== 'unresolved' && entry.resolvedLogicalId) {
-        const graphType = CFN_TO_GRAPH[entry.resolvedCfnType];
-        if (graphType) {
-          const existingGid = logicalIdToGraphId.get(entry.resolvedLogicalId);
-          if (existingGid) {
-            resolvedParamMap.set(entry.paramName, existingGid);
-          }
+        const existingGid = logicalIdToGraphId.get(entry.resolvedLogicalId);
+        if (existingGid) {
+          resolvedParamMap.set(entry.paramName, existingGid);
         }
       }
     }

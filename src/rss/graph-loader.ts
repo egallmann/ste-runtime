@@ -5,6 +5,7 @@ import { globby } from 'globby';
 import yaml from 'js-yaml';
 
 import { DEFAULT_GRAPH_VERSION, Slice } from './schema.js';
+import { ioLimiter } from '../utils/concurrency.js';
 
 export type AidocEdge = {
   domain: string;
@@ -124,8 +125,16 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
   const graph: AidocGraph = new Map();
 
   const sortedFiles = [...files].sort((a, b) => a.localeCompare(b));
-  for (const filePath of sortedFiles) {
-    const data = await readYaml(filePath);
+
+  // Parallel YAML reads with bounded concurrency for I/O overlap
+  const parsed = await Promise.all(
+    sortedFiles.map((filePath) =>
+      ioLimiter(() => readYaml(filePath).then((data) => ({ filePath, data })))
+    )
+  );
+
+  // Single-threaded graph insertion (Map is not concurrent)
+  for (const { filePath, data } of parsed) {
     const slice = data[SLICE_KEY];
     if (!slice || typeof slice !== 'object') continue;
 
@@ -138,7 +147,6 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
     const key = `${domain}/${type}/${id}`;
     if (graph.has(key)) continue;
 
-    // Derive repo name from file path relative to stateRoot
     const relPath = path.relative(resolvedRoot, filePath);
     const segments = relPath.split(path.sep);
     const firstSeg = segments[0];
@@ -151,16 +159,13 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
     const references = normalizeEdges(sliceObj.references);
     const referencedBy = normalizeEdges(sliceObj.referenced_by);
     
-    // Extract tags from _slice.tags array
     const tagsRaw = Array.isArray(sliceObj.tags) ? sliceObj.tags : [];
     const tags = tagsRaw.map((v) => String(v)).filter(Boolean);
 
     const nodePath = sourceFiles.length > 0 ? sourceFiles[0] : path.relative(process.cwd(), filePath);
     
-    // Extract slice line range - prefer explicit slice.start/end, fallback to provenance.line
     let sliceRange: Slice | undefined = (sliceObj.slice as Slice | undefined) || undefined;
     
-    // If no explicit slice range, try to extract from provenance
     if (!sliceRange || (sliceRange.start === undefined && sliceRange.end === undefined)) {
       const provenance = data.provenance as Record<string, unknown> | undefined;
       if (provenance && typeof provenance.line === 'number') {
@@ -170,13 +175,9 @@ export async function loadAidocGraph(stateRoot: string): Promise<{ graph: AidocG
       }
     }
     
-    // Extract element metadata (contains function/class details including docstrings)
     const element = data.element as Record<string, unknown> | undefined;
-    
-    // Extract embedded source code (Pillar 1: Rich Slices)
     const source = typeof sliceObj.source === 'string' ? sliceObj.source : undefined;
     
-    // Extract description from element or docstring
     const description = 
       (element?.docstring as string) || 
       (element?.description as string) || 

@@ -1006,3 +1006,61 @@ entities:
       extraction_phase: extract_decision
       classification: explicit
       generator: adr-architecture-index
+  - id: DEC-0022
+    entity_type: decision
+    name: Use source locators as foundational infrastructure for CEM and MVC
+    summary: >-
+      Entity URI resolution is necessary but not sufficient for IDE and conversation-engine reasoning. ste-runtime must
+      assemble a correctness-first CEM bundle, derive a bounded MVC projection, and validate the MVC against the
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#DEC-0022
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      related_invariants:
+        - INV-0027
+        - INV-0028
+        - INV-0029
+      enforces_invariants: []
+      enables_capabilities:
+        - CAP-0020
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - INV-0027
+        - INV-0028
+        - INV-0029
+      enforced_by: []
+      enabled_by: []
+      enables:
+        - CAP-0020
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#DEC-0022
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index

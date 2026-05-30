@@ -122,4 +122,10 @@ operational_requirements:
   monitoring: Track freshness status, invalidated validations, and runtime health
     metrics.
   logging: Structured runtime logs for reconciliation and tool invocation flows.
+  startup_latency: |
+    MCP server initialization (from start() to tool availability) must not
+    degrade super-linearly with graph size. Startup operations over the RECON
+    state graph (loading, topology analysis, metrics caching) must each be at
+    most O(N+E) where N and E are graph node and edge counts. At N=5000,
+    cold-start (cache miss) must complete within 10 seconds.
 gaps: []

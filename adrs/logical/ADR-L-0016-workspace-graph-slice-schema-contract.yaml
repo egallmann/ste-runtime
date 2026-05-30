@@ -70,28 +70,56 @@ invariants:
     The graph must not lie. Emitting uncertain edges degrades trust in
     the entire graph. Diagnostics preserve the signal without asserting
     false relationships.
+- id: INV-0025
+  statement: >
+    All infrastructure resources extracted by RECON are emitted as workspace
+    graph nodes. No extracted resource is silently dropped by the slice
+    emitter. Resources not covered by an explicit CFN-to-graph-type mapping
+    are emitted as InfraResource nodes with the original cfn_type preserved
+    in attributes. The logicalId is the last-resort display name; a null
+    name never causes a node to be dropped.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: >
+    The workspace graph is the Architecture IR substrate. Silently dropping
+    extracted resources creates blind spots that downstream context domains
+    cannot compensate for. Pattern-agnostic emission ensures backend
+    services, frontend SPAs, and MFE monorepos are treated equally.
 constraints:
 - id: CONST-0010
   type: technical
   description: >
     Node shape: { id: string, type: string, name: string, provenance: { source_path: string, source_ref: string, repo?: string }, attributes?: object }.
     Ratified node types are Service, Lambda, StateMachine, Queue, Topic,
-    Bucket, Database, Schema, Endpoint, and ExternalSystem. Node IDs follow
-    the Graph Identity Contract (Type:normalized-name).
+    Bucket, Database, Schema, Endpoint, ExternalSystem, Stack, Distribution,
+    WebACL, Certificate, DNSRecord, APIGateway, SecurityGroup, Secret,
+    DBCluster, DBProxy, LogGroup, Alarm, DeliveryStream, EventRule, Role,
+    and InfraResource. InfraResource is a catch-all fallback type for any
+    extracted CFN resource type not covered by an explicit mapping; it
+    preserves cfn_type in attributes for downstream classification. Role
+    nodes carry auxiliary: true and are compressed at L0-L2 projections.
+    Node IDs follow the Graph Identity Contract (Type:normalized-name).
   rationale: >
     Consistent node shape enables merger join logic and identity stability
-    across runs.
+    across runs. Comprehensive type coverage ensures all RECON-extracted
+    infrastructure resources flow through to the workspace graph regardless
+    of repository pattern (backend service, frontend SPA, MFE monorepo).
 - id: CONST-0011
   type: technical
   description: >
     Edge shape: { from: string, to: string, verb: string, confidence?: string, provenance?: { source_path: string, source_ref: string, repo?: string }, attributes?: object }.
     Ratified verbs are invokes, publishes, consumes, reads, writes,
     validates_against, implements, deploys_to, has_contract, calls, triggers,
-    and publishes_to. The projection compression layer also recognizes
-    references as a low-tier reference edge when present in merged graph input.
+    publishes_to, and contains. The contains verb represents structural
+    containment (e.g., a Stack node contains its child resources or nested
+    stacks). The projection compression layer also recognizes references as
+    a low-tier reference edge when present in merged graph input.
   rationale: >
     Consistent edge shape and ratified verb set prevent schema drift and
-    enable reliable graph queries.
+    enable reliable graph queries. The contains verb surfaces monorepo
+    app-level grouping and nested stack topology in the graph.
 - id: CONST-0012
   type: technical
   description: >

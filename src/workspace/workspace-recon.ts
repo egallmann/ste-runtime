@@ -4,11 +4,12 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import type { ResolvedConfig } from '../config/index.js';
 import { executeRecon } from '../recon/index.js';
 import { discoverFilesFromConfig } from '../recon/phases/discovery.js';
 import { log } from '../utils/logger.js';
-import { PhaseTimer, repoLimiter } from '../utils/concurrency.js';
+import { PhaseTimer, repoLimiter, type PhaseTimingRecord } from '../utils/concurrency.js';
 import { buildPerRepoConfig, parseWorkspaceManifest, resolveRepoPath } from './manifest.js';
 import { emitWorkspaceSlice } from './slice-emitter.js';
 import { computeSourceHash, readSentinel, writeSentinel } from './repo-sentinel.js';
@@ -20,6 +21,7 @@ import type { ProjectionEmitResult } from './emit-projections.js';
 import { emitMultiResProjections } from './emit-multi-res-projections.js';
 import type { MultiResEmitResult } from './emit-multi-res-projections.js';
 import { mergeWorkspaceGraph } from './workspace-merge.js';
+import { emitSourceLocatorRegistry } from './source-locator-registry.js';
 
 export interface WorkspaceReconOptions {
   workspacePath: string;
@@ -39,6 +41,8 @@ export interface RepoResult {
   reconResult?: import('../recon/index.js').ReconResult;
   nodeCount?: number;
   edgeCount?: number;
+  /** Wall-clock duration for this repo's RECON + slice emission. */
+  durationMs?: number;
 }
 
 export interface WorkspaceReconResult {
@@ -47,6 +51,7 @@ export interface WorkspaceReconResult {
   workspaceIndexPath: string;
   projectionResult?: ProjectionEmitResult;
   multiResProjectionResult?: MultiResEmitResult;
+  orchestrationTiming?: PhaseTimingRecord;
 }
 
 function normalizeOutputDir(raw: string): string {
@@ -66,6 +71,10 @@ async function loadRuntimeVersion(runtimeDir: string): Promise<string> {
   } catch {
     return 'unknown';
   }
+}
+
+async function sha256File(filePath: string): Promise<string> {
+  return `sha256:${crypto.createHash('sha256').update(await fs.readFile(filePath)).digest('hex')}`;
 }
 
 async function collectRepoSourceFingerprints(config: ResolvedConfig): Promise<RepoSourceFingerprintRow[]> {
@@ -135,7 +144,7 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
 
   const runtimeVersion = await loadRuntimeVersion(options.runtimeDir);
 
-  const { manifest, workspaceRoot } = await parseWorkspaceManifest(options.workspacePath);
+  const { manifest, workspaceRoot, manifestFile } = await parseWorkspaceManifest(options.workspacePath);
   const outputRel = normalizeOutputDir(manifest.output_dir).replace(/\\/g, '/');
   const outputRoot = path.resolve(workspaceRoot, outputRel);
 
@@ -163,8 +172,9 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
               const fingerprintRows = await collectRepoSourceFingerprints(config);
               const hashNow = computeSourceHash(fingerprintRows);
               if (sentinel.source_hash === hashNow && sentinel.recon_version === runtimeVersion) {
-                process.stdout.write(heartbeatCompletionLine('skipped', repo.name, elapsedMs()));
-                return { name: repo.name, status: 'skipped' };
+                const skipMs = elapsedMs();
+                process.stdout.write(heartbeatCompletionLine('skipped', repo.name, skipMs));
+                return { name: repo.name, status: 'skipped', durationMs: skipMs };
               }
             }
           }
@@ -227,10 +237,12 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
                 process.stderr.write(
                   `[RECON] Repo ${repo.name} timed out after ${timeoutMs}ms; subprocess or async work may still complete (no SIGKILL).\n`,
                 );
-                process.stdout.write(heartbeatCompletionLine('timed_out', repo.name, elapsedMs()));
+                const timeoutElapsed = elapsedMs();
+                process.stdout.write(heartbeatCompletionLine('timed_out', repo.name, timeoutElapsed));
                 return {
                   name: repo.name,
                   status: 'timed_out',
+                  durationMs: timeoutElapsed,
                   error: {
                     stage: 'timeout',
                     message: `Repo ${repo.name} timed out after ${timeoutMs}ms`,
@@ -243,15 +255,18 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
             result = await runRepoWork();
           }
 
-          process.stdout.write(heartbeatCompletionLine(result.status, repo.name, elapsedMs()));
-          return result;
+          const repoElapsed = elapsedMs();
+          process.stdout.write(heartbeatCompletionLine(result.status, repo.name, repoElapsed));
+          return { ...result, durationMs: repoElapsed };
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
           log(`[workspace-recon] repo ${repo.name} failed: ${message}`);
-          process.stdout.write(heartbeatCompletionLine('failed', repo.name, elapsedMs()));
+          const failElapsed = elapsedMs();
+          process.stdout.write(heartbeatCompletionLine('failed', repo.name, failElapsed));
           return {
             name: repo.name,
             status: 'failed',
+            durationMs: failElapsed,
             error: { stage: 'workspace', message },
           };
         }
@@ -300,6 +315,26 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
           ? ` (partial: ${mergeResult.graph.partial_from.join(', ')})`
           : ''),
     );
+    try {
+      const graphSnapshotHash = await sha256File(mergeResult.graphPath);
+      const workspaceManifestHash = await sha256File(manifestFile);
+      const locatorResult = await emitSourceLocatorRegistry({
+        outputDir: outputRoot,
+        workspaceRoot,
+        repos: manifest.repos.map(r => ({ name: r.name, path: r.path })),
+        graphSnapshotHash,
+        workspaceManifestHash,
+        generatedAt: new Date().toISOString(),
+        generatedBy: `ste-runtime@${runtimeVersion}`,
+      });
+      log(
+        `[workspace-recon] Source locators: ${locatorResult.registry.locators.length} locators written to ` +
+          `source-locator-registry.yaml`,
+      );
+    } catch (locatorErr) {
+      const locatorMsg = locatorErr instanceof Error ? locatorErr.message : String(locatorErr);
+      log(`[workspace-recon] Source locator registry emission failed (non-fatal): ${locatorMsg}`);
+    }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log(`[workspace-recon] Graph merge failed (non-fatal): ${msg}`);
@@ -339,5 +374,6 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
     workspaceIndexPath,
     projectionResult,
     multiResProjectionResult,
+    orchestrationTiming: wsTiming,
   };
 }

@@ -451,3 +451,61 @@ entities:
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
+  - id: CAP-0020
+    entity_type: capability
+    name: Source-aware CEM and MVC assembly
+    summary: >-
+      Resolve workspace graph entities to authoritative source artifacts through stable URI locators, assemble CEM
+      bundles with provenance and validation state, derive bounded MVC bundles, and validate MVC bundles against thei
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#CAP-0020
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      domains:
+        - workspace
+        - graph
+        - cem
+        - mvc
+        - provenance
+      implemented_by_components:
+        - COMP-0011
+        - COMP-0010
+      enabled_by_decisions:
+        - DEC-0022
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - DEC-0022
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by:
+        - COMP-0010
+        - COMP-0011
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#CAP-0020
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index

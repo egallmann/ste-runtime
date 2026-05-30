@@ -111,7 +111,10 @@ export interface RawAssertion {
     | 'adr_decision'       // Decision declared in an ADR
     | 'adr_capability'     // Capability declared in a logical ADR
     | 'adr_component'      // Component spec in a physical-component ADR
-    | 'adr_system';        // System boundary in a physical-system ADR
+    | 'adr_system'         // System boundary in a physical-system ADR
+    // Markdown manuscript (handbook / documentation repos)
+    | 'handbook_document'  // One manuscript file (chapter or root doc)
+    | 'handbook_section';  // Heading within a manuscript file
   file: string;
   line: number;
   end_line?: number;

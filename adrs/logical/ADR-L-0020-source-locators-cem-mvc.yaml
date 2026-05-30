@@ -1,0 +1,151 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0020
+title: Source Locators as Cognitive Execution Model Infrastructure
+status: proposed
+created_date: '2026-05-27'
+authors:
+- erik.gallmann
+domains:
+- workspace
+- graph
+- cem
+- mvc
+- provenance
+tags:
+- source-locators
+- entity-uri
+- cognitive-execution-model
+- mvc
+- provenance
+- deterministic
+related_adrs:
+- ADR-L-0016
+- ADR-L-0017
+- ADR-L-0018
+- ADR-L-0019
+introduces_entities:
+- CAP-0020
+- DEC-0022
+- INV-0027
+- INV-0028
+- INV-0029
+vision_category: false
+context: |
+  The workspace graph currently supports deterministic traversal and projection,
+  but graph entities need stable, portable links back to authoritative source
+  artifacts before the graph can safely support IDE-native reasoning,
+  conversation-engine context assembly, and future kernel handoff.
+
+  This capability frames source locators as infrastructure for ste-runtime's
+  Cognitive Execution Model (CEM). The graph remains derived cognitive routing
+  state. Canonical ADRs, decisions, invariants, source files, contracts, and
+  rule artifacts remain authoritative in their owning repositories.
+
+  CEM bundles are correctness-oriented evidence packages assembled by
+  ste-runtime from graph state, source locators, embodiment evidence, validation
+  state, traversal context, and negative-space constraints. MVC bundles are
+  minimized context projections derived from CEM bundles for bounded AI or IDE
+  reasoning. MVC validation checks whether the minimized bundle remains current,
+  faithful, scoped, and non-misleading relative to the CEM bundle.
+capabilities:
+- id: CAP-0020
+  name: Source-aware CEM and MVC assembly
+  description: |
+    Resolve workspace graph entities to authoritative source artifacts through
+    stable URI locators, assemble CEM bundles with provenance and validation
+    state, derive bounded MVC bundles, and validate MVC bundles against their
+    parent CEM bundle.
+  implemented_by_components:
+  - COMP-0011
+  - COMP-0010
+  enabled_by_decisions:
+  - DEC-0022
+constraints:
+- id: CONST-0020
+  type: technical
+  description: |
+    Source locator, CEM, and MVC artifacts are runtime-owned derived state. They
+    must not become canonical ADR, decision, invariant, rule, contract, or source
+    authority.
+  rationale: |
+    Authority boundaries keep graph cognition separate from source ownership and
+    preserve future ste-kernel admission semantics.
+invariants:
+- id: INV-0027
+  statement: |
+    Workspace graph entities may carry source locator metadata, but graph
+    artifacts must not embed full canonical ADR, DEC, invariant, contract, or
+    source documents by default.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    The graph is a semantic cognition and routing substrate, not a document
+    database or competing authority surface.
+- id: INV-0028
+  statement: |
+    Every MVC bundle must retain provenance back to its parent CEM bundle,
+    graph snapshot, traversal operation, selected source artifacts, embodiment
+    evidence, and validation state.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    MVC is optimized for cognitive efficiency and may be lossy; provenance and
+    validation protect against misleading context reduction.
+- id: INV-0029
+  statement: |
+    Source locator generation, graph traversal, CEM assembly, MVC derivation,
+    and MVC validation are deterministic for identical workspace graph, source,
+    locator registry, and traversal inputs.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Determinism enables replay, fixture testing, stale-state detection, and
+    future kernel consumption.
+decisions:
+- id: DEC-0022
+  summary: Use source locators as foundational infrastructure for CEM and MVC
+  rationale: |
+    Entity URI resolution is necessary but not sufficient for IDE and
+    conversation-engine reasoning. ste-runtime must assemble a correctness-first
+    CEM bundle, derive a bounded MVC projection, and validate the MVC against
+    the CEM before agents reason from minimized context.
+
+    Source locators use stable workspace/entity/ADR/decision URI forms and
+    source hashes. They allow graph traversal results to route back to canonical
+    source artifacts without copying full source content into graph artifacts.
+  alternatives_considered:
+  - name: Embed source documents in graph nodes
+    rejected_because: |
+      This would turn derived graph state into a shadow document database and
+      create authority drift from canonical source artifacts.
+  - name: Resolve source directly from paths without URI normalization
+    rejected_because: |
+      Raw paths are not portable across platforms, repo layouts, or future
+      conversation-engine handoff surfaces.
+  - name: Produce MVC directly from graph traversal
+    rejected_because: |
+      MVC is intentionally minimized and may omit important negative-space or
+      provenance context. A parent CEM bundle is required as the correctness
+      baseline for derivation and validation.
+  consequences:
+    positive:
+    - IDE agents can traverse the graph and retrieve authoritative source artifacts
+    - MVC bundles remain small while preserving provenance to CEM and source
+    - Source freshness and graph freshness can be validated before reasoning
+    - Future ste-kernel can consume runtime-produced CEM/MVC validation state
+    negative:
+    - Additional runtime artifact surface and tests
+    - More explicit stale and partial-state diagnostics for consumers to handle
+  related_invariants:
+  - INV-0027
+  - INV-0028
+  - INV-0029
+  enables_capabilities:
+  - CAP-0020

@@ -20,6 +20,7 @@ import path from 'node:path';
 import yaml from 'js-yaml';
 import { globby } from 'globby';
 import { ioLimiter } from '../utils/concurrency.js';
+import { atomicWriteFile } from '../utils/atomic-write.js';
 import { log, warn } from '../utils/logger.js';
 
 export interface CrossRepoEdge {
@@ -655,9 +656,7 @@ export async function enrichSlicesWithBacklinks(
             referencedBy.push(backlink);
             (slice as Record<string, unknown>).referenced_by = referencedBy;
             const updatedYaml = yaml.dump(doc, { lineWidth: 120, noRefs: true });
-            const tmpFile = file + '.tmp';
-            await fs.writeFile(tmpFile, updatedYaml, 'utf-8');
-            await fs.rename(tmpFile, file);
+            await atomicWriteFile(file, updatedYaml);
             enriched++;
           }
           break;
@@ -700,9 +699,7 @@ export async function enrichSlicesWithBacklinks(
             references.push(ref);
             (slice as Record<string, unknown>).references = references;
             const updatedYaml = yaml.dump(doc, { lineWidth: 120, noRefs: true });
-            const tmpFile = file + '.tmp';
-            await fs.writeFile(tmpFile, updatedYaml, 'utf-8');
-            await fs.rename(tmpFile, file);
+            await atomicWriteFile(file, updatedYaml);
             enriched++;
           }
           break;
