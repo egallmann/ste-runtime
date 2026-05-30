@@ -32,6 +32,7 @@
     "lint:fix": "eslint src vitest.config.ts --fix",
     "recon": "node dist/cli/recon-cli.js",
     "recon:workspace": "node dist/cli/recon-cli.js --workspace",
+    "benchmark:workspace": "node scripts/benchmarks/benchmark-workspace-recon.mjs",
     "recon:full": "node dist/cli/recon-cli.js --mode=full",
     "recon:self": "node dist/cli/recon-cli.js --self",
     "recon:init": "node dist/cli/recon-cli.js --init",

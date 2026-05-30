@@ -25,6 +25,7 @@ import { extractFromAngular } from '../../extractors/angular/index.js';
 import { extract as extractFromCss } from '../../extractors/css/index.js';
 import { extractFromCsharp } from '../../extractors/csharp/index.js';
 import { extractFromAdrYaml } from '../../extractors/adr-yaml/index.js';
+import { extractFromMarkdown } from '../../extractors/markdown/index.js';
 import { log, warn } from '../../utils/logger.js';
 import {
   type LimitFunction,
@@ -113,8 +114,17 @@ export async function extractAssertions(files: DiscoveredFile[]): Promise<RawAss
     byLanguage.set(file.language, group);
   }
 
-  const [tsAssertions, pyAssertions, cfnAssertions, jsonAssertions, angularAssertions, cssAssertions, csharpAssertions, adrYamlAssertions] =
-    await Promise.all([
+  const [
+    tsAssertions,
+    pyAssertions,
+    cfnAssertions,
+    jsonAssertions,
+    angularAssertions,
+    cssAssertions,
+    csharpAssertions,
+    adrYamlAssertions,
+    markdownAssertions,
+  ] = await Promise.all([
       extractLanguageGroup('typescript', byLanguage.get('typescript') ?? [], extractFromTypeScript, cpuLimiter),
       extractPythonBatch(byLanguage.get('python') ?? []),
       extractLanguageGroup('cloudformation', byLanguage.get('cloudformation') ?? [], extractFromCloudFormation, ioLimiter),
@@ -123,12 +133,13 @@ export async function extractAssertions(files: DiscoveredFile[]): Promise<RawAss
       extractLanguageGroup('css', byLanguage.get('css') ?? [], f => extractFromCss([f], process.cwd()), cpuLimiter),
       extractLanguageGroup('csharp', byLanguage.get('csharp') ?? [], extractFromCsharp, cpuLimiter),
       extractLanguageGroup('adr-yaml', byLanguage.get('adr-yaml') ?? [], extractFromAdrYaml, ioLimiter),
+      extractLanguageGroup('markdown', byLanguage.get('markdown') ?? [], extractFromMarkdown, ioLimiter),
     ]);
 
   const assertions = [
     ...tsAssertions, ...pyAssertions, ...cfnAssertions,
     ...jsonAssertions, ...angularAssertions, ...cssAssertions,
-    ...csharpAssertions, ...adrYamlAssertions,
+    ...csharpAssertions, ...adrYamlAssertions, ...markdownAssertions,
   ];
 
   // Deterministic ordering: sort by elementId for stable output across runs

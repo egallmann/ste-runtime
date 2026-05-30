@@ -1,6 +1,6 @@
 schema_version: '1.0'
 type: manifest
-generated_date: '2026-05-27T00:52:37Z'
+generated_date: '2026-05-27T05:44:06Z'
 generated_from: adrs/**/*.yaml
 adrs:
   - id: ADR-L-0001
@@ -416,6 +416,34 @@ adrs:
     technologies: []
     decision_count: 1
     invariant_count: 2
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: ADR-L-0020
+    type: logical
+    title: Source Locators as Cognitive Execution Model Infrastructure
+    status: proposed
+    file_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    domains:
+      - workspace
+      - graph
+      - cem
+      - mvc
+      - provenance
+    tags:
+      - source-locators
+      - entity-uri
+      - cognitive-execution-model
+      - mvc
+      - provenance
+      - deterministic
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 3
     gap_count: 0
     blocking_gaps: 0
     component_count: 0
@@ -971,14 +999,14 @@ gaps_summary:
   blocking: 0
   by_adr: {}
 statistics:
-  total_adrs: 36
-  logical_adrs: 18
+  total_adrs: 37
+  logical_adrs: 19
   physical_adrs: 5
   physical_system_adrs: 2
   physical_component_adrs: 11
   decision_adrs: 0
-  total_decisions: 20
-  total_invariants: 24
+  total_decisions: 21
+  total_invariants: 27
   total_components: 19
   total_gaps: 3
   blocking_gaps: 0

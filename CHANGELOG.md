@@ -7,7 +7,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Transient EPERM/EACCES/EBUSY failures on Windows during atomic file
+  rename in RECON population. `atomicWriteFile` now retries up to 3 times
+  with exponential backoff + jitter (50ms base). Prevents silently missing
+  slices caused by AV scanners, IDE indexers, or concurrent RECON passes
+  racing on directory metadata.
+
+- Ad-hoc temp+rename patterns in `cross-repo-edges.ts` (deterministic
+  `.tmp` suffix, collision-prone) and `repo-sentinel.ts` (pid-based temp)
+  replaced with `atomicWriteFile`, gaining retry behavior and random
+  collision-resistant temp names.
+
+- MCP server startup hang caused by O(N x DFS) topology analysis algorithm.
+  Replaced per-node recursive DFS with single-pass BFS layering (Kahn's
+  algorithm) completing in O(N+E). The 5000-node synthetic graph test
+  completes under 100ms.
+
+- Redundant graph loading on MCP startup: `initialize()` and `reloadContext()`
+  each called `loadAidocGraph` twice (once via `initRssContext`, once for
+  topology analysis). Both now reuse the already-loaded `rssContext.graph`,
+  halving cold-start I/O.
+
+- Self-analysis branch in `initialize()` suffered the same redundant load;
+  now reuses `selfContext.graph` directly.
+
+- Stale `graph-metrics.json` accepted without validation. Added a node-count
+  delta check: metrics are recomputed when cached `totalComponents` diverges
+  from `graph.size` by more than 10%.
+
+- Sequential YAML file reads in `loadAidocGraph` replaced with bounded-
+  concurrency parallel reads using `ioLimiter` (16 concurrent). At N=5000,
+  reduces sequential ~50s I/O to ~2s.
+
+### Changed
+
+- ADR-PC-0001 amended: added implementation decisions IMPL-0001 (BFS
+  layering), IMPL-0002 (single graph load), IMPL-0003 (staleness check);
+  added INV-0026 (O(N+E) startup bound); closed GAP-0001 (implicit
+  performance gap).
+
+- ADR-PS-0001 amended: added `startup_latency` operational requirement
+  mandating O(N+E) startup operations and sub-10s cold-start at N=5000.
+
+- Manifest, architecture index, and rendered docs regenerated via
+  adr-architecture-kit.
+
 ### Added
+
+- Full infrastructure domain emission: workspace graph slices now emit all
+  RECON-extracted CFN resources as nodes, replacing the previous 8-type
+  backend-biased allowlist. Supports backend services, frontend SPAs, and
+  MFE monorepos equally.
+
+- 16 new workspace graph node types: Stack, Distribution, WebACL, Certificate,
+  DNSRecord, APIGateway, SecurityGroup, Secret, DBCluster, DBProxy, LogGroup,
+  Alarm, DeliveryStream, EventRule, Role, and InfraResource (catch-all fallback).
+
+- Shared `cfn-type-mapping` module (`src/workspace/cfn-type-mapping.ts`):
+  single source of truth for CFN-to-graph-type mapping used by both
+  slice-emitter and resource-resolver, preventing mapping drift.
+
+- Stack nodes emitted from infrastructure/template slices with `contains`
+  edges to child resources, surfacing nested stack topology in the graph.
+
+- InfraResource fallback: unmapped AWS::* types are emitted as InfraResource
+  nodes with `cfn_type` preserved in attributes for downstream classification.
+
+- Generic name resolution via `NODE_NAME_KEYS`: display names resolved from
+  type-specific CFN property keys with `logicalId` as last-resort fallback.
+  No resource is dropped due to null name.
+
+- `contains` verb added to ratified edge vocabulary for structural
+  containment relationships (stack-contains-resource, stack-contains-stack).
+
+- Auxiliary node suppression at L0-L2 projections: Role, SecurityGroup,
+  LogGroup, Alarm, Certificate, and DNSRecord nodes are compressed at
+  overview resolutions while remaining visible at L3-L4.
+
+- Unit tests for full infrastructure domain emission including frontend
+  resource types, InfraResource fallback, auxiliary marking, and logicalId
+  name resolution.
+
+### Changed
+
+- ADR-L-0016 amended: CONST-0010 expanded with 16 new ratified node types,
+  CONST-0011 expanded with `contains` verb, INV-0019 added for emission
+  completeness invariant.
+
+- ADR-PC-0007 amended: CFN type completeness expectations documented,
+  GAP-0001 (Serverless::StateMachine) closed, intrinsic handling boundaries
+  defined.
+
+- ADR-PC-0008 amended: resource-to-node emission policy defined (all
+  extracted resources become nodes), SDK-to-graph-type mapping expanded.
 
 - `ste setup` CLI command: one-command workspace onboarding that detects
   workspace type (multi-repo vs single-repo), scaffolds `workspace.yaml` or

@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: bf4d6155b7f8a20490263879afbb53cbe4aa0d0fee5381c890c686e2df9b63c8
-rendered_hash: 55158f12880acb4b780a22670151c243fe3ca3c89bc94f3df54895a345c6e6a3
+source_hash: c523151bf8959a8d66ababb36b18b046eb4102885cf9da5f8eace503bc39bf63
+rendered_hash: 7e871c053e9ef5fa15390dea764ceb74c64424133fdfa84f775aeb5a430b56ab
 -->
 
 # ADR-PC-0007: CloudFormation Semantic Extraction
@@ -71,12 +71,23 @@ Existing implementation language.
 
 
 
+## Implementation Decisions
+
+### IMPL-0007: CFN type completeness: all extracted AWS::* resources are emitted as workspace graph nodes. Explicitly mapped types receive specific graph type names (Lambda, Queue, Distribution, etc.). Unmapped types receive the InfraResource fallback type with cfn_type preserved in attributes.
+
+
+**Rationale:**
+The workspace graph is pattern-agnostic. Backend services, frontend SPAs, and MFE monorepos all produce infrastructure resources that must appear in the graph for Architecture IR fidelity.
+
+
+
+
 
 
 
 ## Gaps
 
-### GAP-0001: AWS::Serverless::StateMachine is not yet handled in extractResourceMetadata. Should SAM state machines use the same DefinitionBody/DefinitionUri extraction as AWS::StepFunctions::StateMachine?
+### GAP-0001: AWS::Serverless::StateMachine is now handled via the shared CFN type mapping module (maps to StateMachine graph type). DefinitionBody/ DefinitionUri extraction uses the same logic as AWS::StepFunctions::StateMachine.
 
 
 **Impact:** medium  

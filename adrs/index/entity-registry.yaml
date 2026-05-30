@@ -845,6 +845,7 @@ entities:
       referenced_by:
         - ADR-L-0018
         - ADR-L-0019
+        - ADR-L-0020
       related_to: []
       enforces: []
       enforced_by: []
@@ -902,7 +903,8 @@ entities:
       references:
         - ADR-L-0009
         - ADR-L-0013
-      referenced_by: []
+      referenced_by:
+        - ADR-L-0020
       related_to: []
       enforces: []
       enforced_by: []
@@ -968,6 +970,7 @@ entities:
         - ADR-L-0019
       referenced_by:
         - ADR-L-0019
+        - ADR-L-0020
       related_to: []
       enforces: []
       enforced_by: []
@@ -1031,6 +1034,7 @@ entities:
         - ADR-L-0018
       referenced_by:
         - ADR-L-0018
+        - ADR-L-0020
       related_to: []
       enforces: []
       enforced_by: []
@@ -1052,6 +1056,73 @@ entities:
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0019
+      extraction_phase: extract_adr
+      classification: explicit
+      generator: adr-architecture-index
+  - id: ADR-L-0020
+    entity_type: adr
+    name: Source Locators as Cognitive Execution Model Infrastructure
+    summary: >-
+      The workspace graph currently supports deterministic traversal and projection, but graph entities need stable,
+      portable links back to authoritative source artifacts before the graph can safely support IDE-native reasonin
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      status: proposed
+      domains:
+        - workspace
+        - graph
+        - cem
+        - mvc
+        - provenance
+      tags:
+        - source-locators
+        - entity-uri
+        - cognitive-execution-model
+        - mvc
+        - provenance
+        - deterministic
+      related_reviews: []
+      related_overrides: []
+    relationships:
+      declared_in: []
+      declares:
+        - CAP-0020
+        - DEC-0022
+        - INV-0027
+        - INV-0028
+        - INV-0029
+      references:
+        - ADR-L-0016
+        - ADR-L-0017
+        - ADR-L-0018
+        - ADR-L-0019
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
@@ -2474,6 +2545,64 @@ entities:
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
+  - id: CAP-0020
+    entity_type: capability
+    name: Source-aware CEM and MVC assembly
+    summary: >-
+      Resolve workspace graph entities to authoritative source artifacts through stable URI locators, assemble CEM
+      bundles with provenance and validation state, derive bounded MVC bundles, and validate MVC bundles against thei
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#CAP-0020
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      domains:
+        - workspace
+        - graph
+        - cem
+        - mvc
+        - provenance
+      implemented_by_components:
+        - COMP-0011
+        - COMP-0010
+      enabled_by_decisions:
+        - DEC-0022
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - DEC-0022
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by:
+        - COMP-0010
+        - COMP-0011
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#CAP-0020
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
   - id: COMP-0001
     entity_type: component
     name: MCP Server and Tool Registry
@@ -3006,6 +3135,7 @@ entities:
       implements:
         - CAP-0018
         - CAP-0019
+        - CAP-0020
       embodied_in:
         - SYS-0001
       embodies: []
@@ -3063,6 +3193,7 @@ entities:
       implements:
         - CAP-0018
         - CAP-0019
+        - CAP-0020
       embodied_in:
         - SYS-0001
       embodies: []
@@ -4136,6 +4267,64 @@ entities:
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0019#DEC-0021
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
+  - id: DEC-0022
+    entity_type: decision
+    name: Use source locators as foundational infrastructure for CEM and MVC
+    summary: >-
+      Entity URI resolution is necessary but not sufficient for IDE and conversation-engine reasoning. ste-runtime must
+      assemble a correctness-first CEM bundle, derive a bounded MVC projection, and validate the MVC against the
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#DEC-0022
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      related_invariants:
+        - INV-0027
+        - INV-0028
+        - INV-0029
+      enforces_invariants: []
+      enables_capabilities:
+        - CAP-0020
+      governs_components: []
+      supersedes: []
+      refines: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - INV-0027
+        - INV-0028
+        - INV-0029
+      enforced_by: []
+      enabled_by: []
+      enables:
+        - CAP-0020
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#DEC-0022
       extraction_phase: extract_decision
       classification: explicit
       generator: adr-architecture-index
@@ -5325,6 +5514,165 @@ entities:
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0018#INV-0024
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0027
+    entity_type: invariant
+    name: INV-0027
+    summary: >-
+      Workspace graph entities may carry source locator metadata, but graph artifacts must not embed full canonical ADR,
+      DEC, invariant, contract, or source documents by default.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0027
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      scope: global
+      statement: |-
+        Workspace graph entities may carry source locator metadata, but graph
+        artifacts must not embed full canonical ADR, DEC, invariant, contract, or
+        source documents by default.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0022
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0027
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0028
+    entity_type: invariant
+    name: INV-0028
+    summary: >-
+      Every MVC bundle must retain provenance back to its parent CEM bundle, graph snapshot, traversal operation,
+      selected source artifacts, embodiment evidence, and validation state.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0028
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      scope: global
+      statement: |-
+        Every MVC bundle must retain provenance back to its parent CEM bundle,
+        graph snapshot, traversal operation, selected source artifacts, embodiment
+        evidence, and validation state.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0022
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0028
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0029
+    entity_type: invariant
+    name: INV-0029
+    summary: >-
+      Source locator generation, graph traversal, CEM assembly, MVC derivation, and MVC validation are deterministic for
+      identical workspace graph, source, locator registry, and traversal inputs.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0029
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      scope: global
+      statement: |-
+        Source locator generation, graph traversal, CEM assembly, MVC derivation,
+        and MVC validation are deterministic for identical workspace graph, source,
+        locator registry, and traversal inputs.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0022
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0029
       extraction_phase: assign_canonical_invariant
       classification: explicit
       generator: adr-architecture-index

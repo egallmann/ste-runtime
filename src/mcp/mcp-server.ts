@@ -15,7 +15,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
 import { initRssContext, type RssContext } from '../rss/rss-operations.js';
-import { loadAidocGraph } from '../rss/graph-loader.js';
 import { analyzeGraphTopology, saveGraphMetrics, loadGraphMetrics, type GraphMetrics } from './graph-topology-analyzer.js';
 import type { ResolvedConfig } from '../config/index.js';
 
@@ -26,6 +25,8 @@ import { loadWorkspaceGraph } from '../workspace/workspace-graph-loader.js';
 import { systemDependencies, componentIntegration, blastRadiusWorkspace, whatCalls, whatDependsOn, blastRadiusNode } from '../workspace/canned-queries.js';
 import { toMermaid, toTable, toMermaidAtResolution, toTableAtResolution } from '../workspace/projections.js';
 import { compress, type ResolutionLevel } from '../workspace/compression.js';
+import { loadSourceLocatorRegistry, resolveLocator } from '../workspace/source-locator-registry.js';
+import { assembleCemBundle, deriveMvcBundle, validateMvcBundle } from '../workspace/cem-mvc.js';
 
 export interface McpServerOptions {
   config: ResolvedConfig;
@@ -137,17 +138,19 @@ export class McpServer {
     const stateRoot = await this.resolveProjectStateRoot();
     
     try {
-      // Load parent project RSS context
+      // Load parent project RSS context (single graph load)
       this.rssContext = await initRssContext(stateRoot);
       
-      // Try to load existing graph metrics
+      // Try to load existing graph metrics and check staleness
       this.graphMetrics = await loadGraphMetrics(stateRoot);
       
-      // If no metrics exist or they're stale, analyze graph
-      if (!this.graphMetrics) {
+      const metricsStale = this.graphMetrics &&
+        Math.abs(this.graphMetrics.totalComponents - this.rssContext.graph.size) >
+        this.rssContext.graph.size * 0.1;
+
+      if (!this.graphMetrics || metricsStale) {
         console.error('[MCP Server] Analyzing graph topology...');
-        const { graph } = await loadAidocGraph(stateRoot);
-        this.graphMetrics = await analyzeGraphTopology(graph);
+        this.graphMetrics = await analyzeGraphTopology(this.rssContext.graph);
         await saveGraphMetrics(this.graphMetrics, stateRoot);
       }
       
@@ -162,9 +165,12 @@ export class McpServer {
         this.selfContext = await initRssContext(selfStateRoot);
         this.selfGraphMetrics = await loadGraphMetrics(selfStateRoot);
         
-        if (!this.selfGraphMetrics) {
-          const { graph } = await loadAidocGraph(selfStateRoot);
-          this.selfGraphMetrics = await analyzeGraphTopology(graph);
+        const selfStale = this.selfGraphMetrics &&
+          Math.abs(this.selfGraphMetrics.totalComponents - this.selfContext.graph.size) >
+          this.selfContext.graph.size * 0.1;
+
+        if (!this.selfGraphMetrics || selfStale) {
+          this.selfGraphMetrics = await analyzeGraphTopology(this.selfContext.graph);
           await saveGraphMetrics(this.selfGraphMetrics, selfStateRoot);
         }
         
@@ -187,14 +193,12 @@ export class McpServer {
     const stateRoot = await this.resolveProjectStateRoot();
     
     try {
-      // Reload parent project RSS context
+      // Reload parent project RSS context (single graph load)
       this.rssContext = await initRssContext(stateRoot);
       
-      // Reanalyze graph topology
-      const { graph } = await loadAidocGraph(stateRoot);
-      const newMetrics = await analyzeGraphTopology(graph);
+      // Reanalyze graph topology using the already-loaded graph
+      const newMetrics = await analyzeGraphTopology(this.rssContext.graph);
       
-      // Check if recommended depth changed significantly
       if (this.graphMetrics && Math.abs(newMetrics.recommendedDepth - this.graphMetrics.recommendedDepth) >= 1) {
         console.error(`[MCP Server] Graph structure changed:`);
         console.error(`  - Old depth: ${this.graphMetrics.recommendedDepth}`);
@@ -205,8 +209,7 @@ export class McpServer {
       const selfStateRoot = path.resolve(this.options.config.runtimeDir, '.ste-self', 'state');
       try {
         this.selfContext = await initRssContext(selfStateRoot);
-        const { graph: selfGraph } = await loadAidocGraph(selfStateRoot);
-        this.selfGraphMetrics = await analyzeGraphTopology(selfGraph);
+        this.selfGraphMetrics = await analyzeGraphTopology(this.selfContext.graph);
         await saveGraphMetrics(this.selfGraphMetrics, selfStateRoot);
       } catch {
         // Self-analysis not available, that's OK
@@ -407,6 +410,81 @@ export class McpServer {
             required: ['node_id'],
           },
         },
+        {
+          name: 'ws_resolve_source',
+          description: 'Resolve a workspace entity ID, entity URI, ADR alias, decision alias, or workspace URI to source locator metadata.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Entity ID or URI to resolve' },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_get_source',
+          description: 'Resolve a workspace entity/source URI and retrieve bounded authoritative source content.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Entity ID or URI to resolve' },
+              maxLines: { type: 'number', description: 'Maximum source lines to return', default: 120 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_assemble_cem',
+          description: 'Assemble a CEM bundle from workspace graph traversal, source locators, provenance, and negative-space diagnostics.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Task text, entity ID, or URI' },
+              depth: { type: 'number', default: 2 },
+              maxNodes: { type: 'number', default: 50 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_derive_mvc',
+          description: 'Assemble CEM, derive an MVC bundle, and validate MVC against CEM.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Task text, entity ID, or URI' },
+              depth: { type: 'number', default: 2 },
+              maxNodes: { type: 'number', default: 50 },
+              maxSourceRefs: { type: 'number', default: 8 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_validate_mvc',
+          description: 'Validate an MVC bundle object against its parent CEM bundle object.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              cem: { type: 'object', description: 'Parent CEM bundle' },
+              mvc: { type: 'object', description: 'MVC bundle' },
+            },
+            required: ['cem', 'mvc'],
+          },
+        },
+        {
+          name: 'ws_neighborhood_sources',
+          description: 'Traverse a workspace graph neighborhood and include source locator metadata for visited nodes.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Task text, entity ID, or URI' },
+              depth: { type: 'number', default: 2 },
+              maxNodes: { type: 'number', default: 50 },
+            },
+            required: ['target'],
+          },
+        },
       ],
     }));
     
@@ -573,6 +651,91 @@ export class McpServer {
             const wsOutputDir = await this.resolveWorkspaceOutputDir();
             const wsGraph = await loadWorkspaceGraph(wsOutputDir);
             result = blastRadiusNode(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
+          case 'ws_resolve_source': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const locator = resolveLocator(registry, (toolArgs as any).target);
+            result = locator ? { status: 'resolved', locator } : { status: 'not_found', target: (toolArgs as any).target };
+            break;
+          }
+
+          case 'ws_get_source': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const locator = resolveLocator(registry, (toolArgs as any).target);
+            if (!locator) {
+              result = { status: 'not_found', target: (toolArgs as any).target };
+              break;
+            }
+            const maxLines = Number((toolArgs as any).maxLines ?? 120);
+            const repoRoot = locator.repo_path ?? path.join(path.dirname(wsOutputDir), locator.repo);
+            const sourcePath = path.resolve(repoRoot, locator.path);
+            const content = await fs.readFile(sourcePath, 'utf-8');
+            const allLines = content.split('\n');
+            result = {
+              status: 'resolved',
+              locator,
+              content: allLines.slice(0, maxLines).join('\n'),
+              truncated: allLines.length > maxLines,
+            };
+            break;
+          }
+
+          case 'ws_assemble_cem': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            result = assembleCemBundle({
+              graph: wsGraph,
+              registry,
+              query: (toolArgs as any).target,
+              maxDepth: (toolArgs as any).depth,
+              maxNodes: (toolArgs as any).maxNodes,
+            });
+            break;
+          }
+
+          case 'ws_derive_mvc': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const cem = assembleCemBundle({
+              graph: wsGraph,
+              registry,
+              query: (toolArgs as any).target,
+              maxDepth: (toolArgs as any).depth,
+              maxNodes: (toolArgs as any).maxNodes,
+            });
+            const mvc = deriveMvcBundle(cem, { maxSourceRefs: (toolArgs as any).maxSourceRefs });
+            result = { cem, mvc, validation: validateMvcBundle(mvc, cem) };
+            break;
+          }
+
+          case 'ws_validate_mvc': {
+            result = validateMvcBundle((toolArgs as any).mvc, (toolArgs as any).cem);
+            break;
+          }
+
+          case 'ws_neighborhood_sources': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const cem = assembleCemBundle({
+              graph: wsGraph,
+              registry,
+              query: (toolArgs as any).target,
+              maxDepth: (toolArgs as any).depth,
+              maxNodes: (toolArgs as any).maxNodes,
+            });
+            result = {
+              target: (toolArgs as any).target,
+              nodes: cem.traversal_context.visited_node_ids.map(id => ({ id, locator: resolveLocator(registry, id) })),
+              traversal: cem.traversal_context,
+              negative_space_constraints: cem.negative_space_constraints,
+            };
             break;
           }
 

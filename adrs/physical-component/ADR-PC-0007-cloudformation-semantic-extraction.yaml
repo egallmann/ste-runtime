@@ -68,7 +68,8 @@ component_specifications:
   implementation_requirements:
     constraints:
     - Nested stack resolution is static analysis only -- no runtime AWS API calls
-    - Intrinsic handling is deterministic: Ref and GetAtt fully supported, Sub map-form conditionally supported, all others unsupported with structured diagnostics
+    - Intrinsic handling is deterministic: Ref and GetAtt resolve to logical IDs; Sub map-form conditionally supported; Join, Select, If, and ImportValue produce structured diagnostics rather than resolved values
+    - All extracted AWS::* resources become workspace graph nodes via the slice emitter; no CFN resource type is silently dropped by extraction or emission
     error_handling:
       strategy: Continue extracting valid template sections while surfacing deterministic
         parsing failures.
@@ -84,14 +85,31 @@ component_specifications:
       integration_tests: |
         - CloudFormation extraction
         - CloudFormation validation extraction coverage
-implementation_decisions: []
+        - MFE monorepo extraction (nested apps/*/cfn_templates/ patterns)
+implementation_decisions:
+- id: IMPL-0007
+  summary: >
+    CFN type completeness: all extracted AWS::* resources are emitted as
+    workspace graph nodes. Explicitly mapped types receive specific graph
+    type names (Lambda, Queue, Distribution, etc.). Unmapped types receive
+    the InfraResource fallback type with cfn_type preserved in attributes.
+  rationale: >
+    The workspace graph is pattern-agnostic. Backend services, frontend
+    SPAs, and MFE monorepos all produce infrastructure resources that must
+    appear in the graph for Architecture IR fidelity.
 gaps:
 - id: GAP-0001
   question: >
-    AWS::Serverless::StateMachine is not yet handled in extractResourceMetadata.
-    Should SAM state machines use the same DefinitionBody/DefinitionUri extraction
-    as AWS::StepFunctions::StateMachine?
+    AWS::Serverless::StateMachine is now handled via the shared CFN type
+    mapping module (maps to StateMachine graph type). DefinitionBody/
+    DefinitionUri extraction uses the same logic as
+    AWS::StepFunctions::StateMachine.
   impact: medium
   blocking: false
+  status: closed
+  resolution: >
+    Resolved by adding AWS::Serverless::StateMachine to the shared
+    cfn-type-mapping module and reusing existing StepFunctions extraction
+    logic for DefinitionBody/DefinitionUri.
   affects:
   - COMP-0007

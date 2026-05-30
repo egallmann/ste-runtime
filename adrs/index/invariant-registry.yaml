@@ -1190,3 +1190,162 @@ entities:
       extraction_phase: assign_canonical_invariant
       classification: explicit
       generator: adr-architecture-index
+  - id: INV-0027
+    entity_type: invariant
+    name: INV-0027
+    summary: >-
+      Workspace graph entities may carry source locator metadata, but graph artifacts must not embed full canonical ADR,
+      DEC, invariant, contract, or source documents by default.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0027
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      scope: global
+      statement: |-
+        Workspace graph entities may carry source locator metadata, but graph
+        artifacts must not embed full canonical ADR, DEC, invariant, contract, or
+        source documents by default.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0022
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0027
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0028
+    entity_type: invariant
+    name: INV-0028
+    summary: >-
+      Every MVC bundle must retain provenance back to its parent CEM bundle, graph snapshot, traversal operation,
+      selected source artifacts, embodiment evidence, and validation state.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0028
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      scope: global
+      statement: |-
+        Every MVC bundle must retain provenance back to its parent CEM bundle,
+        graph snapshot, traversal operation, selected source artifacts, embodiment
+        evidence, and validation state.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0022
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0028
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0029
+    entity_type: invariant
+    name: INV-0029
+    summary: >-
+      Source locator generation, graph traversal, CEM assembly, MVC derivation, and MVC validation are deterministic for
+      identical workspace graph, source, locator registry, and traversal inputs.
+    lifecycle_stage: proposed
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0029
+      artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0020
+      scope: global
+      statement: |-
+        Source locator generation, graph traversal, CEM assembly, MVC derivation,
+        and MVC validation are deterministic for identical workspace graph, source,
+        locator registry, and traversal inputs.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0020
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - DEC-0022
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0020#INV-0029
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index

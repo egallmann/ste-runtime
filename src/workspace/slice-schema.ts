@@ -20,6 +20,22 @@ export const NODE_TYPES = [
   'Schema',
   'Endpoint',
   'ExternalSystem',
+  'Stack',
+  'Distribution',
+  'WebACL',
+  'Certificate',
+  'DNSRecord',
+  'APIGateway',
+  'SecurityGroup',
+  'Secret',
+  'DBCluster',
+  'DBProxy',
+  'LogGroup',
+  'Alarm',
+  'DeliveryStream',
+  'EventRule',
+  'Role',
+  'InfraResource',
 ] as const;
 
 export const EDGE_VERBS = [
@@ -35,6 +51,7 @@ export const EDGE_VERBS = [
   'calls',
   'triggers',
   'publishes_to',
+  'contains',
 ] as const;
 
 export type SliceNodeType = (typeof NODE_TYPES)[number];

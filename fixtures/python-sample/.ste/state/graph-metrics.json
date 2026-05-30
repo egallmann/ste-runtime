@@ -12,17 +12,17 @@
     "internal-index": 1,
     "module": 5
   },
-  "avgDependencyDepth": 0.7857142857142857,
+  "avgDependencyDepth": 0.35714285714285715,
   "maxDependencyDepth": 2,
   "p95DependencyDepth": 2,
-  "avgDependentDepth": 0.35714285714285715,
-  "maxDependentDepth": 2,
+  "avgDependentDepth": 0,
+  "maxDependentDepth": 0,
   "avgDependenciesPerComponent": 0.5714285714285714,
   "avgDependentsPerComponent": 0.5714285714285714,
   "detectedPattern": "flat",
   "hasDeepTrees": false,
   "hasWideNetwork": false,
   "recommendedDepth": 2,
-  "reasoning": "Detected flat architecture. Avg depth: 0.8, P95 depth: 2.0, Max depth: 2. Recommended depth: 2.",
-  "lastAnalyzed": "2026-05-27T02:55:35.902Z"
+  "reasoning": "Detected flat architecture. Avg depth: 0.4, P95 depth: 2.0, Max depth: 2. Recommended depth: 2.",
+  "lastAnalyzed": "2026-05-29T19:54:19.387Z"
 }
