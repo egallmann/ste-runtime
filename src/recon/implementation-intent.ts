@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
+import type { SupportedLanguage } from '../config/index.js';
 import type { NormalizedAssertion } from './phases/index.js';
 
 export interface ImplementationIntent {
@@ -9,6 +10,9 @@ export interface ImplementationIntent {
   confidence: 'declared';
   source: 'decorator' | 'metadata';
 }
+
+type AttributionConfidenceLevel = 'declared' | 'inferred' | 'heuristic';
+type AttributionSourceLanguage = 'python' | 'typescript' | 'cloudformation' | 'csharp' | 'unknown';
 
 interface ImplementationAttributionRecord {
   implementation_entity_id: string;
@@ -32,10 +36,13 @@ interface ImplementationAttributionRecord {
     commit: null;
   };
   metadata: Record<string, unknown>;
+  confidence: AttributionConfidenceLevel;
+  attributed_capabilities: string[];
+  attribution_source_language: AttributionSourceLanguage;
 }
 
 interface ImplementationAttributionEvidence {
-  schema_version: '1.0';
+  schema_version: '1.0' | '1.2';
   type: 'implementation_attribution_evidence';
   records: ImplementationAttributionRecord[];
 }
@@ -78,6 +85,21 @@ export function normalizeImplementationIntent(
     confidence,
     source,
   };
+}
+
+export function mapAttributionSourceLanguage(
+  language: SupportedLanguage,
+): AttributionSourceLanguage {
+  switch (language) {
+    case 'python':
+      return 'python';
+    case 'typescript':
+      return 'typescript';
+    case 'cloudformation':
+      return 'cloudformation';
+    default:
+      return 'unknown';
+  }
 }
 
 function mapSliceTypeToEntityType(
@@ -137,6 +159,9 @@ export function collectImplementationAttributionEvidence(
         confidence: intent.confidence,
         slice_id: assertion._slice.id,
       },
+      confidence: intent.confidence as AttributionConfidenceLevel,
+      attributed_capabilities: [],
+      attribution_source_language: mapAttributionSourceLanguage(assertion.provenance.language),
     });
   }
 
@@ -145,7 +170,7 @@ export function collectImplementationAttributionEvidence(
   );
 
   return {
-    schema_version: '1.0',
+    schema_version: '1.2',
     type: 'implementation_attribution_evidence',
     records,
   };

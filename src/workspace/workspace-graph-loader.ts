@@ -16,6 +16,13 @@ export interface WorkspaceNode {
   type: string;
   name: string;
   repo: string;
+  entity_uri?: string;
+  source_uri?: string;
+  source_hash?: string;
+  source_locator_ref?: string;
+  canonical?: boolean;
+  authority?: string;
+  graph_snapshot_hash?: string;
   attributes?: Record<string, unknown>;
 }
 
@@ -44,6 +51,13 @@ interface SliceDoc {
     type?: string;
     name?: string;
     provenance?: { repo?: string; source_path?: string; source_ref?: string };
+    entity_uri?: string;
+    source_uri?: string;
+    source_hash?: string;
+    source_locator_ref?: string;
+    canonical?: boolean;
+    authority?: string;
+    graph_snapshot_hash?: string;
     attributes?: Record<string, unknown>;
   }>;
   edges?: Array<{
@@ -137,6 +151,13 @@ export async function loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGr
           type: n.type,
           name: typeof n.name === 'string' ? n.name : n.id,
           repo: extractRepo(n.provenance, sliceRepo),
+          entity_uri: n.entity_uri,
+          source_uri: n.source_uri,
+          source_hash: n.source_hash,
+          source_locator_ref: n.source_locator_ref,
+          canonical: n.canonical,
+          authority: n.authority,
+          graph_snapshot_hash: n.graph_snapshot_hash,
           attributes: n.attributes,
         });
       }

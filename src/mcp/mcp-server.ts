@@ -25,6 +25,8 @@ import { loadWorkspaceGraph } from '../workspace/workspace-graph-loader.js';
 import { systemDependencies, componentIntegration, blastRadiusWorkspace, whatCalls, whatDependsOn, blastRadiusNode } from '../workspace/canned-queries.js';
 import { toMermaid, toTable, toMermaidAtResolution, toTableAtResolution } from '../workspace/projections.js';
 import { compress, type ResolutionLevel } from '../workspace/compression.js';
+import { loadSourceLocatorRegistry, resolveLocator } from '../workspace/source-locator-registry.js';
+import { assembleCemBundle, deriveMvcBundle, validateMvcBundle } from '../workspace/cem-mvc.js';
 
 export interface McpServerOptions {
   config: ResolvedConfig;
@@ -408,6 +410,81 @@ export class McpServer {
             required: ['node_id'],
           },
         },
+        {
+          name: 'ws_resolve_source',
+          description: 'Resolve a workspace entity ID, entity URI, ADR alias, decision alias, or workspace URI to source locator metadata.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Entity ID or URI to resolve' },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_get_source',
+          description: 'Resolve a workspace entity/source URI and retrieve bounded authoritative source content.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Entity ID or URI to resolve' },
+              maxLines: { type: 'number', description: 'Maximum source lines to return', default: 120 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_assemble_cem',
+          description: 'Assemble a CEM bundle from workspace graph traversal, source locators, provenance, and negative-space diagnostics.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Task text, entity ID, or URI' },
+              depth: { type: 'number', default: 2 },
+              maxNodes: { type: 'number', default: 50 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_derive_mvc',
+          description: 'Assemble CEM, derive an MVC bundle, and validate MVC against CEM.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Task text, entity ID, or URI' },
+              depth: { type: 'number', default: 2 },
+              maxNodes: { type: 'number', default: 50 },
+              maxSourceRefs: { type: 'number', default: 8 },
+            },
+            required: ['target'],
+          },
+        },
+        {
+          name: 'ws_validate_mvc',
+          description: 'Validate an MVC bundle object against its parent CEM bundle object.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              cem: { type: 'object', description: 'Parent CEM bundle' },
+              mvc: { type: 'object', description: 'MVC bundle' },
+            },
+            required: ['cem', 'mvc'],
+          },
+        },
+        {
+          name: 'ws_neighborhood_sources',
+          description: 'Traverse a workspace graph neighborhood and include source locator metadata for visited nodes.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              target: { type: 'string', description: 'Task text, entity ID, or URI' },
+              depth: { type: 'number', default: 2 },
+              maxNodes: { type: 'number', default: 50 },
+            },
+            required: ['target'],
+          },
+        },
       ],
     }));
     
@@ -574,6 +651,91 @@ export class McpServer {
             const wsOutputDir = await this.resolveWorkspaceOutputDir();
             const wsGraph = await loadWorkspaceGraph(wsOutputDir);
             result = blastRadiusNode(wsGraph, (toolArgs as any).node_id);
+            break;
+          }
+
+          case 'ws_resolve_source': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const locator = resolveLocator(registry, (toolArgs as any).target);
+            result = locator ? { status: 'resolved', locator } : { status: 'not_found', target: (toolArgs as any).target };
+            break;
+          }
+
+          case 'ws_get_source': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const locator = resolveLocator(registry, (toolArgs as any).target);
+            if (!locator) {
+              result = { status: 'not_found', target: (toolArgs as any).target };
+              break;
+            }
+            const maxLines = Number((toolArgs as any).maxLines ?? 120);
+            const repoRoot = locator.repo_path ?? path.join(path.dirname(wsOutputDir), locator.repo);
+            const sourcePath = path.resolve(repoRoot, locator.path);
+            const content = await fs.readFile(sourcePath, 'utf-8');
+            const allLines = content.split('\n');
+            result = {
+              status: 'resolved',
+              locator,
+              content: allLines.slice(0, maxLines).join('\n'),
+              truncated: allLines.length > maxLines,
+            };
+            break;
+          }
+
+          case 'ws_assemble_cem': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            result = assembleCemBundle({
+              graph: wsGraph,
+              registry,
+              query: (toolArgs as any).target,
+              maxDepth: (toolArgs as any).depth,
+              maxNodes: (toolArgs as any).maxNodes,
+            });
+            break;
+          }
+
+          case 'ws_derive_mvc': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const cem = assembleCemBundle({
+              graph: wsGraph,
+              registry,
+              query: (toolArgs as any).target,
+              maxDepth: (toolArgs as any).depth,
+              maxNodes: (toolArgs as any).maxNodes,
+            });
+            const mvc = deriveMvcBundle(cem, { maxSourceRefs: (toolArgs as any).maxSourceRefs });
+            result = { cem, mvc, validation: validateMvcBundle(mvc, cem) };
+            break;
+          }
+
+          case 'ws_validate_mvc': {
+            result = validateMvcBundle((toolArgs as any).mvc, (toolArgs as any).cem);
+            break;
+          }
+
+          case 'ws_neighborhood_sources': {
+            const wsOutputDir = await this.resolveWorkspaceOutputDir();
+            const wsGraph = await loadWorkspaceGraph(wsOutputDir);
+            const registry = await loadSourceLocatorRegistry(wsOutputDir);
+            const cem = assembleCemBundle({
+              graph: wsGraph,
+              registry,
+              query: (toolArgs as any).target,
+              maxDepth: (toolArgs as any).depth,
+              maxNodes: (toolArgs as any).maxNodes,
+            });
+            result = {
+              target: (toolArgs as any).target,
+              nodes: cem.traversal_context.visited_node_ids.map(id => ({ id, locator: resolveLocator(registry, id) })),
+              traversal: cem.traversal_context,
+              negative_space_constraints: cem.negative_space_constraints,
+            };
             break;
           }
 

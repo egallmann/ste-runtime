@@ -834,6 +834,7 @@ ws
     }
   });
 
+
 // ─── ste setup ──────────────────────────────────────────────
 program
   .command('setup')
@@ -1118,6 +1119,142 @@ program
     log('     You should see a summary of the semantic graph.');
     log('');
     log('Setup complete.');
+  });
+
+ws
+  .command('resolve <target>')
+  .description('Resolve a workspace graph entity or source URI to authoritative source locator metadata')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .action(async (target: string, options: { workspace: string }) => {
+    const { loadSourceLocatorRegistry, resolveLocator } = await import('../workspace/source-locator-registry.js');
+    const registry = await loadSourceLocatorRegistry(path.resolve(options.workspace));
+    const locator = resolveLocator(registry, target);
+    if (!locator) {
+      console.error(`No source locator resolved for: ${target}`);
+      process.exit(1);
+    }
+    console.log(JSON.stringify({ status: 'resolved', locator }, null, 2));
+  });
+
+ws
+  .command('source <target>')
+  .description('Resolve a workspace entity/source URI and retrieve authoritative source content')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--max-lines <n>', 'Maximum source lines to return', (v) => Number.parseInt(v, 10), 120)
+  .action(async (target: string, options: { workspace: string; maxLines: number }) => {
+    const fs = await import('node:fs/promises');
+    const { loadSourceLocatorRegistry, resolveLocator } = await import('../workspace/source-locator-registry.js');
+    const registry = await loadSourceLocatorRegistry(path.resolve(options.workspace));
+    const locator = resolveLocator(registry, target);
+    if (!locator) {
+      console.error(`No source locator resolved for: ${target}`);
+      process.exit(1);
+    }
+    const repoRoot = locator.repo_path ?? path.join(path.dirname(path.resolve(options.workspace)), locator.repo);
+    const sourcePath = path.resolve(repoRoot, locator.path);
+    const content = await fs.readFile(sourcePath, 'utf-8');
+    const lines = content.split('\n').slice(0, options.maxLines);
+    console.log(JSON.stringify({
+      status: 'resolved',
+      locator,
+      content: lines.join('\n'),
+      truncated: content.split('\n').length > options.maxLines,
+    }, null, 2));
+  });
+
+ws
+  .command('cem <target>')
+  .description('Assemble a CEM bundle from workspace graph, source locators, and traversal context')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--depth <n>', 'Traversal depth', (v) => Number.parseInt(v, 10), 2)
+  .option('--max-nodes <n>', 'Maximum graph nodes', (v) => Number.parseInt(v, 10), 50)
+  .action(async (target: string, options: { workspace: string; depth: number; maxNodes: number }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { loadSourceLocatorRegistry } = await import('../workspace/source-locator-registry.js');
+    const { assembleCemBundle } = await import('../workspace/cem-mvc.js');
+    const workspace = path.resolve(options.workspace);
+    const graph = await loadWorkspaceGraph(workspace);
+    const registry = await loadSourceLocatorRegistry(workspace);
+    const cem = assembleCemBundle({
+      graph,
+      registry,
+      query: target,
+      maxDepth: options.depth,
+      maxNodes: options.maxNodes,
+    });
+    console.log(JSON.stringify(cem, null, 2));
+  });
+
+ws
+  .command('mvc <target>')
+  .description('Derive and validate an MVC bundle from a CEM bundle')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--depth <n>', 'Traversal depth', (v) => Number.parseInt(v, 10), 2)
+  .option('--max-nodes <n>', 'Maximum graph nodes', (v) => Number.parseInt(v, 10), 50)
+  .option('--max-source-refs <n>', 'Maximum source references in MVC', (v) => Number.parseInt(v, 10), 8)
+  .action(async (target: string, options: { workspace: string; depth: number; maxNodes: number; maxSourceRefs: number }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { loadSourceLocatorRegistry } = await import('../workspace/source-locator-registry.js');
+    const { assembleCemBundle, deriveMvcBundle, validateMvcBundle } = await import('../workspace/cem-mvc.js');
+    const workspace = path.resolve(options.workspace);
+    const graph = await loadWorkspaceGraph(workspace);
+    const registry = await loadSourceLocatorRegistry(workspace);
+    const cem = assembleCemBundle({
+      graph,
+      registry,
+      query: target,
+      maxDepth: options.depth,
+      maxNodes: options.maxNodes,
+    });
+    const mvc = deriveMvcBundle(cem, { maxSourceRefs: options.maxSourceRefs });
+    const validation = validateMvcBundle(mvc, cem);
+    console.log(JSON.stringify({ cem, mvc, validation }, null, 2));
+  });
+
+ws
+  .command('validate-mvc <bundle>')
+  .description('Validate an MVC bundle JSON file containing { cem, mvc }')
+  .action(async (bundle: string) => {
+    const fs = await import('node:fs/promises');
+    const { validateMvcBundle } = await import('../workspace/cem-mvc.js');
+    const raw = await fs.readFile(path.resolve(bundle), 'utf-8');
+    const parsed = JSON.parse(raw) as { cem?: any; mvc?: any };
+    if (!parsed.cem || !parsed.mvc) {
+      console.error('validate-mvc expects a JSON file with top-level { "cem": ..., "mvc": ... }');
+      process.exit(1);
+    }
+    console.log(JSON.stringify(validateMvcBundle(parsed.mvc, parsed.cem), null, 2));
+  });
+
+ws
+  .command('neighborhood <target>')
+  .description('Traverse a workspace graph neighborhood and include source locator metadata')
+  .requiredOption('--workspace <path>', 'Path to workspace output directory')
+  .option('--depth <n>', 'Traversal depth', (v) => Number.parseInt(v, 10), 2)
+  .option('--max-nodes <n>', 'Maximum graph nodes', (v) => Number.parseInt(v, 10), 50)
+  .action(async (target: string, options: { workspace: string; depth: number; maxNodes: number }) => {
+    const { loadWorkspaceGraph } = await import('../workspace/workspace-graph-loader.js');
+    const { loadSourceLocatorRegistry, resolveLocator } = await import('../workspace/source-locator-registry.js');
+    const { assembleCemBundle } = await import('../workspace/cem-mvc.js');
+    const workspace = path.resolve(options.workspace);
+    const graph = await loadWorkspaceGraph(workspace);
+    const registry = await loadSourceLocatorRegistry(workspace);
+    const cem = assembleCemBundle({
+      graph,
+      registry,
+      query: target,
+      maxDepth: options.depth,
+      maxNodes: options.maxNodes,
+    });
+    console.log(JSON.stringify({
+      target,
+      nodes: cem.traversal_context.visited_node_ids.map(id => ({
+        id,
+        locator: resolveLocator(registry, id),
+      })),
+      traversal: cem.traversal_context,
+      negative_space_constraints: cem.negative_space_constraints,
+    }, null, 2));
   });
 
 program.parseAsync();

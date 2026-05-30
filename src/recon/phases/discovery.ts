@@ -53,6 +53,7 @@ const LANGUAGE_PATTERNS: Record<SupportedLanguage, string[]> = {
   'adr-yaml': [
     '**/*.yaml',
   ],
+  markdown: ['**/*.md'],
 };
 
 /**
@@ -113,6 +114,13 @@ const LANGUAGE_IGNORES: Record<SupportedLanguage, string[]> = {
     'adrs/index/**',
     'adrs/rendered/**',
   ],
+  markdown: [
+    '**/node_modules/**',
+    '**/_internal-references/**',
+    '**/.writing-rules/**',
+    '**/.ste-writing-system/**',
+    '**/.editorial/**',
+  ],
 };
 
 /**
@@ -149,6 +157,8 @@ function getLanguageForFile(filePath: string, _content?: string): SupportedLangu
         return 'angular';  // E-ADR-006
       }
       return null;
+    case '.md':
+      return 'markdown';
     default:
       return null;
   }

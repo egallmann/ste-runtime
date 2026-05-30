@@ -13,10 +13,16 @@
  */
 
 import path from 'node:path';
+import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { executeRecon } from '../recon/index.js';
 import { loadConfig, loadConfigFromFile, initConfig } from '../config/index.js';
 import { executeWorkspaceRecon, type WorkspaceReconResult } from '../workspace/workspace-recon.js';
+import {
+  buildWorkspaceReconBenchmarkReport,
+  formatBenchmarkJson,
+  printBenchmarkSummary,
+} from './benchmark-report.js';
 import {
   parseWorkspaceArgv,
   resolveWorkspaceDirectory,
@@ -26,6 +32,24 @@ import {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+async function loadRuntimeVersion(runtimeDir: string): Promise<string> {
+  try {
+    const raw = await fs.readFile(path.join(runtimeDir, 'package.json'), 'utf-8');
+    const parsed = JSON.parse(raw) as { version?: string };
+    return typeof parsed.version === 'string' ? parsed.version : 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
+async function writeBenchmarkReport(
+  reportPath: string,
+  json: string,
+): Promise<void> {
+  await fs.mkdir(path.dirname(path.resolve(reportPath)), { recursive: true });
+  await fs.writeFile(reportPath, json, 'utf-8');
+}
 
 function parseTimeoutPerRepoMs(args: string[]): number {
   const eq = args.find(a => a.startsWith('--timeout-per-repo='));
@@ -48,6 +72,20 @@ function parseTimeoutPerRepoMs(args: string[]): number {
   return 0;
 }
 
+function parseBenchmarkOut(args: string[]): string | null {
+  const eq = args.find(a => a.startsWith('--benchmark-out='));
+  if (eq !== undefined) {
+    const value = eq.slice('--benchmark-out='.length).trim();
+    return value.length > 0 ? value : null;
+  }
+  const idx = args.indexOf('--benchmark-out');
+  if (idx !== -1 && idx + 1 < args.length) {
+    const value = args[idx + 1]?.trim();
+    return value && value.length > 0 ? value : null;
+  }
+  return null;
+}
+
 function parseArgs(args: string[]): {
   mode: 'incremental' | 'full';
   init: boolean;
@@ -58,6 +96,8 @@ function parseArgs(args: string[]): {
   failOnAnyError: boolean;
   skipUnchanged: boolean;
   timeoutPerRepoMs: number;
+  benchmark: boolean;
+  benchmarkOut: string | null;
   parseError: string | null;
 } {
   const rawMode = args.find(a => a.startsWith('--mode='))?.split('=')[1] ?? 'incremental';
@@ -79,6 +119,8 @@ function parseArgs(args: string[]): {
     failOnAnyError: args.includes('--fail-on-any-error'),
     skipUnchanged: args.includes('--skip-unchanged'),
     timeoutPerRepoMs: Number.isNaN(timeoutPerRepoMs) ? 0 : timeoutPerRepoMs,
+    benchmark: args.includes('--benchmark') || parseBenchmarkOut(args) !== null,
+    benchmarkOut: parseBenchmarkOut(args),
     parseError,
   };
 }
@@ -106,6 +148,10 @@ Options:
   --timeout-per-repo=<ms>
                        Workspace only: per-repo ceiling in ms (omit or use 0 to disable). Example: --timeout-per-repo=60000
   --timeout-per-repo <ms>
+  --benchmark          Workspace mode: emit structured benchmark summary (+ JSON when used with --benchmark-out)
+  --benchmark-out=<file>
+                       Write benchmark JSON report to file (implies --benchmark)
+  --benchmark-out <file>
   --help, -h           Show this help message
 
 Self-pass:
@@ -205,8 +251,12 @@ async function main() {
     if (args.timeoutPerRepoMs > 0) {
       console.log(`  Timeout: ${args.timeoutPerRepoMs}ms per repo (--timeout-per-repo)`);
     }
+    if (args.benchmark) {
+      console.log('  Benchmark: enabled (--benchmark)');
+    }
     console.log('='.repeat(60));
     console.log('');
+    const benchmarkStartMs = performance.now();
     const wsResult = await executeWorkspaceRecon({
       workspacePath: workspaceResolved,
       mode: args.mode,
@@ -215,6 +265,7 @@ async function main() {
       skipUnchanged: args.skipUnchanged,
       timeoutPerRepoMs: args.timeoutPerRepoMs,
     });
+    const workspacePassMs = performance.now() - benchmarkStartMs;
     console.log(`Workspace index: ${wsResult.workspaceIndexPath}`);
     console.log('');
     for (const r of wsResult.repos) {
@@ -237,10 +288,38 @@ async function main() {
 
     printWorkspaceResult(wsResult);
 
-    // Self-pass: always include ste-runtime itself
+    const selfPassStartMs = performance.now();
     const selfResult = await runSelfPass(runtimeDir, false, args.mode);
+    const selfPassMs = selfResult ? performance.now() - selfPassStartMs : null;
     if (selfResult) {
       printSelfResult(selfResult);
+    }
+
+    if (args.benchmark) {
+      const totalMs = performance.now() - benchmarkStartMs;
+      const runtimeVersion = await loadRuntimeVersion(runtimeDir);
+      const report = buildWorkspaceReconBenchmarkReport({
+        wsResult,
+        mode: args.mode,
+        steRuntimeVersion: runtimeVersion,
+        wallClockMs: {
+          workspacePass: workspacePassMs,
+          selfPass: selfPassMs,
+          total: totalMs,
+        },
+        selfResult,
+      });
+      printBenchmarkSummary(report);
+      const json = formatBenchmarkJson(report);
+      if (args.benchmarkOut) {
+        const outPath = path.resolve(args.benchmarkOut);
+        await writeBenchmarkReport(outPath, json);
+        console.log(`Benchmark JSON: ${outPath}`);
+      } else {
+        console.log('');
+        console.log('=== BENCHMARK JSON ===');
+        process.stdout.write(json);
+      }
     }
 
     console.log('');

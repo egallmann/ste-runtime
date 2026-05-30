@@ -145,11 +145,15 @@ export function computeForwardDepths(graph: AidocGraph): Map<string, number> {
     const currentDepth = depths.get(key) ?? 0;
     for (const edge of node.references) {
       const targetKey = `${edge.domain}/${edge.type}/${edge.id}`;
+      if (!graph.has(targetKey)) continue;
       const newDepth = currentDepth + 1;
       depths.set(targetKey, Math.max(depths.get(targetKey) ?? 0, newDepth));
-      const remaining = (inDegree.get(targetKey) ?? 1) - 1;
+      const prev = inDegree.get(targetKey) ?? 0;
+      const remaining = prev - 1;
       inDegree.set(targetKey, remaining);
-      if (remaining <= 0) queue.push(targetKey);
+      if (remaining === 0) {
+        queue.push(targetKey);
+      }
     }
   }
 

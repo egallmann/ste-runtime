@@ -24,6 +24,7 @@ export const SupportedLanguage = z.enum([
   'css',      // E-ADR-006: CSS/SCSS extraction (standalone, cross-cutting)
   'csharp',   // MP-4c: C#/.NET extraction
   'adr-yaml', // ADR-PC-0010: ADR YAML semantic extraction
+  'markdown', // Handbook / documentation manuscript extraction
 ]);
 export type SupportedLanguage = z.infer<typeof SupportedLanguage>;
 
@@ -447,12 +448,47 @@ export async function detectLanguages(projectRoot: string): Promise<SupportedLan
     }
   }
   
+  // Documentation-only repos (e.g. ste-handbook): SUMMARY.md + chapter markdown, no code markers
+  if (languages.length === 0 && (await looksLikeMarkdownDocumentationRoot(projectRoot))) {
+    return ['markdown'];
+  }
+
   // Default to typescript and python if none detected
   if (languages.length === 0) {
     return ['typescript', 'python'];
   }
   
   return languages;
+}
+
+/**
+ * True when the tree looks like a manuscript/documentation repo rather than a code project.
+ */
+async function looksLikeMarkdownDocumentationRoot(projectRoot: string): Promise<boolean> {
+  try {
+    await fs.access(path.join(projectRoot, 'SUMMARY.md'));
+    return true;
+  } catch {
+    /* continue */
+  }
+
+  try {
+    const entries = await fs.readdir(projectRoot, { withFileTypes: true });
+    let mdCount = 0;
+    for (const ent of entries) {
+      if (ent.isFile() && ent.name.endsWith('.md')) {
+        mdCount++;
+      }
+      if (ent.isDirectory() && /^\d{2}-/.test(ent.name)) {
+        const chapterDir = path.join(projectRoot, ent.name);
+        const chapterFiles = await fs.readdir(chapterDir);
+        mdCount += chapterFiles.filter(f => f.endsWith('.md')).length;
+      }
+    }
+    return mdCount >= 8;
+  } catch {
+    return false;
+  }
 }
 
 /**

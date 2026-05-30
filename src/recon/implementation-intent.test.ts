@@ -63,13 +63,16 @@ describe('implementation intent helpers', () => {
 
     const evidence = collectImplementationAttributionEvidence(assertions);
 
-    expect(evidence.schema_version).toBe('1.0');
+    expect(evidence.schema_version).toBe('1.2');
     expect(evidence.type).toBe('implementation_attribution_evidence');
     expect(evidence.records).toHaveLength(1);
     expect(evidence.records[0].implementation_entity_type).toBe('function');
     expect(evidence.records[0].attributed_adrs).toEqual(['ADR-L-0004', 'ADR-PC-0006']);
     expect(evidence.records[0].enforced_invariants).toEqual(['INV-0006']);
     expect(evidence.records[0].provenance.source_file).toBe('claims.py');
+    expect(evidence.records[0].confidence).toBe('declared');
+    expect(evidence.records[0].attributed_capabilities).toEqual([]);
+    expect(evidence.records[0].attribution_source_language).toBe('python');
   });
 
   it('writes implementation attribution evidence to state', async () => {

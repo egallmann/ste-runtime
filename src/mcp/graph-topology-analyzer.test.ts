@@ -10,6 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {
   analyzeGraphTopology,
+  computeForwardDepths,
   saveGraphMetrics,
   loadGraphMetrics,
   type GraphMetrics,
@@ -292,6 +293,24 @@ describe('Graph Topology Analyzer', () => {
       expect(elapsed).toBeLessThan(100);
       expect(metrics.totalComponents).toBe(N);
       expect(metrics.maxDependencyDepth).toBeGreaterThan(0);
+    });
+  });
+
+  describe('computeForwardDepths', () => {
+    it('does not explode queue size when duplicate edges reference the same target', () => {
+      const graph: AidocGraph = new Map();
+      const root = createNode('root', 'graph', 'function');
+      const leaf = createNode('leaf', 'graph', 'function');
+      const dupEdge = { domain: 'graph', type: 'function', id: 'leaf' };
+      root.references = [dupEdge, dupEdge, dupEdge];
+      leaf.referencedBy = [dupEdge, dupEdge, dupEdge];
+      graph.set(root.key, root);
+      graph.set(leaf.key, leaf);
+
+      const depths = computeForwardDepths(graph);
+
+      expect(depths.get(root.key)).toBe(0);
+      expect(depths.get(leaf.key)).toBe(1);
     });
   });
 

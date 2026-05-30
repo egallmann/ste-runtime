@@ -38,6 +38,8 @@ function getExtractorName(language: SupportedLanguage): string {
       return 'recon-csharp-extractor-v1';
     case 'adr-yaml':
       return 'recon-adr-yaml-extractor-v1';
+    case 'markdown':
+      return 'recon-markdown-extractor-v1';
     default:
       return 'recon-unknown-extractor-v1';
   }
@@ -62,6 +64,8 @@ function getFileExtension(language: SupportedLanguage): string {
       return '.scss';  // E-ADR-006: Default to SCSS
     case 'adr-yaml':
       return '.yaml';  // ADR-PC-0011: ADR YAML files
+    case 'markdown':
+      return '.md';
     default:
       return '';
   }
@@ -1156,6 +1160,63 @@ function normalizeElement(
         exposed_interfaces: assertion.metadata.exposed_interfaces,
         parent_adr: assertion.metadata.parent_adr,
         implements_logical: assertion.metadata.implements_logical,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+
+  // ============================================================================
+  // Markdown manuscript (handbook / documentation repos)
+  // Domain: architecture | Types: handbook_chapter, handbook_section
+  // ============================================================================
+
+  if (assertion.elementType === 'handbook_document') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'handbook_chapter',
+        source_files: [assertion.file],
+        source: assertion.source,
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.title as string,
+        part: assertion.metadata.part,
+        heading_count: assertion.metadata.heading_count,
+        ste_references: assertion.metadata.ste_references,
+        internal_links: assertion.metadata.internal_links,
+      },
+      provenance: {
+        extracted_at: timestamp,
+        extractor,
+        file: assertion.file,
+        line: assertion.line,
+        language: assertion.language,
+      },
+    };
+  }
+
+  if (assertion.elementType === 'handbook_section') {
+    return {
+      _slice: {
+        id: assertion.elementId,
+        domain: 'architecture',
+        type: 'handbook_section',
+        source_files: [assertion.file],
+      },
+      element: {
+        id: assertion.elementId,
+        name: assertion.metadata.title as string,
+        level: assertion.metadata.level,
+        part: assertion.metadata.part,
+        parent_document: assertion.metadata.parent_document,
       },
       provenance: {
         extracted_at: timestamp,

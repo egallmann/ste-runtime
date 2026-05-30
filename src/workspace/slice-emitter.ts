@@ -18,6 +18,8 @@ import { buildResourceResolverFromState, type ResourceResolverResult } from './r
 import { buildStackTopology } from './cfn-stack-resolver.js';
 import type { ExternalSystemEntry } from './manifest.js';
 import { getCfnGraphType, NODE_NAME_KEYS, AUXILIARY_NODE_TYPES } from './cfn-type-mapping.js';
+import { entityUri, workspaceUri } from './source-uri.js';
+import { computeFileHash } from './source-locator-registry.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../../package.json') as { name: string; version: string };
@@ -33,6 +35,12 @@ interface WorkspaceEntity {
   type: string;
   name: string;
   provenance: { source_path: string; source_ref: string; repo?: string };
+  entity_uri?: string;
+  source_uri?: string;
+  source_hash?: string;
+  source_locator_ref?: string;
+  canonical?: boolean;
+  authority?: string;
   attributes?: Record<string, unknown>;
 }
 
@@ -190,6 +198,36 @@ function graphIdFromParamResolution(
     if (gid && nodes.has(gid)) return gid;
   }
   return null;
+}
+
+async function enrichNodeSourceLocators(
+  nodes: Map<string, WorkspaceEntity>,
+  repoName: string,
+  repoPath: string,
+): Promise<void> {
+  const hashCache = new Map<string, string | undefined>();
+  for (const node of nodes.values()) {
+    node.entity_uri = entityUri(node.id);
+    node.source_locator_ref = node.entity_uri;
+    node.canonical = true;
+    node.authority = repoName;
+
+    const sourcePath = node.provenance.source_path;
+    if (!sourcePath || sourcePath === '.') continue;
+    try {
+      node.source_uri = workspaceUri(repoName, sourcePath);
+    } catch {
+      continue;
+    }
+    const abs = path.resolve(repoPath, sourcePath);
+    if (!hashCache.has(abs)) {
+      hashCache.set(abs, await computeFileHash(abs));
+    }
+    const hash = hashCache.get(abs);
+    if (hash) {
+      node.source_hash = hash;
+    }
+  }
 }
 
 /** When exactly one node of a graph type exists in the slice, use it to disambiguate SDK wiring. */
@@ -840,6 +878,8 @@ export async function emitWorkspaceSlice(
   if (externalSystems && externalSystems.length > 0) {
     wireExternalSystemEdges(externalSystems, resolver, nodes, edges, diagnostics, repoName);
   }
+
+  await enrichNodeSourceLocators(nodes, repoName, _repoPath);
 
   const body = {
     schema_version: '1.0',
