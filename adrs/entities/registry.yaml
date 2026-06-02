@@ -566,6 +566,18 @@ entities:
         - INV-0030
         - INV-0031
         - INV-0032
+  - entity_id: DEC-0024
+    entity_type: decision
+    name: ste-runtime orchestrates workspace federation via adr-kit CLI after workspace RECON
+    introduced_by: ADR-L-0022
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
   - entity_id: INV-0001
     entity_type: invariant
     name: INV-0001
@@ -932,6 +944,30 @@ entities:
     introduced_by: ADR-L-0021
     lifecycle_stage: proposed
     source_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0033
+    entity_type: invariant
+    name: INV-0033
+    introduced_by: ADR-L-0022
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    source_artifact_type: logical_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: INV-0034
+    entity_type: invariant
+    name: INV-0034
+    introduced_by: ADR-L-0022
+    lifecycle_stage: active
+    source_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
     source_artifact_type: logical_adr
     related_adrs: []
     relationships:

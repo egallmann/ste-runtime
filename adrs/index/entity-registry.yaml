@@ -477,6 +477,7 @@ entities:
         - ADR-L-0017
         - ADR-L-0018
         - ADR-L-0019
+        - ADR-L-0022
       related_to: []
       enforces: []
       enforced_by: []
@@ -906,6 +907,7 @@ entities:
         - ADR-L-0019
         - ADR-L-0020
         - ADR-L-0021
+        - ADR-L-0022
       related_to: []
       enforces: []
       enforced_by: []
@@ -969,6 +971,7 @@ entities:
         - ADR-L-0013
       referenced_by:
         - ADR-L-0020
+        - ADR-L-0022
       related_to: []
       enforces: []
       enforced_by: []
@@ -1271,6 +1274,70 @@ entities:
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0021
+      extraction_phase: extract_adr
+      classification: explicit
+      generator: adr-architecture-index
+  - id: ADR-L-0022
+    entity_type: adr
+    name: Workspace Attribution Federation Consumption
+    summary: >-
+      Per-repo RECON emits implementation-attribution-evidence.yaml with bare ADR-L-XXXX ids scoped to each repository
+      manifest. The same bare id string may denote different decisions in different repos (for example ADR-L-0013
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0022
+      artifact_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    source_refs: []
+    metadata:
+      status: accepted
+      domains:
+        - workspace
+        - federation
+        - attribution
+      tags:
+        - workspace
+        - federation
+        - qualified-id
+        - attribution
+      related_reviews: []
+      related_overrides: []
+    relationships:
+      declared_in: []
+      declares:
+        - DEC-0024
+        - INV-0033
+        - INV-0034
+      references:
+        - ADR-L-0009
+        - ADR-L-0016
+        - ADR-L-0017
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0022
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
@@ -4970,6 +5037,61 @@ entities:
       extraction_phase: extract_decision
       classification: explicit
       generator: adr-architecture-index
+  - id: DEC-0024
+    entity_type: decision
+    name: ste-runtime orchestrates workspace federation via adr-kit CLI after workspace RECON
+    summary: >-
+      Federation merge logic lives in adr-architecture-kit as single authority; ste-runtime must not duplicate merge in
+      TypeScript.
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0022#DEC-0024
+      artifact_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0022
+      related_invariants: []
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+      contradicts: []
+    relationships:
+      declared_in:
+        - ADR-L-0022
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0022#DEC-0024
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
   - id: INV-0001
     entity_type: invariant
     name: INV-0001
@@ -6651,6 +6773,116 @@ entities:
     provenance:
       source_type: logical_adr
       source_ref: ADR-L-0021#INV-0032
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0033
+    entity_type: invariant
+    name: INV-0033
+    summary: >-
+      Workspace attribution federation MUST NOT mutate per-repo attribution evidence or ADR corpora; it only reads state
+      and manifests to emit a derived index.
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0022#INV-0033
+      artifact_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0022
+      scope: global
+      statement: |-
+        Workspace attribution federation MUST NOT mutate per-repo attribution evidence
+        or ADR corpora; it only reads state and manifests to emit a derived index.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0022
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0022#INV-0033
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: INV-0034
+    entity_type: invariant
+    name: INV-0034
+    summary: >-
+      Federation embodiment counts MUST be computed per qualified_id only; bare ADR ids shared across repos MUST NOT
+      have embodiment counts summed across corpora.
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: ADR-L-0022#INV-0034
+      artifact_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: ADR-L-0022
+      scope: global
+      statement: |-
+        Federation embodiment counts MUST be computed per qualified_id only; bare ADR
+        ids shared across repos MUST NOT have embodiment counts summed across corpora.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - ADR-L-0022
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: ADR-L-0022#INV-0034
       extraction_phase: assign_canonical_invariant
       classification: explicit
       generator: adr-architecture-index

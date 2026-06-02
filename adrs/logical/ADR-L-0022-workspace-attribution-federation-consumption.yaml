@@ -1,0 +1,74 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0022
+title: Workspace Attribution Federation Consumption
+status: accepted
+created_date: '2026-06-02'
+authors:
+- erik.gallmann
+domains:
+- workspace
+- federation
+- attribution
+tags:
+- workspace
+- federation
+- qualified-id
+- attribution
+vision_category: false
+related_adrs:
+- ADR-L-0009
+- ADR-L-0016
+- ADR-L-0017
+context: |
+  Per-repo RECON emits implementation-attribution-evidence.yaml with bare
+  ADR-L-XXXX ids scoped to each repository manifest. The same bare id string
+  may denote different decisions in different repos (for example ADR-L-0013 in
+  adr-architecture-kit vs ste-runtime).
+
+  Federation authority and qualified identity are defined in
+  adr-architecture-kit ADR-L-0012 (accepted). ste-runtime consumes that model
+  at the workspace boundary: after workspace RECON completes for all manifest
+  repos, it invokes adr-architecture-kit `adr attribution workspace-report` to
+  write a derived `.ste-workspace/workspace-attribution-federation.yaml` keyed
+  by `{workspaceRepoKey}:{bareAdrId}`.
+
+  This artifact is derived state, not canonical architecture authority. Per-repo
+  attribution validation (`adr attribution check --scope <repo>`) is unchanged.
+invariants:
+- id: INV-0033
+  statement: |
+    Workspace attribution federation MUST NOT mutate per-repo attribution evidence
+    or ADR corpora; it only reads state and manifests to emit a derived index.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Aligns with federation read-only aggregation (adr-architecture-kit ADR-L-0012).
+- id: INV-0034
+  statement: |
+    Federation embodiment counts MUST be computed per qualified_id only; bare ADR
+    ids shared across repos MUST NOT have embodiment counts summed across corpora.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: test
+  verification_method: automated
+  rationale: |
+    Prevents homonym collapse at workspace reasoning time.
+decisions:
+- id: DEC-0024
+  summary: ste-runtime orchestrates workspace federation via adr-kit CLI after workspace RECON
+  rationale: |
+    Federation merge logic lives in adr-architecture-kit as single authority;
+    ste-runtime must not duplicate merge in TypeScript.
+  decision: |
+    executeWorkspaceRecon invokes `adr attribution workspace-report
+    --workspace-root <.ste-workspace>` after all per-repo RECON completes.
+    Output path is `.ste-workspace/workspace-attribution-federation.yaml`.
+consequences:
+  positive:
+  - Cross-repo ADR traceability without qualified decorators in source
+  - Complementary embodiment on shared bare ids remains visible as separate clusters
+  negative:
+  - Workspace runs require adr-architecture-kit on PATH or documented venv

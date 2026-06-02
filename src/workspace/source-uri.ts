@@ -7,8 +7,8 @@ export interface LineRange {
 
 export type ParsedSourceUri =
   | { kind: 'workspace'; repo: string; path: string; lineRange?: LineRange }
-  | { kind: 'entity'; entityId: string }
-  | { kind: 'adr'; adrId: string }
+  | { kind: 'entity'; entityId: string; repo?: string }
+  | { kind: 'adr'; adrId: string; repo?: string }
   | { kind: 'decision'; decisionId: string }
   | { kind: 'graph'; graphSnapshotHash: string; entityId: string }
   | { kind: 'projection'; family: string; projectionId: string };
@@ -71,12 +71,37 @@ export const workspaceUri: (repo: string, sourcePath: string, lineRange?: LineRa
   return `workspace://${encodePathSegment(normalizedRepo)}/${encodedPath}${formatLineRange(lineRange)}`;
 });
 
+/** Repo-qualified entity URI for architecture entities (ADR, decision, invariant). */
+export function entityUriForRepo(repo: string, entityId: string): string {
+  const trimmed = entityId.trim();
+  if (!trimmed) {
+    throw new Error('Entity URI id must be non-empty');
+  }
+  return `entity://${encodePathSegment(normalizeRepo(repo))}/${encodePathSegment(trimmed)}`;
+}
+
+/** Workspace-scoped entity URI for infra/graph nodes (legacy). */
 export function entityUri(entityId: string): string {
   const trimmed = entityId.trim();
   if (!trimmed) {
     throw new Error('Entity URI id must be non-empty');
   }
   return `entity://workspace/${encodePathSegment(trimmed)}`;
+}
+
+export function resolveEntityUri(repo: string, entityId: string, entityType: string): string {
+  const type = entityType.toLowerCase();
+  if (
+    type === 'adr' ||
+    type === 'decision' ||
+    type === 'invariant' ||
+    /^ADR-[LP]/.test(entityId) ||
+    /^DEC-/.test(entityId) ||
+    /^INV-/.test(entityId)
+  ) {
+    return entityUriForRepo(repo, entityId);
+  }
+  return entityUri(entityId);
 }
 
 function parseLineRange(fragment: string): LineRange | undefined {
@@ -117,14 +142,36 @@ export function parseSourceUri(uriOrId: string): ParsedSourceUri {
     }
     return parsed;
   }
-  if (value.startsWith('entity://workspace/')) {
-    return {
-      kind: 'entity',
-      entityId: decodePathSegment(value.slice('entity://workspace/'.length)),
-    };
+  if (value.startsWith('entity://')) {
+    const withoutScheme = value.slice('entity://'.length);
+    if (withoutScheme.startsWith('workspace/')) {
+      return {
+        kind: 'entity',
+        entityId: decodePathSegment(withoutScheme.slice('workspace/'.length)),
+      };
+    }
+    const slashIdx = withoutScheme.indexOf('/');
+    if (slashIdx >= 1) {
+      const repo = decodePathSegment(withoutScheme.slice(0, slashIdx));
+      const entityId = decodePathSegment(withoutScheme.slice(slashIdx + 1));
+      return {
+        kind: 'entity',
+        entityId,
+        repo: normalizeRepo(repo),
+      };
+    }
   }
   if (value.startsWith('adr://')) {
-    return { kind: 'adr', adrId: value.slice('adr://'.length) };
+    const body = value.slice('adr://'.length);
+    const colonIdx = body.indexOf(':');
+    if (colonIdx > 0 && body.indexOf('/', colonIdx) < 0) {
+      const maybeRepo = body.slice(0, colonIdx);
+      const maybeId = body.slice(colonIdx + 1);
+      if (/^ADR-[LP]/.test(maybeId)) {
+        return { kind: 'adr', adrId: maybeId, repo: normalizeRepo(maybeRepo) };
+      }
+    }
+    return { kind: 'adr', adrId: body };
   }
   if (value.startsWith('decision://')) {
     return { kind: 'decision', decisionId: value.slice('decision://'.length) };

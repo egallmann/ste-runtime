@@ -22,6 +22,7 @@ import type { ProjectionEmitResult } from './emit-projections.js';
 import { emitMultiResProjections } from './emit-multi-res-projections.js';
 import type { MultiResEmitResult } from './emit-multi-res-projections.js';
 import { mergeWorkspaceGraph } from './workspace-merge.js';
+import { runWorkspaceAttributionFederation } from './workspace-attribution-federation.js';
 import { emitSourceLocatorRegistry } from './source-locator-registry.js';
 
 export interface WorkspaceReconOptions {
@@ -144,6 +145,7 @@ export const executeWorkspaceRecon: (
 ) => Promise<WorkspaceReconResult> = implements_adr(
   'ADR-L-0017',
   'ADR-L-0009',
+  'ADR-L-0022',
 )(enforces_invariant('INV-0019')(async function executeWorkspaceRecon(
   options: WorkspaceReconOptions,
 ): Promise<WorkspaceReconResult> {
@@ -283,6 +285,13 @@ export const executeWorkspaceRecon: (
   );
 
   const anySuccess = repos.some(r => r.status === 'success' || r.status === 'skipped');
+
+  try {
+    await runWorkspaceAttributionFederation(workspaceRoot);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Attribution federation hook failed (non-fatal): ${msg}`);
+  }
 
   const allSuccess = repos.every(r => !repoIsFailure(r));
   const failedRepos = repos.filter(repoIsFailure);

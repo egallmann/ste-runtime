@@ -52,6 +52,7 @@ import { validateSlice } from '../workspace/slice-schema.js';
 import { normalizePortablePath, workspaceUri } from '../workspace/source-uri.js';
 import { emitWorkspaceIndex } from '../workspace/workspace-index.js';
 import { loadWorkspaceGraph } from '../workspace/workspace-graph-loader.js';
+import { runWorkspaceAttributionFederation } from '../workspace/workspace-attribution-federation.js';
 import { executeWorkspaceRecon } from '../workspace/workspace-recon.js';
 import {
   ADR_ID_PATTERN,
@@ -103,7 +104,13 @@ describe('attribution retrofit contract guards', () => {
       const adrIds = functionAdrMetadata(executeWorkspaceRecon);
       expect(adrIds).toContain('ADR-L-0017');
       expect(adrIds).toContain('ADR-L-0009');
+      expect(adrIds).toContain('ADR-L-0022');
       expectAdrClaims(executeWorkspaceRecon, 'ADR-L-0017', ['INV-0019']);
+    });
+
+    it('ADR-L-0022: workspace attribution federation', () => {
+      expectAdrClaims(runWorkspaceAttributionFederation, 'ADR-L-0022');
+      expectAdrSourceExists('ADR-L-0022', 'adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml');
     });
 
     it('ADR-L-0016: slice schema contract', () => {
