@@ -5,7 +5,7 @@ title: Runtime Orchestration and Assistant Integration
 status: proposed
 created_date: '2026-03-15'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - runtime
 - mcp

@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 26b93b64666720500c7794e7d5ffa98d83205bb1a0749da334fccda339d500b4
-rendered_hash: 951392b08a2893c69646a64ea2b677c44e62f1e33f382df13d61962903e825d6
+source_hash: a2ba9dd3fac8c0053c368c49819e09f9c38eb191b94d5819ce9d5333d5f9e861
+rendered_hash: db9c2824ffd89fff4420f63564212821624a6bc3373bb084d5d8662fcb0494ab
 -->
 
 # ADR-PC-0008: Service Wiring Post-Processing
 
 **Status:** proposed  
 **Created:** 2026-04-24  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** workspace, graph, extraction  
 
 **Implements Logical:** ADR-L-0015, ADR-L-0016  

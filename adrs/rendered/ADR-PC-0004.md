@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 341c467fcca98fcfbff75eb38eca5554c09ddbc39a382ab8d710a84dad98eed7
-rendered_hash: 1506570a390e0981f697bb5156d9c061c0a06d9d761a143503105d88eead852d
+source_hash: c38024673d002db24fde9cced2af35fb053e72b6902bd312b6f829f138b80477
+rendered_hash: 0f66ff3ff7b6b9f733b62b9385132f0fed73b0f297f8ffed99738f65996184a6
 -->
 
 # ADR-PC-0004: Obligation Projection and Context Assembly
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** obligations, context, rss  
 
 **Implements Logical:** ADR-L-0006, ADR-L-0007  

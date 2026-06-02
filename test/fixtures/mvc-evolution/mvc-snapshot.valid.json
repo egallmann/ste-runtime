@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.1.0",
+  "mvc_s_id": "mvc-s:mvc-evolution-fixture",
+  "fingerprint": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "mvc_d_ref": {
+    "id": "mvc-d:mvc-evolution-fixture",
+    "version": "0.1.0"
+  },
+  "ir_snapshot_ref": {
+    "id": "compiled-ir:test",
+    "version": "0.1.0",
+    "snapshot_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "graph_snapshot_refs": [
+    {
+      "id": "architecture-intent-graph:snapshot",
+      "version": "0.1.0",
+      "snapshot_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "linkage_surface_refs": [
+    {
+      "id": "adr-code-linkage-surface",
+      "version": "0.1.0",
+      "snapshot_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "selector_version_refs": [
+    {
+      "id": "decision-selector",
+      "version": "0.1.0"
+    }
+  ],
+  "candidate_entities": [
+    {
+      "id": "decision:ADR-L-0031",
+      "version": "1"
+    }
+  ],
+  "candidate_relationships": [
+    {
+      "id": "adr-code-link-001",
+      "version": "0.1.0"
+    }
+  ],
+  "candidate_evidence": [],
+  "candidate_constraints": [],
+  "topology_metrics": {
+    "node_count": 2,
+    "edge_count": 1,
+    "branching_factor": 1,
+    "convergence_score": 1,
+    "recommended_depth": 1
+  },
+  "inclusion_rationale": [
+    {
+      "reason": "Decision and code linkage are candidates for runtime/kernel boundary review.",
+      "selector_path": "mvc-d:mvc-evolution-fixture/context-domain:decision-context",
+      "persona_ref": "architect",
+      "task_ref": "task:mvc-evolution-fixture"
+    }
+  ],
+  "exclusion_rationale": [],
+  "negative_space": [
+    {
+      "id": "missing:direct-code-to-invariant",
+      "reason": "Fixture has ADR to code linkage but no direct code to invariant linkage."
+    }
+  ],
+  "mvc_s_boundary": "candidate_surface_prior_to_admission"
+}

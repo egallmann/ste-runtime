@@ -16,6 +16,7 @@ import { toMermaidAtResolution, toTableAtResolution, navigationBar } from './pro
 import { compress } from './compression.js';
 import type { CompressedProjection, ResolutionLevel, ProjectionMetadata } from './compression.js';
 import type { WorkspaceManifest } from './manifest.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -110,7 +111,12 @@ function renderProjection(
 // Public API
 // ---------------------------------------------------------------------------
 
-export async function emitMultiResProjections(
+export const emitMultiResProjections: (
+  outputDir: string,
+  manifest: WorkspaceManifest,
+) => Promise<MultiResEmitResult> = implements_adr(
+  'ADR-L-0019',
+)(enforces_invariant('INV-0022', 'INV-0024')(async function emitMultiResProjections(
   outputDir: string,
   manifest: WorkspaceManifest,
 ): Promise<MultiResEmitResult> {
@@ -229,4 +235,4 @@ export async function emitMultiResProjections(
   }
 
   return { fileCount: filePaths.length, filePaths };
-}
+}));

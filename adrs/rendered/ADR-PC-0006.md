@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 1f110e8b84f1983604bc915733370f6f66fa1f26e9a2fc0196bdd1bcc82d83d2
-rendered_hash: 7910af2e101eba576d8c2a1ca0c043fa032d12d96ca1e4e2e0e023c22c4b107f
+source_hash: 3a17d07ebf21f5e2d615e710d583a1d487240eb1d0eedbf9f0cfc31937e90404
+rendered_hash: 94a2aea50e32f240a0f1ea4b8e249117bb8c3e05d2fe09647a5fae417515ada1
 -->
 
 # ADR-PC-0006: Frontend Semantic Extraction
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** extraction, frontend, recon  
 
 **Implements Logical:** ADR-L-0001  

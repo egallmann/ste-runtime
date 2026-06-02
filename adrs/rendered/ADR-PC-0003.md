@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: a2de2a193fe1907e99fe0823599e072cdffac0797e0b0262160def2eaadd5c06
-rendered_hash: b22826b20a2ac77c9869f37d414b6233bafb9252fec0c9118c8a9693ff1653dc
+source_hash: 1cb4c2c6f9796dae7feded69fbd49f9c015ba3e95f10942f645abc027660b5a7
+rendered_hash: e50c32d08d49de1568ddefb3cc0d16caf690da739017daade81ac262160ab0cb
 -->
 
 # ADR-PC-0003: Preflight Freshness and Reconciliation Gating
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** preflight, freshness, reconciliation  
 
 **Implements Logical:** ADR-L-0004, ADR-L-0007  

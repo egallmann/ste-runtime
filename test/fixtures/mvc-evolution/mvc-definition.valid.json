@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1.0",
+  "mvc_d_id": "mvc-d:mvc-evolution-fixture",
+  "version": "0.1.0",
+  "status": "experimental",
+  "task_context": {
+    "task_id": "task:mvc-evolution-fixture",
+    "intent": "Evaluate whether MVC evolution preserves runtime/kernel authority boundaries.",
+    "declared_scope": "ste-spec contract draft fixture"
+  },
+  "persona_set": [
+    {
+      "id": "architect",
+      "version": "0.1.0"
+    }
+  ],
+  "context_domain_requirements": [
+    {
+      "context_domain_ref": {
+        "id": "decision-context",
+        "version": "0.1.0"
+      },
+      "necessity": "required",
+      "reason": "The task depends on accepted runtime/kernel boundary decisions."
+    }
+  ],
+  "graph_domain_refs": [
+    {
+      "id": "architecture-intent-graph",
+      "version": "0.1.0"
+    }
+  ],
+  "linkage_surface_refs": [
+    {
+      "id": "adr-code-linkage-surface",
+      "version": "0.1.0"
+    }
+  ],
+  "traversal_policy_ref": {
+    "id": "rss-depth-from-mvc-s-topology",
+    "version": "0.1.0"
+  },
+  "projection_policy_ref": {
+    "id": "preserve-rationale",
+    "version": "0.1.0"
+  },
+  "admission_policy_ref": {
+    "id": "kernel-admission-required",
+    "version": "0.1.0"
+  },
+  "budgets": {
+    "max_candidate_items": 100,
+    "max_output_items": 50
+  },
+  "mvc_d_boundary": "definition_not_materialized_context"
+}

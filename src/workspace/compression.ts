@@ -15,6 +15,7 @@ import type {
   WorkspaceBlastRadiusResult,
 } from './canned-queries.js';
 import { AUXILIARY_NODE_TYPES } from './cfn-type-mapping.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -747,7 +748,12 @@ function intentForLevel(level: ResolutionLevel): string {
 // Public API: compress
 // ---------------------------------------------------------------------------
 
-export function compress(
+export const compress: (
+  result: CannedQueryResult,
+  config: Partial<ResolutionConfig> & { level: ResolutionLevel },
+) => CompressedProjection = implements_adr(
+  'ADR-L-0019',
+)(enforces_invariant('INV-0023')(function compress(
   result: CannedQueryResult,
   config: Partial<ResolutionConfig> & { level: ResolutionLevel },
 ): CompressedProjection {
@@ -785,4 +791,4 @@ export function compress(
         sourceResult: result,
       };
   }
-}
+}));

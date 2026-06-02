@@ -3,7 +3,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
 
-import { entityUri, parseSourceUri, workspaceUri, type LineRange } from './source-uri.js';
+import { parseSourceUri, resolveEntityUri, workspaceUri, type LineRange } from './source-uri.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 
 export interface SourceLocator {
   entity_uri: string;
@@ -119,7 +120,7 @@ function locatorForNode(
     return null;
   }
   return {
-    entity_uri: node.entity_uri ?? entityUri(node.id),
+    entity_uri: node.entity_uri ?? resolveEntityUri(repo, node.id, node.type),
     entity_id: node.id,
     entity_type: node.type,
     source_uri: sourceUri,
@@ -179,7 +180,7 @@ async function locatorsFromArchitectureRegistry(
     try {
       const sourceHash = await computeFileHash(path.resolve(repoRoot, sourcePath));
       locators.push({
-        entity_uri: entityUri(entity.id),
+        entity_uri: resolveEntityUri(repo, entity.id, entity.entity_type),
         entity_id: entity.id,
         entity_type: entity.entity_type,
         source_uri: workspaceUri(repo, sourcePath),
@@ -200,7 +201,11 @@ async function locatorsFromArchitectureRegistry(
   return locators;
 }
 
-export async function emitSourceLocatorRegistry(
+export const emitSourceLocatorRegistry: (
+  options: EmitSourceLocatorRegistryOptions,
+) => Promise<{ registry: SourceLocatorRegistry; registryPath: string }> = implements_adr(
+  'ADR-L-0020',
+)(enforces_invariant('INV-0027', 'INV-0029')(async function emitSourceLocatorRegistry(
   options: EmitSourceLocatorRegistryOptions,
 ): Promise<{ registry: SourceLocatorRegistry; registryPath: string }> {
   const repos = repoPathMap(options);
@@ -252,7 +257,7 @@ export async function emitSourceLocatorRegistry(
   const registryPath = path.join(options.outputDir, 'source-locator-registry.yaml');
   await fs.writeFile(registryPath, yaml.dump(registry, { lineWidth: 120, noRefs: true }), 'utf-8');
   return { registry, registryPath };
-}
+}));
 
 export async function loadSourceLocatorRegistry(outputDir: string): Promise<SourceLocatorRegistry> {
   const raw = await fs.readFile(path.join(outputDir, 'source-locator-registry.yaml'), 'utf-8');
@@ -266,7 +271,13 @@ export function resolveLocator(
   const parsed = parseSourceUri(entityOrUri);
   switch (parsed.kind) {
     case 'entity':
-      return registry.locators.find(l => l.entity_id === parsed.entityId || l.entity_uri === entityOrUri);
+      return registry.locators.find(l => {
+        if (l.entity_uri === entityOrUri) return true;
+        if (parsed.repo) {
+          return l.repo === parsed.repo && l.entity_id === parsed.entityId;
+        }
+        return l.entity_id === parsed.entityId;
+      });
     case 'workspace':
       return registry.locators.find(l => l.repo === parsed.repo && l.path === parsed.path);
     case 'adr':

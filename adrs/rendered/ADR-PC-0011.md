@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 32654b95f6c1332304311b45416fe836f0bb812db739ed1a6139d69998c2ec76
-rendered_hash: 2f4b4415b9c4761dcad92e33d6bab1e1cd071681c68151786e11660c84fbd93b
+source_hash: b41ce8c5cf04c7d8a79ace4cd64fcfc2fb7455aacaba7f15f04ac831bc621217
+rendered_hash: 8953bed52e86f32d3bbe60cd45479f00f29f776ab99477aa6d507872bcfc5f88
 -->
 
 # ADR-PC-0011: ADR YAML Semantic Extraction
 
 **Status:** proposed  
 **Created:** 2026-05-26  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** extraction, architecture, recon  
 
 **Implements Logical:** ADR-L-0001, ADR-L-0005  

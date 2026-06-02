@@ -5,7 +5,7 @@ title: ADR YAML Semantic Extraction
 status: proposed
 created_date: '2026-05-26'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - extraction
 - architecture

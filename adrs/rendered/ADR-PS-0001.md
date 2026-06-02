@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 8ad95837f2c20f44acea4ded73917592861532ec2a407b7c501a832485d55ef3
-rendered_hash: 4f937b55dfafc7428ef634a2c7282daaaa2fd2ce4a2898a97f1bebff0b96e144
+source_hash: 3eb6d5c42481f9dd7f034f70f6bdab860e913d0c2ed57702757ff290c57e82c1
+rendered_hash: 9f8879f6e8768087fdfc21873a7016c89caa2c5dd07ac5ce60a6ec52987eb5ad
 -->
 
 # ADR-PS-0001: Runtime Orchestration and Assistant Integration
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Modified:** 2026-05-22  **Authors:** ste-runtime  
+**Modified:** 2026-05-22  **Authors:** erik.gallmann  
 **Domains:** runtime, mcp, rss, watch  
 **Tags:** runtime, mcp, watchdog, obligations  
 **Implements Logical:** ADR-L-0004, ADR-L-0006, ADR-L-0007, ADR-L-0018  

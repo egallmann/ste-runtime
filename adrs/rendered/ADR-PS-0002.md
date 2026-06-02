@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: 3b2505bb9e8a57856c8bebebb98e18b03a31f6e7042aa20536afcb008729c351
-rendered_hash: a244434cde1fa53c585474c34d429e42ee431130e8c5c6e15c5864c4936dd9fb
+source_hash: d6ee7ddcdd2f9f9609b61fb4eb9c8fef0d0a96de70cb3a535a42aef66dd52ef9
+rendered_hash: 16ec691f081e565fdea0589f076c66c736db1c98f920d8a63ac097c9f87124d1
 -->
 
 # ADR-PS-0002: Semantic Extraction Subsystem
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Authors:** ste-runtime  
+**Authors:** erik.gallmann  
 **Domains:** extraction, recon, normalization  
 **Tags:** extraction, recon, semantic-state  
 **Implements Logical:** ADR-L-0001, ADR-L-0005  

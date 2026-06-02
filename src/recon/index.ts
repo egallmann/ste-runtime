@@ -12,6 +12,7 @@
 
 import type { ResolvedConfig } from '../config/index.js';
 import type { PhaseTimingRecord } from '../utils/concurrency.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 import { runReconPhases } from './phases/index.js';
 import { log, error as logError } from '../utils/logger.js';
 
@@ -60,7 +61,11 @@ export interface ReconResult {
  * - MUST NOT block commits
  * - MUST NOT halt development workflows
  */
-export async function executeRecon(options: ReconOptions): Promise<ReconResult> {
+export const executeRecon: (options: ReconOptions) => Promise<ReconResult> = implements_adr(
+  'ADR-L-0001',
+)(enforces_invariant('INV-0002')(async function executeRecon(
+  options: ReconOptions,
+): Promise<ReconResult> {
   log('[RECON] Starting reconciliation...');
   log(`[RECON] Mode: ${options.mode ?? 'incremental'}`);
   log(`[RECON] Project root: ${options.projectRoot}`);
@@ -102,4 +107,4 @@ export async function executeRecon(options: ReconOptions): Promise<ReconResult> 
       warnings: [],
     };
   }
-}
+}));

@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import {
   entityUri,
+  entityUriForRepo,
   normalizeWorkspaceUri,
   parseSourceUri,
+  resolveEntityUri,
   workspaceUri,
 } from './source-uri.js';
 
@@ -35,5 +37,20 @@ describe('source URI normalization', () => {
 
   it('normalizes entity URIs with segment encoding', () => {
     expect(entityUri('Lambda:repo:my function')).toBe('entity://workspace/Lambda%3Arepo%3Amy%20function');
+  });
+
+  it('builds repo-qualified entity URIs for architecture entities', () => {
+    expect(entityUriForRepo('ste-runtime', 'ADR-L-0013')).toBe('entity://ste-runtime/ADR-L-0013');
+    expect(parseSourceUri('entity://ste-runtime/ADR-L-0013')).toEqual({
+      kind: 'entity',
+      entityId: 'ADR-L-0013',
+      repo: 'ste-runtime',
+    });
+    expect(resolveEntityUri('adr-architecture-kit', 'ADR-L-0012', 'adr')).toBe(
+      'entity://adr-architecture-kit/ADR-L-0012',
+    );
+    expect(resolveEntityUri('repoA', 'Lambda:repoA:fn', 'Lambda')).toBe(
+      'entity://workspace/Lambda%3ArepoA%3Afn',
+    );
   });
 });

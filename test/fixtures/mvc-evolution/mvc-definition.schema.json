@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/egallmann/ste-spec/contracts/mvc/mvc-definition.schema.json",
+  "title": "MVCDefinition (MVC-D, DRAFT)",
+  "description": "Draft declarative admissible context definition for task-scoped architectural reality assembly. Pre-normative.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mvc_d_id",
+    "version",
+    "status",
+    "task_context",
+    "persona_set",
+    "context_domain_requirements",
+    "graph_domain_refs",
+    "linkage_surface_refs",
+    "traversal_policy_ref",
+    "projection_policy_ref",
+    "admission_policy_ref",
+    "budgets",
+    "mvc_d_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "mvc_d_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "version": {
+      "$ref": "#/$defs/semver"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "experimental", "deprecated"]
+    },
+    "task_context": {
+      "$ref": "#/$defs/taskContext"
+    },
+    "persona_set": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      },
+      "minItems": 1
+    },
+    "context_domain_requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/contextDomainRequirement"
+      },
+      "minItems": 1
+    },
+    "graph_domain_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      }
+    },
+    "linkage_surface_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      }
+    },
+    "traversal_policy_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "projection_policy_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "admission_policy_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_candidate_items"],
+      "properties": {
+        "max_candidate_items": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_output_items": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "mvc_d_boundary": {
+      "type": "string",
+      "enum": ["definition_not_materialized_context"]
+    }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._:/-]*$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "taskContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "intent", "declared_scope"],
+      "properties": {
+        "task_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "intent": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "declared_scope": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "contextDomainRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_domain_ref", "necessity", "reason"],
+      "properties": {
+        "context_domain_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "necessity": {
+          "type": "string",
+          "enum": ["required", "optional"]
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    }
+  }
+}

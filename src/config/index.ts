@@ -9,6 +9,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
+import { implements_adr } from '../architecture/intent-decorators.js';
 
 /**
  * Supported languages/formats for extraction
@@ -871,7 +872,9 @@ export async function loadConfigFromFile(
  * 
  * @param runtimeDir - Path to ste-runtime directory
  */
-export async function initConfig(runtimeDir: string): Promise<void> {
+export const initConfig: (runtimeDir: string) => Promise<void> = implements_adr(
+  'ADR-L-0010',
+)(async function initConfig(runtimeDir: string): Promise<void> {
   const configPath = path.join(runtimeDir, 'ste.config.json');
   
   const defaultConfig: SteConfig = {
@@ -891,5 +894,5 @@ export async function initConfig(runtimeDir: string): Promise<void> {
   console.log(`[STE Config] Created ${configPath}`);
   console.log(`[STE Config] Edit sourceDirs to match your project structure.`);
   console.log(`[STE Config] State will be written to ste-runtime/.ste/state/`);
-}
+});
 

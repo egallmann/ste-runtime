@@ -5,15 +5,15 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-rendered-markdown
 generator_version: 1
 hash_algorithm: sha256
-source_hash: faa5887192f0f63a1e7faeaf1723339da7c53a902a67c61fa4339c61c1633858
-rendered_hash: f21db8c9b9178d86552a0df5af850b1b898715f477d7e9651ed0304972f5d458
+source_hash: 66909b2de238af2839aa7ac0731914f2a487869f8ade66db1f8823ae7e276c58
+rendered_hash: 9c754205d8e1c33f8db6a392e89e77e61f77cb99aef28a2ceec30cf35e77228a
 -->
 
 # ADR-PC-0001: MCP Server and Tool Registry
 
 **Status:** proposed  
 **Created:** 2026-03-15  
-**Modified:** 2026-05-22  **Authors:** ste-runtime  
+**Modified:** 2026-05-22  **Authors:** erik.gallmann  
 **Domains:** mcp, integration, runtime  
 
 **Implements Logical:** ADR-L-0004, ADR-L-0006, ADR-L-0007, ADR-L-0018  
