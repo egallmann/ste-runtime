@@ -25,6 +25,7 @@ export interface MvcRationale {
   corpus_scope?: string;
   qualified_id?: string;
   entity_uri?: string;
+  candidate_ref?: MvcRef;
 }
 
 export interface MvcNegativeSpace {
@@ -181,6 +182,35 @@ function canonicalArray<T>(items: T[]): T[] {
   return canonicalize(items) as T[];
 }
 
+function candidateIdentityKey(ref: MvcRef): string {
+  if (ref.entity_uri) {
+    return `entity_uri:${ref.entity_uri}`;
+  }
+  if (ref.qualified_id) {
+    return `qualified_id:${ref.qualified_id}`;
+  }
+  if (ref.identity_scope && ref.corpus_scope) {
+    return `scoped:${ref.identity_scope}:${ref.corpus_scope}:${ref.id}`;
+  }
+  return `ref:${ref.id}:${ref.version}`;
+}
+
+function canonicalString(value: unknown): string {
+  return JSON.stringify(canonicalize(value));
+}
+
+function dedupeCandidateRefs(items: MvcRef[]): MvcRef[] {
+  const byIdentity = new Map<string, MvcRef>();
+  for (const item of items) {
+    const key = candidateIdentityKey(item);
+    const current = byIdentity.get(key);
+    if (!current || canonicalString(item) < canonicalString(current)) {
+      byIdentity.set(key, item);
+    }
+  }
+  return canonicalArray([...byIdentity.values()]);
+}
+
 function assertWorkspaceIdentityFields(value: MvcRef | MvcRationale, label: string): void {
   if (value.identity_scope !== 'workspace') {
     return;
@@ -222,6 +252,9 @@ function assertRefIdentity(value: MvcRef, label: string): void {
 function assertRationaleIdentity(value: MvcRationale, label: string): void {
   assertWorkspaceIdentityFields(value, label);
   assertRepoLocalIdentityFields(value, label);
+  if (value.candidate_ref) {
+    assertRefIdentity(value.candidate_ref, `${label}.candidate_ref`);
+  }
 }
 
 export const assertMvcDefinitionContract = implements_adr(
@@ -306,6 +339,11 @@ export const buildMvcSnapshotCandidate = implements_adr(
   assertArray(input.exclusionRationale, 'exclusionRationale');
   assertArray(input.negativeSpace, 'negativeSpace');
 
+  const candidateEntities = dedupeCandidateRefs(input.candidateEntities);
+  const candidateRelationships = dedupeCandidateRefs(input.candidateRelationships);
+  const candidateEvidence = dedupeCandidateRefs(input.candidateEvidence);
+  const candidateConstraints = dedupeCandidateRefs(input.candidateConstraints);
+
   const canonicalBody = {
     mvc_d_ref: {
       id: input.mvcDefinition.mvc_d_id,
@@ -315,10 +353,10 @@ export const buildMvcSnapshotCandidate = implements_adr(
     graph_snapshot_refs: input.graphSnapshotRefs,
     linkage_surface_refs: input.linkageSurfaceRefs,
     selector_version_refs: input.selectorVersionRefs,
-    candidate_entities: input.candidateEntities,
-    candidate_relationships: input.candidateRelationships,
-    candidate_evidence: input.candidateEvidence,
-    candidate_constraints: input.candidateConstraints,
+    candidate_entities: candidateEntities,
+    candidate_relationships: candidateRelationships,
+    candidate_evidence: candidateEvidence,
+    candidate_constraints: candidateConstraints,
     topology_metrics: input.topologyMetrics,
   };
   const fingerprint = stableHash(canonicalBody);
@@ -334,10 +372,10 @@ export const buildMvcSnapshotCandidate = implements_adr(
     graph_snapshot_refs: canonicalArray(input.graphSnapshotRefs),
     linkage_surface_refs: canonicalArray(input.linkageSurfaceRefs),
     selector_version_refs: canonicalArray(input.selectorVersionRefs),
-    candidate_entities: canonicalArray(input.candidateEntities),
-    candidate_relationships: canonicalArray(input.candidateRelationships),
-    candidate_evidence: canonicalArray(input.candidateEvidence),
-    candidate_constraints: canonicalArray(input.candidateConstraints),
+    candidate_entities: candidateEntities,
+    candidate_relationships: candidateRelationships,
+    candidate_evidence: candidateEvidence,
+    candidate_constraints: candidateConstraints,
     topology_metrics: canonicalize(input.topologyMetrics) as MvcTopologyMetrics,
     inclusion_rationale: canonicalArray(input.inclusionRationale),
     exclusion_rationale: canonicalArray(input.exclusionRationale),
@@ -352,6 +390,10 @@ export const canonicalMvcFingerprintInput: (input: BuildMvcSnapshotInput) => unk
   'ADR-L-0021',
 )(function canonicalMvcFingerprintInput(input: BuildMvcSnapshotInput): unknown {
   assertMvcDefinitionContract(input.mvcDefinition);
+  const candidateEntities = dedupeCandidateRefs(input.candidateEntities);
+  const candidateRelationships = dedupeCandidateRefs(input.candidateRelationships);
+  const candidateEvidence = dedupeCandidateRefs(input.candidateEvidence);
+  const candidateConstraints = dedupeCandidateRefs(input.candidateConstraints);
   return canonicalize({
     mvc_d_ref: {
       id: input.mvcDefinition.mvc_d_id,
@@ -361,10 +403,10 @@ export const canonicalMvcFingerprintInput: (input: BuildMvcSnapshotInput) => unk
     graph_snapshot_refs: input.graphSnapshotRefs,
     linkage_surface_refs: input.linkageSurfaceRefs,
     selector_version_refs: input.selectorVersionRefs,
-    candidate_entities: input.candidateEntities,
-    candidate_relationships: input.candidateRelationships,
-    candidate_evidence: input.candidateEvidence,
-    candidate_constraints: input.candidateConstraints,
+    candidate_entities: candidateEntities,
+    candidate_relationships: candidateRelationships,
+    candidate_evidence: candidateEvidence,
+    candidate_constraints: candidateConstraints,
     topology_metrics: input.topologyMetrics,
   });
 });

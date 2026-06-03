@@ -260,6 +260,103 @@ describe('MVC evolution contract consumption', () => {
     expect(second.fingerprint).not.toBe(first.fingerprint);
   });
 
+  it('deduplicates identity-equivalent candidate refs across all candidate arrays', async () => {
+    const input = await buildInput({
+      candidateEntities: [
+        { id: 'entity:alias-a', version: '1', identity_scope: 'workspace', corpus_scope: 'ste-runtime', entity_uri: 'entity://ste-runtime/ADR-L-0021' },
+        { id: 'entity:alias-b', version: '2', identity_scope: 'workspace', corpus_scope: 'ste-runtime', entity_uri: 'entity://ste-runtime/ADR-L-0021' },
+      ],
+      candidateRelationships: [
+        { id: 'ste-runtime:ADR-L-0021', version: '1', identity_scope: 'workspace', corpus_scope: 'ste-runtime', qualified_id: 'ste-runtime:ADR-L-0021' },
+        { id: 'decision:runtime-contract', version: '2', identity_scope: 'workspace', corpus_scope: 'ste-runtime', qualified_id: 'ste-runtime:ADR-L-0021' },
+      ],
+      candidateEvidence: [
+        { id: 'ADR-L-0021', version: '1', identity_scope: 'repo-local', corpus_scope: 'ste-runtime' },
+        { id: 'ADR-L-0021', version: '2', identity_scope: 'repo-local', corpus_scope: 'ste-runtime' },
+      ],
+      candidateConstraints: [
+        { id: 'constraint:runtime-boundary', version: '1' },
+        { id: 'constraint:runtime-boundary', version: '1' },
+      ],
+    });
+
+    const snapshot = buildMvcSnapshotCandidate(input);
+
+    expect(snapshot.candidate_entities).toHaveLength(1);
+    expect(snapshot.candidate_relationships).toHaveLength(1);
+    expect(snapshot.candidate_evidence).toHaveLength(1);
+    expect(snapshot.candidate_constraints).toHaveLength(1);
+    await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
+  });
+
+  it('keeps identity-distinct homonyms and repo-local/workspace identities separate', async () => {
+    const snapshot = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [
+        { id: 'ste-runtime:ADR-L-0013', version: '1', identity_scope: 'workspace', corpus_scope: 'ste-runtime', qualified_id: 'ste-runtime:ADR-L-0013' },
+        { id: 'adr-architecture-kit:ADR-L-0013', version: '1', identity_scope: 'workspace', corpus_scope: 'adr-architecture-kit', qualified_id: 'adr-architecture-kit:ADR-L-0013' },
+        { id: 'ADR-L-0013', version: '1', identity_scope: 'repo-local', corpus_scope: 'ste-runtime' },
+      ],
+    }));
+
+    expect(snapshot.candidate_entities).toHaveLength(3);
+    expect(snapshot.candidate_entities.map(ref => ref.qualified_id ?? `${ref.identity_scope}:${ref.corpus_scope}:${ref.id}`).sort()).toEqual([
+      'adr-architecture-kit:ADR-L-0013',
+      'repo-local:ste-runtime:ADR-L-0013',
+      'ste-runtime:ADR-L-0013',
+    ]);
+  });
+
+  it('keeps dedupe output stable regardless of candidate insertion order', async () => {
+    const candidates = [
+      { id: 'entity:alias-b', version: '2', identity_scope: 'workspace' as const, corpus_scope: 'ste-runtime', entity_uri: 'entity://ste-runtime/ADR-L-0021' },
+      { id: 'entity:alias-a', version: '1', identity_scope: 'workspace' as const, corpus_scope: 'ste-runtime', entity_uri: 'entity://ste-runtime/ADR-L-0021' },
+      { id: 'adr-architecture-kit:ADR-L-0013', version: '1', identity_scope: 'workspace' as const, corpus_scope: 'adr-architecture-kit', qualified_id: 'adr-architecture-kit:ADR-L-0013' },
+    ];
+    const first = buildMvcSnapshotCandidate(await buildInput({ candidateEntities: candidates }));
+    const second = buildMvcSnapshotCandidate(await buildInput({ candidateEntities: [...candidates].reverse() }));
+
+    expect(second.candidate_entities).toEqual(first.candidate_entities);
+    expect(second.fingerprint).toBe(first.fingerprint);
+  });
+
+  it('does not let duplicate candidate refs change fingerprint', async () => {
+    const input = await buildInput();
+    const withDuplicate = await buildInput({
+      candidateEntities: [...input.candidateEntities, input.candidateEntities[0]],
+      candidateRelationships: [...input.candidateRelationships, input.candidateRelationships[0]],
+      candidateEvidence: [...input.candidateEvidence, input.candidateEvidence[0]],
+      candidateConstraints: [...input.candidateConstraints, input.candidateConstraints[0]],
+    });
+
+    const first = buildMvcSnapshotCandidate(input);
+    const second = buildMvcSnapshotCandidate(withDuplicate);
+
+    expect(second.fingerprint).toBe(first.fingerprint);
+    expect(canonicalMvcFingerprintInput(withDuplicate)).toEqual(canonicalMvcFingerprintInput(input));
+  });
+
+  it('keeps rationale and negative space outside the fingerprint contract', async () => {
+    const first = buildMvcSnapshotCandidate(await buildInput());
+    const withRationaleChanges = buildMvcSnapshotCandidate(await buildInput({
+      inclusionRationale: [
+        {
+          reason: 'Different selector path selected the same candidate.',
+          selector_path: 'persona:threat-modeler/selector:decision/entity:decision:adr-l-0043',
+          persona_ref: 'threat-modeler',
+          task_ref: 'task:mvc-evolution-fixture',
+        },
+      ],
+      negativeSpace: [
+        {
+          id: 'missing:alternate-selector-path',
+          reason: 'Independent negative-space observation for the same candidate survives.',
+        },
+      ],
+    }));
+
+    expect(withRationaleChanges.fingerprint).toBe(first.fingerprint);
+  });
+
   it('rejects calls without fully supplied candidate material instead of reconstructing it', async () => {
     const input = await buildInput();
     const missingCandidates = { ...input };
@@ -453,6 +550,69 @@ describe('MVC evolution contract consumption', () => {
     }));
 
     expect(() => assertMvcFederatedIdentity(withNegativeSpace)).not.toThrow();
+  });
+
+  it('preserves multiple rationale entries and negative-space observations for the same candidate', async () => {
+    const candidateRef = {
+      id: 'entity://ste-runtime/ADR-L-0021',
+      version: '1',
+      identity_scope: 'workspace' as const,
+      corpus_scope: 'ste-runtime',
+      qualified_id: 'ste-runtime:ADR-L-0021',
+      entity_uri: 'entity://ste-runtime/ADR-L-0021',
+    };
+    const snapshot = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [candidateRef, { ...candidateRef }],
+      inclusionRationale: [
+        {
+          reason: 'Architect selected the runtime MVC contract candidate.',
+          selector_path: 'persona:architect/selector:decision/entity://ste-runtime/ADR-L-0021',
+          persona_ref: 'architect',
+          task_ref: 'task:mvc-evolution-fixture',
+          policy_ref: 'policy:preserve-rationale',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          qualified_id: 'ste-runtime:ADR-L-0021',
+          entity_uri: 'entity://ste-runtime/ADR-L-0021',
+          candidate_ref: candidateRef,
+        },
+        {
+          reason: 'Governance reviewer selected the same candidate for boundary review.',
+          selector_path: 'persona:governance-reviewer/selector:contract/entity://ste-runtime/ADR-L-0021',
+          persona_ref: 'governance-reviewer',
+          task_ref: 'task:mvc-evolution-fixture',
+          policy_ref: 'policy:preserve-rationale',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          qualified_id: 'ste-runtime:ADR-L-0021',
+          entity_uri: 'entity://ste-runtime/ADR-L-0021',
+          candidate_ref: candidateRef,
+        },
+      ],
+      negativeSpace: [
+        {
+          id: 'missing:architect-code-to-invariant',
+          reason: 'Architect path lacks direct code to invariant linkage for the candidate.',
+        },
+        {
+          id: 'missing:governance-code-to-contract',
+          reason: 'Governance path lacks direct code to contract linkage for the same candidate.',
+        },
+      ],
+    }));
+
+    expect(snapshot.candidate_entities).toHaveLength(1);
+    expect(snapshot.inclusion_rationale).toHaveLength(2);
+    expect(snapshot.negative_space).toHaveLength(2);
+    expect(snapshot.inclusion_rationale.map(entry => entry.selector_path).sort()).toEqual([
+      'persona:architect/selector:decision/entity://ste-runtime/ADR-L-0021',
+      'persona:governance-reviewer/selector:contract/entity://ste-runtime/ADR-L-0021',
+    ]);
+    expect(snapshot.negative_space.map(entry => entry.id).sort()).toEqual([
+      'missing:architect-code-to-invariant',
+      'missing:governance-code-to-contract',
+    ]);
+    await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
   });
 
   it('exposes machine-readable code provenance for ADR-L-0021 and runtime invariants', () => {

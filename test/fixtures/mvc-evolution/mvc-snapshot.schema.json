@@ -314,6 +314,9 @@
         },
         "entity_uri": {
           "$ref": "#/$defs/entityUri"
+        },
+        "candidate_ref": {
+          "$ref": "#/$defs/ref"
         }
       }
     },
