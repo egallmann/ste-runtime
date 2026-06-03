@@ -156,6 +156,7 @@ export {
 
 export {
   assertMvcDefinitionContract,
+  assertMvcFederatedIdentity,
   assertMvcSnapshotCandidateOnly,
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,

@@ -132,8 +132,68 @@
         },
         "version": {
           "$ref": "#/$defs/nonEmptyString"
+        },
+        "identity_scope": {
+          "$ref": "#/$defs/identityScope"
+        },
+        "corpus_scope": {
+          "$ref": "#/$defs/corpusScope"
+        },
+        "qualified_id": {
+          "$ref": "#/$defs/qualifiedAdrId"
+        },
+        "entity_uri": {
+          "$ref": "#/$defs/entityUri"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/bareAdrId"
+              }
+            }
+          },
+          "then": {
+            "required": ["identity_scope", "corpus_scope"],
+            "properties": {
+              "identity_scope": {
+                "const": "repo-local"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["identity_scope"],
+            "properties": {
+              "identity_scope": {
+                "const": "workspace"
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": ["qualified_id"]
+              },
+              {
+                "required": ["entity_uri"]
+              }
+            ],
+            "not": {
+              "required": ["id"],
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/bareAdrId"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "refWithHash": {
       "type": "object",
@@ -148,8 +208,68 @@
         },
         "snapshot_hash": {
           "$ref": "#/$defs/sha256"
+        },
+        "identity_scope": {
+          "$ref": "#/$defs/identityScope"
+        },
+        "corpus_scope": {
+          "$ref": "#/$defs/corpusScope"
+        },
+        "qualified_id": {
+          "$ref": "#/$defs/qualifiedAdrId"
+        },
+        "entity_uri": {
+          "$ref": "#/$defs/entityUri"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/bareAdrId"
+              }
+            }
+          },
+          "then": {
+            "required": ["identity_scope", "corpus_scope"],
+            "properties": {
+              "identity_scope": {
+                "const": "repo-local"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["identity_scope"],
+            "properties": {
+              "identity_scope": {
+                "const": "workspace"
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": ["qualified_id"]
+              },
+              {
+                "required": ["entity_uri"]
+              }
+            ],
+            "not": {
+              "required": ["id"],
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/bareAdrId"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "refArray": {
       "type": "array",
@@ -182,6 +302,18 @@
         },
         "policy_ref": {
           "$ref": "#/$defs/nonEmptyString"
+        },
+        "identity_scope": {
+          "$ref": "#/$defs/identityScope"
+        },
+        "corpus_scope": {
+          "$ref": "#/$defs/corpusScope"
+        },
+        "qualified_id": {
+          "$ref": "#/$defs/qualifiedAdrId"
+        },
+        "entity_uri": {
+          "$ref": "#/$defs/entityUri"
         }
       }
     },
@@ -201,6 +333,26 @@
     "sha256": {
       "type": "string",
       "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "identityScope": {
+      "type": "string",
+      "enum": ["repo-local", "workspace"]
+    },
+    "bareAdrId": {
+      "type": "string",
+      "pattern": "^ADR-L-\\d{4}$"
+    },
+    "corpusScope": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "qualifiedAdrId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*:ADR-L-\\d{4}$"
+    },
+    "entityUri": {
+      "type": "string",
+      "pattern": "^entity://[a-z][a-z0-9._-]*/[A-Z]+-[A-Z0-9-]+$"
     }
   }
 }

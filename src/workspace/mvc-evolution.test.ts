@@ -7,11 +7,13 @@ import { describe, expect, it } from 'vitest';
 
 import {
   assertMvcDefinitionContract,
+  assertMvcFederatedIdentity,
   assertMvcSnapshotCandidateOnly,
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
   type BuildMvcSnapshotInput,
   type MvcDefinition,
+  type MvcSnapshot,
 } from './mvc-evolution.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -268,9 +270,195 @@ describe('MVC evolution contract consumption', () => {
     );
   });
 
+  it('rejects workspace-scoped bare ADR identities as ambiguous', async () => {
+    const snapshot = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [
+        {
+          id: 'ADR-L-0013',
+          version: '1',
+          identity_scope: 'workspace',
+        },
+      ],
+      exclusionRationale: [
+        {
+          reason: 'Workspace bare ADR-L-0013 is ambiguous across repositories.',
+          selector_path: 'workspace-federation/homonym-groups/ADR-L-0013',
+        },
+      ],
+      negativeSpace: [
+        {
+          id: 'missing:qualified-adr-identity',
+          reason: 'Workspace candidate lacks repo-qualified ADR identity.',
+        },
+      ],
+    }));
+
+    expect(() => assertMvcFederatedIdentity(snapshot)).toThrow('workspace-scoped bare ADR identity');
+    await expectSchemaRejects('mvc-snapshot.schema.json', snapshot);
+  });
+
+  it('accepts workspace-scoped qualified ADR and entity URI identities', async () => {
+    const snapshot = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [
+        {
+          id: 'ste-runtime:ADR-L-0021',
+          version: '1',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          qualified_id: 'ste-runtime:ADR-L-0021',
+        },
+        {
+          id: 'entity://ste-runtime/ADR-L-0021',
+          version: '1',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          entity_uri: 'entity://ste-runtime/ADR-L-0021',
+        },
+      ],
+      inclusionRationale: [
+        {
+          reason: 'Workspace qualified ADR identity is preserved.',
+          selector_path: 'workspace-federation/qualified-adrs/ste-runtime:ADR-L-0021',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          qualified_id: 'ste-runtime:ADR-L-0021',
+        },
+        {
+          reason: 'Workspace entity URI identity is preserved.',
+          selector_path: 'workspace-federation/entities/entity://ste-runtime/ADR-L-0021',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          entity_uri: 'entity://ste-runtime/ADR-L-0021',
+        },
+      ],
+    }));
+
+    expect(() => assertMvcFederatedIdentity(snapshot)).not.toThrow();
+    await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
+  });
+
+  it('requires corpus scope for repo-local bare ADR identities', async () => {
+    const missingCorpus = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [
+        {
+          id: 'ADR-L-0021',
+          version: '1',
+          identity_scope: 'repo-local',
+        },
+      ],
+    }));
+
+    expect(() => assertMvcFederatedIdentity(missingCorpus)).toThrow('corpus_scope');
+    await expectSchemaRejects('mvc-snapshot.schema.json', missingCorpus);
+
+    const scoped = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [
+        {
+          id: 'ADR-L-0021',
+          version: '1',
+          identity_scope: 'repo-local',
+          corpus_scope: 'ste-runtime',
+        },
+      ],
+      inclusionRationale: [
+        {
+          reason: 'Repo-local bare ADR identity is scoped to ste-runtime.',
+          selector_path: 'repo-local/adrs/ADR-L-0021',
+          identity_scope: 'repo-local',
+          corpus_scope: 'ste-runtime',
+        },
+      ],
+    }));
+
+    expect(() => assertMvcFederatedIdentity(scoped)).not.toThrow();
+    await expectMatchesSchema('mvc-snapshot.schema.json', scoped);
+  });
+
+  it('preserves homonym ADRs as distinct qualified candidate refs and rationale entries', async () => {
+    const snapshot = buildMvcSnapshotCandidate(await buildInput({
+      candidateEntities: [
+        {
+          id: 'ste-runtime:ADR-L-0013',
+          version: '1',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          qualified_id: 'ste-runtime:ADR-L-0013',
+        },
+        {
+          id: 'adr-architecture-kit:ADR-L-0013',
+          version: '1',
+          identity_scope: 'workspace',
+          corpus_scope: 'adr-architecture-kit',
+          qualified_id: 'adr-architecture-kit:ADR-L-0013',
+        },
+      ],
+      inclusionRationale: [
+        {
+          reason: 'Runtime ADR-L-0013 is selected through runtime corpus scope.',
+          selector_path: 'workspace-federation/qualified-adrs/ste-runtime:ADR-L-0013',
+          identity_scope: 'workspace',
+          corpus_scope: 'ste-runtime',
+          qualified_id: 'ste-runtime:ADR-L-0013',
+        },
+        {
+          reason: 'Kit ADR-L-0013 is selected through kit corpus scope.',
+          selector_path: 'workspace-federation/qualified-adrs/adr-architecture-kit:ADR-L-0013',
+          identity_scope: 'workspace',
+          corpus_scope: 'adr-architecture-kit',
+          qualified_id: 'adr-architecture-kit:ADR-L-0013',
+        },
+      ],
+    }));
+
+    assertMvcFederatedIdentity(snapshot);
+    expect(snapshot.candidate_entities.map(ref => ref.qualified_id).sort()).toEqual([
+      'adr-architecture-kit:ADR-L-0013',
+      'ste-runtime:ADR-L-0013',
+    ]);
+    expect(snapshot.inclusion_rationale.map(reason => reason.corpus_scope).sort()).toEqual([
+      'adr-architecture-kit',
+      'ste-runtime',
+    ]);
+  });
+
+  it('requires ambiguous or missing federation linkage rationale to carry negative space', async () => {
+    const withoutNegativeSpace = {
+      ...buildMvcSnapshotCandidate(await buildInput({
+        exclusionRationale: [
+          {
+            reason: 'Ambiguous federation linkage for ADR-L-0013.',
+            selector_path: 'workspace-federation/homonym-groups/ADR-L-0013',
+          },
+        ],
+        negativeSpace: [],
+      })),
+      negative_space: [],
+    } satisfies MvcSnapshot;
+
+    expect(() => assertMvcFederatedIdentity(withoutNegativeSpace)).toThrow('negative_space');
+
+    const withNegativeSpace = buildMvcSnapshotCandidate(await buildInput({
+      exclusionRationale: [
+        {
+          reason: 'Ambiguous federation linkage for ADR-L-0013.',
+          selector_path: 'workspace-federation/homonym-groups/ADR-L-0013',
+        },
+      ],
+      negativeSpace: [
+        {
+          id: 'missing:qualified-adr-identity',
+          reason: 'Ambiguous federation linkage is preserved as negative space.',
+        },
+      ],
+    }));
+
+    expect(() => assertMvcFederatedIdentity(withNegativeSpace)).not.toThrow();
+  });
+
   it('exposes machine-readable code provenance for ADR-L-0021 and runtime invariants', () => {
     for (const target of [
       assertMvcDefinitionContract,
+      assertMvcFederatedIdentity,
       assertMvcSnapshotCandidateOnly,
       buildMvcSnapshotCandidate,
     ]) {

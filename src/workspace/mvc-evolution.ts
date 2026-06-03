@@ -5,6 +5,10 @@ import { enforces_invariant, implements_adr } from '../architecture/intent-decor
 export interface MvcRef {
   id: string;
   version: string;
+  identity_scope?: 'repo-local' | 'workspace';
+  corpus_scope?: string;
+  qualified_id?: string;
+  entity_uri?: string;
 }
 
 export interface MvcRefWithHash extends MvcRef {
@@ -17,6 +21,10 @@ export interface MvcRationale {
   persona_ref?: string;
   task_ref?: string;
   policy_ref?: string;
+  identity_scope?: 'repo-local' | 'workspace';
+  corpus_scope?: string;
+  qualified_id?: string;
+  entity_uri?: string;
 }
 
 export interface MvcNegativeSpace {
@@ -131,6 +139,11 @@ const MVC_S_FORBIDDEN_FIELDS = [
   'kernel_verdict',
 ];
 
+const BARE_ADR_ID_PATTERN = /^ADR-L-\d{4}$/;
+const QUALIFIED_ADR_ID_PATTERN = /^[a-z][a-z0-9._-]*:ADR-L-\d{4}$/;
+const ADR_ENTITY_URI_PATTERN = /^entity:\/\/[a-z][a-z0-9._-]*\/ADR-L-\d{4}$/;
+const FEDERATION_NEGATIVE_SPACE_PATTERN = /(ambiguous|missing).*(federation|linkage|identity)/i;
+
 function assertRecord(value: unknown, label: string): asserts value is Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error(`${label} must be an object`);
@@ -168,6 +181,49 @@ function canonicalArray<T>(items: T[]): T[] {
   return canonicalize(items) as T[];
 }
 
+function assertWorkspaceIdentityFields(value: MvcRef | MvcRationale, label: string): void {
+  if (value.identity_scope !== 'workspace') {
+    return;
+  }
+  if (!value.corpus_scope) {
+    throw new Error(`${label} workspace identity must preserve corpus_scope`);
+  }
+  if (!value.qualified_id && !value.entity_uri) {
+    throw new Error(`${label} workspace identity must include qualified_id or entity_uri`);
+  }
+  if (value.qualified_id && !QUALIFIED_ADR_ID_PATTERN.test(value.qualified_id)) {
+    throw new Error(`${label} has invalid qualified_id: ${value.qualified_id}`);
+  }
+  if (value.entity_uri && !ADR_ENTITY_URI_PATTERN.test(value.entity_uri)) {
+    throw new Error(`${label} has invalid entity_uri: ${value.entity_uri}`);
+  }
+}
+
+function assertRepoLocalIdentityFields(value: MvcRef | MvcRationale, label: string): void {
+  if (value.identity_scope === 'repo-local' && !value.corpus_scope) {
+    throw new Error(`${label} repo-local identity must preserve corpus_scope`);
+  }
+}
+
+function assertRefIdentity(value: MvcRef, label: string): void {
+  if (value.identity_scope === 'workspace' && BARE_ADR_ID_PATTERN.test(value.id)) {
+    throw new Error(`${label} contains workspace-scoped bare ADR identity: ${value.id}`);
+  }
+  if (BARE_ADR_ID_PATTERN.test(value.id) && value.identity_scope !== 'repo-local') {
+    throw new Error(`${label} bare ADR identity must be repo-local: ${value.id}`);
+  }
+  if (BARE_ADR_ID_PATTERN.test(value.id) && !value.corpus_scope) {
+    throw new Error(`${label} bare ADR identity must preserve corpus_scope: ${value.id}`);
+  }
+  assertWorkspaceIdentityFields(value, label);
+  assertRepoLocalIdentityFields(value, label);
+}
+
+function assertRationaleIdentity(value: MvcRationale, label: string): void {
+  assertWorkspaceIdentityFields(value, label);
+  assertRepoLocalIdentityFields(value, label);
+}
+
 export const assertMvcDefinitionContract = implements_adr(
   'ADR-L-0021',
 )(enforces_invariant('INV-0030')(function assertMvcDefinitionContract(value: unknown): asserts value is MvcDefinition {
@@ -193,6 +249,35 @@ export const assertMvcSnapshotCandidateOnly = implements_adr(
     if (field in value) {
       throw new Error(`MVC-S candidate must not contain ${field}`);
     }
+  }
+}));
+
+export const assertMvcFederatedIdentity = implements_adr(
+  'ADR-L-0021',
+)(enforces_invariant('INV-0030', 'INV-0031')(function assertMvcFederatedIdentity(snapshot: MvcSnapshot): void {
+  assertMvcSnapshotCandidateOnly(snapshot);
+
+  for (const [field, refs] of [
+    ['candidate_entities', snapshot.candidate_entities],
+    ['candidate_relationships', snapshot.candidate_relationships],
+    ['candidate_evidence', snapshot.candidate_evidence],
+    ['candidate_constraints', snapshot.candidate_constraints],
+  ] as const) {
+    refs.forEach((ref, index) => assertRefIdentity(ref, `${field}[${index}]`));
+  }
+
+  snapshot.inclusion_rationale.forEach((rationale, index) => {
+    assertRationaleIdentity(rationale, `inclusion_rationale[${index}]`);
+  });
+  snapshot.exclusion_rationale.forEach((rationale, index) => {
+    assertRationaleIdentity(rationale, `exclusion_rationale[${index}]`);
+  });
+
+  const requiresNegativeSpace = snapshot.exclusion_rationale.some(rationale =>
+    FEDERATION_NEGATIVE_SPACE_PATTERN.test(rationale.reason),
+  );
+  if (requiresNegativeSpace && snapshot.negative_space.length === 0) {
+    throw new Error('ambiguous or missing federation linkage must be represented in negative_space');
   }
 }));
 
