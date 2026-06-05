@@ -11,6 +11,7 @@ import {
   assertMvcSnapshotCandidateOnly,
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
+  recommendMvcDepthFromTopology,
   type BuildMvcSnapshotInput,
   type MvcDefinition,
   type MvcSnapshot,
@@ -615,12 +616,212 @@ describe('MVC evolution contract consumption', () => {
     await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
   });
 
+  it('recommends advisory depth deterministically from supplied topology metrics', () => {
+    const metrics = {
+      node_count: 10,
+      edge_count: 12,
+      branching_factor: 1.2,
+      convergence_score: 0.9,
+      recommended_depth: 3,
+    };
+
+    const first = recommendMvcDepthFromTopology({ topologyMetrics: metrics });
+    const second = recommendMvcDepthFromTopology({ topologyMetrics: metrics });
+
+    expect(second).toEqual(first);
+    expect(first.policyInput.topology_metrics).toEqual(metrics);
+    expect(first.reason).toContain('advisory');
+  });
+
+  it('keeps depth recommendation stable across field ordering and serialization differences', () => {
+    const ordered = {
+      node_count: 10,
+      edge_count: 12,
+      branching_factor: 1.2,
+      convergence_score: 0.9,
+      recommended_depth: 3,
+    };
+    const reordered = JSON.parse(
+      '{"recommended_depth":3,"convergence_score":0.9,"branching_factor":1.2,"edge_count":12,"node_count":10}',
+    );
+
+    expect(recommendMvcDepthFromTopology({ topologyMetrics: reordered })).toEqual(
+      recommendMvcDepthFromTopology({ topologyMetrics: ordered }),
+    );
+    expect(recommendMvcDepthFromTopology(JSON.parse(JSON.stringify({ topologyMetrics: ordered })))).toEqual(
+      recommendMvcDepthFromTopology({ topologyMetrics: ordered }),
+    );
+  });
+
+  it('recommends shallower advisory depth for dense topology than sparse topology', () => {
+    const dense = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 8,
+        edge_count: 24,
+        branching_factor: 3,
+        convergence_score: 0.8,
+      },
+    });
+    const sparse = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 8,
+        edge_count: 3,
+        branching_factor: 0.4,
+        convergence_score: 0.2,
+      },
+    });
+
+    expect(dense.recommendedDepth).toBeLessThan(sparse.recommendedDepth);
+  });
+
+  it('recommends shallower advisory depth for exploding topology than convergent topology', () => {
+    const exploding = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 10,
+        edge_count: 35,
+        branching_factor: 5,
+        convergence_score: 0.1,
+      },
+    });
+    const convergent = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 10,
+        edge_count: 12,
+        branching_factor: 1.2,
+        convergence_score: 0.9,
+      },
+    });
+
+    expect(exploding.recommendedDepth).toBeLessThan(convergent.recommendedDepth);
+  });
+
+  it('never exceeds supplied advisory depth budget caps and records the cap in the reason', () => {
+    const capped = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 8,
+        edge_count: 3,
+        branching_factor: 0.4,
+        convergence_score: 0.2,
+      },
+      maxDepth: 1,
+    });
+
+    expect(capped.recommendedDepth).toBeLessThanOrEqual(1);
+    expect(capped.reason).toContain('budget cap');
+    expect(capped.policyInput.max_depth).toBe(1);
+  });
+
+  it('handles empty and degenerate supplied metrics as deterministic minimal recommendations', () => {
+    const empty = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 0,
+        edge_count: 0,
+        branching_factor: 0,
+        convergence_score: 0,
+      },
+    });
+    const degenerate = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 4,
+        edge_count: 0,
+        branching_factor: 0,
+        convergence_score: 0,
+      },
+    });
+
+    expect(empty).toEqual(recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 0,
+        edge_count: 0,
+        branching_factor: 0,
+        convergence_score: 0,
+      },
+    }));
+    expect(empty.recommendedDepth).toBeLessThanOrEqual(degenerate.recommendedDepth);
+    expect(empty.reason).toContain('empty');
+  });
+
+  it('changes recommendation when supplied topology changes across behavioral categories', () => {
+    const dense = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 8,
+        edge_count: 24,
+        branching_factor: 3,
+        convergence_score: 0.8,
+      },
+    });
+    const convergent = recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 10,
+        edge_count: 12,
+        branching_factor: 1.2,
+        convergence_score: 0.9,
+      },
+    });
+
+    expect(convergent.recommendedDepth).not.toBe(dense.recommendedDepth);
+    expect(convergent.reason).not.toBe(dense.reason);
+  });
+
+  it('fails explicitly for missing or malformed supplied topology metrics', () => {
+    expect(() => recommendMvcDepthFromTopology({} as never)).toThrow('topologyMetrics');
+    expect(() => recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        edge_count: 1,
+        branching_factor: 1,
+        convergence_score: 1,
+      } as never,
+    })).toThrow('node_count');
+    expect(() => recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: -1,
+        edge_count: 1,
+        branching_factor: 1,
+        convergence_score: 1,
+      },
+    })).toThrow('node_count');
+    expect(() => recommendMvcDepthFromTopology({
+      topologyMetrics: {
+        node_count: 1,
+        edge_count: 1,
+        branching_factor: Number.NaN,
+        convergence_score: 1,
+      },
+    })).toThrow('branching_factor');
+  });
+
+  it('does not mutate supplied topology recommendation input', () => {
+    const input = {
+      topologyMetrics: {
+        node_count: 10,
+        edge_count: 12,
+        branching_factor: 1.2,
+        convergence_score: 0.9,
+        recommended_depth: 3,
+      },
+      maxDepth: 2,
+    };
+    const before = JSON.parse(JSON.stringify(input));
+
+    recommendMvcDepthFromTopology(input);
+
+    expect(input).toEqual(before);
+  });
+
+  it('keeps the depth helper isolated from traversal, discovery, workspace, and kernel imports', async () => {
+    const source = await readFile(path.resolve(steRuntimeRoot, 'src', 'workspace', 'mvc-evolution.ts'), 'utf8');
+    const importLines = source.split('\n').filter(line => line.startsWith('import ')).join('\n');
+
+    expect(importLines).not.toMatch(/graph-topology-analyzer|rss|kernel|workspace-recon|graph-traversal|query/i);
+  });
+
   it('exposes machine-readable code provenance for ADR-L-0021 and runtime invariants', () => {
     for (const target of [
       assertMvcDefinitionContract,
       assertMvcFederatedIdentity,
       assertMvcSnapshotCandidateOnly,
       buildMvcSnapshotCandidate,
+      recommendMvcDepthFromTopology,
     ]) {
       const adrIds = functionAdrMetadata(target);
       expect(adrIds).toContain('ADR-L-0021');
@@ -630,6 +831,7 @@ describe('MVC evolution contract consumption', () => {
     expect(functionInvariantMetadata(assertMvcDefinitionContract)).toContain('INV-0030');
     expect(functionInvariantMetadata(assertMvcSnapshotCandidateOnly)).toContain('INV-0031');
     expect(functionInvariantMetadata(buildMvcSnapshotCandidate)).toEqual(['INV-0031', 'INV-0032']);
+    expect(functionInvariantMetadata(recommendMvcDepthFromTopology)).toEqual(['INV-0032']);
   });
 
   it('anchors code provenance to an existing runtime ADR source', async () => {

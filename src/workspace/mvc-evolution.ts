@@ -41,6 +41,20 @@ export interface MvcTopologyMetrics {
   recommended_depth?: number;
 }
 
+export interface MvcDepthRecommendationInput {
+  topologyMetrics: MvcTopologyMetrics;
+  maxDepth?: number;
+}
+
+export interface MvcDepthRecommendation {
+  recommendedDepth: number;
+  reason: string;
+  policyInput: {
+    topology_metrics: MvcTopologyMetrics;
+    max_depth?: number;
+  };
+}
+
 export interface MvcDefinition {
   schema_version: '0.1.0';
   mvc_d_id: string;
@@ -155,6 +169,35 @@ function assertArray(value: unknown, label: string): asserts value is unknown[] 
   if (!Array.isArray(value)) {
     throw new Error(`${label} must be fully supplied as an array`);
   }
+}
+
+function assertFiniteNonNegativeNumber(value: unknown, label: string): asserts value is number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative finite number`);
+  }
+}
+
+function assertOptionalNonNegativeInteger(value: unknown, label: string): asserts value is number | undefined {
+  if (value === undefined) {
+    return;
+  }
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative integer`);
+  }
+}
+
+function assertTopologyMetrics(value: unknown, label: string): asserts value is MvcTopologyMetrics {
+  assertRecord(value, label);
+  for (const field of ['node_count', 'edge_count', 'branching_factor', 'convergence_score'] as const) {
+    if (!(field in value)) {
+      throw new Error(`${label} is missing required field: ${field}`);
+    }
+  }
+  assertOptionalNonNegativeInteger(value.recommended_depth, `${label}.recommended_depth`);
+  assertOptionalNonNegativeInteger(value.node_count, `${label}.node_count`);
+  assertOptionalNonNegativeInteger(value.edge_count, `${label}.edge_count`);
+  assertFiniteNonNegativeNumber(value.branching_factor, `${label}.branching_factor`);
+  assertFiniteNonNegativeNumber(value.convergence_score, `${label}.convergence_score`);
 }
 
 function canonicalize(value: unknown): unknown {
@@ -410,3 +453,62 @@ export const canonicalMvcFingerprintInput: (input: BuildMvcSnapshotInput) => unk
     topology_metrics: input.topologyMetrics,
   });
 });
+
+export const recommendMvcDepthFromTopology: (
+  input: MvcDepthRecommendationInput,
+) => MvcDepthRecommendation = implements_adr('ADR-L-0021')(
+  enforces_invariant('INV-0032')(function recommendMvcDepthFromTopology(
+    input: MvcDepthRecommendationInput,
+  ): MvcDepthRecommendation {
+    assertRecord(input, 'MVC-S depth recommendation input');
+    if (!('topologyMetrics' in input)) {
+      throw new Error('MVC-S depth recommendation input is missing required field: topologyMetrics');
+    }
+    assertTopologyMetrics(input.topologyMetrics, 'topologyMetrics');
+    assertOptionalNonNegativeInteger(input.maxDepth, 'maxDepth');
+
+    const metrics = input.topologyMetrics;
+    const density = metrics.node_count === 0 ? 0 : metrics.edge_count / metrics.node_count;
+    let category = 'balanced';
+    let recommendedDepth = 2;
+
+    if (metrics.node_count === 0) {
+      category = 'empty';
+      recommendedDepth = 0;
+    } else if (metrics.edge_count === 0) {
+      category = 'degenerate';
+      recommendedDepth = 1;
+    } else if (metrics.branching_factor >= 3.5) {
+      category = 'exploding';
+      recommendedDepth = 1;
+    } else if (density >= 2) {
+      category = 'dense';
+      recommendedDepth = 1;
+    } else if (metrics.convergence_score >= 0.75) {
+      category = 'convergent';
+      recommendedDepth = 3;
+    } else if (metrics.branching_factor <= 0.75) {
+      category = 'sparse';
+      recommendedDepth = 3;
+    }
+
+    const uncappedDepth = recommendedDepth;
+    if (input.maxDepth !== undefined) {
+      recommendedDepth = Math.min(recommendedDepth, input.maxDepth);
+    }
+
+    const capReason =
+      input.maxDepth === undefined
+        ? 'no budget cap supplied'
+        : `budget cap ${input.maxDepth} applied to uncapped depth ${uncappedDepth}`;
+
+    return canonicalize({
+      recommendedDepth,
+      reason: `advisory depth ${recommendedDepth} for ${category} supplied MVC-S topology metrics; ${capReason}`,
+      policyInput: {
+        topology_metrics: metrics,
+        max_depth: input.maxDepth,
+      },
+    }) as MvcDepthRecommendation;
+  }),
+);
