@@ -12,9 +12,11 @@ import {
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
   recommendMvcDepthFromTopology,
+  traverseMvcSFromLinkageSurface,
   traverseMvcSCandidates,
   type BuildMvcSnapshotInput,
   type MvcDefinition,
+  type MvcLinkageSurface,
   type MvcSnapshot,
   type MvcTraversalRelationshipRecord,
 } from './mvc-evolution.js';
@@ -43,6 +45,22 @@ async function loadMvcSchema(schemaFile: string): Promise<object> {
   throw new Error(`MVC schema not found (tried: ${candidates.join(', ')})`);
 }
 
+async function loadLinkageSurfaceSchema(): Promise<object> {
+  const candidates = [
+    path.resolve(steRuntimeRoot, '..', 'ste-spec', 'contracts', 'linkage-surface', 'linkage-surface.schema.json'),
+    path.resolve(steRuntimeRoot, 'test', 'fixtures', 'mvc-evolution', 'linkage-surface.schema.json'),
+  ];
+  for (const schemaPath of candidates) {
+    try {
+      await access(schemaPath);
+      return JSON.parse(await readFile(schemaPath, 'utf8')) as object;
+    } catch {
+      /* try next */
+    }
+  }
+  throw new Error(`Linkage Surface schema not found (tried: ${candidates.join(', ')})`);
+}
+
 async function expectMatchesSchema(schemaFile: string, payload: unknown): Promise<void> {
   const ajv = new Ajv2020({ strict: false });
   const schema = await loadMvcSchema(schemaFile);
@@ -57,8 +75,112 @@ async function expectSchemaRejects(schemaFile: string, payload: unknown): Promis
   expect(validate(payload)).toBe(false);
 }
 
+async function expectMatchesLinkageSurfaceSchema(payload: unknown): Promise<void> {
+  const ajv = new Ajv2020({ strict: false });
+  const schema = await loadLinkageSurfaceSchema();
+  const validate = ajv.compile(schema);
+  expect(validate(payload), JSON.stringify(validate.errors, null, 2)).toBe(true);
+}
+
+async function expectLinkageSurfaceSchemaRejects(payload: unknown): Promise<void> {
+  const ajv = new Ajv2020({ strict: false });
+  const schema = await loadLinkageSurfaceSchema();
+  const validate = ajv.compile(schema);
+  expect(validate(payload)).toBe(false);
+}
+
 async function mvcDefinitionFixture(): Promise<MvcDefinition> {
   return await loadJson('test/fixtures/mvc-evolution/mvc-definition.valid.json') as MvcDefinition;
+}
+
+async function linkageSurfaceFixture(): Promise<MvcLinkageSurface> {
+  const siblingExample = path.resolve(
+    steRuntimeRoot,
+    '..',
+    'ste-spec',
+    'contracts',
+    'examples',
+    'linkage-surface.valid-workspace-qualified-adr.json',
+  );
+  try {
+    return JSON.parse(await readFile(siblingExample, 'utf8')) as MvcLinkageSurface;
+  } catch {
+    return {
+      schema_version: '0.1.0',
+      id: 'workspace-qualified-adr-linkage-surface',
+      version: '0.1.0',
+      status: 'experimental',
+      source_snapshot_refs: [
+        {
+          id: 'workspace-attribution-federation',
+          version: '0.1.0',
+          snapshot_hash: 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        },
+      ],
+      relationship_records: [
+        {
+          id: 'workspace-qualified-adr-invariant-link',
+          relationship_family: 'adr_to_invariant',
+          from_ref: {
+            id: 'ste-runtime:ADR-L-0021',
+            version: '1',
+            identity_scope: 'workspace',
+            corpus_scope: 'ste-runtime',
+            qualified_id: 'ste-runtime:ADR-L-0021',
+          },
+          to_ref: {
+            id: 'ste-spec:INV-0001',
+            version: '1',
+            identity_scope: 'workspace',
+            corpus_scope: 'ste-spec',
+            entity_uri: 'entity://ste-spec/INV-0001',
+          },
+          relationship_origin: 'manual_mapping',
+          producer_ref: 'fixture:mvc-evolution',
+          producer_kind: 'manual',
+          generation_method: 'curated_fixture',
+          provenance: {
+            source_ref: {
+              id: 'ste-runtime:ADR-L-0021',
+              version: '1',
+              identity_scope: 'workspace',
+              corpus_scope: 'ste-runtime',
+              qualified_id: 'ste-runtime:ADR-L-0021',
+            },
+            source_kind: 'adr',
+          },
+          integrity: {
+            content_hash: 'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+          },
+          rationale_refs: [
+            {
+              id: 'ste-runtime:ADR-L-0021',
+              version: '1',
+              identity_scope: 'workspace',
+              corpus_scope: 'ste-runtime',
+              qualified_id: 'ste-runtime:ADR-L-0021',
+            },
+          ],
+        },
+      ],
+      provenance: {
+        source_ref: {
+          id: 'workspace-attribution-federation',
+          version: '0.1.0',
+        },
+        source_kind: 'federation-index',
+      },
+      integrity: {
+        content_hash: 'sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+      },
+      freshness: {
+        status: 'current',
+        observed_at: '2026-05-30T00:00:00.000Z',
+      },
+      confidence_or_validation_status: 'candidate',
+      negative_space: [],
+    } as MvcLinkageSurface;
+  }
 }
 
 async function buildInput(overrides: Partial<BuildMvcSnapshotInput> = {}): Promise<BuildMvcSnapshotInput> {
@@ -1048,6 +1170,135 @@ describe('MVC evolution contract consumption', () => {
     expect(source).not.toMatch(/buildGraphDomain|materializeGraphDomain|loadWorkspaceGraph|loadAidocGraph|assembleContext/);
   });
 
+  it('validates supplied Linkage Surface fixtures against the ste-spec contract', async () => {
+    const linkageSurface = await linkageSurfaceFixture();
+
+    await expectMatchesLinkageSurfaceSchema(linkageSurface);
+  });
+
+  it('expands MVC-S candidates from supplied Linkage Surface relationship records', async () => {
+    const linkageSurface = await linkageSurfaceFixture();
+    const relationship = linkageSurface.relationship_records[0];
+    const snapshot = traverseMvcSFromLinkageSurface({
+      ...(await buildInput()),
+      seedCandidateRefs: [relationship.from_ref],
+      linkageSurface,
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toContainEqual(relationship.from_ref);
+    expect(snapshot.candidate_entities).toContainEqual(relationship.to_ref);
+    expect(snapshot.candidate_relationships).toContainEqual({
+      id: relationship.id,
+      version: linkageSurface.version,
+    });
+    expect(snapshot.inclusion_rationale).toContainEqual(expect.objectContaining({
+      candidate_ref: relationship.to_ref,
+      selector_path: `supplied-relationship-traversal/depth:1/relationship:${relationship.id}`,
+    }));
+    expect(snapshot.inclusion_rationale.some(entry =>
+      entry.reason.includes(relationship.relationship_family) && entry.reason.includes(relationship.id),
+    )).toBe(true);
+    await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
+  });
+
+  it('rejects invalid Linkage Surface-shaped input without auto-healing it', async () => {
+    const linkageSurface = await linkageSurfaceFixture();
+    const invalid = { ...linkageSurface };
+    delete (invalid as Partial<MvcLinkageSurface>).relationship_records;
+
+    await expectLinkageSurfaceSchemaRejects(invalid);
+    const input = await buildInput();
+    expect(() => traverseMvcSFromLinkageSurface({
+      ...input,
+      seedCandidateRefs: [],
+      linkageSurface: invalid as MvcLinkageSurface,
+      depth: 1,
+    })).toThrow('relationship_records');
+  });
+
+  it('preserves Linkage Surface endpoint identity metadata and rationale context', async () => {
+    const linkageSurface = await linkageSurfaceFixture();
+    const relationship = linkageSurface.relationship_records[0];
+    const snapshot = traverseMvcSFromLinkageSurface({
+      ...(await buildInput()),
+      seedCandidateRefs: [relationship.from_ref],
+      linkageSurface,
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toContainEqual(relationship.from_ref);
+    expect(snapshot.candidate_entities).toContainEqual(relationship.to_ref);
+    expect(snapshot.candidate_entities).toContainEqual(
+      expect.objectContaining({
+        identity_scope: 'workspace',
+        corpus_scope: 'ste-runtime',
+        qualified_id: 'ste-runtime:ADR-L-0021',
+      }),
+    );
+    expect(snapshot.candidate_entities).toContainEqual(
+      expect.objectContaining({
+        identity_scope: 'workspace',
+        corpus_scope: 'ste-spec',
+        entity_uri: 'entity://ste-spec/INV-0001',
+      }),
+    );
+    expect(snapshot.inclusion_rationale).toContainEqual(expect.objectContaining({
+      candidate_ref: relationship.to_ref,
+    }));
+  });
+
+  it('keeps repo-local and workspace-qualified Linkage Surface endpoints distinct', async () => {
+    const linkageSurface = await linkageSurfaceFixture();
+    const repoLocal = {
+      id: 'ADR-L-0021',
+      version: '1',
+      identity_scope: 'repo-local' as const,
+      corpus_scope: 'ste-runtime',
+    };
+    linkageSurface.relationship_records = [
+      {
+        ...linkageSurface.relationship_records[0],
+        id: 'repo-local-to-workspace-link',
+        from_ref: repoLocal,
+      },
+    ];
+    const snapshot = traverseMvcSFromLinkageSurface({
+      ...(await buildInput()),
+      seedCandidateRefs: [repoLocal, linkageSurface.relationship_records[0].to_ref],
+      linkageSurface,
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toContainEqual(repoLocal);
+    expect(snapshot.candidate_entities).toContainEqual(linkageSurface.relationship_records[0].to_ref);
+  });
+
+  it('records missing Linkage Surface relationship endpoints as negative space instead of inference', async () => {
+    const linkageSurface = await linkageSurfaceFixture();
+    const unrelatedSeed = { id: 'component:unrelated-seed', version: '1' };
+    const snapshot = traverseMvcSFromLinkageSurface({
+      ...(await buildInput()),
+      seedCandidateRefs: [unrelatedSeed],
+      linkageSurface,
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toEqual([unrelatedSeed]);
+    expect(snapshot.candidate_relationships).toEqual([]);
+    expect(snapshot.negative_space).toContainEqual(expect.objectContaining({
+      id: 'missing-relationship:component:unrelated-seed',
+    }));
+  });
+
+  it('keeps Linkage Surface traversal adapter isolated from materialization and state imports', async () => {
+    const source = await readFile(path.resolve(steRuntimeRoot, 'src', 'workspace', 'mvc-evolution.ts'), 'utf8');
+    const importLines = source.split('\n').filter(line => line.startsWith('import ')).join('\n');
+
+    expect(importLines).not.toMatch(/graph-domain|linkage-surface|graph-loader|workspace-graph|kernel|query|rss/i);
+    expect(source).not.toMatch(/readFile|\.ste-workspace|buildGraphDomain|materializeGraphDomain|loadWorkspaceGraph|assembleContext/);
+  });
+
   it('exposes machine-readable code provenance for ADR-L-0021 and runtime invariants', () => {
     for (const target of [
       assertMvcDefinitionContract,
@@ -1067,6 +1318,13 @@ describe('MVC evolution contract consumption', () => {
     expect(functionInvariantMetadata(recommendMvcDepthFromTopology)).toEqual(['INV-0032']);
     expect(functionAdrMetadata(traverseMvcSCandidates)).toContain('ADR-L-0023');
     expect(functionInvariantMetadata(traverseMvcSCandidates)).toEqual([
+      'INV-0031',
+      'INV-0035',
+      'INV-0036',
+      'INV-0037',
+    ]);
+    expect(functionAdrMetadata(traverseMvcSFromLinkageSurface)).toContain('ADR-L-0023');
+    expect(functionInvariantMetadata(traverseMvcSFromLinkageSurface)).toEqual([
       'INV-0031',
       'INV-0035',
       'INV-0036',

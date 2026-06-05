@@ -63,6 +63,20 @@ export interface MvcTraversalRelationshipRecord {
   reason?: string;
 }
 
+export interface MvcLinkageSurfaceRelationshipRecord {
+  id: string;
+  relationship_family: string;
+  from_ref: MvcRef;
+  to_ref: MvcRef;
+}
+
+export interface MvcLinkageSurface {
+  schema_version: '0.1.0';
+  id: string;
+  version: string;
+  relationship_records: MvcLinkageSurfaceRelationshipRecord[];
+}
+
 export interface MvcDefinition {
   schema_version: '0.1.0';
   mvc_d_id: string;
@@ -123,6 +137,11 @@ export interface TraverseMvcSCandidatesInput
   depth: number;
 }
 
+export interface TraverseMvcSFromLinkageSurfaceInput
+  extends Omit<TraverseMvcSCandidatesInput, 'relationshipRecords'> {
+  linkageSurface: MvcLinkageSurface;
+}
+
 const REQUIRED_INPUT_FIELDS: Array<keyof BuildMvcSnapshotInput> = [
   'mvcDefinition',
   'irSnapshotRef',
@@ -171,7 +190,7 @@ const MVC_S_FORBIDDEN_FIELDS = [
 
 const BARE_ADR_ID_PATTERN = /^ADR-L-\d{4}$/;
 const QUALIFIED_ADR_ID_PATTERN = /^[a-z][a-z0-9._-]*:ADR-L-\d{4}$/;
-const ADR_ENTITY_URI_PATTERN = /^entity:\/\/[a-z][a-z0-9._-]*\/ADR-L-\d{4}$/;
+const ARCHITECTURAL_ENTITY_URI_PATTERN = /^entity:\/\/[a-z][a-z0-9._-]*\/[A-Z]+-[A-Z0-9-]+$/;
 const FEDERATION_NEGATIVE_SPACE_PATTERN = /(ambiguous|missing).*(federation|linkage|identity)/i;
 const TRAVERSAL_FORBIDDEN_FIELDS = [
   'adjacencyMap',
@@ -183,6 +202,9 @@ const TRAVERSAL_FORBIDDEN_FIELDS = [
   'topologyCache',
   'workspaceGraph',
 ];
+const LINKAGE_SURFACE_ADAPTER_FORBIDDEN_FIELDS = TRAVERSAL_FORBIDDEN_FIELDS.filter(
+  field => field !== 'linkageSurface',
+);
 
 function assertRecord(value: unknown, label: string): asserts value is Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -297,7 +319,7 @@ function assertWorkspaceIdentityFields(value: MvcRef | MvcRationale, label: stri
   if (value.qualified_id && !QUALIFIED_ADR_ID_PATTERN.test(value.qualified_id)) {
     throw new Error(`${label} has invalid qualified_id: ${value.qualified_id}`);
   }
-  if (value.entity_uri && !ADR_ENTITY_URI_PATTERN.test(value.entity_uri)) {
+  if (value.entity_uri && !ARCHITECTURAL_ENTITY_URI_PATTERN.test(value.entity_uri)) {
     throw new Error(`${label} has invalid entity_uri: ${value.entity_uri}`);
   }
 }
@@ -345,6 +367,41 @@ function assertTraversalRelationshipRecord(value: unknown, label: string): asser
   }
   assertRefIdentity(value.from_ref as MvcRef, `${label}.from_ref`);
   assertRefIdentity(value.to_ref as MvcRef, `${label}.to_ref`);
+}
+
+function assertMvcLinkageSurface(value: unknown, label: string): asserts value is MvcLinkageSurface {
+  assertRecord(value, label);
+  for (const field of ['schema_version', 'id', 'version', 'relationship_records'] as const) {
+    if (!(field in value)) {
+      throw new Error(`${label} is missing required field: ${field}`);
+    }
+  }
+  if (value.schema_version !== '0.1.0') {
+    throw new Error(`${label}.schema_version must be 0.1.0`);
+  }
+  if (typeof value.id !== 'string' || value.id.length === 0) {
+    throw new Error(`${label}.id must be a non-empty string`);
+  }
+  if (typeof value.version !== 'string' || value.version.length === 0) {
+    throw new Error(`${label}.version must be a non-empty string`);
+  }
+  assertArray(value.relationship_records, `${label}.relationship_records`);
+  value.relationship_records.forEach((relationship, index) => {
+    assertRecord(relationship, `${label}.relationship_records[${index}]`);
+    for (const field of ['id', 'relationship_family', 'from_ref', 'to_ref'] as const) {
+      if (!(field in relationship)) {
+        throw new Error(`${label}.relationship_records[${index}] is missing required field: ${field}`);
+      }
+    }
+    if (typeof relationship.id !== 'string' || relationship.id.length === 0) {
+      throw new Error(`${label}.relationship_records[${index}].id must be a non-empty string`);
+    }
+    if (typeof relationship.relationship_family !== 'string' || relationship.relationship_family.length === 0) {
+      throw new Error(`${label}.relationship_records[${index}].relationship_family must be a non-empty string`);
+    }
+    assertRefIdentity(relationship.from_ref as MvcRef, `${label}.relationship_records[${index}].from_ref`);
+    assertRefIdentity(relationship.to_ref as MvcRef, `${label}.relationship_records[${index}].to_ref`);
+  });
 }
 
 export const assertMvcDefinitionContract = implements_adr(
@@ -683,6 +740,50 @@ export const traverseMvcSCandidates: (
       inclusionRationale,
       exclusionRationale,
       negativeSpace,
+    });
+  }),
+);
+
+export const traverseMvcSFromLinkageSurface: (
+  input: TraverseMvcSFromLinkageSurfaceInput,
+) => MvcSnapshot = implements_adr('ADR-L-0023')(
+  enforces_invariant('INV-0031', 'INV-0035', 'INV-0036', 'INV-0037')(function traverseMvcSFromLinkageSurface(
+    input: TraverseMvcSFromLinkageSurfaceInput,
+  ): MvcSnapshot {
+    assertRecord(input, 'MVC-S Linkage Surface traversal input');
+    for (const field of LINKAGE_SURFACE_ADAPTER_FORBIDDEN_FIELDS) {
+      if (field in input) {
+        throw new Error(`MVC-S Linkage Surface traversal input must not contain ${field}`);
+      }
+    }
+    if (!('linkageSurface' in input)) {
+      throw new Error('MVC-S Linkage Surface traversal input is missing required field: linkageSurface');
+    }
+    assertMvcLinkageSurface(input.linkageSurface, 'linkageSurface');
+
+    const relationshipRecords = input.linkageSurface.relationship_records.map(relationship => ({
+      id: relationship.id,
+      version: input.linkageSurface.version,
+      from_ref: relationship.from_ref,
+      to_ref: relationship.to_ref,
+      reason: `Linkage Surface ${input.linkageSurface.id} supplied ${relationship.relationship_family} relationship ${relationship.id}.`,
+    }));
+
+    return traverseMvcSCandidates({
+      mvcDefinition: input.mvcDefinition,
+      irSnapshotRef: input.irSnapshotRef,
+      graphSnapshotRefs: input.graphSnapshotRefs,
+      linkageSurfaceRefs: input.linkageSurfaceRefs,
+      selectorVersionRefs: input.selectorVersionRefs,
+      seedCandidateRefs: input.seedCandidateRefs,
+      relationshipRecords,
+      depth: input.depth,
+      candidateEvidence: input.candidateEvidence,
+      candidateConstraints: input.candidateConstraints,
+      topologyMetrics: input.topologyMetrics,
+      inclusionRationale: input.inclusionRationale,
+      exclusionRationale: input.exclusionRationale,
+      negativeSpace: input.negativeSpace,
     });
   }),
 );

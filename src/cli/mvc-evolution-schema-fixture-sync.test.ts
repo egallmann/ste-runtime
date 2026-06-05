@@ -18,6 +18,18 @@ const schemaPairs = [
     sibling: path.resolve(steRuntimeRoot, '..', 'ste-spec', 'contracts', 'mvc', 'mvc-snapshot.schema.json'),
     fixture: path.resolve(steRuntimeRoot, 'test', 'fixtures', 'mvc-evolution', 'mvc-snapshot.schema.json'),
   },
+  {
+    name: 'Linkage Surface',
+    sibling: path.resolve(
+      steRuntimeRoot,
+      '..',
+      'ste-spec',
+      'contracts',
+      'linkage-surface',
+      'linkage-surface.schema.json',
+    ),
+    fixture: path.resolve(steRuntimeRoot, 'test', 'fixtures', 'mvc-evolution', 'linkage-surface.schema.json'),
+  },
 ];
 
 describe('MVC evolution schema fixture sync', () => {

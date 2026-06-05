@@ -161,8 +161,11 @@ export {
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
   recommendMvcDepthFromTopology,
+  traverseMvcSFromLinkageSurface,
   traverseMvcSCandidates,
   type BuildMvcSnapshotInput,
+  type MvcLinkageSurface,
+  type MvcLinkageSurfaceRelationshipRecord,
   type MvcDepthRecommendation,
   type MvcDepthRecommendationInput,
   type MvcDefinition,
@@ -173,6 +176,7 @@ export {
   type MvcSnapshot,
   type MvcTopologyMetrics,
   type MvcTraversalRelationshipRecord,
+  type TraverseMvcSFromLinkageSurfaceInput,
   type TraverseMvcSCandidatesInput,
 } from './workspace/mvc-evolution.js';
 
