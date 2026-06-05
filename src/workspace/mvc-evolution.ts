@@ -55,6 +55,14 @@ export interface MvcDepthRecommendation {
   };
 }
 
+export interface MvcTraversalRelationshipRecord {
+  id: string;
+  version: string;
+  from_ref: MvcRef;
+  to_ref: MvcRef;
+  reason?: string;
+}
+
 export interface MvcDefinition {
   schema_version: '0.1.0';
   mvc_d_id: string;
@@ -108,6 +116,13 @@ export interface BuildMvcSnapshotInput {
   negativeSpace: MvcNegativeSpace[];
 }
 
+export interface TraverseMvcSCandidatesInput
+  extends Omit<BuildMvcSnapshotInput, 'candidateEntities' | 'candidateRelationships'> {
+  seedCandidateRefs: MvcRef[];
+  relationshipRecords: MvcTraversalRelationshipRecord[];
+  depth: number;
+}
+
 const REQUIRED_INPUT_FIELDS: Array<keyof BuildMvcSnapshotInput> = [
   'mvcDefinition',
   'irSnapshotRef',
@@ -158,6 +173,16 @@ const BARE_ADR_ID_PATTERN = /^ADR-L-\d{4}$/;
 const QUALIFIED_ADR_ID_PATTERN = /^[a-z][a-z0-9._-]*:ADR-L-\d{4}$/;
 const ADR_ENTITY_URI_PATTERN = /^entity:\/\/[a-z][a-z0-9._-]*\/ADR-L-\d{4}$/;
 const FEDERATION_NEGATIVE_SPACE_PATTERN = /(ambiguous|missing).*(federation|linkage|identity)/i;
+const TRAVERSAL_FORBIDDEN_FIELDS = [
+  'adjacencyMap',
+  'graphDomain',
+  'graphDomainDefinition',
+  'linkageSurface',
+  'materializedGraph',
+  'repositoryPath',
+  'topologyCache',
+  'workspaceGraph',
+];
 
 function assertRecord(value: unknown, label: string): asserts value is Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -242,6 +267,11 @@ function canonicalString(value: unknown): string {
   return JSON.stringify(canonicalize(value));
 }
 
+function stableIdFragment(value: string): string {
+  const fragment = value.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+/, '');
+  return fragment || 'unknown';
+}
+
 function dedupeCandidateRefs(items: MvcRef[]): MvcRef[] {
   const byIdentity = new Map<string, MvcRef>();
   for (const item of items) {
@@ -298,6 +328,23 @@ function assertRationaleIdentity(value: MvcRationale, label: string): void {
   if (value.candidate_ref) {
     assertRefIdentity(value.candidate_ref, `${label}.candidate_ref`);
   }
+}
+
+function assertTraversalRelationshipRecord(value: unknown, label: string): asserts value is MvcTraversalRelationshipRecord {
+  assertRecord(value, label);
+  for (const field of ['id', 'version', 'from_ref', 'to_ref'] as const) {
+    if (!(field in value)) {
+      throw new Error(`${label} is missing required field: ${field}`);
+    }
+  }
+  if (typeof value.id !== 'string' || value.id.length === 0) {
+    throw new Error(`${label}.id must be a non-empty string`);
+  }
+  if (typeof value.version !== 'string' || value.version.length === 0) {
+    throw new Error(`${label}.version must be a non-empty string`);
+  }
+  assertRefIdentity(value.from_ref as MvcRef, `${label}.from_ref`);
+  assertRefIdentity(value.to_ref as MvcRef, `${label}.to_ref`);
 }
 
 export const assertMvcDefinitionContract = implements_adr(
@@ -510,5 +557,132 @@ export const recommendMvcDepthFromTopology: (
         max_depth: input.maxDepth,
       },
     }) as MvcDepthRecommendation;
+  }),
+);
+
+export const traverseMvcSCandidates: (
+  input: TraverseMvcSCandidatesInput,
+) => MvcSnapshot = implements_adr('ADR-L-0023')(
+  enforces_invariant('INV-0031', 'INV-0035', 'INV-0036', 'INV-0037')(function traverseMvcSCandidates(
+    input: TraverseMvcSCandidatesInput,
+  ): MvcSnapshot {
+    assertRecord(input, 'MVC-S traversal input');
+    for (const field of TRAVERSAL_FORBIDDEN_FIELDS) {
+      if (field in input) {
+        throw new Error(`MVC-S traversal input must not contain ${field}`);
+      }
+    }
+    assertMvcDefinitionContract(input.mvcDefinition);
+    assertMvcSnapshotCandidateOnly(input);
+    assertArray(input.seedCandidateRefs, 'seedCandidateRefs');
+    assertArray(input.relationshipRecords, 'relationshipRecords');
+    assertOptionalNonNegativeInteger(input.depth, 'depth');
+    assertArray(input.candidateEvidence, 'candidateEvidence');
+    assertArray(input.candidateConstraints, 'candidateConstraints');
+    assertArray(input.inclusionRationale, 'inclusionRationale');
+    assertArray(input.exclusionRationale, 'exclusionRationale');
+    assertArray(input.negativeSpace, 'negativeSpace');
+    input.seedCandidateRefs.forEach((ref, index) => assertRefIdentity(ref, `seedCandidateRefs[${index}]`));
+    input.relationshipRecords.forEach((record, index) =>
+      assertTraversalRelationshipRecord(record, `relationshipRecords[${index}]`),
+    );
+
+    const relationshipRecords = canonicalArray(input.relationshipRecords);
+    const candidateEntities: MvcRef[] = [];
+    const candidateRelationships: MvcRef[] = [];
+    const inclusionRationale: MvcRationale[] = [...input.inclusionRationale];
+    const exclusionRationale: MvcRationale[] = [...input.exclusionRationale];
+    const negativeSpace: MvcNegativeSpace[] = [...input.negativeSpace];
+    const expanded = new Set<string>();
+    const discovered = new Set<string>();
+    let frontier = canonicalArray(input.seedCandidateRefs);
+
+    for (const seed of frontier) {
+      const seedKey = canonicalString(seed);
+      discovered.add(seedKey);
+      candidateEntities.push(seed);
+      inclusionRationale.push({
+        reason: `Seed candidate supplied for MVC-S traversal: ${seed.id}.`,
+        selector_path: `supplied-relationship-traversal/seed/${seed.id}`,
+        candidate_ref: seed,
+        identity_scope: seed.identity_scope,
+        corpus_scope: seed.corpus_scope,
+        qualified_id: seed.qualified_id,
+        entity_uri: seed.entity_uri,
+      });
+    }
+
+    for (let hopDepth = 1; hopDepth <= input.depth; hopDepth += 1) {
+      const nextFrontier: MvcRef[] = [];
+      let matchedAtDepth = false;
+
+      for (const candidate of frontier) {
+        const candidateKey = canonicalString(candidate);
+        if (expanded.has(candidateKey)) {
+          continue;
+        }
+        expanded.add(candidateKey);
+
+        for (const relationship of relationshipRecords) {
+          if (canonicalString(relationship.from_ref) !== candidateKey) {
+            continue;
+          }
+          matchedAtDepth = true;
+          candidateRelationships.push({ id: relationship.id, version: relationship.version });
+          const targetKey = canonicalString(relationship.to_ref);
+          if (discovered.has(targetKey)) {
+            continue;
+          }
+          discovered.add(targetKey);
+          candidateEntities.push(relationship.to_ref);
+          nextFrontier.push(relationship.to_ref);
+          inclusionRationale.push({
+            reason: `Traversal followed supplied relationship ${relationship.id} at hop ${hopDepth}: ${relationship.reason ?? 'no relationship reason supplied'}`,
+            selector_path: `supplied-relationship-traversal/depth:${hopDepth}/relationship:${relationship.id}`,
+            candidate_ref: relationship.to_ref,
+            identity_scope: relationship.to_ref.identity_scope,
+            corpus_scope: relationship.to_ref.corpus_scope,
+            qualified_id: relationship.to_ref.qualified_id,
+            entity_uri: relationship.to_ref.entity_uri,
+          });
+        }
+      }
+
+      if (!matchedAtDepth) {
+        for (const candidate of frontier) {
+          negativeSpace.push({
+            id: `missing-relationship:${stableIdFragment(candidate.id)}`,
+            reason: `No supplied relationship record starts from expanded candidate ${candidate.id} at hop ${hopDepth}; no inverse or inferred edge was derived.`,
+          });
+        }
+      }
+      frontier = canonicalArray(nextFrontier);
+      if (frontier.length === 0) {
+        break;
+      }
+    }
+
+    if (frontier.length > 0 || input.depth === 0) {
+      negativeSpace.push({
+        id: `depth-cap:${input.depth}`,
+        reason: `Traversal stopped at caller-supplied relationship-hop depth ${input.depth}; runtime did not adjust or override the cap.`,
+      });
+    }
+
+    return buildMvcSnapshotCandidate({
+      mvcDefinition: input.mvcDefinition,
+      irSnapshotRef: input.irSnapshotRef,
+      graphSnapshotRefs: input.graphSnapshotRefs,
+      linkageSurfaceRefs: input.linkageSurfaceRefs,
+      selectorVersionRefs: input.selectorVersionRefs,
+      candidateEntities,
+      candidateRelationships,
+      candidateEvidence: input.candidateEvidence,
+      candidateConstraints: input.candidateConstraints,
+      topologyMetrics: input.topologyMetrics,
+      inclusionRationale,
+      exclusionRationale,
+      negativeSpace,
+    });
   }),
 );

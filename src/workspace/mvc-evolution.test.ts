@@ -12,9 +12,11 @@ import {
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
   recommendMvcDepthFromTopology,
+  traverseMvcSCandidates,
   type BuildMvcSnapshotInput,
   type MvcDefinition,
   type MvcSnapshot,
+  type MvcTraversalRelationshipRecord,
 } from './mvc-evolution.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -815,6 +817,237 @@ describe('MVC evolution contract consumption', () => {
     expect(importLines).not.toMatch(/graph-topology-analyzer|rss|kernel|workspace-recon|graph-traversal|query/i);
   });
 
+  it('expands MVC-S candidates breadth-first over supplied relationship records only', async () => {
+    const seed = { id: 'component:seed', version: '1' };
+    const firstHop = { id: 'component:first-hop', version: '1' };
+    const secondHop = { id: 'component:second-hop', version: '1' };
+    const relationships: MvcTraversalRelationshipRecord[] = [
+      { id: 'relationship:seed-to-first', version: '1', from_ref: seed, to_ref: firstHop, reason: 'Seed reaches first hop.' },
+      { id: 'relationship:first-to-second', version: '1', from_ref: firstHop, to_ref: secondHop, reason: 'First hop reaches second hop.' },
+    ];
+
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [seed],
+      relationshipRecords: relationships,
+      depth: 2,
+    });
+
+    expect(snapshot.candidate_entities).toEqual([firstHop, secondHop, seed]);
+    expect(snapshot.candidate_relationships).toEqual([
+      { id: 'relationship:first-to-second', version: '1' },
+      { id: 'relationship:seed-to-first', version: '1' },
+    ]);
+    expect(snapshot.inclusion_rationale
+      .map(entry => entry.selector_path)
+      .filter(selectorPath => selectorPath.startsWith('supplied-relationship-traversal/'))).toEqual([
+      'supplied-relationship-traversal/depth:1/relationship:relationship:seed-to-first',
+      'supplied-relationship-traversal/depth:2/relationship:relationship:first-to-second',
+      'supplied-relationship-traversal/seed/component:seed',
+    ]);
+    expect(snapshot.inclusion_rationale[0].candidate_ref).toEqual(firstHop);
+    await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
+  });
+
+  it('treats depth as relationship-hop count and returns seeds only at depth zero', async () => {
+    const seed = { id: 'component:seed', version: '1' };
+    const firstHop = { id: 'component:first-hop', version: '1' };
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [seed],
+      relationshipRecords: [
+        { id: 'relationship:seed-to-first', version: '1', from_ref: seed, to_ref: firstHop },
+      ],
+      depth: 0,
+    });
+
+    expect(snapshot.candidate_entities).toEqual([seed]);
+    expect(snapshot.candidate_relationships).toEqual([]);
+    expect(snapshot.negative_space).toContainEqual(
+      expect.objectContaining({ id: 'depth-cap:0' }),
+    );
+  });
+
+  it('obeys caller-supplied traversal depth exactly without deriving or overriding it', async () => {
+    const seed = { id: 'component:seed', version: '1' };
+    const firstHop = { id: 'component:first-hop', version: '1' };
+    const secondHop = { id: 'component:second-hop', version: '1' };
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [seed],
+      relationshipRecords: [
+        { id: 'relationship:seed-to-first', version: '1', from_ref: seed, to_ref: firstHop },
+        { id: 'relationship:first-to-second', version: '1', from_ref: firstHop, to_ref: secondHop },
+      ],
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toEqual([firstHop, seed]);
+    expect(snapshot.candidate_entities).not.toContainEqual(secondHop);
+    expect(snapshot.negative_space).toContainEqual(
+      expect.objectContaining({ id: 'depth-cap:1' }),
+    );
+  });
+
+  it('does not infer inverse relationships or derive missing edges', async () => {
+    const seed = { id: 'component:seed', version: '1' };
+    const target = { id: 'component:target', version: '1' };
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [target],
+      relationshipRecords: [
+        { id: 'relationship:seed-to-target', version: '1', from_ref: seed, to_ref: target },
+      ],
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toEqual([target]);
+    expect(snapshot.candidate_relationships).toEqual([]);
+    expect(snapshot.negative_space).toContainEqual(
+      expect.objectContaining({ id: 'missing-relationship:component:target' }),
+    );
+  });
+
+  it('terminates deterministically on cyclic relationship surfaces without revisiting expanded refs', async () => {
+    const a = { id: 'component:a', version: '1' };
+    const b = { id: 'component:b', version: '1' };
+    const first = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [a],
+      relationshipRecords: [
+        { id: 'relationship:a-to-b', version: '1', from_ref: a, to_ref: b },
+        { id: 'relationship:b-to-a', version: '1', from_ref: b, to_ref: a },
+      ],
+      depth: 5,
+    });
+    const second = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [a],
+      relationshipRecords: [
+        { id: 'relationship:b-to-a', version: '1', from_ref: b, to_ref: a },
+        { id: 'relationship:a-to-b', version: '1', from_ref: a, to_ref: b },
+      ],
+      depth: 5,
+    });
+
+    expect(first).toEqual(second);
+    expect(first.candidate_entities).toEqual([a, b]);
+    expect(first.inclusion_rationale.filter(entry => entry.candidate_ref?.id === 'component:a')).toHaveLength(1);
+  });
+
+  it('preserves exact candidate identity without aliasing bare and workspace-qualified refs', async () => {
+    const repoLocal = {
+      id: 'ADR-L-0021',
+      version: '1',
+      identity_scope: 'repo-local' as const,
+      corpus_scope: 'ste-runtime',
+    };
+    const workspaceQualified = {
+      id: 'ste-runtime:ADR-L-0021',
+      version: '1',
+      identity_scope: 'workspace' as const,
+      corpus_scope: 'ste-runtime',
+      qualified_id: 'ste-runtime:ADR-L-0021',
+    };
+    const target = { id: 'component:target', version: '1' };
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [repoLocal, workspaceQualified],
+      relationshipRecords: [
+        { id: 'relationship:workspace-to-target', version: '1', from_ref: workspaceQualified, to_ref: target },
+      ],
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toContainEqual(repoLocal);
+    expect(snapshot.candidate_entities).toContainEqual(target);
+    expect(snapshot.candidate_entities).toContainEqual(workspaceQualified);
+  });
+
+  it('preserves workspace-qualified homonyms as distinct traversal candidates', async () => {
+    const runtimeAdr = {
+      id: 'ste-runtime:ADR-L-0013',
+      version: '1',
+      identity_scope: 'workspace' as const,
+      corpus_scope: 'ste-runtime',
+      qualified_id: 'ste-runtime:ADR-L-0013',
+    };
+    const kitAdr = {
+      id: 'adr-architecture-kit:ADR-L-0013',
+      version: '1',
+      identity_scope: 'workspace' as const,
+      corpus_scope: 'adr-architecture-kit',
+      qualified_id: 'adr-architecture-kit:ADR-L-0013',
+    };
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [runtimeAdr, kitAdr],
+      relationshipRecords: [],
+      depth: 1,
+    });
+
+    expect(snapshot.candidate_entities).toEqual([kitAdr, runtimeAdr]);
+  });
+
+  it('rejects traversal inputs that try to carry graph materialization artifacts', async () => {
+    const input = await buildInput();
+    expect(() => traverseMvcSCandidates({
+      ...input,
+      seedCandidateRefs: [{ id: 'component:seed', version: '1' }],
+      relationshipRecords: [],
+      depth: 1,
+      adjacencyMap: {},
+    } as never)).toThrow('adjacencyMap');
+  });
+
+  it('rejects malformed traversal depth and relationship records explicitly', async () => {
+    const input = await buildInput();
+    expect(() => traverseMvcSCandidates({
+      ...input,
+      seedCandidateRefs: [{ id: 'component:seed', version: '1' }],
+      relationshipRecords: [],
+      depth: -1,
+    })).toThrow('depth');
+    expect(() => traverseMvcSCandidates({
+      ...input,
+      seedCandidateRefs: [{ id: 'component:seed', version: '1' }],
+      relationshipRecords: [
+        { id: 'relationship:broken', version: '1', from_ref: { id: 'component:seed', version: '1' } } as never,
+      ],
+      depth: 1,
+    })).toThrow('to_ref');
+  });
+
+  it('keeps traversal output candidate-only and schema-valid', async () => {
+    const snapshot = traverseMvcSCandidates({
+      ...(await buildInput()),
+      seedCandidateRefs: [{ id: 'component:seed', version: '1' }],
+      relationshipRecords: [],
+      depth: 1,
+    });
+
+    assertMvcSnapshotCandidateOnly(snapshot);
+    for (const field of [
+      'admission_decision',
+      'caller_facing_eligibility',
+      'enforcement_outcome',
+      'governance_state',
+      'kernel_verdict',
+      'admitted_payload',
+    ]) {
+      expect(snapshot).not.toHaveProperty(field);
+    }
+    await expectMatchesSchema('mvc-snapshot.schema.json', snapshot);
+  });
+
+  it('keeps traversal helper isolated from graph materialization, workspace state, and kernel imports', async () => {
+    const source = await readFile(path.resolve(steRuntimeRoot, 'src', 'workspace', 'mvc-evolution.ts'), 'utf8');
+    const importLines = source.split('\n').filter(line => line.startsWith('import ')).join('\n');
+
+    expect(importLines).not.toMatch(/graph-domain|linkage-surface|graph-loader|workspace-graph|kernel|query|rss/i);
+    expect(source).not.toMatch(/buildGraphDomain|materializeGraphDomain|loadWorkspaceGraph|loadAidocGraph|assembleContext/);
+  });
+
   it('exposes machine-readable code provenance for ADR-L-0021 and runtime invariants', () => {
     for (const target of [
       assertMvcDefinitionContract,
@@ -832,6 +1065,13 @@ describe('MVC evolution contract consumption', () => {
     expect(functionInvariantMetadata(assertMvcSnapshotCandidateOnly)).toContain('INV-0031');
     expect(functionInvariantMetadata(buildMvcSnapshotCandidate)).toEqual(['INV-0031', 'INV-0032']);
     expect(functionInvariantMetadata(recommendMvcDepthFromTopology)).toEqual(['INV-0032']);
+    expect(functionAdrMetadata(traverseMvcSCandidates)).toContain('ADR-L-0023');
+    expect(functionInvariantMetadata(traverseMvcSCandidates)).toEqual([
+      'INV-0031',
+      'INV-0035',
+      'INV-0036',
+      'INV-0037',
+    ]);
   });
 
   it('anchors code provenance to an existing runtime ADR source', async () => {
@@ -840,6 +1080,12 @@ describe('MVC evolution contract consumption', () => {
       'adrs',
       'logical',
       'ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml',
+    ))).resolves.toBeUndefined();
+    await expect(access(path.resolve(
+      steRuntimeRoot,
+      'adrs',
+      'logical',
+      'ADR-L-0023-experimental-mvc-s-candidate-traversal-boundary.yaml',
     ))).resolves.toBeUndefined();
   });
 });

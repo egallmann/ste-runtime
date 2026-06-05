@@ -161,6 +161,7 @@ export {
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
   recommendMvcDepthFromTopology,
+  traverseMvcSCandidates,
   type BuildMvcSnapshotInput,
   type MvcDepthRecommendation,
   type MvcDepthRecommendationInput,
@@ -171,6 +172,8 @@ export {
   type MvcRefWithHash,
   type MvcSnapshot,
   type MvcTopologyMetrics,
+  type MvcTraversalRelationshipRecord,
+  type TraverseMvcSCandidatesInput,
 } from './workspace/mvc-evolution.js';
 
 // ============================================================================
