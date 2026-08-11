@@ -1,0 +1,157 @@
+schema_version: '1.0'
+adr_type: logical
+id: ADR-L-0023
+title: Experimental MVC-S Candidate Traversal Boundary
+status: proposed
+created_date: '2026-06-04'
+authors:
+- erik.gallmann
+domains:
+- mvc
+- rss
+- runtime
+- traversal
+- provenance
+tags:
+- mvc-s
+- traversal
+- candidate-surface
+- supplied-relationships
+- provenance
+vision_category: false
+related_adrs:
+- ADR-L-0021
+- ADR-L-0022
+introduces_entities:
+- CAP-0023
+- DEC-0025
+- INV-0035
+- INV-0036
+- INV-0037
+context: |
+  ADR-L-0021 established experimental MVC-D to MVC-S contract consumption and
+  deterministic candidate emission from fully supplied fixture inputs. It
+  explicitly did not authorize RSS traversal, Graph Domain execution, Linkage
+  Surface materialization, runtime query planning, or MVC-M admission.
+
+  Gate 6 introduces a narrower traversal boundary before production RSS
+  traversal. The runtime may expand MVC-S candidate refs by following supplied
+  relationship records only. This is a candidate-surface operation, not Graph
+  Domain materialization, topology discovery, Linkage Surface materialization,
+  context assembly, governance evaluation, or admission.
+
+  Supplied relationship records may be provided directly or inside a
+  ste-spec Linkage Surface-shaped object. In both cases ste-runtime remains a
+  consumer of supplied contract input. Runtime may read relationship_records
+  from a caller-supplied object, but it MUST NOT create, refresh, infer, enrich,
+  or materialize Linkage Surfaces.
+
+  Authorized:
+
+  - candidate expansion
+  - deterministic relationship following
+  - depth-bounded traversal
+  - inclusion rationale generation
+  - exclusion rationale generation
+  - candidate-only MVC-S output
+  - read-only consumption of supplied Linkage Surface-shaped relationship_records
+
+  Not Authorized:
+
+  - Graph Domain materialization
+  - topology computation
+  - relationship inference or derivation
+  - depth recommendation derivation
+  - Linkage Surface materialization
+  - MVC-M generation
+  - eligibility determination
+  - governance evaluation
+  - kernel admission
+  - workspace graph loading
+  - repository state access
+  - Linkage Surface generation, refresh, enrichment, or validation authority
+capabilities:
+- id: CAP-0023
+  name: Experimental MVC-S candidate traversal
+  description: |
+    Expand MVC-S candidate refs by breadth-first traversal over supplied
+    relationship records only, including relationship_records supplied inside a
+    Linkage Surface-shaped contract object, producing deterministic
+    candidate-only MVC-S snapshots.
+invariants:
+- id: INV-0035
+  statement: |
+    Experimental MVC-S candidate traversal MUST operate directly against supplied
+    relationship records only. It MUST NOT construct Graph Domains, adjacency
+    maps, topology caches, reusable traversal structures, or materialized graph
+    artifacts.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Preserves the boundary between candidate traversal and graph materialization.
+- id: INV-0036
+  statement: |
+    Experimental MVC-S candidate traversal MUST be breadth-first and bounded by
+    caller-supplied relationship-hop depth from supplied seed candidates. Runtime
+    MUST NOT compute, derive, adjust, optimize, or override traversal depth.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Keeps depth authority with the caller and stabilizes rationale generation.
+- id: INV-0037
+  statement: |
+    Experimental MVC-S candidate traversal MUST preserve exact candidate identity.
+    Runtime MUST NOT collapse, merge, alias, or heuristically equate candidate
+    refs based on bare identifiers, titles, names, or other non-authoritative
+    identity surfaces.
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: design
+  verification_method: automated
+  rationale: |
+    Prevents workspace homonym collapse and preserves federation-aware identity.
+decisions:
+- id: DEC-0025
+  summary: Add a supplied-relationship MVC-S candidate traversal boundary
+  rationale: |
+    A deterministic traversal helper lets runtime test candidate expansion before
+    production RSS traversal. The helper consumes only caller-supplied
+    relationship records and emits MVC-S candidate output through the existing
+    candidate builder.
+  decision: |
+    Implement breadth-first, depth-bounded candidate expansion over supplied
+    relationship records. Relationship following uses exact canonical ref
+    equality from currently expanded candidate refs to relationship from_ref,
+    adding to_ref as the next candidate. Traversal does not derive inverse edges
+    or infer missing relationships. If records are supplied inside a Linkage
+    Surface-shaped object, runtime extracts relationship_records only and
+    delegates to the same supplied-record traversal helper.
+  alternatives_considered:
+  - name: Build Graph Domains first
+    rejected_because: |
+      Graph Domain materialization would expand this gate beyond candidate-only
+      traversal and blur authority boundaries.
+  - name: Reuse workspace graph traversal
+    rejected_because: |
+      Workspace graph loading and production RSS traversal are outside this
+      experimental MVC-S boundary.
+  - name: Emit MVC-M from traversal output
+    rejected_because: |
+      MVC-M requires kernel-owned admission and is outside runtime authority.
+  consequences:
+    positive:
+    - Candidate traversal can be tested before production RSS assembly
+    - Rationale and negative space can be generated from deterministic paths
+    - Runtime authority remains factual and candidate-only
+    negative:
+    - Traversal is intentionally limited and does not discover missing graph state
+  related_invariants:
+  - INV-0035
+  - INV-0036
+  - INV-0037
+  enables_capabilities:
+  - CAP-0023

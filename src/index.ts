@@ -156,10 +156,18 @@ export {
 
 export {
   assertMvcDefinitionContract,
+  assertMvcFederatedIdentity,
   assertMvcSnapshotCandidateOnly,
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
+  recommendMvcDepthFromTopology,
+  traverseMvcSFromLinkageSurface,
+  traverseMvcSCandidates,
   type BuildMvcSnapshotInput,
+  type MvcLinkageSurface,
+  type MvcLinkageSurfaceRelationshipRecord,
+  type MvcDepthRecommendation,
+  type MvcDepthRecommendationInput,
   type MvcDefinition,
   type MvcNegativeSpace,
   type MvcRationale,
@@ -167,6 +175,9 @@ export {
   type MvcRefWithHash,
   type MvcSnapshot,
   type MvcTopologyMetrics,
+  type MvcTraversalRelationshipRecord,
+  type TraverseMvcSFromLinkageSurfaceInput,
+  type TraverseMvcSCandidatesInput,
 } from './workspace/mvc-evolution.js';
 
 // ============================================================================

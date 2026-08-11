@@ -34,6 +34,7 @@ import {
 } from '../workspace/manifest.js';
 import {
   assertMvcDefinitionContract,
+  assertMvcFederatedIdentity,
   assertMvcSnapshotCandidateOnly,
   buildMvcSnapshotCandidate,
   canonicalMvcFingerprintInput,
@@ -86,6 +87,7 @@ describe('attribution retrofit contract guards', () => {
 
     it('ADR-L-0021: MVC evolution helpers', () => {
       expectAdrClaims(assertMvcDefinitionContract, 'ADR-L-0021', ['INV-0030']);
+      expectAdrClaims(assertMvcFederatedIdentity, 'ADR-L-0021', ['INV-0030', 'INV-0031']);
       expectAdrClaims(assertMvcSnapshotCandidateOnly, 'ADR-L-0021', ['INV-0031']);
       expectAdrClaims(buildMvcSnapshotCandidate, 'ADR-L-0021', ['INV-0031', 'INV-0032']);
       expectAdrClaims(canonicalMvcFingerprintInput, 'ADR-L-0021');
