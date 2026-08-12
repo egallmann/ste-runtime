@@ -73,7 +73,7 @@ npm run rss:stats
 
 - Generated repo overview: `SYSTEM-OVERVIEW.md`
 - Current ADRs: `adrs/`
-- Rendered ADR docs: `adrs/rendered/`
+- Generated ADR projections: `adrs/adr-projection/`
 - Project metadata: `PROJECT.yaml`
 - Architecture overview: `documentation/architecture.md`
 

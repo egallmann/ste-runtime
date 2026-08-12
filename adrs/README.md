@@ -20,7 +20,7 @@ adrs/
 │   ├── ADR-P-0001.yaml
 │   ├── ADR-P-0002.yaml
 │   └── ...
-├── rendered/         # Auto-generated markdown views
+├── adr-projection/   # Auto-generated markdown projections
 │   ├── ADR-L-0001.md
 │   └── ...
 ├── manifest.yaml     # Auto-generated discovery index
@@ -84,9 +84,9 @@ ADRs follow the [ADR Kit v1.0 schema](https://github.com/egallmann/adr-architect
 cat adrs/logical/ADR-L-0001-*.yaml
 ```
 
-### Option 2: Read rendered markdown
+### Option 2: Read generated markdown projection
 ```bash
-cat adrs/rendered/ADR-L-0001.md
+cat adrs/adr-projection/logical/ADR-L-0001-recon-provisional-execution-for-project-level-semantic-state.md
 ```
 
 ### Option 3: Query via RSS

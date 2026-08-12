@@ -131,7 +131,7 @@ flowchart TB
 - **Content-addressable** — Deterministic, reproducible state
 - **Self-validating** — 6-phase pipeline with validation
 
-**See:** [ADR-L-0001: RECON Provisional Execution](../adrs/rendered/ADR-L-0001.md)
+**See:** [ADR-L-0001: RECON Provisional Execution](../adrs/adr-projection/logical/ADR-L-0001-recon-provisional-execution-for-project-level-semantic-state.md)
 
 ---
 
@@ -158,7 +158,7 @@ flowchart TB
 - **Two-layer architecture** — Token efficiency + precision
 - **Deterministic traversal** — Same entry points → same context
 
-**See:** [ADR-P-0001: RSS CLI Implementation](../adrs/rendered/ADR-P-0001.md)
+**See:** [ADR-P-0001: RSS CLI Implementation](../adrs/adr-projection/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph-traversal.md)
 
 ---
 
@@ -183,7 +183,7 @@ flowchart TB
 - **Auto-discovery** — Cursor automatically finds tools
 - **Context reload** — Automatic RSS graph reload after RECON
 
-**See:** [ADR-P-0004: ste-runtime MCP Server](../adrs/rendered/ADR-P-0004.md)
+**See:** [ADR-P-0004: ste-runtime MCP Server](../adrs/adr-projection/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.md)
 
 ---
 
@@ -225,7 +225,7 @@ flowchart TB
 - **Smart debouncing** — Handles Cursor's streaming edits
 - **Transaction awareness** — Batches multi-file refactors
 
-**See:** [ADR-L-0004: Watchdog Authoritative Mode](../adrs/rendered/ADR-L-0004.md)
+**See:** [ADR-L-0004: Watchdog Authoritative Mode](../adrs/adr-projection/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.md)
 
 ---
 
@@ -456,7 +456,7 @@ MCP query received
 
 ### 2. CEM Not Implemented
 
-**Status:** Deferred per [ADR-L-0003](../adrs/rendered/ADR-L-0003.md).
+**Status:** Deferred per [ADR-L-0003](../adrs/adr-projection/logical/ADR-L-0003-cem-implementation-deferral.md).
 
 **Impact:** No formal 9-stage execution lifecycle.
 
@@ -603,12 +603,12 @@ do not enforce governance policy.
 
 ### ADR Kit Records
 
-- [ADR-L-0001: RECON Provisional Execution](../adrs/rendered/ADR-L-0001.md)
-- [ADR-L-0002: RECON Self-Validation](../adrs/rendered/ADR-L-0002.md)
-- [ADR-L-0003: CEM Deferral](../adrs/rendered/ADR-L-0003.md)
-- [ADR-P-0001: RSS CLI Implementation](../adrs/rendered/ADR-P-0001.md)
-- [ADR-L-0004: Watchdog Authoritative Mode](../adrs/rendered/ADR-L-0004.md)
-- [ADR-P-0004: ste-runtime MCP Server](../adrs/rendered/ADR-P-0004.md)
+- [ADR-L-0001: RECON Provisional Execution](../adrs/adr-projection/logical/ADR-L-0001-recon-provisional-execution-for-project-level-semantic-state.md)
+- [ADR-L-0002: RECON Self-Validation](../adrs/adr-projection/logical/ADR-L-0002-recon-self-validation-strategy.md)
+- [ADR-L-0003: CEM Deferral](../adrs/adr-projection/logical/ADR-L-0003-cem-implementation-deferral.md)
+- [ADR-P-0001: RSS CLI Implementation](../adrs/adr-projection/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph-traversal.md)
+- [ADR-L-0004: Watchdog Authoritative Mode](../adrs/adr-projection/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.md)
+- [ADR-P-0004: ste-runtime MCP Server](../adrs/adr-projection/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.md)
 
 ### Related Documentation
 

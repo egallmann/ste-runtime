@@ -1,5 +1,43 @@
 # E-ADR to ADR Kit Migration
 
+## Schema v1.3 Identity Migration (2026-08-12)
+
+This meaning-preserving migration was executed on `feature/adr-v13-migration` from `BASE_SHA` `5ee21d1d8e8a23cbeefbae80decd6164d46322cb` using `adr-architecture-kit==0.4.0`.
+
+- Canonical source truth: 40 ADR YAML files; schema distribution `1.3: 40` (previously `1.0: 40`)
+- Architecture namespace: `ste-runtime`
+- Identity map: `adrs/migrations/canonical-identity-v13-map.yaml`
+- Sealed map fingerprint: `sha256:42d567c61381780e9d097439f4bade85d8c13175c1d3f457bbc5d300fd10bce6`
+- Map baseline fingerprint: `sha256:9377a06b9f5661d75b9a9f3a0130e10afba23c2f7f031ed506abfb5efc78add1`
+- Mapped occurrences: 152; UUIDv7 identities minted exactly once: 152; accepted dispositions: 152; open queues: 0
+- Mapped occurrence distribution: ADR 40, boundary 2, capability 12, component 19, decision 24, implementation decision 5, interface 12, invariant 36, system 2
+
+Before/after runtime-owned derived state was `120 entities / 310 relationships / 0 unresolved` to `126 entities / 332 relationships / 0 unresolved`. The six-entity and 22-relationship increase is source-truth recovery: the prior manifest omitted ADR-L-0023 and the prior registry collapsed eight relationships through duplicate component aliases. Parity was proven by inverse-mapping UUID endpoints to aliases, applying the recorded component remaps, and confirming the remaining relationship multiset is exact.
+
+The seven duplicate canonical component aliases were repaired first with ADR Kit’s released `repair-canonical-ids` workflow. The complete remap remains in `adrs/migrations/canonical-id-remap.yaml`, with allocation state in `adrs/migrations/canonical-id-allocation.yaml`. No legacy identity was discarded: every migrated root and nested identity preserves its original ID as `alias_id`, and the map preserves the occurrence-level `legacy_alias_id`.
+
+Compatibility changes were limited to migration ingestion: authored v1.3 physical-system UUIDs are consumed as canonical system IDs; legacy `SYS-*` synthesis remains only for legacy physical-system input; UUID component-to-system links resolve directly; provenance uses source context/type and artifact path rather than ID prefixes; and `implemented_by_components` UUID traceability is preserved. Public APIs and graph relationship semantics remain unchanged.
+
+ADR Kit generated 40 projections under `adrs/adr-projection/{logical,physical,physical-system,physical-component}`. The obsolete generated `adrs/rendered/` directory was removed. Active consumers and documentation now reference the new projection path; the historical 2026-03-08 generation note below retains its former `rendered/*.md` description as historical context.
+
+Evidence commands included:
+
+```text
+adr validate --scope . --cross-references
+adr repair-canonical-ids --scope . --check
+adr migrate-identity-v13 --scope . --identity-map adrs/migrations/canonical-identity-v13-map.yaml --check
+adr generate-adr-projection --scope .
+npm ci
+npm run build
+npm test
+npm run test:integration
+npm run recon:self
+npm run lint
+npm run test:contract-guards
+node dist/cli/index.js architecture compile --project-root . --dry-run
+node dist/cli/index.js architecture compile --project-root .
+```
+
 **Migration Date:** 2026-03-08  
 **Migrated By:** ADR Kit migration tooling  
 **Source Format:** E-ADRs (Exploratory ADRs) in Markdown  
@@ -123,7 +161,7 @@ All migrated ADRs validated successfully:
 
 Auto-generated artifacts using ADR Kit services:
 - `manifest.yaml` - Discovery index (11 ADRs, 13 invariants)
-- `rendered/*.md` - Human-readable markdown views (11 files)
+- Historical `rendered/*.md` - Human-readable markdown views (11 files; superseded by `adrs/adr-projection/` in the 2026-08-12 v1.3 migration)
 
 ### Phase 7: RECON Validation
 

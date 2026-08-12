@@ -17,7 +17,7 @@ Keep only guides that are current, operational, and specific to using `ste-runti
 Architecture authority now lives under [`adrs/`](../../adrs/) and the generated [`SYSTEM-OVERVIEW.md`](../../SYSTEM-OVERVIEW.md).
 
 - Source ADRs: [`../../adrs/`](../../adrs/)
-- Generated ADR markdown: [`../../adrs/rendered/`](../../adrs/rendered/)
+- Generated ADR markdown: [`../../adrs/adr-projection/`](../../adrs/adr-projection/)
 - Generated repo overview: [`../../SYSTEM-OVERVIEW.md`](../../SYSTEM-OVERVIEW.md)
 
 ## Removed Material

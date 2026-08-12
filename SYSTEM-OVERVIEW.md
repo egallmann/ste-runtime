@@ -120,7 +120,7 @@ Repository artifact classes:
 - ADRs: [`adrs/logical/`](adrs/logical/), [`adrs/physical/`](adrs/physical/), [`adrs/physical-component/`](adrs/physical-component/), [`adrs/physical-system/`](adrs/physical-system/)
 - Registries and discovery: [`adrs/index/`](adrs/index/)
 - Manifest: [`adrs/manifest.yaml`](adrs/manifest.yaml)
-- Rendered ADR markdown: [`adrs/rendered/`](adrs/rendered/)
+- Generated ADR projections: [`adrs/adr-projection/`](adrs/adr-projection/)
 - Project metadata: [`PROJECT.yaml`](PROJECT.yaml)
 - Architecture evidence: JSON output from `ste evidence architecture`
 
