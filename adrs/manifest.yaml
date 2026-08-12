@@ -1,152 +1,9 @@
 schema_version: '1.0'
 type: manifest
-generated_date: '2026-06-02T04:30:56Z'
+generated_date: '2026-08-12T23:42:02Z'
 generated_from: adrs/**/*.yaml
 adrs:
-  - id: ADR-L-0001
-    type: logical
-    title: RECON Provisional Execution for Project-Level Semantic State
-    status: accepted
-    file_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
-    domains:
-      - recon
-      - architecture
-      - governance
-    tags:
-      - recon
-      - provisional-execution
-      - semantic-state
-      - ste-compliance
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 13
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0002
-    type: logical
-    title: RECON Self-Validation Strategy
-    status: accepted
-    file_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
-    domains:
-      - recon
-      - validation
-      - governance
-    tags:
-      - recon
-      - validation
-      - self-validation
-      - ste-compliance
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0003
-    type: logical
-    title: CEM Implementation Deferral
-    status: accepted
-    file_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
-    domains:
-      - architecture
-      - governance
-      - cem
-    tags:
-      - cem
-      - deferral
-      - meta-decision
-      - build-order
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0004
-    type: logical
-    title: Watchdog Authoritative Mode for Workspace Boundary
-    status: accepted
-    file_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
-    domains:
-      - watchdog
-      - governance
-      - workspace-boundary
-    tags:
-      - watchdog
-      - file-watching
-      - workspace-boundary
-      - ste-compliance
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0005
-    type: logical
-    title: Self-Configuring Domain Discovery
-    status: proposed
-    file_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
-    domains:
-      - recon
-      - domain-discovery
-      - architecture
-    tags:
-      - domain-discovery
-      - self-configuring
-      - ai-doc
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0006
-    type: logical
-    title: Conversational Query Interface for RSS
-    status: proposed
-    file_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
-    domains:
-      - rss
-      - interface
-      - architecture
-    tags:
-      - rss
-      - conversational
-      - query-interface
-      - natural-language
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0007
+  - id: 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
     type: logical
     title: Graph Freshness and Obligation Projection Semantics
     status: proposed
@@ -170,62 +27,20 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0009
+  - id: 019ff84e-4ece-71c8-af1f-eb35c77b551a
     type: logical
-    title: Unified Workspace Scope Model
+    title: Conversational Query Interface for RSS
     status: proposed
-    file_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    file_path: adrs/logical/ADR-L-0006-conversational-query-interface-for-rss.yaml
     domains:
-      - workspace
-      - scope
-    tags:
-      - workspace
-      - scope
-      - multi-repo
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 1
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0010
-    type: logical
-    title: Bootstrap and Init Capability
-    status: proposed
-    file_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
-    domains:
-      - workspace
-      - init
-    tags:
-      - init
-      - bootstrap
-      - onboarding
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0011
-    type: logical
-    title: Adapter Role Conformance
-    status: proposed
-    file_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
-    domains:
+      - rss
+      - interface
       - architecture
-      - integration
     tags:
-      - adapter
-      - role
-      - evidence
+      - rss
+      - conversational
+      - query-interface
+      - natural-language
     implements_logical: []
     technologies: []
     decision_count: 1
@@ -236,51 +51,7 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0012
-    type: logical
-    title: Polyglot Interop Contract
-    status: proposed
-    file_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
-    domains:
-      - architecture
-      - interop
-    tags:
-      - polyglot
-      - schema
-      - interop
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0013
-    type: logical
-    title: Path Portability Contract
-    status: proposed
-    file_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
-    domains:
-      - portability
-      - paths
-    tags:
-      - paths
-      - portability
-      - cross-platform
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0014
+  - id: 019ff84e-4ece-721e-b93f-3d5659b95dca
     type: logical
     title: Private Registry Isolation
     status: proposed
@@ -302,7 +73,146 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0015
+  - id: 019ff84e-4ece-730c-b33b-a814a58f221e
+    type: logical
+    title: Bootstrap and Init Capability
+    status: proposed
+    file_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+    domains:
+      - workspace
+      - init
+    tags:
+      - init
+      - bootstrap
+      - onboarding
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-7378-b637-eaea5a1d3bc2
+    type: logical
+    title: RECON Self-Validation Strategy
+    status: accepted
+    file_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml
+    domains:
+      - recon
+      - validation
+      - governance
+    tags:
+      - recon
+      - validation
+      - self-validation
+      - ste-compliance
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-737a-a23f-3f243e6fafda
+    type: logical
+    title: Self-Configuring Domain Discovery
+    status: proposed
+    file_path: adrs/logical/ADR-L-0005-self-configuring-domain-discovery.yaml
+    domains:
+      - recon
+      - domain-discovery
+      - architecture
+    tags:
+      - domain-discovery
+      - self-configuring
+      - ai-doc
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-74fc-8839-1d55445660b7
+    type: logical
+    title: Adapter Role Conformance
+    status: proposed
+    file_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+    domains:
+      - architecture
+      - integration
+    tags:
+      - adapter
+      - role
+      - evidence
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+    type: logical
+    title: Watchdog Authoritative Mode for Workspace Boundary
+    status: accepted
+    file_path: adrs/logical/ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.yaml
+    domains:
+      - watchdog
+      - governance
+      - workspace-boundary
+    tags:
+      - watchdog
+      - file-watching
+      - workspace-boundary
+      - ste-compliance
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-7693-ab03-49271bde3535
+    type: logical
+    title: CEM Implementation Deferral
+    status: accepted
+    file_path: adrs/logical/ADR-L-0003-cem-implementation-deferral.yaml
+    domains:
+      - architecture
+      - governance
+      - cem
+    tags:
+      - cem
+      - deferral
+      - meta-decision
+      - build-order
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-76a3-a93f-463d9474ce28
     type: logical
     title: Workspace Agnosticism Invariant
     status: proposed
@@ -326,7 +236,7 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0016
+  - id: 019ff84e-4ece-76ad-ae3e-f92bef05635a
     type: logical
     title: Workspace Graph Slice Schema Contract
     status: proposed
@@ -350,29 +260,31 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0017
+  - id: 019ff84e-4ece-791b-822f-21f537c95340
     type: logical
-    title: RECON Workspace Execution Contract
-    status: proposed
-    file_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    title: RECON Provisional Execution for Project-Level Semantic State
+    status: accepted
+    file_path: adrs/logical/ADR-L-0001-recon-provisional-execution-for-project-level-sema.yaml
     domains:
-      - workspace
       - recon
+      - architecture
+      - governance
     tags:
-      - workspace
       - recon
-      - reliability
+      - provisional-execution
+      - semantic-state
+      - ste-compliance
     implements_logical: []
     technologies: []
-    decision_count: 3
-    invariant_count: 1
+    decision_count: 1
+    invariant_count: 13
     gap_count: 0
     blocking_gaps: 0
     component_count: 0
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0018
+  - id: 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
     type: logical
     title: Deterministic Workspace Graph Queries
     status: proposed
@@ -397,7 +309,268 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0019
+  - id: 019ff84e-4ece-7ce3-aa17-67193bab337e
+    type: logical
+    title: Unified Workspace Scope Model
+    status: proposed
+    file_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    domains:
+      - workspace
+      - scope
+    tags:
+      - workspace
+      - scope
+      - multi-repo
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 1
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-7ddc-b31f-3a009abe14b3
+    type: logical
+    title: RECON Workspace Execution Contract
+    status: proposed
+    file_path: adrs/logical/ADR-L-0017-recon-workspace-execution-contract.yaml
+    domains:
+      - workspace
+      - recon
+    tags:
+      - workspace
+      - recon
+      - reliability
+    implements_logical: []
+    technologies: []
+    decision_count: 3
+    invariant_count: 1
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-7f44-8e26-a71c17ab45d9
+    type: logical
+    title: Path Portability Contract
+    status: proposed
+    file_path: adrs/logical/ADR-L-0013-path-portability-contract.yaml
+    domains:
+      - portability
+      - paths
+    tags:
+      - paths
+      - portability
+      - cross-platform
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ece-7fcd-a62e-c8a7982632b0
+    type: logical
+    title: Polyglot Interop Contract
+    status: proposed
+    file_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+    domains:
+      - architecture
+      - interop
+    tags:
+      - polyglot
+      - schema
+      - interop
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7117-853b-c869ac6d7ba6
+    type: physical-component
+    title: JSON Semantic Extraction
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+    domains:
+      - extraction
+      - json
+      - recon
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-791b-822f-21f537c95340
+    technologies:
+      - typescript
+      - json
+      - node.js
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7156-a33b-bc8bba3fac60
+    type: physical-component
+    title: Obligation Projection and Context Assembly
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+    domains:
+      - obligations
+      - context
+      - rss
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-71c8-af1f-eb35c77b551a
+      - 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+    technologies:
+      - typescript
+      - node.js
+      - zod
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-721a-b936-e1b98d068ec7
+    type: physical-component
+    title: CloudFormation Semantic Extraction
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
+    domains:
+      - extraction
+      - cloudformation
+      - recon
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-791b-822f-21f537c95340
+    technologies:
+      - typescript
+      - cloudformation
+      - yaml
+      - json
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 1
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-734c-9f3f-04d15f1079f5
+    type: physical-component
+    title: Watchdog and Update Coordination
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+    domains:
+      - watch
+      - runtime
+      - reconciliation
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+    technologies:
+      - typescript
+      - node.js
+      - chokidar
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-73e1-8c0f-19a06db3004b
+    type: physical-component
+    title: Frontend Semantic Extraction
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+    domains:
+      - extraction
+      - frontend
+      - recon
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-791b-822f-21f537c95340
+    technologies:
+      - typescript
+      - angular
+      - css
+      - scss
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-745f-9832-3155d323e40c
+    type: logical
+    title: Workspace Attribution Federation Consumption
+    status: accepted
+    file_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
+    domains:
+      - workspace
+      - federation
+      - attribution
+    tags:
+      - workspace
+      - federation
+      - qualified-id
+      - attribution
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 2
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-74b8-8b3b-d33e1ad21f6a
+    type: logical
+    title: Experimental MVC-D to MVC-S Contract Consumption
+    status: proposed
+    file_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    domains:
+      - mvc
+      - contracts
+      - runtime
+      - provenance
+    tags:
+      - mvc-d
+      - mvc-s
+      - contract-consumption
+      - candidate-surface
+      - provenance
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 3
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-74ba-b201-3b02412f39c8
     type: logical
     title: Multi-Resolution Architecture Projection
     status: proposed
@@ -422,7 +595,231 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0020
+  - id: 019ff84e-4ecf-7776-bf27-ffc57bc598dd
+    type: physical-component
+    title: Preflight Freshness and Reconciliation Gating
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+    domains:
+      - preflight
+      - freshness
+      - reconciliation
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+      - 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+    technologies:
+      - typescript
+      - node.js
+      - zod
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    type: physical-system
+    title: Runtime Orchestration and Assistant Integration
+    status: proposed
+    file_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
+    domains:
+      - runtime
+      - mcp
+      - rss
+      - watch
+    tags:
+      - runtime
+      - mcp
+      - watchdog
+      - obligations
+    implements_logical:
+      - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+      - 019ff84e-4ece-71c8-af1f-eb35c77b551a
+      - 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+      - 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
+    technologies:
+      - typescript
+      - node.js
+      - mcp
+      - chokidar
+      - zod
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7a24-801d-7d1e708577ac
+    type: physical-component
+    title: Workspace Graph Query Engine
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0009-workspace-graph-query-engine.yaml
+    domains:
+      - workspace
+      - graph
+      - rss
+    tags:
+      - workspace
+      - graph-traversal
+      - canned-queries
+      - projections
+    implements_logical:
+      - 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
+      - 019ff84e-4ece-7ce3-aa17-67193bab337e
+      - 019ff84e-4ece-76ad-ae3e-f92bef05635a
+    technologies:
+      - typescript
+      - node.js
+      - yaml
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7a82-ae3a-121886af1b51
+    type: physical-component
+    title: ADR YAML Semantic Extraction
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0011-adr-yaml-semantic-extraction.yaml
+    domains:
+      - extraction
+      - architecture
+      - recon
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-791b-822f-21f537c95340
+      - 019ff84e-4ece-737a-a23f-3f243e6fafda
+    technologies:
+      - typescript
+      - node.js
+      - js-yaml
+      - adr-yaml
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7d09-802f-c14b1802b27c
+    type: physical-component
+    title: Semantic Compression Engine
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0010-semantic-compression-engine.yaml
+    domains:
+      - workspace
+      - graph
+      - projection
+    tags:
+      - workspace
+      - compression
+      - multi-resolution
+      - projection
+      - deterministic
+    implements_logical:
+      - 019ff84e-4ecf-74ba-b201-3b02412f39c8
+      - 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
+    technologies:
+      - typescript
+      - node.js
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
+    type: physical-component
+    title: MCP Server and Tool Registry
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+    domains:
+      - mcp
+      - integration
+      - runtime
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+      - 019ff84e-4ece-71c8-af1f-eb35c77b551a
+      - 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+      - 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
+    technologies:
+      - typescript
+      - node.js
+      - mcp
+      - zod
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 1
+    blocking_gaps: 0
+    component_count: 1
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d
+    type: physical-component
+    title: Service Wiring Post-Processing
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+    domains:
+      - workspace
+      - graph
+      - extraction
+    tags: []
+    implements_logical:
+      - 019ff84e-4ece-76a3-a93f-463d9474ce28
+      - 019ff84e-4ece-76ad-ae3e-f92bef05635a
+    technologies:
+      - typescript
+      - node.js
+      - yaml
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 2
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7eed-a03b-5ae24f705e4d
+    type: logical
+    title: Experimental MVC-S Candidate Traversal Boundary
+    status: proposed
+    file_path: adrs/logical/ADR-L-0023-experimental-mvc-s-candidate-traversal-boundary.yaml
+    domains:
+      - mvc
+      - rss
+      - runtime
+      - traversal
+      - provenance
+    tags:
+      - mvc-s
+      - traversal
+      - candidate-surface
+      - supplied-relationships
+      - provenance
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 3
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ecf-7f4e-8b17-1f35008e8877
     type: logical
     title: Source Locators as Cognitive Execution Model Infrastructure
     status: proposed
@@ -450,158 +847,30 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-L-0021
-    type: logical
-    title: Experimental MVC-D to MVC-S Contract Consumption
+  - id: 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    type: physical-system
+    title: Semantic Extraction Subsystem
     status: proposed
-    file_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
-    domains:
-      - mvc
-      - contracts
-      - runtime
-      - provenance
-    tags:
-      - mvc-d
-      - mvc-s
-      - contract-consumption
-      - candidate-surface
-      - provenance
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 3
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-L-0022
-    type: logical
-    title: Workspace Attribution Federation Consumption
-    status: accepted
-    file_path: adrs/logical/ADR-L-0022-workspace-attribution-federation-consumption.yaml
-    domains:
-      - workspace
-      - federation
-      - attribution
-    tags:
-      - workspace
-      - federation
-      - qualified-id
-      - attribution
-    implements_logical: []
-    technologies: []
-    decision_count: 1
-    invariant_count: 2
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-P-0001
-    type: physical
-    title: RSS CLI Implementation for Developer-Invoked Graph Traversal
-    status: accepted
-    file_path: adrs/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph.yaml
-    domains:
-      - rss
-      - cli
-      - implementation
-    tags:
-      - rss
-      - cli
-      - graph-traversal
-      - developer-tools
-    implements_logical:
-      - ADR-L-0002
-    technologies:
-      - cli
-      - file-discovery
-      - file-watching
-      - graph-traversal
-      - mcp
-      - node.js
-      - schema-validation
-      - testing
-      - typescript
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-P-0002
-    type: physical
-    title: JSON Data Extraction for Compliance Controls and Schemas
-    status: superseded
-    file_path: adrs/physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-s.yaml
+    file_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
     domains:
       - extraction
-      - data
-      - implementation
+      - recon
+      - normalization
     tags:
-      - json
-      - extractor
-      - compliance
-      - schemas
-    implements_logical:
-      - ADR-L-0001
-    technologies:
-      - cli
-      - data-extraction
-      - file-discovery
-      - file-watching
-      - json
-      - mcp
-      - node.js
-      - schema-validation
-      - testing
-      - typescript
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-P-0003
-    type: physical
-    title: Angular and CSS/SCSS Semantic Extraction
-    status: superseded
-    file_path: adrs/physical/ADR-P-0003-angular-and-cssscss-semantic-extraction.yaml
-    domains:
       - extraction
-      - frontend
-      - implementation
-    tags:
-      - angular
-      - css
-      - scss
-      - extractor
-      - frontend
+      - recon
+      - semantic-state
     implements_logical:
-      - ADR-L-0001
+      - 019ff84e-4ece-791b-822f-21f537c95340
+      - 019ff84e-4ece-737a-a23f-3f243e6fafda
     technologies:
-      - angular
-      - ast-parsing
-      - cli
-      - css
-      - file-discovery
-      - file-watching
-      - mcp
-      - node.js
-      - schema-validation
-      - scss
-      - testing
       - typescript
-      - yaml
+      - node.js
+      - json
+      - angular
+      - css
+      - cloudformation
+      - adr-yaml
     decision_count: 0
     invariant_count: 0
     gap_count: 0
@@ -610,7 +879,7 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-P-0004
+  - id: 019ff84e-4ed0-78a0-9334-d520d3decf14
     type: physical
     title: ste-runtime MCP Server Implementation
     status: superseded
@@ -625,8 +894,8 @@ adrs:
       - cursor-integration
       - file-watching
     implements_logical:
-      - ADR-L-0004
-      - ADR-L-0006
+      - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+      - 019ff84e-4ece-71c8-af1f-eb35c77b551a
     technologies:
       - cli
       - file-discovery
@@ -647,7 +916,78 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-P-0005
+  - id: 019ff84e-4ed0-79c2-843f-57944e4ec69c
+    type: physical
+    title: RSS CLI Implementation for Developer-Invoked Graph Traversal
+    status: accepted
+    file_path: adrs/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph.yaml
+    domains:
+      - rss
+      - cli
+      - implementation
+    tags:
+      - rss
+      - cli
+      - graph-traversal
+      - developer-tools
+    implements_logical:
+      - 019ff84e-4ece-7378-b637-eaea5a1d3bc2
+    technologies:
+      - cli
+      - file-discovery
+      - file-watching
+      - graph-traversal
+      - mcp
+      - node.js
+      - schema-validation
+      - testing
+      - typescript
+      - yaml
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ed0-7ba6-a33f-812df2eef432
+    type: physical
+    title: JSON Data Extraction for Compliance Controls and Schemas
+    status: superseded
+    file_path: adrs/physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-s.yaml
+    domains:
+      - extraction
+      - data
+      - implementation
+    tags:
+      - json
+      - extractor
+      - compliance
+      - schemas
+    implements_logical:
+      - 019ff84e-4ece-791b-822f-21f537c95340
+    technologies:
+      - cli
+      - data-extraction
+      - file-discovery
+      - file-watching
+      - json
+      - mcp
+      - node.js
+      - schema-validation
+      - testing
+      - typescript
+      - yaml
+    decision_count: 0
+    invariant_count: 0
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
+  - id: 019ff84e-4ed0-7c04-af35-82ee16e5dc81
     type: physical
     title: Extractor Validation Requirements
     status: accepted
@@ -661,7 +1001,7 @@ adrs:
       - extractors
       - quality-assurance
     implements_logical:
-      - ADR-L-0002
+      - 019ff84e-4ece-7378-b637-eaea5a1d3bc2
     technologies:
       - cli
       - file-discovery
@@ -681,350 +1021,37 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: ADR-PC-0001
-    type: physical-component
-    title: MCP Server and Tool Registry
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
-    domains:
-      - mcp
-      - integration
-      - runtime
-    tags: []
-    implements_logical:
-      - ADR-L-0004
-      - ADR-L-0006
-      - ADR-L-0007
-      - ADR-L-0018
-    technologies:
-      - typescript
-      - node.js
-      - mcp
-      - zod
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 1
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0002
-    type: physical-component
-    title: Watchdog and Update Coordination
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
-    domains:
-      - watch
-      - runtime
-      - reconciliation
-    tags: []
-    implements_logical:
-      - ADR-L-0004
-    technologies:
-      - typescript
-      - node.js
-      - chokidar
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0003
-    type: physical-component
-    title: Preflight Freshness and Reconciliation Gating
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
-    domains:
-      - preflight
-      - freshness
-      - reconciliation
-    tags: []
-    implements_logical:
-      - ADR-L-0004
-      - ADR-L-0007
-    technologies:
-      - typescript
-      - node.js
-      - zod
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0004
-    type: physical-component
-    title: Obligation Projection and Context Assembly
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
-    domains:
-      - obligations
-      - context
-      - rss
-    tags: []
-    implements_logical:
-      - ADR-L-0006
-      - ADR-L-0007
-    technologies:
-      - typescript
-      - node.js
-      - zod
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0005
-    type: physical-component
-    title: JSON Semantic Extraction
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
-    domains:
-      - extraction
-      - json
-      - recon
-    tags: []
-    implements_logical:
-      - ADR-L-0001
-    technologies:
-      - typescript
-      - json
-      - node.js
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0006
-    type: physical-component
-    title: Frontend Semantic Extraction
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+  - id: 019ff84e-4ed0-7fa4-b739-80447b4e3085
+    type: physical
+    title: Angular and CSS/SCSS Semantic Extraction
+    status: superseded
+    file_path: adrs/physical/ADR-P-0003-angular-and-cssscss-semantic-extraction.yaml
     domains:
       - extraction
       - frontend
-      - recon
-    tags: []
-    implements_logical:
-      - ADR-L-0001
-    technologies:
-      - typescript
+      - implementation
+    tags:
       - angular
       - css
       - scss
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0007
-    type: physical-component
-    title: CloudFormation Semantic Extraction
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
-    domains:
-      - extraction
-      - cloudformation
-      - recon
-    tags: []
+      - extractor
+      - frontend
     implements_logical:
-      - ADR-L-0001
+      - 019ff84e-4ece-791b-822f-21f537c95340
     technologies:
-      - typescript
-      - cloudformation
-      - yaml
-      - json
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 1
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0008
-    type: physical-component
-    title: Service Wiring Post-Processing
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
-    domains:
-      - workspace
-      - graph
-      - extraction
-    tags: []
-    implements_logical:
-      - ADR-L-0015
-      - ADR-L-0016
-    technologies:
-      - typescript
-      - node.js
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 2
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0009
-    type: physical-component
-    title: Workspace Graph Query Engine
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0009-workspace-graph-query-engine.yaml
-    domains:
-      - workspace
-      - graph
-      - rss
-    tags:
-      - workspace
-      - graph-traversal
-      - canned-queries
-      - projections
-    implements_logical:
-      - ADR-L-0018
-      - ADR-L-0009
-      - ADR-L-0016
-    technologies:
-      - typescript
-      - node.js
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0010
-    type: physical-component
-    title: Semantic Compression Engine
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0010-semantic-compression-engine.yaml
-    domains:
-      - workspace
-      - graph
-      - projection
-    tags:
-      - workspace
-      - compression
-      - multi-resolution
-      - projection
-      - deterministic
-    implements_logical:
-      - ADR-L-0019
-      - ADR-L-0018
-    technologies:
-      - typescript
-      - node.js
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PC-0011
-    type: physical-component
-    title: ADR YAML Semantic Extraction
-    status: proposed
-    file_path: adrs/physical-component/ADR-PC-0011-adr-yaml-semantic-extraction.yaml
-    domains:
-      - extraction
-      - architecture
-      - recon
-    tags: []
-    implements_logical:
-      - ADR-L-0001
-      - ADR-L-0005
-    technologies:
-      - typescript
-      - node.js
-      - js-yaml
-      - adr-yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 1
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PS-0001
-    type: physical-system
-    title: Runtime Orchestration and Assistant Integration
-    status: proposed
-    file_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
-    domains:
-      - runtime
-      - mcp
-      - rss
-      - watch
-    tags:
-      - runtime
-      - mcp
-      - watchdog
-      - obligations
-    implements_logical:
-      - ADR-L-0004
-      - ADR-L-0006
-      - ADR-L-0007
-      - ADR-L-0018
-    technologies:
-      - typescript
-      - node.js
-      - mcp
-      - chokidar
-      - zod
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: ADR-PS-0002
-    type: physical-system
-    title: Semantic Extraction Subsystem
-    status: proposed
-    file_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
-    domains:
-      - extraction
-      - recon
-      - normalization
-    tags:
-      - extraction
-      - recon
-      - semantic-state
-    implements_logical:
-      - ADR-L-0001
-      - ADR-L-0005
-    technologies:
-      - typescript
-      - node.js
-      - json
       - angular
+      - ast-parsing
+      - cli
       - css
-      - cloudformation
-      - adr-yaml
+      - file-discovery
+      - file-watching
+      - mcp
+      - node.js
+      - schema-validation
+      - scss
+      - testing
+      - typescript
+      - yaml
     decision_count: 0
     invariant_count: 0
     gap_count: 0
@@ -1049,14 +1076,14 @@ gaps_summary:
   blocking: 0
   by_adr: {}
 statistics:
-  total_adrs: 39
-  logical_adrs: 21
+  total_adrs: 40
+  logical_adrs: 22
   physical_adrs: 5
   physical_system_adrs: 2
   physical_component_adrs: 11
   decision_adrs: 0
-  total_decisions: 23
-  total_invariants: 33
+  total_decisions: 24
+  total_invariants: 36
   total_components: 19
   total_gaps: 4
   blocking_gaps: 0

@@ -1,7 +1,7 @@
 schema_version: '1.1'
 type: normalized_entity_registry
 entities:
-  - id: SYS-0001
+  - id: 019ff84e-4ed0-727d-9337-e52045221df1
     entity_type: system
     name: Runtime Orchestration and Assistant Integration
     summary: >-
@@ -12,16 +12,18 @@ entities:
     admission_status: admitted
     canonical_source:
       source_type: physical_system_adr
-      source_ref: ADR-PS-0001
+      source_ref: 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
       artifact_path: adrs/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-PS-0001
+      adr_id: 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+      system_alias_id: SYS-0001
+      system_alias_name: sys-0001-runtime-orchestration-and-assistant-integration
       implements_logical:
-        - ADR-L-0004
-        - ADR-L-0006
-        - ADR-L-0007
-        - ADR-L-0018
+        - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+        - 019ff84e-4ece-71c8-af1f-eb35c77b551a
+        - 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+        - 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
       technologies:
         - typescript
         - node.js
@@ -30,7 +32,7 @@ entities:
         - zod
     relationships:
       declared_in:
-        - ADR-PS-0001
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
       declares: []
       references: []
       referenced_by: []
@@ -45,12 +47,12 @@ entities:
       implements: []
       embodied_in: []
       embodies:
-        - COMP-0001
-        - COMP-0002
-        - COMP-0003
-        - COMP-0004
-        - COMP-0010
-        - COMP-0011
+        - 019ff84e-4ecf-7072-bd2f-aeb73b26b100
+        - 019ff84e-4ecf-7102-af3f-302a74e31f59
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+        - 019ff84e-4ecf-745c-903f-18d2f4b20e63
+        - 019ff84e-4ecf-7962-b83d-01e7e385b783
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
       supersedes: []
       superseded_by: []
       refines: []
@@ -63,11 +65,11 @@ entities:
       missing_fields: []
     provenance:
       source_type: physical_system_adr
-      source_ref: ADR-PS-0001
+      source_ref: 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
       extraction_phase: extract_system
       classification: explicit
       generator: adr-architecture-index
-  - id: SYS-0002
+  - id: 019ff84e-4ed0-767d-a90d-e98e673532cc
     entity_type: system
     name: Semantic Extraction Subsystem
     summary: >-
@@ -77,14 +79,16 @@ entities:
     admission_status: admitted
     canonical_source:
       source_type: physical_system_adr
-      source_ref: ADR-PS-0002
+      source_ref: 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
       artifact_path: adrs/physical-system/ADR-PS-0002-semantic-extraction-subsystem.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-PS-0002
+      adr_id: 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+      system_alias_id: SYS-0002
+      system_alias_name: sys-0002-semantic-extraction-subsystem
       implements_logical:
-        - ADR-L-0001
-        - ADR-L-0005
+        - 019ff84e-4ece-791b-822f-21f537c95340
+        - 019ff84e-4ece-737a-a23f-3f243e6fafda
       technologies:
         - typescript
         - node.js
@@ -95,7 +99,7 @@ entities:
         - adr-yaml
     relationships:
       declared_in:
-        - ADR-PS-0002
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
       declares: []
       references: []
       referenced_by: []
@@ -110,12 +114,12 @@ entities:
       implements: []
       embodied_in: []
       embodies:
-        - COMP-0005
-        - COMP-0006
-        - COMP-0007
-        - COMP-0008
-        - COMP-0009
-        - COMP-0012
+        - 019ff84e-4ecf-73de-b63f-92e5a829225d
+        - 019ff84e-4ecf-7422-913f-540519905503
+        - 019ff84e-4ecf-745c-9a2f-9fef67bdbe8d
+        - 019ff84e-4ecf-7568-9a2b-9ca73464cb45
+        - 019ff84e-4ecf-774e-b239-5c80be840bd0
+        - 019ff84e-4ecf-7972-bf39-c81c4a74ae65
       supersedes: []
       superseded_by: []
       refines: []
@@ -128,7 +132,7 @@ entities:
       missing_fields: []
     provenance:
       source_type: physical_system_adr
-      source_ref: ADR-PS-0002
+      source_ref: 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
       extraction_phase: extract_system
       classification: explicit
       generator: adr-architecture-index
