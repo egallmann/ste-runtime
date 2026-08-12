@@ -17,7 +17,7 @@ export interface ArchitectureEvidenceFreshnessResult {
 const ADRS_DIR = 'adrs';
 const DERIVED_DIRECTORY_PREFIXES = [
   'adrs/index/',
-  'adrs/rendered/',
+  'adrs/adr-projection/',
   'adrs/entities/',
 ] as const;
 const DERIVED_FILE_PATHS = new Set([

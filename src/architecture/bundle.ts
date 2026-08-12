@@ -39,6 +39,26 @@ function filterByType(entities: NormalizedEntity[], t: string): NormalizedEntity
   return entities.filter((e) => e.entity_type === t);
 }
 
+function sourceArtifactType(sourceType: string, artifactPath: string): string {
+  if (sourceType === 'logical_adr' || sourceType === 'physical_adr' || sourceType === 'physical_system_adr' || sourceType === 'physical_component_adr' || sourceType === 'standalone_invariant') {
+    return sourceType;
+  }
+  const normalizedPath = artifactPath.replace(/\\/g, '/');
+  if (normalizedPath.includes('/physical-component/')) return 'physical_component_adr';
+  if (normalizedPath.includes('/physical-system/')) return 'physical_system_adr';
+  if (normalizedPath.includes('/physical/')) return 'physical_adr';
+  if (normalizedPath.includes('/logical/')) return 'logical_adr';
+  return 'logical_adr';
+}
+
+function isAdrSourceRef(sourceType: string, artifactPath: string): boolean {
+  return sourceType === 'logical_adr'
+    || sourceType === 'physical_adr'
+    || sourceType === 'physical_system_adr'
+    || sourceType === 'physical_component_adr'
+    || artifactPath.replace(/\\/g, '/').includes('/adrs/');
+}
+
 function legacyFromNormalized(entity: NormalizedEntity): LegacyEntity | undefined {
   const mapping: Record<string, string> = {
     capability: 'capability',
@@ -52,17 +72,15 @@ function legacyFromNormalized(entity: NormalizedEntity): LegacyEntity | undefine
     return undefined;
   }
   let introducedBy = entity.canonical_source.source_ref.split('#')[0];
-  let sourceArtifactType = 'logical_adr';
-  if (introducedBy.startsWith('ADR-PC-')) sourceArtifactType = 'physical_component_adr';
-  else if (introducedBy.startsWith('ADR-PS-')) sourceArtifactType = 'physical_system_adr';
-  else if (!introducedBy.startsWith('ADR-')) {
-    sourceArtifactType = 'standalone_invariant';
+  const sourceArtifact = sourceArtifactType(entity.canonical_source.source_type, entity.canonical_source.artifact_path);
+  const legacySourceArtifactType = sourceArtifact;
+  if (sourceArtifact === 'standalone_invariant') {
     introducedBy = String(entity.metadata.defined_in ?? 'ADR-L-0001');
   }
 
   const relatedAdrs = new Set<string>();
   for (const ref of entity.source_refs) {
-    if (ref.source_ref.startsWith('ADR-')) {
+    if (isAdrSourceRef(ref.source_type, ref.artifact_path)) {
       relatedAdrs.add(ref.source_ref.split('#')[0]);
     }
   }
@@ -74,7 +92,7 @@ function legacyFromNormalized(entity: NormalizedEntity): LegacyEntity | undefine
     introduced_by: introducedBy,
     lifecycle_stage: entity.lifecycle_stage,
     source_path: entity.canonical_source.artifact_path,
-    source_artifact_type: sourceArtifactType,
+    source_artifact_type: legacySourceArtifactType,
     related_adrs: [...relatedAdrs].sort(),
     relationships: {
       depends_on: [...entity.relationships.related_to],

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { deriveRelationships } from './extraction.js';
+import { deriveRelationships, extractPhysicalEntities } from './extraction.js';
 import type { IrEntity, RelationshipType } from './types.js';
 import { emptyRelationshipBuckets } from './types.js';
 
@@ -42,6 +42,79 @@ function findInverse(
 }
 
 describe('deriveRelationships inverse emission', () => {
+  it('uses an authored v1.3 system UUID and preserves the legacy alias', () => {
+    const systemAdrId = '019fee89-e615-70a5-861b-b2dde147e5af';
+    const systemId = '019fee89-e615-73a3-8d31-7a4721affae9';
+    const { entities } = extractPhysicalEntities([
+      {
+        path: 'adrs/physical-system/system.yaml',
+        kind: 'physical-system',
+        adr: {
+          id: systemAdrId,
+          schema_version: '1.3',
+          title: 'Runtime system',
+          status: 'accepted',
+          context: 'The runtime system.',
+          system: { id: systemId, alias_id: 'SYS-0001', alias_name: 'Runtime system' },
+        },
+      },
+    ], p => p);
+
+    const system = entities.find(entry => entry.entity.entity_type === 'system')?.entity;
+    expect(system?.id).toBe(systemId);
+    expect(system?.metadata.system_alias_id).toBe('SYS-0001');
+    expect(system?.id).not.toBe(`SYS-${systemAdrId}`);
+  });
+
+  it('resolves v1.3 component-to-system links directly by authored system UUID', () => {
+    const systemAdrId = '019fee89-e615-70a5-861b-b2dde147e5af';
+    const systemId = '019fee89-e615-73a3-8d31-7a4721affae9';
+    const componentId = '019fee89-e615-75c0-9b6c-4c2206d5cc18';
+    const adr = makeAdrEntity(systemAdrId);
+    const system = makeChildEntity(systemId, systemAdrId, 'system');
+    const component = makeChildEntity(componentId, '019fee89-e615-778b-8dc1-9934df8cf826', 'component');
+    const entities = new Map<string, IrEntity>([
+      [systemAdrId, adr],
+      [systemId, system],
+      [componentId, component],
+    ]);
+    const physicalAdrs = [{
+      adr: {
+        id: '019fee89-e615-778b-8dc1-9934df8cf826',
+        implements_system: [systemId],
+        component_specifications: [{ id: componentId, component_id: componentId, implements_capabilities: [], dependencies: [] }],
+      },
+      path: '',
+      kind: 'physical-component',
+    }];
+
+    const { relationships, gaps } = deriveRelationships(entities, [], [], physicalAdrs, new Map());
+    expect(relationships.some(r => r.relationship_type === 'embodied_in' && r.to_entity_id === systemId)).toBe(true);
+    expect(gaps.some(gap => gap.gap_type === 'component_without_system')).toBe(false);
+    expect(relationships.some(r => r.to_entity_id === `SYS-${systemId}`)).toBe(false);
+  });
+
+  it('preserves UUID capability-to-component traceability', () => {
+    const adrId = '019fee89-e615-70a5-861b-b2dde147e5af';
+    const capabilityId = '019fee89-e615-73a3-8d31-7a4721affae9';
+    const componentId = '019fee89-e615-75c0-9b6c-4c2206d5cc18';
+    const adr = makeAdrEntity(adrId);
+    const capability = makeChildEntity(capabilityId, adrId, 'capability');
+    const component = makeChildEntity(componentId, '019fee89-e615-778b-8dc1-9934df8cf826', 'component');
+    const entities = new Map<string, IrEntity>([[adrId, adr], [capabilityId, capability], [componentId, component]]);
+    const logicalAdrs = [{
+      adr: {
+        id: adrId,
+        capabilities: [{ id: capabilityId, implemented_by_components: [componentId] }],
+      },
+      path: '',
+    }];
+
+    const { relationships, gaps } = deriveRelationships(entities, logicalAdrs, [], [], new Map());
+    expect(relationships.some(r => r.relationship_type === 'implemented_by' && r.from_entity_id === capabilityId && r.to_entity_id === componentId)).toBe(true);
+    expect(gaps.some(gap => gap.gap_type === 'capability_without_implementing_component')).toBe(false);
+  });
+
   it('emits declares as inverse of declared_in', () => {
     const adr = makeAdrEntity('ADR-L-0001');
     const cap = makeChildEntity('CAP-0001', 'ADR-L-0001', 'capability');
