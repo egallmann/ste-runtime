@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical
-id: ADR-P-0001
+id: 019ff84e-4ed0-79c2-843f-57944e4ec69c
 title: RSS CLI Implementation for Developer-Invoked Graph Traversal
 status: accepted
 created_date: '2026-01-07'
@@ -17,11 +17,11 @@ tags:
 - graph-traversal
 - developer-tools
 related_adrs:
-- ADR-L-0003
-- ADR-P-0004
+- 019ff84e-4ece-7693-ab03-49271bde3535
+- 019ff84e-4ed0-78a0-9334-d520d3decf14
 supersedes: []
 implements_logical:
-- ADR-L-0002
+- 019ff84e-4ece-7378-b637-eaea5a1d3bc2
 technologies:
 - cli
 - file-discovery
@@ -33,21 +33,33 @@ technologies:
 - testing
 - typescript
 - yaml
-context: |-
-  The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing) as the component responsible for graph traversal and context assembly from AI-DOC state. RSS provides six core operations:
+context: 'The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing)
+  as the component responsible for graph traversal and context assembly from AI-DOC
+  state. RSS provides six core operations:
+
 
   | Operation | Description |
+
   |-----------|-------------|
+
   | `lookup(domain, id)` | Direct item retrieval |
+
   | `dependencies(item, depth)` | Forward traversal (what does this depend on?) |
+
   | `dependents(item, depth)` | Backward traversal (what depends on this?) |
+
   | `blast_radius(item, depth)` | Bidirectional traversal (full impact surface) |
+
   | `by_tag(tag)` | Cross-domain query |
+
   | `assemble_context(task)` | Main context assembly function |
 
-  The question arose: How should RSS be exposed for developer use during the exploratory phase?
 
-  ---
+  The question arose: How should RSS be exposed for developer use during the exploratory
+  phase?
+
+
+  ---'
 technology_stack:
 - category: language
   name: TypeScript
@@ -59,7 +71,7 @@ technology_stack:
   rationale: JavaScript runtime for CLI and server applications
 architecture_patterns: []
 component_specifications:
-- id: COMP-0001
+- id: 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
   name: RSS CLI
   type: library
   responsibilities: Command-line interface for RSS graph traversal operations
@@ -69,7 +81,11 @@ component_specifications:
   downstream_services: []
   implementation_identifiers:
     module_path: src/cli/rss-cli.ts
+  alias_id: COMP-0001
+  alias_name: rss-cli
 data_architecture: []
 implementation_decisions: []
 integration_points: []
 gaps: []
+alias_id: ADR-P-0001
+alias_name: rss-cli-implementation-for-developer-invoked-graph-traversal

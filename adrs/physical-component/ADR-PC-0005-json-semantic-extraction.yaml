@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0005
+id: 019ff84e-4ecf-7117-853b-c869ac6d7ba6
 title: JSON Semantic Extraction
 status: proposed
 created_date: '2026-03-15'
@@ -11,33 +11,38 @@ domains:
 - json
 - recon
 implements_system:
-- ADR-PS-0002
+- 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
 implements_logical:
-- ADR-L-0001
+- 019ff84e-4ece-791b-822f-21f537c95340
 related_adrs:
-- ADR-P-0002
+- 019ff84e-4ed0-7ba6-a33f-812df2eef432
 supersedes:
-- ADR-P-0002
+- 019ff84e-4ed0-7ba6-a33f-812df2eef432
 technologies:
 - typescript
 - json
 - node.js
-context: |
-  JSON semantic extraction captures controls, schemas, and configuration
+context: 'JSON semantic extraction captures controls, schemas, and configuration
+
   semantics from JSON sources and feeds them into RECON normalization.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
   version: 5.3+
   rationale: Existing implementation language.
 component_specifications:
-- id: COMP-0005
+- id: 019ff84e-4ecf-774e-b239-5c80be840bd0
   name: JSON Semantic Extractor
   type: library
-  responsibilities: |
-    - Detect semantically relevant JSON files
+  responsibilities: '- Detect semantically relevant JSON files
+
     - Extract controls, schemas, and configuration semantics
+
     - Provide RECON-ready assertions for normalization
+
+    '
   generation_context:
     purpose: Extract semantic data from JSON artifacts for RECON.
     key_responsibilities:
@@ -48,12 +53,17 @@ component_specifications:
     success_criteria:
     - JSON semantic artifacts are represented in RECON output
   interfaces:
-  - id: IFACE-0005
+  - id: 019ff84e-4ecf-7aae-a83f-1be809df43ad
     type: library_api
-    specification: |
-      Public surfaces:
+    specification: 'Public surfaces:
+
       - src/extractors/json/index.ts
+
       - src/extractors/json/json-extractor.ts
+
+      '
+    alias_id: IFACE-0005
+    alias_name: iface-0005
   implementation_identifiers:
     module_path: src/extractors/json/json-extractor.ts
     test_path: src/extractors/json/json-extractor.test.ts
@@ -69,8 +79,14 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - JSON semantic extraction
+      integration_tests: '- JSON semantic extraction
+
         - JSON validation extraction coverage
+
+        '
+  alias_id: COMP-0005
+  alias_name: json-semantic-extractor
 implementation_decisions: []
 gaps: []
+alias_id: ADR-PC-0005
+alias_name: json-semantic-extraction

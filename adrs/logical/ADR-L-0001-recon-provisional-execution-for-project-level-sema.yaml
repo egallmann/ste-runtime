@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0001
+id: 019ff84e-4ece-791b-822f-21f537c95340
 title: RECON Provisional Execution for Project-Level Semantic State
 status: accepted
 created_date: '2026-01-07'
@@ -16,26 +16,37 @@ tags:
 - semantic-state
 - ste-compliance
 related_adrs:
-- ADR-L-0002
-- ADR-L-0003
+- 019ff84e-4ece-7378-b637-eaea5a1d3bc2
+- 019ff84e-4ece-7693-ab03-49271bde3535
 supersedes: []
-context: |-
-  The STE Architecture Specification defines RECON (Reconciliation Engine) as the mechanism for extracting semantic state from source code and populating AI-DOC. The question arose: How should RECON operate during the exploratory development phase when foundational components are still being built?
+context: 'The STE Architecture Specification defines RECON (Reconciliation Engine)
+  as the mechanism for extracting semantic state from source code and populating AI-DOC.
+  The question arose: How should RECON operate during the exploratory development
+  phase when foundational components are still being built?
+
 
   Key tensions:
 
-  1. **Canonical vs. Provisional State:** Should RECON produce canonical state that is authoritative for downstream systems?
-  2. **Automatic Resolution vs. Conflict Surfacing:** Should RECON automatically resolve conflicts or surface them for human judgment?
-  3. **Blocking vs. Non-Blocking:** Should RECON block development workflows when conflicts are detected?
-  4. **Single Repository vs. Multi-Repository:** What is the scope of RECON's reconciliation?
 
-  ---
+  1. **Canonical vs. Provisional State:** Should RECON produce canonical state that
+  is authoritative for downstream systems?
+
+  2. **Automatic Resolution vs. Conflict Surfacing:** Should RECON automatically resolve
+  conflicts or surface them for human judgment?
+
+  3. **Blocking vs. Non-Blocking:** Should RECON block development workflows when
+  conflicts are detected?
+
+  4. **Single Repository vs. Multi-Repository:** What is the scope of RECON''s reconciliation?
+
+
+  ---'
 capabilities: []
 architectural_boundaries: []
 interaction_contracts: []
 constraints: []
 invariants:
-- id: INV-0001
+- id: 019ff84e-4ece-7387-b33f-3d203e3c968c
   statement: 'Single repository only: RECON discovers files within the current repository.
     Cross-repository reconciliation is out of scope.'
   scope: global
@@ -45,7 +56,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0002
+  alias_id: INV-0001
+  alias_name: inv-0001
+- id: 019ff84e-4ece-772f-913f-d3603f83cb87
   statement: 'Incremental reconciliation: Only files that have changed since the last
     run are re-extracted (when timestamp detection is available).'
   scope: global
@@ -55,7 +68,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0003
+  alias_id: INV-0002
+  alias_name: inv-0002
+- id: 019ff84e-4ece-76e4-a515-11c97a90032c
   statement: 'Configurable source directories: Specified via `ste.config.json` or
     auto-detected.'
   scope: global
@@ -65,7 +80,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0004
+  alias_id: INV-0003
+  alias_name: inv-0003
+- id: 019ff84e-4ece-791d-a83d-68e2071db99e
   statement: 'Shallow extraction: Extract structural elements (functions, classes,
     imports, exports) without deep semantic analysis.'
   scope: global
@@ -75,7 +92,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0005
+  alias_id: INV-0004
+  alias_name: inv-0004
+- id: 019ff84e-4ece-7d65-8505-a183d71666d5
   statement: 'No deep semantic analysis: Do not attempt to understand function behavior,
     side effects, or complex type flows.'
   scope: global
@@ -85,7 +104,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0006
+  alias_id: INV-0005
+  alias_name: inv-0005
+- id: 019ff84e-4ece-7e59-873d-dde658c46f42
   statement: 'Multi-language support: TypeScript, Python, CloudFormation, JSON (see
     E-ADR-005), Angular, CSS/SCSS (see E-ADR-006), ADR YAML (see ADR-PC-0011).'
   scope: global
@@ -95,7 +116,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0007
+  alias_id: INV-0006
+  alias_name: inv-0006
+- id: 019ff84e-4ece-7967-8b28-130fe99ac9eb
   statement: 'Portable execution: RECON must work when dropped into any project.'
   scope: global
   enforcement_level: must
@@ -104,7 +127,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0008
+  alias_id: INV-0007
+  alias_name: inv-0007
+- id: 019ff84e-4ece-7186-b102-4c667f5ed9f0
   statement: 'Provisional mapping: Normalization to AI-DOC schema is best-effort,
     not canonical.'
   scope: global
@@ -114,7 +139,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0009
+  alias_id: INV-0008
+  alias_name: inv-0008
+- id: 019ff84e-4ece-79fe-b207-0c466d8b3f67
   statement: 'Schema evolution expected: The AI-DOC schema is still evolving; normalization
     will change.'
   scope: global
@@ -124,7 +151,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0010
+  alias_id: INV-0009
+  alias_name: inv-0009
+- id: 019ff84e-4ece-7e08-8a3f-d34bedde9b7e
   statement: 'ID stability: Element IDs should be stable across runs for the same
     source element.'
   scope: global
@@ -134,7 +163,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0011
+  alias_id: INV-0010
+  alias_name: inv-0010
+- id: 019ff84e-4ece-7970-9516-2240d15fa4c9
   statement: 'State is authoritative, not historical: Each run produces the current
     truth, not a delta.'
   scope: global
@@ -144,7 +175,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0012
+  alias_id: INV-0011
+  alias_name: inv-0011
+- id: 019ff84e-4ece-7b24-b62f-b90772932ca9
   statement: 'Create/Update/Delete semantics: New slices are created, changed slices
     are updated, orphaned slices are deleted.'
   scope: global
@@ -154,7 +187,9 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
-- id: INV-0013
+  alias_id: INV-0012
+  alias_name: inv-0012
+- id: 019ff84e-4ece-7fc5-803f-d0e6164bd4e7
   statement: 'Orphan detection: Slices from processed source files that no longer
     exist in code are removed.'
   scope: global
@@ -164,41 +199,67 @@ invariants:
   rationale: Extracted from ADR-L-0001 specification
   compliance_frameworks: []
   exceptions: []
+  alias_id: INV-0013
+  alias_name: inv-0013
 non_functional_requirements: []
 decisions:
-- id: DEC-0001
+- id: 019ff84e-4ece-71a8-b83f-c85f830514e4
   summary: RECON executes provisionally, generating semantic pressure without assuming
     correctness.
-  rationale: |-
-    ### 1. Semantic Pressure Over Semantic Truth
+  rationale: '### 1. Semantic Pressure Over Semantic Truth
 
-    RECON exists to **observe how semantic truth breaks under change**, not to declare what truth is. During exploratory development, the extraction algorithms, normalization schemas, and conflict detection heuristics are all evolving. Declaring any output as "canonical" would be premature.
+
+    RECON exists to **observe how semantic truth breaks under change**, not to declare
+    what truth is. During exploratory development, the extraction algorithms, normalization
+    schemas, and conflict detection heuristics are all evolving. Declaring any output
+    as "canonical" would be premature.
+
 
     By generating pressure without claiming correctness, RECON:
+
     - Forces execution of incomplete implementations
+
     - Surfaces edge cases and extraction gaps
+
     - Generates learning evidence for future refinement
+
     - Avoids false confidence in evolving algorithms
+
 
     ### 2. Conflicts Require Human Judgment
 
-    Automatic conflict resolution assumes the system understands developer intent. During this phase, RECON cannot reliably determine:
+
+    Automatic conflict resolution assumes the system understands developer intent.
+    During this phase, RECON cannot reliably determine:
+
     - Was a function renamed or deleted?
+
     - Is a signature change intentional or accidental?
+
     - Which version of a conflicting definition is correct?
 
-    All conflicts are written to disk as YAML files in `.ste/state/conflicts/active/` for human review. RECON surfaces evidence; humans render judgment.
+
+    All conflicts are written to disk as YAML files in `.ste/state/conflicts/active/`
+    for human review. RECON surfaces evidence; humans render judgment.
+
 
     ### 3. Development Must Not Be Blocked
 
+
     RECON is a learning tool, not an enforcement mechanism. Blocking commits would:
-    - Create friction disproportionate to RECON's maturity
+
+    - Create friction disproportionate to RECON''s maturity
+
     - Force developers to work around false positives
+
     - Reduce willingness to run RECON frequently
 
-    By remaining non-blocking, RECON encourages frequent execution and generates more learning data.
 
-    ---
+    By remaining non-blocking, RECON encourages frequent execution and generates more
+    learning data.
+
+
+    ---'
   alternatives_considered: []
   consequences:
     positive:
@@ -214,4 +275,8 @@ decisions:
     - Track conflict patterns to improve extraction algorithms
     - Plan transition to canonical execution once algorithms stabilize
   related_invariants: []
+  alias_id: DEC-0001
+  alias_name: recon-executes-provisionally-generating-semantic-pressure-without-assuming-correctness
 gaps: []
+alias_id: ADR-L-0001
+alias_name: recon-provisional-execution-for-project-level-semantic-state

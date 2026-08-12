@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0003
+id: 019ff84e-4ecf-7776-bf27-ffc57bc598dd
 title: Preflight Freshness and Reconciliation Gating
 status: proposed
 created_date: '2026-03-15'
@@ -11,31 +11,37 @@ domains:
 - freshness
 - reconciliation
 implements_system:
-- ADR-PS-0001
+- 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
 implements_logical:
-- ADR-L-0004
-- ADR-L-0007
+- 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+- 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
 technologies:
 - typescript
 - node.js
 - zod
-context: |
-  This component evaluates file freshness, intent scope, and reconciliation
+context: 'This component evaluates file freshness, intent scope, and reconciliation
+
   requirements before runtime actions rely on semantic graph state.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
   version: 5.3+
   rationale: Existing implementation language.
 component_specifications:
-- id: COMP-0003
+- id: 019ff84e-4ecf-7072-bd2f-aeb73b26b100
   name: Preflight Freshness and Reconciliation Gate
   type: service
-  responsibilities: |
-    - Resolve intent scope
+  responsibilities: '- Resolve intent scope
+
     - Evaluate graph freshness
+
     - Determine whether reconciliation is required
+
     - Surface freshness status for downstream tools
+
+    '
   generation_context:
     purpose: Prevent stale runtime state from driving assistant or operator behavior.
     key_responsibilities:
@@ -46,13 +52,19 @@ component_specifications:
     success_criteria:
     - Preflight results consistently reflect runtime freshness state
   interfaces:
-  - id: IFACE-0003
+  - id: 019ff84e-4ecf-7bd6-a93b-5625abbdd72d
     type: library_api
-    specification: |
-      Public surfaces:
+    specification: 'Public surfaces:
+
       - preflightReconciliation
+
       - checkFreshness
+
       - resolveIntentScope
+
+      '
+    alias_id: IFACE-0003
+    alias_name: iface-0003
   implementation_identifiers:
     module_path: src/mcp/preflight.ts
     test_path: src/mcp/preflight.test.ts
@@ -69,9 +81,16 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - Scope resolution
+      integration_tests: '- Scope resolution
+
         - Freshness status checks
+
         - Reconciliation gate outcomes
+
+        '
+  alias_id: COMP-0003
+  alias_name: preflight-freshness-and-reconciliation-gate
 implementation_decisions: []
 gaps: []
+alias_id: ADR-PC-0003
+alias_name: preflight-freshness-and-reconciliation-gating

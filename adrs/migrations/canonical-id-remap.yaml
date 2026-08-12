@@ -1,6 +1,48 @@
 schema_version: '1.0'
 type: canonical_id_remap
 entries:
+- entity_type: component
+  adr_id: ADR-P-0002
+  file_path: adrs/physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-s.yaml
+  source_pointer: /component_specifications/0/id
+  from: COMP-0001
+  to: COMP-0013
+- entity_type: component
+  adr_id: ADR-P-0003
+  file_path: adrs/physical/ADR-P-0003-angular-and-cssscss-semantic-extraction.yaml
+  source_pointer: /component_specifications/0/id
+  from: COMP-0001
+  to: COMP-0014
+- entity_type: component
+  adr_id: ADR-P-0004
+  file_path: adrs/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.yaml
+  source_pointer: /component_specifications/0/id
+  from: COMP-0001
+  to: COMP-0015
+- entity_type: component
+  adr_id: ADR-P-0005
+  file_path: adrs/physical/ADR-P-0005-extractor-validation-requirements.yaml
+  source_pointer: /component_specifications/0/id
+  from: COMP-0001
+  to: COMP-0016
+- entity_type: component
+  adr_id: ADR-PC-0001
+  file_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
+  source_pointer: /component_specifications/0/id
+  from: COMP-0001
+  to: COMP-0017
+- entity_type: component
+  adr_id: ADR-P-0004
+  file_path: adrs/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.yaml
+  source_pointer: /component_specifications/1/id
+  from: COMP-0002
+  to: COMP-0018
+- entity_type: component
+  adr_id: ADR-PC-0002
+  file_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+  source_pointer: /component_specifications/0/id
+  from: COMP-0002
+  to: COMP-0019
 - entity_type: decision
   adr_id: ADR-L-0002
   file_path: adrs/logical/ADR-L-0002-recon-self-validation-strategy.yaml

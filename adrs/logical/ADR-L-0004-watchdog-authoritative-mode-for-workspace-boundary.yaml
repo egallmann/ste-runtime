@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0004
+id: 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
 title: Watchdog Authoritative Mode for Workspace Boundary
 status: accepted
 created_date: '2026-03-08'
@@ -16,7 +16,7 @@ tags:
 - workspace-boundary
 - ste-compliance
 related_adrs:
-- ADR-L-0001
+- 019ff84e-4ece-791b-822f-21f537c95340
 supersedes: []
 context: "Per STE Architecture (Section 3.1), STE operates across two distinct governance\
   \ boundaries:\n1. **Workspace Development Boundary** - Provisional state, soft +\
@@ -54,7 +54,7 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0004
+- id: 019ff84e-4ece-77ef-9b2f-c46e2421c843
   summary: 'ste-runtime is a single process that combines:'
   rationale: "### The Watchdog IS the Conflict Resolution Process\n\nWhen a file moves:\n\
     1. Watchdog detects the move (authoritative: it observed the file system event)\n\
@@ -73,9 +73,13 @@ decisions:
     \ on next RECON (self-healing).\n\n---"
   alternatives_considered: []
   related_invariants: []
+  alias_id: DEC-0004
+  alias_name: ste-runtime-is-a-single-process-that-combines
 gaps: []
 migration_origin:
   remapped_entities:
   - entity_type: decision
     from: DEC-0001
     to: DEC-0004
+alias_id: ADR-L-0004
+alias_name: watchdog-authoritative-mode-for-workspace-boundary

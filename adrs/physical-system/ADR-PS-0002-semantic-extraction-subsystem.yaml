@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-system
-id: ADR-PS-0002
+id: 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
 title: Semantic Extraction Subsystem
 status: proposed
 created_date: '2026-03-15'
@@ -15,16 +15,16 @@ tags:
 - recon
 - semantic-state
 implements_logical:
-- ADR-L-0001
-- ADR-L-0005
+- 019ff84e-4ece-791b-822f-21f537c95340
+- 019ff84e-4ece-737a-a23f-3f243e6fafda
 references_components:
-- ADR-PC-0005
-- ADR-PC-0006
-- ADR-PC-0007
-- ADR-PC-0011
+- 019ff84e-4ecf-7117-853b-c869ac6d7ba6
+- 019ff84e-4ecf-73e1-8c0f-19a06db3004b
+- 019ff84e-4ecf-721a-b936-e1b98d068ec7
+- 019ff84e-4ecf-7a82-ae3a-121886af1b51
 related_adrs:
-- ADR-P-0002
-- ADR-P-0003
+- 019ff84e-4ed0-7ba6-a33f-812df2eef432
+- 019ff84e-4ed0-7fa4-b739-80447b4e3085
 technologies:
 - typescript
 - node.js
@@ -33,11 +33,15 @@ technologies:
 - css
 - cloudformation
 - adr-yaml
-context: |
-  ste-runtime extraction is now a subsystem containing multiple first-class
+context: 'ste-runtime extraction is now a subsystem containing multiple first-class
+
   extractors and normalization flows rather than a pair of isolated physical
+
   slices. This ADR groups the implemented extractor estate under a concrete
+
   system boundary.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
@@ -50,9 +54,12 @@ technology_stack:
 system_boundaries:
 - id: SYSBOUND-0002
   name: Semantic Extraction Boundary
-  description: |
-    Encapsulates domain-specific extraction of semantic assertions and related
+  description: 'Encapsulates domain-specific extraction of semantic assertions and
+    related
+
     normalization inputs for RECON.
+
+    '
   external_dependencies:
   - Source files discovered by RECON
   - CloudFormation resource specifications
@@ -63,19 +70,20 @@ component_topology:
   - name: JSON Semantic Extractor
     type: service
     purpose: Extract semantic entities from JSON control, schema, and config files.
-    implements_adr: ADR-PC-0005
+    implements_adr: 019ff84e-4ecf-7117-853b-c869ac6d7ba6
   - name: Frontend Semantic Extractor
     type: service
     purpose: Extract Angular and CSS/SCSS semantics.
-    implements_adr: ADR-PC-0006
+    implements_adr: 019ff84e-4ecf-73e1-8c0f-19a06db3004b
   - name: CloudFormation Semantic Extractor
     type: service
     purpose: Extract CloudFormation resources, relations, and implementation intent.
-    implements_adr: ADR-PC-0007
+    implements_adr: 019ff84e-4ecf-721a-b936-e1b98d068ec7
   - name: ADR YAML Semantic Extractor
     type: service
-    purpose: Extract ADR documents, invariants, decisions, capabilities, components, and system boundaries from ADR YAML corpus.
-    implements_adr: ADR-PC-0011
+    purpose: Extract ADR documents, invariants, decisions, capabilities, components,
+      and system boundaries from ADR YAML corpus.
+    implements_adr: 019ff84e-4ecf-7a82-ae3a-121886af1b51
   relationships:
   - from: JSON Semantic Extractor
     to: Frontend Semantic Extractor
@@ -87,3 +95,10 @@ component_topology:
     type: depends_on
     description: All extractor outputs feed the same RECON normalization pipeline.
 gaps: []
+alias_id: ADR-PS-0002
+alias_name: semantic-extraction-subsystem
+system:
+  id: 019ff84e-4ed0-767d-a90d-e98e673532cc
+  alias_id: SYS-0002
+  alias_name: sys-0002-semantic-extraction-subsystem
+  name: Semantic Extraction Subsystem

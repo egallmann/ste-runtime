@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0012
+id: 019ff84e-4ece-7fcd-a62e-c8a7982632b0
 title: Polyglot Interop Contract
 status: proposed
 created_date: '2026-04-21'
@@ -14,30 +14,48 @@ tags:
 - schema
 - interop
 vision_category: false
-context: |
-  STE subsystems are written in different languages. On-disk artifacts are
+context: 'STE subsystems are written in different languages. On-disk artifacts are
+
   the only interop boundary. Neither runtime invents schema. Without a
+
   single schema authority, subsystems risk copying, re-deriving, or
+
   hand-maintaining sibling schemas, leading to drift and contract
+
   violations.
+
+  '
 capabilities:
-- id: CAP-0012
+- id: 019ff84e-4ece-7713-b43a-942d54b37aa4
   name: Schema fixture synchronization
-  description: |
-    ste-runtime consumes architecture-evidence.schema.json via fixture
+  description: 'ste-runtime consumes architecture-evidence.schema.json via fixture
+
     sync in test/fixtures/. Drift is detected by
+
     spec-schema-fixture-sync.test.ts.
+
+    '
+  alias_id: CAP-0012
+  alias_name: schema-fixture-synchronization
 decisions:
-- id: DEC-0012
+- id: 019ff84e-4ece-7dfe-a43e-ced9d21981ec
   summary: ste-spec is the single schema authority
-  rationale: |
-    Polyglot subsystems cannot safely maintain independent copies of
+  rationale: 'Polyglot subsystems cannot safely maintain independent copies of
+
     shared schemas. Centralizing authority in ste-spec eliminates drift
+
     and ensures all subsystems validate against the same contract.
-decision: |
-  ste-spec is the schema authority for all cross-subsystem contracts. No
-  subsystem copies, re-derives, or hand-maintains a sibling's schema.
+
+    '
+  alias_id: DEC-0012
+  alias_name: ste-spec-is-the-single-schema-authority
+decision: 'ste-spec is the schema authority for all cross-subsystem contracts. No
+
+  subsystem copies, re-derives, or hand-maintains a sibling''s schema.
+
   Each subsystem may use any language or framework internally.
+
+  '
 consequences:
   positive:
   - Single source of truth for all cross-subsystem schemas.
@@ -46,6 +64,10 @@ consequences:
   - Schema changes require coordination through ste-spec.
 contracts:
 - id: CTR-0012-01
-  description: |
-    Cross-subsystem contracts are defined in ste-spec and consumed via
+  description: 'Cross-subsystem contracts are defined in ste-spec and consumed via
+
     fixture sync. No subsystem invents or re-derives schema.
+
+    '
+alias_id: ADR-L-0012
+alias_name: polyglot-interop-contract

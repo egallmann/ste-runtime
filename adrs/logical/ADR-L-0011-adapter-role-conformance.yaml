@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0011
+id: 019ff84e-4ece-74fc-8839-1d55445660b7
 title: Adapter Role Conformance
 status: proposed
 created_date: '2026-04-21'
@@ -14,36 +14,56 @@ tags:
 - role
 - evidence
 vision_category: false
-context: |
-  STE defines five subsystems. ste-runtime is the RuntimeAdapter. Its role
+context: 'STE defines five subsystems. ste-runtime is the RuntimeAdapter. Its role
+
   and publication surface must be declared, not assumed. Without explicit
+
   conformance, the runtime risks emitting artifacts outside its authority
+
   or failing to emit required ones.
+
+  '
 capabilities:
-- id: CAP-0011
+- id: 019ff84e-4ece-7ba8-980b-2c03ade9551a
   name: ArchitectureEvidence emission
   description: Emit ArchitectureEvidence v2 at .workspace-graph/evidence/architecture-evidence.json.
+  alias_id: CAP-0011
+  alias_name: architectureevidence-emission
 architectural_boundaries:
-- id: BOUND-0002
+- id: 019ff84e-4ece-77ec-bc35-b582c0e87553
   name: RuntimeAdapter publication surface
-  description: |
-    Publication surface (stable):
+  description: 'Publication surface (stable):
+
     .workspace-graph/evidence/architecture-evidence.json
+
+    '
   rationale: Declares the single stable output path for runtime evidence emission.
+  alias_id: BOUND-0002
+  alias_name: runtimeadapter-publication-surface
 decisions:
-- id: DEC-0011
+- id: 019ff84e-4ece-71d7-963d-b316aa41e0a8
   summary: ste-runtime conforms to RuntimeAdapter role
-  rationale: |
-    Explicit role conformance prevents scope leakage across subsystem
+  rationale: 'Explicit role conformance prevents scope leakage across subsystem
+
     boundaries and ensures evidence artifacts are schema-compliant.
-decision: |
-  ste-runtime conforms to the RuntimeAdapter role per the STE Integration
+
+    '
+  alias_id: DEC-0011
+  alias_name: ste-runtime-conforms-to-runtimeadapter-role
+decision: 'ste-runtime conforms to the RuntimeAdapter role per the STE Integration
+
   Model. It emits ArchitectureEvidence (version "2") per
+
   ste-spec/contracts/architecture-evidence.schema.json. It does not emit
+
   Architecture IR, admission assessments, or rule projections.
+
+  '
 consequences:
   positive:
   - Role boundaries are explicit and auditable.
   - Cross-component invariant compliance is tractable.
   negative:
   - Any new emission surface requires updating this ADR.
+alias_id: ADR-L-0011
+alias_name: adapter-role-conformance

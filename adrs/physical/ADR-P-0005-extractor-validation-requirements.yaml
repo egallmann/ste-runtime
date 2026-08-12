@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical
-id: ADR-P-0005
+id: 019ff84e-4ed0-7c04-af35-82ee16e5dc81
 title: Extractor Validation Requirements
 status: accepted
 created_date: '2026-01-11'
@@ -16,11 +16,11 @@ tags:
 - extractors
 - quality-assurance
 related_adrs:
-- ADR-P-0002
-- ADR-P-0003
+- 019ff84e-4ed0-7ba6-a33f-812df2eef432
+- 019ff84e-4ed0-7fa4-b739-80447b4e3085
 supersedes: []
 implements_logical:
-- ADR-L-0002
+- 019ff84e-4ece-7378-b637-eaea5a1d3bc2
 technologies:
 - cli
 - file-discovery
@@ -44,7 +44,7 @@ technology_stack:
   rationale: JavaScript runtime for CLI and server applications
 architecture_patterns: []
 component_specifications:
-- id: COMP-0001
+- id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
   name: Extractor Validation Framework
   type: library
   responsibilities: Validate extractor output quality and correctness
@@ -54,7 +54,17 @@ component_specifications:
   downstream_services: []
   implementation_identifiers:
     module_path: src/recon/validation/
+  alias_id: COMP-0016
+  alias_name: extractor-validation-framework
 data_architecture: []
 implementation_decisions: []
 integration_points: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: component
+    from: COMP-0001
+    to: COMP-0016
+    source_pointer: /component_specifications/0/id
+alias_id: ADR-P-0005
+alias_name: extractor-validation-requirements

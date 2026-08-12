@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0016
+id: 019ff84e-4ece-76ad-ae3e-f92bef05635a
 title: Workspace Graph Slice Schema Contract
 status: proposed
 created_date: '2026-04-24'
@@ -17,169 +17,189 @@ tags:
 - contract
 vision_category: false
 related_adrs:
-- ADR-L-0012
-- ADR-L-0009
-- ADR-L-0013
-context: |
-  ste-runtime produces per-repository graph slices during workspace RECON.
+- 019ff84e-4ece-7fcd-a62e-c8a7982632b0
+- 019ff84e-4ece-7ce3-aa17-67193bab337e
+- 019ff84e-4ece-7f44-8e26-a71c17ab45d9
+context: 'ste-runtime produces per-repository graph slices during workspace RECON.
+
   These slices are consumed by the runtime-owned workspace merger to produce
+
   a unified workspace graph and multi-resolution projections. Without a
+
   defined schema contract, producer and consumer drift can break merge
+
   pipelines or cause downstream tools to treat partial graph material as
+
   authoritative.
 
+
   ADR-L-0012 established ste-spec as public cross-repo schema authority.
+
   This ADR defines the runtime-owned slice output contract used by
-  ste-runtime's workspace graph pipeline. The slice and merged workspace graph
+
+  ste-runtime''s workspace graph pipeline. The slice and merged workspace graph
+
   remain derived runtime artifacts, not Architecture IR and not canonical
+
   architecture authority.
+
+  '
 capabilities:
-- id: CAP-0016
+- id: 019ff84e-4ece-7514-9839-1bcdbf31add9
   name: Schema-compliant slice emission
-  description: >
-    ste-runtime emits workspace graph slices that conform to a defined
-    schema contract, enabling any compliant merger to consume them without
-    validation errors.
+  description: 'ste-runtime emits workspace graph slices that conform to a defined
+    schema contract, enabling any compliant merger to consume them without validation
+    errors.
+
+    '
+  alias_id: CAP-0016
+  alias_name: schema-compliant-slice-emission
 invariants:
-- id: INV-0017
-  statement: >
-    Every workspace graph slice emitted by ste-runtime contains the required
-    core fields defined in the slice schema contract: schema_version, repo,
-    generated_by, generated_at, nodes, and edges. source_commit and
-    diagnostics are supported standard fields. Consumers may preserve unknown
-    extension fields but must not treat them as portable contract authority.
+- id: 019ff84e-4ece-75be-9537-f18976e9e3f6
+  statement: 'Every workspace graph slice emitted by ste-runtime contains the required
+    core fields defined in the slice schema contract: schema_version, repo, generated_by,
+    generated_at, nodes, and edges. source_commit and diagnostics are supported standard
+    fields. Consumers may preserve unknown extension fields but must not treat them
+    as portable contract authority.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: >
-    Required core fields keep the merge path deterministic. Extension tolerance
-    allows polyglot producers to evolve without breaking older consumers, while
-    keeping public authority in documented contract fields.
-- id: INV-0018
-  statement: >
-    Runtime-emitted workspace graph edges that assert a resolved relationship
-    use confidence 'high'. Ambiguous resolutions produce diagnostics rather
-    than asserted edges. Consumers must drop non-high edges when they appear in
-    permissive input mode.
+  rationale: 'Required core fields keep the merge path deterministic. Extension tolerance
+    allows polyglot producers to evolve without breaking older consumers, while keeping
+    public authority in documented contract fields.
+
+    '
+  alias_id: INV-0017
+  alias_name: inv-0017
+- id: 019ff84e-4ece-7e5b-8d17-a4bbbc9d9831
+  statement: 'Runtime-emitted workspace graph edges that assert a resolved relationship
+    use confidence ''high''. Ambiguous resolutions produce diagnostics rather than
+    asserted edges. Consumers must drop non-high edges when they appear in permissive
+    input mode.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: >
-    The graph must not lie. Emitting uncertain edges degrades trust in
-    the entire graph. Diagnostics preserve the signal without asserting
-    false relationships.
-- id: INV-0025
-  statement: >
-    All infrastructure resources extracted by RECON are emitted as workspace
-    graph nodes. No extracted resource is silently dropped by the slice
-    emitter. Resources not covered by an explicit CFN-to-graph-type mapping
-    are emitted as InfraResource nodes with the original cfn_type preserved
-    in attributes. The logicalId is the last-resort display name; a null
-    name never causes a node to be dropped.
+  rationale: 'The graph must not lie. Emitting uncertain edges degrades trust in the
+    entire graph. Diagnostics preserve the signal without asserting false relationships.
+
+    '
+  alias_id: INV-0018
+  alias_name: inv-0018
+- id: 019ff84e-4ece-724c-833d-03c6971a6657
+  statement: 'All infrastructure resources extracted by RECON are emitted as workspace
+    graph nodes. No extracted resource is silently dropped by the slice emitter. Resources
+    not covered by an explicit CFN-to-graph-type mapping are emitted as InfraResource
+    nodes with the original cfn_type preserved in attributes. The logicalId is the
+    last-resort display name; a null name never causes a node to be dropped.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: >
-    The workspace graph is the Architecture IR substrate. Silently dropping
-    extracted resources creates blind spots that downstream context domains
-    cannot compensate for. Pattern-agnostic emission ensures backend
-    services, frontend SPAs, and MFE monorepos are treated equally.
+  rationale: 'The workspace graph is the Architecture IR substrate. Silently dropping
+    extracted resources creates blind spots that downstream context domains cannot
+    compensate for. Pattern-agnostic emission ensures backend services, frontend SPAs,
+    and MFE monorepos are treated equally.
+
+    '
+  alias_id: INV-0025
+  alias_name: inv-0025
 constraints:
 - id: CONST-0010
   type: technical
-  description: >
-    Node shape: { id: string, type: string, name: string, provenance: { source_path: string, source_ref: string, repo?: string }, attributes?: object }.
-    Ratified node types are Service, Lambda, StateMachine, Queue, Topic,
-    Bucket, Database, Schema, Endpoint, ExternalSystem, Stack, Distribution,
-    WebACL, Certificate, DNSRecord, APIGateway, SecurityGroup, Secret,
-    DBCluster, DBProxy, LogGroup, Alarm, DeliveryStream, EventRule, Role,
-    and InfraResource. InfraResource is a catch-all fallback type for any
-    extracted CFN resource type not covered by an explicit mapping; it
-    preserves cfn_type in attributes for downstream classification. Role
-    nodes carry auxiliary: true and are compressed at L0-L2 projections.
-    Node IDs follow the Graph Identity Contract (Type:normalized-name).
-  rationale: >
-    Consistent node shape enables merger join logic and identity stability
-    across runs. Comprehensive type coverage ensures all RECON-extracted
-    infrastructure resources flow through to the workspace graph regardless
-    of repository pattern (backend service, frontend SPA, MFE monorepo).
+  description: 'Node shape: { id: string, type: string, name: string, provenance:
+    { source_path: string, source_ref: string, repo?: string }, attributes?: object
+    }. Ratified node types are Service, Lambda, StateMachine, Queue, Topic, Bucket,
+    Database, Schema, Endpoint, ExternalSystem, Stack, Distribution, WebACL, Certificate,
+    DNSRecord, APIGateway, SecurityGroup, Secret, DBCluster, DBProxy, LogGroup, Alarm,
+    DeliveryStream, EventRule, Role, and InfraResource. InfraResource is a catch-all
+    fallback type for any extracted CFN resource type not covered by an explicit mapping;
+    it preserves cfn_type in attributes for downstream classification. Role nodes
+    carry auxiliary: true and are compressed at L0-L2 projections. Node IDs follow
+    the Graph Identity Contract (Type:normalized-name).
+
+    '
+  rationale: 'Consistent node shape enables merger join logic and identity stability
+    across runs. Comprehensive type coverage ensures all RECON-extracted infrastructure
+    resources flow through to the workspace graph regardless of repository pattern
+    (backend service, frontend SPA, MFE monorepo).
+
+    '
 - id: CONST-0011
   type: technical
-  description: >
-    Edge shape: { from: string, to: string, verb: string, confidence?: string, provenance?: { source_path: string, source_ref: string, repo?: string }, attributes?: object }.
-    Ratified verbs are invokes, publishes, consumes, reads, writes,
-    validates_against, implements, deploys_to, has_contract, calls, triggers,
-    publishes_to, and contains. The contains verb represents structural
-    containment (e.g., a Stack node contains its child resources or nested
-    stacks). The projection compression layer also recognizes references as
-    a low-tier reference edge when present in merged graph input.
-  rationale: >
-    Consistent edge shape and ratified verb set prevent schema drift and
-    enable reliable graph queries. The contains verb surfaces monorepo
-    app-level grouping and nested stack topology in the graph.
+  description: 'Edge shape: { from: string, to: string, verb: string, confidence?:
+    string, provenance?: { source_path: string, source_ref: string, repo?: string
+    }, attributes?: object }. Ratified verbs are invokes, publishes, consumes, reads,
+    writes, validates_against, implements, deploys_to, has_contract, calls, triggers,
+    publishes_to, and contains. The contains verb represents structural containment
+    (e.g., a Stack node contains its child resources or nested stacks). The projection
+    compression layer also recognizes references as a low-tier reference edge when
+    present in merged graph input.
+
+    '
+  rationale: 'Consistent edge shape and ratified verb set prevent schema drift and
+    enable reliable graph queries. The contains verb surfaces monorepo app-level grouping
+    and nested stack topology in the graph.
+
+    '
 - id: CONST-0012
   type: technical
-  description: >
-    generated_by is read from package.json (ste-runtime@<version>), never
-    hardcoded or workspace-specific. generated_at is ISO-8601 UTC.
-    source_commit is git rev-parse HEAD of the scanned repository, or null.
-  rationale: >
-    Provenance fields must be accurate and reproducible for audit trails.
+  description: 'generated_by is read from package.json (ste-runtime@<version>), never
+    hardcoded or workspace-specific. generated_at is ISO-8601 UTC. source_commit is
+    git rev-parse HEAD of the scanned repository, or null.
+
+    '
+  rationale: 'Provenance fields must be accurate and reproducible for audit trails.
+
+    '
 - id: CONST-0013
   type: technical
-  description: >
-    Slice validation supports warn and reject modes. Warn mode accepts unknown
-    node types and edge verbs while surfacing diagnostics; reject mode treats
+  description: 'Slice validation supports warn and reject modes. Warn mode accepts
+    unknown node types and edge verbs while surfacing diagnostics; reject mode treats
     them as validation errors.
-  rationale: >
-    Workspace adoption needs a staged compatibility mode, but strict validation
+
+    '
+  rationale: 'Workspace adoption needs a staged compatibility mode, but strict validation
     must remain available for contract gates.
+
+    '
 decisions:
-- id: DEC-0016
+- id: 019ff84e-4ece-7593-9a35-86ce1237131f
   summary: Workspace graph slices follow a defined schema contract
-  rationale: |
-    Producer-consumer drift between ste-runtime and workspace graph consumers
+  rationale: 'Producer-consumer drift between ste-runtime and workspace graph consumers
+
     caused validation failures. A defined contract with required core fields,
+
     ratified vocabularies, and explicit extension behavior eliminates this
+
     class of integration failure without pretending derived graph slices are
+
     public Architecture IR authority.
-decision: |
-  ste-runtime emits workspace graph slices with the following contract:
 
-  Top-level fields:
-    schema_version: "1.0"
-    repo: <repository name from workspace.yaml>
-    generated_by: "ste-runtime@<version>" (from package.json)
-    generated_at: <ISO-8601 UTC timestamp>
-    nodes: <array of Node>
-    edges: <array of Edge>
-
-  Standard optional fields:
-    source_commit: <git rev-parse HEAD, or null>
-    diagnostics: <array of Diagnostic, default []>
-
-  Node shape:
-    id: <Type:normalized-name>
-    type: <one of ratified NodeTypes>
-    name: <human-readable name>
-    provenance: { source_path, source_ref, repo? }
-    attributes: <optional object>
-
-  Edge shape:
-    from: <node ID>
-    to: <node ID>
-    verb: <one of ratified verbs>
-    confidence: "high" when emitted as a resolved runtime assertion
-    provenance: { source_path, source_ref, repo? }
-    attributes: <optional object>
-
-  Runtime emission asserts only high-confidence resolved edges. Ambiguous
-  resolutions produce diagnostics entries, not edges. The validator preserves
-  extension fields through passthrough parsing and supports warn and reject
-  modes for unknown node types or verbs.
+    '
+  alias_id: DEC-0016
+  alias_name: workspace-graph-slices-follow-a-defined-schema-contract
+decision: "ste-runtime emits workspace graph slices with the following contract:\n\
+  \nTop-level fields:\n  schema_version: \"1.0\"\n  repo: <repository name from workspace.yaml>\n\
+  \  generated_by: \"ste-runtime@<version>\" (from package.json)\n  generated_at:\
+  \ <ISO-8601 UTC timestamp>\n  nodes: <array of Node>\n  edges: <array of Edge>\n\
+  \nStandard optional fields:\n  source_commit: <git rev-parse HEAD, or null>\n  diagnostics:\
+  \ <array of Diagnostic, default []>\n\nNode shape:\n  id: <Type:normalized-name>\n\
+  \  type: <one of ratified NodeTypes>\n  name: <human-readable name>\n  provenance:\
+  \ { source_path, source_ref, repo? }\n  attributes: <optional object>\n\nEdge shape:\n\
+  \  from: <node ID>\n  to: <node ID>\n  verb: <one of ratified verbs>\n  confidence:\
+  \ \"high\" when emitted as a resolved runtime assertion\n  provenance: { source_path,\
+  \ source_ref, repo? }\n  attributes: <optional object>\n\nRuntime emission asserts\
+  \ only high-confidence resolved edges. Ambiguous\nresolutions produce diagnostics\
+  \ entries, not edges. The validator preserves\nextension fields through passthrough\
+  \ parsing and supports warn and reject\nmodes for unknown node types or verbs.\n"
 consequences:
   positive:
   - Downstream mergers can consume slices without validation errors.
@@ -189,4 +209,7 @@ consequences:
   negative:
   - Any schema change requires an ADR amendment and coordinated update.
   - Strict confidence model may reduce edge count; diagnostics capture the gap.
-  - Warn-mode compatibility requires consumers to avoid treating extension fields as portable authority.
+  - Warn-mode compatibility requires consumers to avoid treating extension fields
+    as portable authority.
+alias_id: ADR-L-0016
+alias_name: workspace-graph-slice-schema-contract
