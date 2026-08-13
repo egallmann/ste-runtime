@@ -6,6 +6,13 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
     "dist",
     "README.md",
@@ -27,6 +34,7 @@
     "test:watch": "vitest",
     "test:unit": "vitest run",
     "test:integration": "node scripts/prove-architecture-compile.mjs",
+    "test:public-tarball": "node scripts/prove-public-tarball.mjs",
     "release:check": "node scripts/check-release-policy.mjs",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src vitest.config.ts",

@@ -47,13 +47,16 @@ interaction_contracts: []
 constraints: []
 invariants:
 - id: 019ff84e-4ece-7387-b33f-3d203e3c968c
-  statement: 'Single repository only: RECON discovers files within the current repository.
-    Cross-repository reconciliation is out of scope.'
+  statement: 'RECON extraction is repository-local: each repository observation discovers
+    files within its registered repository source. Workspace orchestration may compose
+    multiple repository observations into one derived workspace projection. Cross-workspace
+    reconciliation remains out of scope unless explicitly federated.'
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: manual
-  rationale: Extracted from ADR-L-0001 specification
+  rationale: Repository source remains the provenance boundary while workspace orchestration
+    provides the bounded multi-repository graph shell.
   compliance_frameworks: []
   exceptions: []
   alias_id: INV-0001

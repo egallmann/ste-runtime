@@ -59,7 +59,12 @@ context: 'The workspace semantic graph (verb-typed edges in slices/*.yaml, produ
 
   API. loadAidocGraph() only consumes per-repo RECON YAML with _slice blocks. A
 
-  new loader and query layer was required.
+  new loader and query layer was required. Public graph references are scoped by
+  workspace and immutable snapshot identity; legacy node IDs are opaque projection
+  keys rather than durable source/entity identity. Repository identity is carried as
+  separate node and relationship provenance. Traversal is bounded by one workspace
+  and one snapshot projection and rejects foreign workspace or snapshot endpoints.
+  The runtime performs no semantic or probabilistic reasoning.
 
   '
 capabilities:

@@ -31,7 +31,10 @@ context: 'ADR-L-0009 fixes workspace as the universal scope unit. This ADR recor
 
   phase-level extraction behavior; workspace orchestration layered here only
 
-  coordinates repos and aggregates outcomes.
+  coordinates repos and aggregates outcomes. The public runtime adapter treats each
+  refresh as an immutable observation event: observed repositories alone contribute
+  current graph content, partial observations contain no stale failed-repository
+  projection, and zero observed repositories produce a typed refresh failure.
 
   '
 implements_physical_system_ref:

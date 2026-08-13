@@ -34,7 +34,13 @@ export interface MergedEdge {
   to: string;
   verb: string;
   confidence?: string;
-  provenance?: { source_path: string; source_ref: string; repo?: string };
+  provenance?:
+    | { source_path: string; source_ref: string; repo?: string }
+    | {
+        source_repo: string;
+        target_repo: string;
+        evidence: string;
+      };
 }
 
 export interface UnifiedGraphDoc {
@@ -75,6 +81,66 @@ interface SliceDoc {
     confidence?: string;
     provenance?: { source_path: string; source_ref: string; repo?: string };
   }>;
+}
+
+export interface WorkspaceIdentityCollision {
+  id: string;
+  repositories: string[];
+  declarations: Array<{ repository: string; type: string; name: string }>;
+}
+
+export class WorkspaceIdentityCollisionError extends Error {
+  readonly collisions: readonly WorkspaceIdentityCollision[];
+
+  constructor(collisions: readonly WorkspaceIdentityCollision[]) {
+    super(
+      `Workspace entity identity collision before merge: ${collisions
+        .map(c => `${c.id} [${c.repositories.join(', ')}]`)
+        .join('; ')}`,
+    );
+    this.name = 'WorkspaceIdentityCollisionError';
+    this.collisions = collisions;
+  }
+}
+
+/**
+ * Validate workspace-scoped entity IDs before the legacy first-wins merger can
+ * discard a declaration. This is opt-in so existing CLI behavior remains
+ * compatible; the public runtime adapter always enables it.
+ */
+export async function preflightWorkspaceGraphIdentity(outputDir: string): Promise<void> {
+  const slicesDir = path.join(outputDir, 'slices');
+  const declarations = new Map<string, Array<{ repository: string; type: string; name: string }>>();
+  let sliceFiles: string[] = [];
+  try {
+    const entries = await fs.readdir(slicesDir);
+    sliceFiles = entries.filter(file => file.endsWith('.yaml')).sort().map(file => path.join(slicesDir, file));
+  } catch {
+    return;
+  }
+
+  for (const slicePath of sliceFiles) {
+    const repository = path.basename(slicePath, '.yaml');
+    const parsed = yaml.load(await fs.readFile(slicePath, 'utf8')) as SliceDoc | null;
+    for (const node of parsed?.nodes ?? []) {
+      if (!node.id || !node.type) continue;
+      const list = declarations.get(node.id) ?? [];
+      list.push({ repository: node.provenance?.repo ?? repository, type: node.type, name: node.name ?? node.id });
+      declarations.set(node.id, list);
+    }
+  }
+
+  const collisions = [...declarations.entries()]
+    .filter(([, entries]) => new Set(entries.map(entry => entry.repository)).size > 1)
+    .map(([id, entries]) => ({
+      id,
+      repositories: [...new Set(entries.map(entry => entry.repository))].sort(),
+      declarations: entries,
+    }));
+
+  if (collisions.length > 0) {
+    throw new WorkspaceIdentityCollisionError(collisions);
+  }
 }
 
 async function loadCrossRepoEdges(outputDir: string): Promise<CrossRepoEdge[]> {
@@ -190,6 +256,7 @@ export async function mergeWorkspaceGraph(
       to: cre.to,
       verb: cre.verb,
       confidence: cre.confidence,
+      provenance: cre.provenance,
     });
   }
   if (crossRepoEdges.length > 0) {

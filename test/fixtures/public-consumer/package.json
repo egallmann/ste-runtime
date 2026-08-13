@@ -1,0 +1,8 @@
+{
+  "name": "ste-runtime-public-consumer-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  }
+}
