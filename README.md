@@ -1,68 +1,33 @@
 # ste-runtime
 
-`ste-runtime` is the runtime implementation layer of System of Thought
-Engineering (STE). It extracts implementation state, builds queryable
-semantic and workspace graphs, assembles bounded task context, and emits
-runtime architecture evidence.
+`ste-runtime` observes source repositories and workspaces, extracts observed
+implementation state into queryable semantic structure, and assembles bounded
+context and runtime evidence for human and AI engineering work.
 
-This repository is a public experimental/reference implementation. The
-runtime is intended for supervised, human-in-the-loop use and has meaningful
-workspace-oriented functionality, but it is not an autonomous execution
-system or a production-supported public package.
+Engineering systems contain implementation truth that is expensive to
+reconstruct repeatedly. ste-runtime makes that observed state available for
+repository exploration, task-scoped context, workspace queries, and evidence
+production without replacing canonical architecture or governance authority.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
-## Status and release boundary
+## Runtime boundary and AI orientation
 
-- Source and architecture records are public under the repository license.
-- `package.json` is the package metadata authority and currently keeps the
-  package `private: true`; it is not published to npm.
-- Source exports can be used for local experiments and integration, but there
-  is no production API compatibility or support commitment yet.
-- Execution assumes human supervision. Repository history records supervised
-  workspace use; that does not create a public distribution or support promise.
-- See [MATURITY.md](MATURITY.md) and
-  [ADR-L-0024](adrs/adr-projection/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.md)
-  for the current boundary.
+ste-runtime is the runtime observation and context layer within System of
+Thought Engineering (STE). It consumes source and canonical architecture
+inputs, produces derived semantic/runtime state and runtime-owned evidence,
+and exposes bounded results to human and AI engineering tools.
 
-## What it does
+It does not invent architecture authority, replace canonical ADRs, or make
+`ste-kernel` admission decisions. Generated runtime state is evidence and
+derived state, not a source of truth. AI use is currently supervised and
+human-in-the-loop; the runtime is not an autonomous engineering agent.
 
-- **RECON** extracts source and ADR implementation state into AI-DOC semantic
-  state for a single repository or a configured multi-repository workspace.
-- **RSS (Runtime State Slicing)** searches and traverses that state to produce
-  bounded context, dependencies, dependents, blast radius, and task entry
-  points.
-- **Workspace graphs** resolve repository-level dependencies, integrations,
-  blast radius, source locators, and multi-resolution projections.
-- **MCP/watch** provides local MCP integration and optional incremental graph
-  refresh for supported editor workflows.
-- **Architecture evidence** combines canonical ADR inputs with runtime state to
-  emit factual evidence for downstream consumers. ste-runtime does not make
-  admission decisions.
+## Quick Start
 
-## Where it fits in STE
-
-| Concern | Authority |
-| --- | --- |
-| ADR authoring, schema validation, and human authoring workflows | `adr-architecture-kit` |
-| Shared public contracts and cross-repository schemas | `ste-spec` |
-| Runtime extraction, runtime graphs, runtime evidence, and runtime-owned machine artifacts | `ste-runtime` |
-| Admission decisions and lifecycle enforcement | `ste-kernel` |
-| Advisory and custom governance rules | `ste-rules-library` |
-
-The distinction is artifact-specific. ADR Kit owns authoring-side ADR
-validation and projections. ste-runtime consumes canonical ADR YAML and source
-code to produce the runtime-owned registries, indexes, graphs, and evidence
-established by this repository. Shared contracts remain owned by `ste-spec`,
-and admission remains owned by `ste-kernel`.
-
-See [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md) for the detailed boundary.
-
-## Quick start from a source checkout
-
-Requirements: Node.js 18 or later, npm, and Python 3 when working with Python
-extractors.
+The supported path is a source checkout. Requires Node.js 18 or later and npm.
+Python 3 is also required by some extractors.
 
 ```bash
 git clone https://github.com/egallmann/ste-runtime.git
@@ -70,45 +35,124 @@ cd ste-runtime
 npm ci
 npm run build
 npm run recon:self
-npm run rss:stats
+npm run rss -- stats
 npm run rss -- search "authentication"
 ```
 
-For an existing project or workspace, use the setup command after building:
+The first two runtime commands reconstruct the checkout's derived state and
+run a useful RSS query against it. For another repository or a workspace, use
+the verified setup path after building:
 
 ```bash
 node dist/cli/index.js setup --project-root /absolute/path/to/project \
   --ste-runtime-path /absolute/path/to/ste-runtime --dry-run
 ```
 
-Review the dry run, then repeat without `--dry-run` when ready. The
-[setup guide](documentation/guides/setup.md) covers single-repository and
-multi-repository onboarding. There is no supported `npm install ste-runtime`
-installation path while the package remains private and unpublished.
+Review the dry run, then repeat without `--dry-run` when ready. See the
+[setup guide](documentation/guides/setup.md) for onboarding details. The npm
+package remains private and unpublished, so `npm install ste-runtime` is not
+the supported installation path.
 
-## Common workflows
+## Minimal Example
 
-### RECON
+For a self-analysis checkout, the useful transformation is:
+
+```text
+source repository and canonical inputs
+          │
+        RECON
+          ▼
+derived semantic/runtime state
+          │
+         RSS
+          ▼
+task-scoped matches, context, or evidence
+```
+
+RECON records what can be observed from the repository and workspace. RSS then
+searches or traverses that derived state instead of asking a human or an AI
+system to rediscover the whole codebase for every task. The resulting state is
+runtime evidence; canonical ADR sources remain authoritative for architecture.
+
+## What It Does
+
+- **RECON** extracts source, workspace, and implementation-linkage state.
+- **RSS (Runtime State Slicing)** searches and traverses runtime state to
+  assemble bounded task context, dependencies, dependents, and blast radius.
+- **Workspace composition** connects repository-level dependencies,
+  integrations, locators, and multi-resolution views.
+- **Architecture evidence** combines canonical ADR inputs with observed
+  runtime state for factual downstream review and tooling.
+- **MCP and watch workflows** provide local integration and supported
+  incremental refresh paths.
+
+## Core Workflow
+
+The runtime supports several related paths rather than one universal compiler
+pipeline:
+
+```text
+source repositories ──> RECON ──> derived runtime state ──> RSS ──> bounded context
+                                      │                         │
+                                      └─ optional workspace graph ─┘
+
+canonical ADR YAML + runtime observations ───────────────> runtime evidence
+
+local MCP/watch integration ───────────────> exposes or refreshes supported paths
+```
+
+RECON and workspace composition establish the runtime view. RSS selects a
+task-scoped slice from that view. Architecture evidence is a related
+runtime-owned output path, while MCP/watch can expose or refresh local flows.
+
+## Key Concepts
+
+- **RECON** — repository and workspace observation that extracts implementation
+  state into derived runtime data.
+- **RSS / Runtime State Slicing** — search, traversal, and context assembly over
+  runtime state for a bounded task or question.
+- **Semantic state** — queryable relationships and observations extracted from
+  source and workspace inputs; it is not canonical architecture.
+- **Workspace graph** — a composed view of repositories, dependencies,
+  integrations, locators, and impact relationships.
+- **Runtime evidence** — machine-readable observations assembled for review,
+  tooling, or downstream admission workflows.
+- **Canonical versus derived state** — ADR YAML and established contracts are
+  authoritative; generated projections, registries, graphs, and evidence are
+  derived or runtime-owned outputs.
+
+## Who Owns What
+
+STE repositories have distinct responsibilities:
+
+| Repository | Responsibility |
+| --- | --- |
+| `ste-handbook` | Explanatory model, theory, and teaching material |
+| `ste-spec` | Shared public contracts and cross-repository schemas where established |
+| `adr-architecture-kit` | ADR authoring, schema validation, authoring workflows, and ADR-side projections |
+| `ste-runtime` | Runtime observation, semantic extraction, runtime evidence, and runtime-owned machine artifacts |
+| `ste-kernel` | Admission decisions and lifecycle enforcement where established |
+| `ste-rules-library` | Advisory and custom governance rules |
+
+Compiler and authority language is artifact-specific: ADR Kit handles
+authoring-side ADR validation and projection work; ste-runtime handles the
+runtime-owned compilation/evidence responsibilities established by this
+repository. Neither is the universal compiler for every architecture artifact.
+See [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md) for the detailed boundary.
+
+## Common Workflows
+
+### RECON and RSS
 
 ```bash
 npm run recon:full
-node dist/cli/recon-cli.js --workspace /absolute/path/to/workspace
 npm run recon:self
-```
-
-RECON writes derived state under the configured `.ste/` or workspace output
-directories. Treat that state as generated output, not architecture authority.
-
-### RSS
-
-```bash
 npm run rss -- stats
 npm run rss -- search "authentication"
 npm run rss -- context "trace the authentication flow"
 ```
 
-The [RSS CLI guide](instructions/RSS-USAGE-GUIDE.md) describes the available
-query forms.
+See the [RSS usage guide](instructions/RSS-USAGE-GUIDE.md) for query forms.
 
 ### Workspace graph
 
@@ -120,16 +164,15 @@ node dist/cli/index.js ws blast /service/example --workspace /absolute/path/to/.
 
 Use `node dist/cli/index.js ws --help` for the current workspace query surface.
 
-### Architecture compilation and evidence
+### Architecture and runtime evidence
 
 ```bash
 node dist/cli/index.js architecture compile --project-root . --dry-run
 node dist/cli/index.js evidence architecture --project-root .
 ```
 
-Compilation consumes canonical ADR YAML and source inputs. It may produce
-runtime-owned registries and indexes when run without `--dry-run`; do not hand-
-edit those outputs.
+Compilation consumes canonical ADR YAML and source inputs. Non-dry runs may
+produce runtime-owned registries and indexes; do not hand-edit those outputs.
 
 ### MCP and watch
 
@@ -137,14 +180,13 @@ edit those outputs.
 node dist/cli/index.js watch --project-root /absolute/path/to/project --no-watch
 ```
 
-The watch command starts the local MCP server; file watching can be enabled by
-configuration. See the [MCP setup guide](documentation/guides/mcp-setup.md)
+The watch command starts the local MCP server. See the [MCP setup guide](documentation/guides/mcp-setup.md)
 before connecting an editor.
 
-## Programmatic use
+## Programmatic Use
 
-The built source checkout exposes the current implementation exports from
-`dist/index.js`:
+After building a source checkout, the current implementation exports can be
+imported from `dist/index.js`:
 
 ```js
 import { initRssContext, search, blastRadius } from './dist/index.js';
@@ -158,49 +200,88 @@ const impact = matches.nodes[0]
 console.log({ matches: matches.nodes.length, impact: impact.nodes.length });
 ```
 
-This is source-checkout documentation for the current exports, not an npm
-package compatibility guarantee. See
-[RSS-PROGRAMMATIC-API.md](instructions/RSS-PROGRAMMATIC-API.md) for the
-verified RSS surface and its limitations.
+This describes source-checkout use of current exports, not a production
+package compatibility guarantee. See the verified
+[RSS programmatic API guide](instructions/RSS-PROGRAMMATIC-API.md).
 
-## Architecture records and generated views
+## Architecture Records and Generated State
 
-- Canonical ADR source records live under [`adrs/`](adrs/), currently using
-  ADR Kit schema v1.3.
-- Generated human-readable ADR projections live under
+- Canonical ADR source records live under [`adrs/`](adrs/) and currently use
+  ADR Architecture Kit schema v1.3.
+- Human-readable generated ADR projections live under
   [`adrs/adr-projection/`](adrs/adr-projection/).
-- [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md), `adrs/manifest.yaml`, and
-  runtime registries are generated orientation or machine artifacts.
-- Do not hand-edit generated projections, manifests, registries, or system
-  overviews. Change canonical sources and regenerate through the owning tool.
+- [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md), `adrs/manifest.yaml`, runtime
+  registries, indexes, graphs, and evidence are generated or derived views.
 
-For deeper technical architecture, see
-[documentation/architecture.md](documentation/architecture.md).
+Do not hand-edit canonical projections, manifests, registries, graphs, or
+system overviews. Change the owning canonical source and regenerate through
+the appropriate tool. See the [architecture guide](documentation/architecture.md)
+for deeper implementation detail.
 
-## Maturity and limitations
+## Maturity and Stability
 
-The implementation is useful for supervised extraction, graph traversal,
-workspace analysis, MCP experimentation, and runtime evidence workflows. It
-does not currently promise autonomous execution, multi-user service
-operation, hostile-input hardening, broad scale guarantees, or stable package
-compatibility. Extractor behavior and validation depth vary by language and
-feature area, and invariant-based validation over CEM outputs remains
-unfinished.
+The implementation is a functioning supervised reference implementation with
+meaningful workspace-oriented use. Its maturity boundaries are separate:
 
-See [MATURITY.md](MATURITY.md) for the evidence-backed posture and
-[documentation/security/boundary-enforcement.md](documentation/security/boundary-enforcement.md)
-for the implemented project-boundary controls.
+- **Execution:** human-supervised and human-in-the-loop; not autonomous.
+- **Distribution:** public source, but `package.json` remains `private: true`
+  and the package is unpublished to npm.
+- **API:** source exports exist for local integration, but there is no
+  production-supported compatibility commitment yet.
+- **Security:** current assumptions are local/single-user and bounded by the
+  implemented project-boundary controls; this is not presented as a hardened
+  multi-user or hostile-input service.
 
-## Documentation map
+See [MATURITY.md](MATURITY.md) for current evidence and limitations.
 
-- [MATURITY.md](MATURITY.md) - current posture, evidence, and limitations
-- [CONTRIBUTING.md](CONTRIBUTING.md) - local development and promotion workflow
-- [COMPILER-AUTHORITY.md](COMPILER-AUTHORITY.md) - runtime artifact authority
-- [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) - generated repository orientation
-- [Architecture guide](documentation/architecture.md) - technical design
-- [Guides index](documentation/guides/README.md) - operational guides
-- [Instructions index](instructions/README.md) - RECON/RSS instructions
-- [ADR directory](adrs/) - canonical architecture records
+## Documentation
+
+### Start here
+
+| Document | Purpose |
+| --- | --- |
+| [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) | Generated repository orientation and authority order |
+| [Setup guide](documentation/guides/setup.md) | Single-repository and workspace onboarding |
+| [Architecture guide](documentation/architecture.md) | Runtime architecture and implementation orientation |
+
+### Runtime and consumer guides
+
+| Document | Purpose |
+| --- | --- |
+| [RSS usage](instructions/RSS-USAGE-GUIDE.md) | CLI search, traversal, and context workflows |
+| [RSS programmatic API](instructions/RSS-PROGRAMMATIC-API.md) | Verified source-checkout export surface |
+| [Workspace guides](documentation/guides/README.md) | Workspace initialization and operations |
+| [MCP setup](documentation/guides/mcp-setup.md) | Local MCP and watch integration |
+
+### Architecture and governance
+
+| Document | Purpose |
+| --- | --- |
+| [Canonical ADRs](adrs/) | Architecture source records |
+| [Compiler authority](COMPILER-AUTHORITY.md) | Artifact-family ownership boundaries |
+| [MATURITY.md](MATURITY.md) | Evidence-backed maturity and limitations |
+| [Boundary enforcement](documentation/security/boundary-enforcement.md) | Implemented project-boundary controls |
+
+### Contributors
+
+| Document | Purpose |
+| --- | --- |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Development, validation, and promotion workflow |
+| [Instructions index](instructions/README.md) | RECON/RSS and repository instructions |
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing the repository. Keep
+canonical architecture sources and generated state in their defined roles,
+run the documented validation suite, and use the reviewed
+`feature/* → develop → main` promotion path.
+
+## Security
+
+The current documentation does not provide a confidential vulnerability
+reporting channel. Do not place sensitive vulnerability details in public
+issues. A formal reporting path must be verified before a SECURITY.md policy
+or supported-service security promise can be published.
 
 ## License
 
