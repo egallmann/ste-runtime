@@ -1,10 +1,2 @@
-#!/usr/bin/env sh
-set -e
-
-echo ""
-echo "=========================================="
-echo "Running pre-push contract guards..."
-echo "=========================================="
-echo ""
-
-npm run test:contract-guards
+#!/usr/bin/env node
+import "../scripts/git-hook.cjs";

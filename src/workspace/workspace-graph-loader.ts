@@ -7,6 +7,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'js-yaml';
 
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
+
 // ---------------------------------------------------------------------------
 // Public types
 // ---------------------------------------------------------------------------
@@ -107,7 +109,9 @@ function pushToAdjList(
  *
  * Returns a unified {@link WorkspaceGraph} with pre-built adjacency lists.
  */
-export async function loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGraph> {
+export const loadWorkspaceGraph: (outputDir: string) => Promise<WorkspaceGraph> = implements_adr(
+  'ADR-L-0018',
+)(async function loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGraph> {
   const resolved = path.resolve(outputDir);
 
   const indexPath = path.join(resolved, 'workspace-index.yaml');
@@ -177,4 +181,4 @@ export async function loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGr
   }
 
   return { nodes, edges, outAdj, inAdj };
-}
+});

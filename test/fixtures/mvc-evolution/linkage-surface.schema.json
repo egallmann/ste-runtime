@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/egallmann/ste-spec/contracts/linkage-surface/linkage-surface.schema.json",
+  "title": "LinkageSurface (DRAFT)",
+  "description": "Draft materialized cross-domain relationship surface for structure-guided MVC assembly. Pre-normative; $id stability is not guaranteed until promoted by ste-spec ADR.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "status",
+    "source_snapshot_refs",
+    "relationship_records",
+    "provenance",
+    "integrity",
+    "freshness",
+    "negative_space"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "version": {
+      "$ref": "#/$defs/semver"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "experimental", "deprecated"]
+    },
+    "source_snapshot_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/federatedRef"
+      },
+      "minItems": 1
+    },
+    "relationship_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/linkageRelationship"
+      },
+      "minItems": 1
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "integrity": {
+      "$ref": "#/$defs/integrity"
+    },
+    "freshness": {
+      "$ref": "#/$defs/freshness"
+    },
+    "confidence_or_validation_status": {
+      "type": "string",
+      "enum": ["validated", "candidate", "heuristic", "unknown"]
+    },
+    "negative_space": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/negativeSpace"
+      }
+    }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._:/-]*$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "federatedRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "snapshot_hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "identity_scope": {
+          "$ref": "#/$defs/identityScope"
+        },
+        "corpus_scope": {
+          "$ref": "#/$defs/corpusScope"
+        },
+        "qualified_id": {
+          "$ref": "#/$defs/qualifiedAdrId"
+        },
+        "entity_uri": {
+          "$ref": "#/$defs/entityUri"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/bareAdrId"
+              }
+            }
+          },
+          "then": {
+            "required": ["identity_scope", "corpus_scope"],
+            "properties": {
+              "identity_scope": {
+                "const": "repo-local"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["identity_scope"],
+            "properties": {
+              "identity_scope": {
+                "const": "workspace"
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": ["qualified_id"]
+              },
+              {
+                "required": ["entity_uri"]
+              }
+            ],
+            "not": {
+              "required": ["id"],
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/bareAdrId"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "linkageRelationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "relationship_family",
+        "from_ref",
+        "to_ref",
+        "relationship_origin",
+        "producer_ref",
+        "producer_kind",
+        "generation_method",
+        "provenance",
+        "integrity"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "relationship_family": {
+          "type": "string",
+          "enum": [
+            "adr_to_code",
+            "adr_to_capability",
+            "adr_to_invariant",
+            "adr_to_contract",
+            "adr_to_embodiment",
+            "custom"
+          ]
+        },
+        "from_ref": {
+          "$ref": "#/$defs/federatedRef"
+        },
+        "to_ref": {
+          "$ref": "#/$defs/federatedRef"
+        },
+        "relationship_origin": {
+          "type": "string",
+          "enum": [
+            "explicit_schema_reference",
+            "embodiment_declaration",
+            "contract_mapping",
+            "validator_output",
+            "compiler_output",
+            "manual_mapping",
+            "automated_extraction",
+            "unknown"
+          ]
+        },
+        "producer_ref": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "producer_kind": {
+          "type": "string",
+          "enum": ["spec", "adr", "runtime", "rules", "manual", "other"]
+        },
+        "generation_method": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity"
+        },
+        "rationale_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/federatedRef"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_ref", "source_kind"],
+      "properties": {
+        "source_ref": {
+          "$ref": "#/$defs/federatedRef"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "notes": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content_hash"],
+      "properties": {
+        "content_hash": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["current", "stale-unknown", "stale-confirmed"]
+        },
+        "observed_at": {
+          "type": "string"
+        }
+      }
+    },
+    "negativeSpace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reason",
+        "resolution_status",
+        "affected_ref",
+        "relationship_id",
+        "corpus_scope",
+        "selector_context"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "resolution_status": {
+          "type": "string",
+          "enum": [
+            "missing_identity",
+            "ambiguous_identity",
+            "unresolved_linkage",
+            "not_applicable"
+          ]
+        },
+        "affected_ref": {
+          "$ref": "#/$defs/federatedRef"
+        },
+        "relationship_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "corpus_scope": {
+          "$ref": "#/$defs/corpusScope"
+        },
+        "selector_context": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "identityScope": {
+      "type": "string",
+      "enum": ["repo-local", "workspace"]
+    },
+    "bareAdrId": {
+      "type": "string",
+      "pattern": "^ADR-L-\\d{4}$"
+    },
+    "corpusScope": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "qualifiedAdrId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*:ADR-L-\\d{4}$"
+    },
+    "entityUri": {
+      "type": "string",
+      "pattern": "^entity://[a-z][a-z0-9._-]*/[A-Z]+-[A-Z0-9-]+$"
+    }
+  }
+}

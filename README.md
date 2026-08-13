@@ -701,7 +701,7 @@ For deeper explanatory background on STE and how the repositories fit together, 
 - [System Overview](SYSTEM-OVERVIEW.md) - Generated AI-first orientation for this repo
 - [ADR Directory](adrs/) - Machine-verifiable ADR source records
 - [ADR Manifest](adrs/manifest.yaml) - Generated ADR discovery index
-- [Rendered ADR Docs](adrs/rendered/) - Generated markdown views of ADR source
+- [ADR Projections](adrs/adr-projection/) - Generated markdown views of ADR source
 - [Migration History](adrs/MIGRATION.md) - E-ADR to ADR Kit migration details
 
 ### Architecture
@@ -726,7 +726,7 @@ For deeper explanatory background on STE and how the repositories fit together, 
 ### Architecture & Design
 - [System Overview](SYSTEM-OVERVIEW.md) - Fastest correct orientation path
 - [Architecture Decision Records](adrs/) - ADR Kit source authority
-- [Rendered ADR Docs](adrs/rendered/) - Generated markdown projections
+- [ADR Projections](adrs/adr-projection/) - Generated markdown projections
 - [Alternatives Comparison](documentation/reference/alternatives-comparison.md) - How ste-runtime compares to tree-sitter, LSP, Kythe, Sourcegraph
 - [Architecture Diagrams](documentation/diagrams/) - Visual architecture documentation
 

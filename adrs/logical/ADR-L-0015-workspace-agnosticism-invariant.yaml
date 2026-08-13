@@ -1,11 +1,11 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0015
+id: 019ff84e-4ece-76a3-a93f-463d9474ce28
 title: Workspace Agnosticism Invariant
 status: proposed
 created_date: '2026-04-24'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - workspace
 - portability
@@ -17,81 +17,114 @@ tags:
 - manifest-driven
 vision_category: false
 related_adrs:
-- ADR-L-0009
-- ADR-L-0013
-- ADR-L-0014
-context: |
-  ste-runtime is an OSS tool that operates on arbitrary workspaces. Each
+- 019ff84e-4ece-7ce3-aa17-67193bab337e
+- 019ff84e-4ece-7f44-8e26-a71c17ab45d9
+- 019ff84e-4ece-721e-b93f-3d5659b95dca
+context: 'ste-runtime is an OSS tool that operates on arbitrary workspaces. Each
+
   workspace declares its own repository list, output directory, and domain
+
   vocabulary in workspace.yaml. The runtime must never contain references
+
   to any specific workspace, repository name, or domain vocabulary in its
+
   source code. Prior ADRs established workspace scope (ADR-L-0009) and
+
   path portability (ADR-L-0013). This ADR strengthens those commitments
+
   into a codified invariant with automated enforcement.
+
+  '
 capabilities:
-- id: CAP-0015
+- id: 019ff84e-4ece-7231-9c3b-bd93242b3d4d
   name: Workspace-agnostic operation
-  description: >
-    ste-runtime operates identically in any workspace without source code
-    changes. All workspace-specific values (repo names, output directories,
-    domain vocabulary) are derived from workspace.yaml at runtime.
+  description: 'ste-runtime operates identically in any workspace without source code
+    changes. All workspace-specific values (repo names, output directories, domain
+    vocabulary) are derived from workspace.yaml at runtime.
+
+    '
+  alias_id: CAP-0015
+  alias_name: workspace-agnostic-operation
 invariants:
-- id: INV-0015
-  statement: >
-    ste-runtime source code contains zero references to any specific
-    workspace, repository name, output directory name, or domain vocabulary.
-    All such values are derived from workspace.yaml at runtime.
+- id: 019ff84e-4ece-7eab-b63f-907f7861400c
+  statement: 'ste-runtime source code contains zero references to any specific workspace,
+    repository name, output directory name, or domain vocabulary. All such values
+    are derived from workspace.yaml at runtime.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: >
-    ste-runtime is OSS and must work in any workspace. Hardcoded references
-    to specific workspaces, repositories, or domains would couple the tool
-    to a single consumer and violate its portability contract.
-- id: INV-0016
-  statement: >
-    Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
+  rationale: 'ste-runtime is OSS and must work in any workspace. Hardcoded references
+    to specific workspaces, repositories, or domains would couple the tool to a single
+    consumer and violate its portability contract.
+
+    '
+  alias_id: INV-0015
+  alias_name: inv-0015
+- id: 019ff84e-4ece-7958-a53a-cb6f7d183357
+  statement: 'Unit tests use synthetic repository names (e.g. repo-alpha, repo-beta)
     and never reference real workspace repository names.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: >
-    Test fixtures containing real workspace names leak domain-specific
-    vocabulary into the OSS codebase and create false coupling.
+  rationale: 'Test fixtures containing real workspace names leak domain-specific vocabulary
+    into the OSS codebase and create false coupling.
+
+    '
+  alias_id: INV-0016
+  alias_name: inv-0016
 constraints:
 - id: CONST-0008
   type: technical
-  description: >
-    The output directory name is manifest-driven. workspace.yaml declares
-    output_dir (default: .workspace-graph/). No domain-specific directory
-    name appears in ste-runtime source code.
-  rationale: >
-    Domain-specific output directory names (e.g. .my-workspace/) belong in
-    workspace.yaml, not in the tool source.
+  description: 'The output directory name is manifest-driven. workspace.yaml declares
+    output_dir (default: .workspace-graph/). No domain-specific directory name appears
+    in ste-runtime source code.
+
+    '
+  rationale: 'Domain-specific output directory names (e.g. .my-workspace/) belong
+    in workspace.yaml, not in the tool source.
+
+    '
 - id: CONST-0009
   type: technical
-  description: >
-    Edge wiring logic uses structural matching only (AWS resource types,
+  description: 'Edge wiring logic uses structural matching only (AWS resource types,
     SDK service names, CFN ref/getatt patterns). Zero repo-name awareness.
-  rationale: >
-    Nominal matching (by repo name) would couple the wiring logic to a
-    specific workspace layout and break portability.
+
+    '
+  rationale: 'Nominal matching (by repo name) would couple the wiring logic to a specific
+    workspace layout and break portability.
+
+    '
 decisions:
-- id: DEC-0015
+- id: 019ff84e-4ece-7325-aa2f-fea5eba50e5d
   summary: ste-runtime is workspace-agnostic by invariant
-  rationale: |
-    Workspace-specific references in source code create coupling to a single
+  rationale: 'Workspace-specific references in source code create coupling to a single
+
     consumer. By codifying workspace agnosticism as an invariant with
+
     automated enforcement (grep-based CI check), the tool remains portable
+
     across all workspaces without manual auditing.
-decision: |
-  ste-runtime source code MUST NOT contain references to any specific
+
+    '
+  alias_id: DEC-0015
+  alias_name: ste-runtime-is-workspace-agnostic-by-invariant
+decision: 'ste-runtime source code MUST NOT contain references to any specific
+
   workspace, repository name, output directory name, or domain vocabulary.
+
   Enforcement: rg -i against ste-runtime/src/ for domain-specific terms
+
   must return zero matches at every phase exit. All workspace-specific
+
   values are derived from workspace.yaml at runtime.
+
+  '
 consequences:
   positive:
   - ste-runtime works in any workspace without source changes.
@@ -99,4 +132,7 @@ consequences:
   - Automated enforcement prevents regression.
   negative:
   - All validation and testing must use synthetic names, adding a small overhead.
-  - Domain-specific optimizations (if ever needed) must live in workspace.yaml, not in source.
+  - Domain-specific optimizations (if ever needed) must live in workspace.yaml, not
+    in source.
+alias_id: ADR-L-0015
+alias_name: workspace-agnosticism-invariant

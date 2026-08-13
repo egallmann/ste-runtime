@@ -16,11 +16,9 @@ adrs/
 │   ├── ADR-L-0001.yaml
 │   ├── ADR-L-0002.yaml
 │   └── ...
-├── physical/         # Implementation specs (how)
-│   ├── ADR-P-0001.yaml
-│   ├── ADR-P-0002.yaml
-│   └── ...
-├── rendered/         # Auto-generated markdown views
+├── physical-system/  # Runtime/system implementation boundaries
+├── physical-component/ # Concrete implementation components
+├── adr-projection/   # Auto-generated markdown projections
 │   ├── ADR-L-0001.md
 │   └── ...
 ├── manifest.yaml     # Auto-generated discovery index
@@ -29,7 +27,7 @@ adrs/
 
 ## ADR Types
 
-### Logical ADRs (6 total)
+### Logical ADRs (23 total)
 Conceptual architecture decisions - the "what" and "why":
 - **ADR-L-0001**: RECON Provisional Execution
 - **ADR-L-0002**: RECON Self-Validation Strategy
@@ -37,14 +35,16 @@ Conceptual architecture decisions - the "what" and "why":
 - **ADR-L-0004**: Watchdog Authoritative Mode
 - **ADR-L-0005**: Self-Configuring Domain Discovery
 - **ADR-L-0006**: Conversational Query Interface
+- **ADR-L-0024**: Public Source Release and Production Publication Boundary
 
-### Physical ADRs (5 total)
-Implementation specifications - the "how":
-- **ADR-P-0001**: RSS CLI Implementation
-- **ADR-P-0002**: JSON Data Extraction
-- **ADR-P-0003**: Angular/CSS Semantic Extraction
-- **ADR-P-0004**: ste-runtime MCP Server
-- **ADR-P-0005**: Extractor Validation Requirements
+### Physical-system ADRs (2 total)
+System implementation boundaries:
+- **ADR-PS-0001**: Runtime Orchestration and Assistant Integration
+- **ADR-PS-0002**: Semantic Extraction Subsystem
+
+### Physical-component ADRs (13 total)
+Concrete implementation components are stored under `physical-component/`.
+The former `physical/` ADR type has been retired.
 
 ## Using the Manifest
 
@@ -62,14 +62,15 @@ grep -A 10 "statistics:" manifest.yaml
 ```
 
 **Key statistics:**
-- Total ADRs: 11
-- Logical ADRs: 6
-- Physical ADRs: 5
-- Total Invariants: 13
+- Total ADRs: 38
+- Logical ADRs: 23
+- Physical-system ADRs: 2
+- Physical-component ADRs: 13
+- Total Invariants: 38
 
 ## ADR Kit Schema
 
-ADRs follow the [ADR Kit v1.0 schema](https://github.com/egallmann/adr-architecture-kit):
+ADRs follow the [ADR Kit v1.3 schema](https://github.com/egallmann/adr-architecture-kit):
 
 - **YAML frontmatter** for machine-readable metadata
 - **Embedded Markdown** for human-readable prose
@@ -84,9 +85,9 @@ ADRs follow the [ADR Kit v1.0 schema](https://github.com/egallmann/adr-architect
 cat adrs/logical/ADR-L-0001-*.yaml
 ```
 
-### Option 2: Read rendered markdown
+### Option 2: Read generated markdown projection
 ```bash
-cat adrs/rendered/ADR-L-0001.md
+cat adrs/adr-projection/logical/ADR-L-0001-recon-provisional-execution-for-project-level-semantic-state.md
 ```
 
 ### Option 3: Query via RSS
@@ -96,10 +97,18 @@ npm run rss:search "RECON decisions"
 
 ## Updating ADRs
 
-1. Edit YAML file directly
-2. Validate: `python -m adr_kit.validator adrs/logical/ADR-L-0001.yaml`
-3. Regenerate manifest: `python -m adr_kit.generators.manifest_generator adrs/`
-4. Regenerate views: `python -m adr_kit.generators.views.markdown adrs/`
+### Authors
+
+`authors` records **who wrote the decision** (human accountability), not repo ownership.
+For this repository, use **`erik.gallmann`**. Do not use `ste-runtime`, `system`, or package
+names — ownership is already expressed in `PROJECT.yaml` and `architecture_namespace`.
+
+After `adr scaffold` or generator commands, set `authors` before committing.
+
+1. Edit the canonical YAML file directly
+2. Validate: `adr validate --scope . --cross-references`
+3. Regenerate projections: `adr generate-adr-projection --scope .`
+4. Regenerate runtime-owned registries: `node dist/cli/index.js architecture compile --project-root .`
 
 ## Migration History
 
@@ -122,3 +131,4 @@ See [MIGRATION.md](MIGRATION.md) for detailed migration process and rationale.
 - [ADR Kit Documentation](https://github.com/egallmann/adr-architecture-kit)
 - [STE Architecture Specification](../spec/ste-spec/)
 - [Migration Guide](MIGRATION.md)
+- [Release Strategy](adr-projection/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.md)

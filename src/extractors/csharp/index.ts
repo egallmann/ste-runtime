@@ -15,7 +15,7 @@ import { generateSliceId, toPosixPath } from '../../utils/paths.js';
 const ROUTE_ATTR_RE = /\[Route\("([^"]+)"\)\]/;
 const HTTP_METHOD_RE = /\[(Http(Get|Post|Put|Delete|Patch|Options|Head))(?:\("([^"]*)"\))?\]/;
 const CLASS_RE = /^[\t ]*(?:public|internal|private|protected)?\s*(?:static\s+)?(?:abstract\s+)?(?:partial\s+)?class\s+(\w+)(?:\s*:\s*([^\n{]+))?/gm;
-const METHOD_RE = /^[\t ]*(?:public|private|protected|internal)?\s*(?:static\s+)?(?:virtual\s+)?(?:override\s+)?(?:async\s+)?(?:[\w<>\[\]?,\s]+?)\s+(\w+)\s*\(/gm;
+const METHOD_RE = /^[\t ]*(?:public|private|protected|internal)?\s*(?:static\s+)?(?:virtual\s+)?(?:override\s+)?(?:async\s+)?(?:[\w<>[\]?,\s]+?)\s+(\w+)\s*\(/gm;
 const DI_REG_RE = /services\.(AddScoped|AddSingleton|AddTransient|AddHostedService|AddHttpClient)<([^>]+)>/g;
 const NAMESPACE_RE = /^namespace\s+([\w.]+)/m;
 
@@ -89,7 +89,7 @@ export async function extractFromCsharp(file: DiscoveredFile): Promise<RawAssert
         const fullRoute = routePrefix + (routeSuffix ? '/' + routeSuffix : '');
 
         const methodLine = bodyLines.slice(i + 1, i + 12).join('\n');
-        const mMatch = methodLine.match(/(?:public|private|protected|internal)\s+(?:async\s+)?[\w<>\[\]?,\s]+?\s+(\w+)\s*\(/);
+        const mMatch = methodLine.match(/(?:public|private|protected|internal)\s+(?:async\s+)?[\w<>[\]?,\s]+?\s+(\w+)\s*\(/);
         const actionName = mMatch?.[1] ?? 'unknown';
 
         assertions.push({

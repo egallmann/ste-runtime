@@ -11,6 +11,8 @@ import path from 'node:path';
 
 import yaml from 'js-yaml';
 
+import { implements_adr } from '../architecture/intent-decorators.js';
+
 export type ArchitectureBundleStatus = 'valid' | 'degraded' | 'invalid';
 
 export interface ArchitectureBundleArtifact<T = unknown> {
@@ -142,7 +144,9 @@ function summarizeIndex(indexData: Record<string, unknown> | undefined): Archite
   };
 }
 
-export async function loadArchitectureBundle(scopeRoot: string): Promise<ArchitectureBundleResult> {
+export const loadArchitectureBundle: (scopeRoot: string) => Promise<ArchitectureBundleResult> = implements_adr(
+  'ADR-L-0012',
+)(async function loadArchitectureBundle(scopeRoot: string): Promise<ArchitectureBundleResult> {
   const resolvedRoot = path.resolve(scopeRoot);
   const warnings: string[] = [];
   const errors: string[] = [];
@@ -258,4 +262,4 @@ export async function loadArchitectureBundle(scopeRoot: string): Promise<Archite
     warnings,
     errors,
   };
-}
+});

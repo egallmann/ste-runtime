@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0002
+id: 019ff84e-4ece-7378-b637-eaea5a1d3bc2
 title: RECON Self-Validation Strategy
 status: accepted
 created_date: '2026-01-07'
@@ -16,19 +16,25 @@ tags:
 - self-validation
 - ste-compliance
 related_adrs:
-- ADR-L-0001
+- 019ff84e-4ece-791b-822f-21f537c95340
 supersedes: []
-context: |-
-  RECON generates AI-DOC state from source code extraction. The question arose: How should RECON validate its own output to ensure consistency and quality?
+context: 'RECON generates AI-DOC state from source code extraction. The question arose:
+  How should RECON validate its own output to ensure consistency and quality?
+
 
   Key tensions:
 
+
   1. **Blocking vs. Non-Blocking:** Should validation failures halt RECON execution?
+
   2. **Verdict vs. Evidence:** Should validation declare correctness or surface observations?
+
   3. **Scope:** What aspects of AI-DOC state should be validated?
+
   4. **Integration:** When does validation run in the RECON pipeline?
 
-  ---
+
+  ---'
 capabilities: []
 architectural_boundaries: []
 interaction_contracts: []
@@ -36,40 +42,63 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0002
+- id: 019ff84e-4ece-76c1-bb3e-45323e77f7ec
   summary: RECON self-validation is non-blocking, report-only, and exploratory.
-  rationale: |-
-    ### 1. Non-Blocking Preserves Learning
+  rationale: '### 1. Non-Blocking Preserves Learning
 
-    If validation blocked execution on every finding, RECON would become unusable during exploratory development. Many validation findings are informational or represent known limitations in extraction algorithms.
+
+    If validation blocked execution on every finding, RECON would become unusable
+    during exploratory development. Many validation findings are informational or
+    represent known limitations in extraction algorithms.
+
 
     By remaining non-blocking, validation:
+
     - Captures all findings without losing work
+
     - Allows developers to review findings at their discretion
+
     - Generates historical data for pattern analysis
+
     - Avoids false positive friction
+
 
     ### 2. Evidence Over Verdicts
 
-    During exploratory development, the validators themselves are evolving. A "verdict" implies confidence that is premature. Instead, validators generate:
+
+    During exploratory development, the validators themselves are evolving. A "verdict"
+    implies confidence that is premature. Instead, validators generate:
+
     - Observations about state structure
+
     - Anomalies that may indicate issues
+
     - Coverage gaps in extraction
+
     - Repeatability concerns
+
 
     Developers interpret findings; validators do not judge.
 
+
     ### 3. Categorization Enables Prioritization
+
 
     All findings are categorized:
 
+
     | Category | Meaning | Action |
+
     |----------|---------|--------|
+
     | ERROR | Structural issue that may indicate a bug | Investigate promptly |
+
     | WARNING | Anomaly that may indicate a problem | Review when convenient |
+
     | INFO | Observation for awareness | Log for future reference |
 
-    ---
+
+    ---'
   alternatives_considered: []
   consequences:
     positive:
@@ -86,9 +115,13 @@ decisions:
     - Prioritize ERROR findings for immediate investigation
     - Use findings to guide extractor improvements
   related_invariants: []
+  alias_id: DEC-0002
+  alias_name: recon-self-validation-is-non-blocking-report-only-and-exploratory
 gaps: []
 migration_origin:
   remapped_entities:
   - entity_type: decision
     from: DEC-0001
     to: DEC-0002
+alias_id: ADR-L-0002
+alias_name: recon-self-validation-strategy

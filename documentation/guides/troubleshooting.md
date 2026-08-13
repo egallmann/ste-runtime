@@ -1037,7 +1037,7 @@ If you encounter an issue not covered here:
 
 3. **Check ADRs:**
    - [ADR Directory](../../adrs/)
-   - [Rendered ADR Docs](../../adrs/rendered/)
+   - [ADR Projections](../../adrs/adr-projection/)
 
 4. **Report issues:**
    - Include full error messages

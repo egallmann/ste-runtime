@@ -1,0 +1,124 @@
+schema_version: '1.3'
+adr_type: logical
+id: 019ff88c-4cbd-7725-892a-3762052360de
+title: Public Source Release and Production Publication Boundary
+status: accepted
+created_date: '2026-08-12'
+authors:
+- erik.gallmann
+domains:
+- release
+- governance
+- runtime
+- public-repository
+tags:
+- branch-promotion
+- public-source
+- production-overhaul
+- npm-publication
+- release-evidence
+vision_category: false
+related_adrs: []
+introduces_entities: []
+context: 'ste-runtime is maintained in a public repository, but its package remains
+  intentionally private and unpublished because the runtime is an experimental
+  reference implementation rather than a production-supported npm distribution.
+
+
+  The repository therefore has two distinct publication surfaces:
+
+
+  - public source and canonical architecture artifacts, reviewed and promoted
+    through GitHub;
+
+  - a future installable package, which requires a separate production-overhaul
+    decision and a compatibility-supported public API.
+
+
+  Without an explicit boundary, a public repository can be mistaken for a public
+  package commitment, and feature branches can be promoted directly to the
+  production/reference branch without the integration evidence collected on
+  develop.
+  '
+capabilities: []
+architectural_boundaries: []
+interaction_contracts: []
+constraints:
+- id: CONST-0021
+  type: technical
+  description: The package MUST remain private and unpublished while the production overhaul is incomplete.
+  rationale: Separates public source availability from an unsupported package compatibility promise.
+- id: CONST-0022
+  type: technical
+  description: The repository MUST preserve canonical ADR authority and regenerate derived projections and registries through their owning tools.
+  rationale: Prevents release evidence from being based on manually edited derived artifacts.
+invariants:
+- id: 019ff88c-4cbd-7725-892a-3762052360df
+  statement: 'Runtime changes MUST promote through a reviewed pull request from a
+    feature branch to develop, followed by a reviewed develop-to-main promotion.
+    Feature branches MUST NOT bypass develop when updating main.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: policy
+  verification_method: automated
+  rationale: 'Preserves an integration boundary and makes the evidence for promoted
+    source reviewable.'
+  compliance_frameworks: []
+  exceptions: []
+  alias_id: INV-0038
+  alias_name: reviewed-feature-to-develop-to-main-promotion
+- id: 019ff88c-4cbd-7725-892a-3762052360e0
+  statement: 'The ste-runtime package MUST remain marked private and MUST NOT be
+    published to npm until an accepted production-overhaul decision establishes a
+    supported public API, package compatibility policy, release evidence, and
+    publication provenance.'
+  scope: global
+  enforcement_level: must
+  enforcement_mechanism: policy
+  verification_method: automated
+  rationale: 'Separates public source availability from an unsupported package
+    compatibility promise.'
+  compliance_frameworks: []
+  exceptions: []
+  alias_id: INV-0039
+  alias_name: private-package-until-production-overhaul
+non_functional_requirements: []
+decisions:
+- id: 019ff88c-4cbd-7725-892a-3762052360e1
+  summary: Keep source public, defer package publication to the production overhaul
+  rationale: 'The current runtime is experimental and its package metadata already
+    declares a private, unpublished distribution. The repository can still provide
+    transparent source, canonical ADRs, generated architecture artifacts, and
+    reproducible validation evidence without making an npm compatibility promise.'
+  decision: 'Maintain the current public repository and private package boundary.
+    Land changes through feature-to-develop pull requests. After develop quality
+    gates pass, promote develop to main through a separate reviewed pull request.
+    Do not publish npm artifacts or remove package.json private: true as part of
+    ordinary source promotion. Revisit publication only as an explicit consequence
+    of the production overhaul, with a new accepted release decision covering API
+    stability, package contents, versioning, provenance, consumer smoke tests, and
+    support expectations.'
+  alternatives_considered:
+  - name: Publish every main promotion to npm
+    rejected_because: 'Main currently represents promoted public source, not a
+      production-supported package contract.'
+  - name: Keep branch and package policy implicit
+    rejected_because: 'Implicit policy makes public source, integration, and package
+      compatibility boundaries easy to confuse.'
+  consequences:
+    positive:
+    - Public source remains reviewable and reusable.
+    - develop provides an explicit integration boundary before main promotion.
+    - npm publication remains blocked until production readiness is deliberate and evidenced.
+    negative:
+    - Consumers must use source checkout or local linking until publication is approved.
+    - A future production-overhaul decision and release implementation remain necessary.
+  related_invariants:
+  - 019ff88c-4cbd-7725-892a-3762052360df
+  - 019ff88c-4cbd-7725-892a-3762052360e0
+  enables_capabilities: []
+  alias_id: DEC-0026
+  alias_name: keep-source-public-and-defer-package-publication-to-production-overhaul
+gaps: []
+alias_id: ADR-L-0024
+alias_name: public-source-release-and-production-publication-boundary

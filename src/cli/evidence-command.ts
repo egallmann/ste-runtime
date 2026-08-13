@@ -1,5 +1,6 @@
 import process from 'node:process';
 
+import { implements_adr } from '../architecture/intent-decorators.js';
 import {
   resolveArchitectureEvidenceFreshness,
   type ArchitectureEvidenceFreshnessStatus,
@@ -75,7 +76,15 @@ const defaultIo: ArchitectureEvidenceCommandIo = {
   },
 };
 
-export async function buildArchitectureEvidence(
+export const buildArchitectureEvidence: (
+  projectRoot: string,
+  bundle: ArchitectureBundleResult,
+  subjects: EvidenceSubject[],
+  dependencies?: Pick<ArchitectureEvidenceCommandDependencies, 'resolveFreshness'>,
+) => Promise<ArchitectureEvidence> = implements_adr(
+  'ADR-L-0007',
+  'ADR-L-0011',
+)(async function buildArchitectureEvidence(
   projectRoot: string,
   bundle: ArchitectureBundleResult,
   subjects: EvidenceSubject[],
@@ -104,7 +113,7 @@ export async function buildArchitectureEvidence(
       lastReconciled: freshness.lastReconciled,
     },
   };
-}
+});
 
 const ADR_ID_PATTERN = /^ADR-(L|PS|PC)-\d+/;
 
@@ -145,7 +154,13 @@ export function deriveSubjectsFromBundle(bundle: ArchitectureBundleResult): Evid
   return subjects;
 }
 
-export async function runArchitectureEvidenceCommand(
+export const runArchitectureEvidenceCommand: (
+  projectRoot: string,
+  io?: ArchitectureEvidenceCommandIo,
+  dependencies?: ArchitectureEvidenceCommandDependencies,
+) => Promise<number> = implements_adr(
+  'ADR-L-0011',
+)(async function runArchitectureEvidenceCommand(
   projectRoot: string,
   io: ArchitectureEvidenceCommandIo = defaultIo,
   dependencies: ArchitectureEvidenceCommandDependencies = {
@@ -164,4 +179,4 @@ export async function runArchitectureEvidenceCommand(
     io.stderr(`${message}\n`);
     return 1;
   }
-}
+});

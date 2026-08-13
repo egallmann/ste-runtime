@@ -128,5 +128,64 @@ describe('SourceLocatorRegistry', () => {
     expect(resolveLocator(registry, 'adr://ADR-L-0001')?.source_uri).toBe(
       'workspace://repoA/adrs/logical/ADR-L-0001-test.yaml',
     );
+    expect(resolveLocator(registry, 'entity://repoA/ADR-L-0001')?.source_uri).toBe(
+      'workspace://repoA/adrs/logical/ADR-L-0001-test.yaml',
+    );
+    expect(registry.locators.find(l => l.entity_id === 'ADR-L-0001')?.entity_uri).toBe(
+      'entity://repoA/ADR-L-0001',
+    );
+  });
+
+  it('uses distinct repo-qualified entity URIs for homonymous ADR ids across repos', async () => {
+    for (const repoName of ['repoA', 'repoB', 'repoC']) {
+      await mkdir(path.join(tmpDir, repoName, 'adrs', 'index'), { recursive: true });
+      await mkdir(path.join(tmpDir, repoName, 'adrs', 'logical'), { recursive: true });
+      await writeFile(
+        path.join(tmpDir, repoName, 'adrs', 'logical', 'ADR-L-0012-test.yaml'),
+        'id: ADR-L-0012\n',
+        'utf-8',
+      );
+      await writeFile(
+        path.join(tmpDir, repoName, 'adrs', 'index', 'entity-registry.yaml'),
+        yaml.dump({
+          schema_version: '1.1',
+          type: 'normalized_entity_registry',
+          entities: [
+            {
+              id: 'ADR-L-0012',
+              entity_type: 'adr',
+              name: `ADR in ${repoName}`,
+              canonical_source: {
+                source_type: 'logical_adr',
+                source_ref: 'ADR-L-0012',
+                artifact_path: 'adrs/logical/ADR-L-0012-test.yaml',
+              },
+            },
+          ],
+        }),
+        'utf-8',
+      );
+    }
+
+    await emitSourceLocatorRegistry({
+      outputDir: path.join(tmpDir, 'out'),
+      workspaceRoot: tmpDir,
+      repos: [
+        { name: 'repoA', path: 'repoA' },
+        { name: 'repoB', path: 'repoB' },
+        { name: 'repoC', path: 'repoC' },
+      ],
+      graphSnapshotHash: 'sha256:graph',
+      workspaceManifestHash: 'sha256:manifest',
+      generatedAt: '2026-01-01T00:00:00.000Z',
+      generatedBy: 'test',
+    });
+
+    const registry = await loadSourceLocatorRegistry(path.join(tmpDir, 'out'));
+    const adrLocators = registry.locators.filter(l => l.entity_id === 'ADR-L-0012');
+    expect(adrLocators).toHaveLength(3);
+    const uris = new Set(adrLocators.map(l => l.entity_uri));
+    expect(uris).toEqual(new Set(['entity://repoA/ADR-L-0012', 'entity://repoB/ADR-L-0012', 'entity://repoC/ADR-L-0012']));
+    expect(uris.has('entity://workspace/ADR-L-0012')).toBe(false);
   });
 });

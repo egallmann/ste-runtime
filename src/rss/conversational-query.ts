@@ -16,6 +16,7 @@
  * 4. Structured output for both human and machine consumption
  */
 
+import { implements_adr, implements_adr_method } from '../architecture/intent-decorators.js';
 import {
   type RssContext,
   initRssContext,
@@ -102,6 +103,9 @@ interface CachedQuery {
 // ─────────────────────────────────────────────────────────────────
 
 export class ConversationalQueryEngine {
+  static readonly __implements_adrs__ = Object.freeze(['ADR-L-0006'] as const);
+  static readonly __enforces_invariants__ = Object.freeze([] as const);
+
   private ctx!: RssContext;
   private cache: LRUCache<string, CachedQuery>;
   private initialized: boolean = false;
@@ -131,6 +135,7 @@ export class ConversationalQueryEngine {
    * const result = await engine.query("Tell me about the finding processor");
    * console.log(result.summary);
    */
+  @implements_adr_method('ADR-L-0006')
   async query(input: string): Promise<ConversationalResponse> {
     const startTime = performance.now();
     
@@ -755,17 +760,21 @@ let defaultEngine: ConversationalQueryEngine | null = null;
  * console.log(result.summary);
  * console.log(result.filePaths);
  */
-export async function ask(query: string, stateRoot?: string): Promise<ConversationalResponse> {
+export const ask: (query: string, stateRoot?: string) => Promise<ConversationalResponse> = implements_adr(
+  'ADR-L-0006',
+)(async function ask(query: string, stateRoot?: string): Promise<ConversationalResponse> {
   if (!defaultEngine || (stateRoot && stateRoot !== '.ste/state')) {
     defaultEngine = new ConversationalQueryEngine(stateRoot);
   }
   return defaultEngine.query(query);
-}
+});
 
 /**
  * Format response for human display (terminal/console)
  */
-export function formatForHuman(response: ConversationalResponse): string {
+export const formatForHuman: (response: ConversationalResponse) => string = implements_adr(
+  'ADR-L-0006',
+)(function formatForHuman(response: ConversationalResponse): string {
   const lines: string[] = [];
   
   lines.push('═'.repeat(60));
@@ -812,12 +821,14 @@ export function formatForHuman(response: ConversationalResponse): string {
     `cache: ${response.metrics.fromCache}]`);
   
   return lines.join('\n');
-}
+});
 
 /**
  * Format response for AI agent consumption (structured JSON)
  */
-export function formatForAgent(response: ConversationalResponse): object {
+export const formatForAgent: (response: ConversationalResponse) => object = implements_adr(
+  'ADR-L-0006',
+)(function formatForAgent(response: ConversationalResponse): object {
   return {
     query: response.query,
     intent: response.intent,
@@ -833,5 +844,5 @@ export function formatForAgent(response: ConversationalResponse): object {
       cached: response.metrics.fromCache,
     },
   };
-}
+});
 

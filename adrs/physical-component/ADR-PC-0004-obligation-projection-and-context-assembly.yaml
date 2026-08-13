@@ -1,42 +1,49 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0004
+id: 019ff84e-4ecf-7156-a33b-bc8bba3fac60
 title: Obligation Projection and Context Assembly
 status: proposed
 created_date: '2026-03-15'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - obligations
 - context
 - rss
 implements_system:
-- ADR-PS-0001
+- 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
 implements_logical:
-- ADR-L-0006
-- ADR-L-0007
+- 019ff84e-4ece-71c8-af1f-eb35c77b551a
+- 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
 technologies:
 - typescript
 - node.js
 - zod
-context: |
-  This component projects invalidated validations and change-driven obligations,
+context: 'This component projects invalidated validations and change-driven obligations,
+
   assembles implementation context, and loads source-backed evidence for
+
   assistant-facing reasoning.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
   version: 5.3+
   rationale: Existing implementation language.
 component_specifications:
-- id: COMP-0004
+- id: 019ff84e-4ecf-7962-b83d-01e7e385b783
   name: Obligation Projection and Context Assembly
   type: service
-  responsibilities: |
-    - Project obligations from change intent and graph state
+  responsibilities: '- Project obligations from change intent and graph state
+
     - Surface invalidated validations and advisories
+
     - Load source-backed implementation context
+
     - Format runtime context for assistant consumption
+
+    '
   generation_context:
     purpose: Build freshness-aware implementation context and obligation guidance.
     key_responsibilities:
@@ -47,14 +54,21 @@ component_specifications:
     success_criteria:
     - Obligation and context tools produce source-backed, deterministic responses
   interfaces:
-  - id: IFACE-0004
+  - id: 019ff84e-4ecf-722d-893d-1558ae513c92
     type: library_api
-    specification: |
-      Public surfaces:
+    specification: 'Public surfaces:
+
       - projectObligations
+
       - assembleContextTool
+
       - getImplementationContext
+
       - loadSourceGroupedByFile
+
+      '
+    alias_id: IFACE-0004
+    alias_name: iface-0004
   implementation_identifiers:
     module_path: src/mcp/obligation-projector.ts
     test_path: src/mcp/tools-obligation.test.ts
@@ -71,9 +85,16 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - Obligation projection flows
+      integration_tests: '- Obligation projection flows
+
         - Context assembly flows
+
         - Source loading and formatting
+
+        '
+  alias_id: COMP-0004
+  alias_name: obligation-projection-and-context-assembly
 implementation_decisions: []
 gaps: []
+alias_id: ADR-PC-0004
+alias_name: adr-pc-0004-obligation-projection-and-context-assembly

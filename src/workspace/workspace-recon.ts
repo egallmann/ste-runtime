@@ -7,6 +7,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import type { ResolvedConfig } from '../config/index.js';
 import { executeRecon } from '../recon/index.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 import { discoverFilesFromConfig } from '../recon/phases/discovery.js';
 import { log } from '../utils/logger.js';
 import { PhaseTimer, repoLimiter, type PhaseTimingRecord } from '../utils/concurrency.js';
@@ -21,6 +22,7 @@ import type { ProjectionEmitResult } from './emit-projections.js';
 import { emitMultiResProjections } from './emit-multi-res-projections.js';
 import type { MultiResEmitResult } from './emit-multi-res-projections.js';
 import { mergeWorkspaceGraph } from './workspace-merge.js';
+import { runWorkspaceAttributionFederation } from './workspace-attribution-federation.js';
 import { emitSourceLocatorRegistry } from './source-locator-registry.js';
 
 export interface WorkspaceReconOptions {
@@ -138,7 +140,15 @@ function repoIsFailure(r: RepoResult): boolean {
 /**
  * Run RECON once per repository in manifest order; write slices and workspace index at workspace root.
  */
-export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Promise<WorkspaceReconResult> {
+export const executeWorkspaceRecon: (
+  options: WorkspaceReconOptions,
+) => Promise<WorkspaceReconResult> = implements_adr(
+  'ADR-L-0017',
+  'ADR-L-0009',
+  'ADR-L-0022',
+)(enforces_invariant('INV-0019')(async function executeWorkspaceRecon(
+  options: WorkspaceReconOptions,
+): Promise<WorkspaceReconResult> {
   const wsTimer = new PhaseTimer('Workspace Orchestration');
   wsTimer.start();
 
@@ -276,6 +286,13 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
 
   const anySuccess = repos.some(r => r.status === 'success' || r.status === 'skipped');
 
+  try {
+    await runWorkspaceAttributionFederation(workspaceRoot);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`[workspace-recon] Attribution federation hook failed (non-fatal): ${msg}`);
+  }
+
   const allSuccess = repos.every(r => !repoIsFailure(r));
   const failedRepos = repos.filter(repoIsFailure);
   const success = options.failOnAnyError ? allSuccess : anySuccess;
@@ -376,4 +393,4 @@ export async function executeWorkspaceRecon(options: WorkspaceReconOptions): Pro
     multiResProjectionResult,
     orchestrationTiming: wsTiming,
   };
-}
+}));

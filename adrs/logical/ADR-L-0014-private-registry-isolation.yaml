@@ -1,11 +1,11 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0014
+id: 019ff84e-4ece-721e-b93f-3d5659b95dca
 title: Private Registry Isolation
 status: proposed
 created_date: '2026-04-21'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - security
 - registry
@@ -14,32 +14,49 @@ tags:
 - isolation
 - ip-protection
 vision_category: false
-context: |
-  Enterprise environments route package installs through private registry
+context: 'Enterprise environments route package installs through private registry
+
   instances. These hosts are unreachable outside the corporate network and
+
   their URLs are work-context IP. Source code, configuration, generated
+
   artifacts, and lockfiles must not leak private registry references.
+
+  '
 constraints:
 - id: CONST-0007
   type: security
-  description: |
-    ste init honors NPM_CONFIG_REGISTRY at runtime but never writes
+  description: 'ste init honors NPM_CONFIG_REGISTRY at runtime but never writes
+
     that value into a generated file.
+
+    '
   rationale: Runtime registry configuration must not leak into persisted artifacts.
 decisions:
-- id: DEC-0014
+- id: 019ff84e-4ece-7b4b-bf3c-e5d701158cc2
   summary: No private registry references in source or artifacts
-  rationale: |
-    Private registry URLs are work-context IP that must not appear in
+  rationale: 'Private registry URLs are work-context IP that must not appear in
+
     version-controlled files. Mechanical enforcement via the scanner
+
     prevents accidental leakage.
-decision: |
-  ste-runtime source, configuration, generated artifacts, and lockfiles
+
+    '
+  alias_id: DEC-0014
+  alias_name: no-private-registry-references-in-source-or-artifacts
+decision: 'ste-runtime source, configuration, generated artifacts, and lockfiles
+
   MUST NOT reference private package registries. Enforcement is mechanical
+
   via the Gate 2/3 scanner (scripts/ip_scan.py).
+
+  '
 consequences:
   positive:
   - No private registry URLs leak into version-controlled artifacts.
   - Enforcement is automated and cannot be bypassed without scanner changes.
   negative:
-  - Users who need private registries must configure them at runtime via environment variables, not in persisted configuration.
+  - Users who need private registries must configure them at runtime via environment
+    variables, not in persisted configuration.
+alias_id: ADR-L-0014
+alias_name: private-registry-isolation

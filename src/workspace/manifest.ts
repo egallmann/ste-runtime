@@ -14,6 +14,7 @@ import {
   type ResolvedConfig,
   type SupportedLanguage,
 } from '../config/index.js';
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
 import { toPosixPath } from '../utils/paths.js';
 
 const INFRA_SOURCE_SUBDIRS = [
@@ -82,7 +83,9 @@ const WORKSPACE_MANIFEST_FILENAMES = ['workspace.yaml', 'workspace.yml'] as cons
  * that contains a workspace manifest file. Agnostic to repo layout — enables `recon --workspace`
  * without hardcoded paths.
  */
-export async function discoverWorkspaceRoot(startDir: string): Promise<string | null> {
+export const discoverWorkspaceRoot: (startDir: string) => Promise<string | null> = implements_adr(
+  'ADR-L-0015',
+)(enforces_invariant('INV-0015')(async function discoverWorkspaceRoot(startDir: string): Promise<string | null> {
   let dir = path.resolve(startDir);
   const root = path.parse(dir).root;
   while (true) {
@@ -102,7 +105,7 @@ export async function discoverWorkspaceRoot(startDir: string): Promise<string | 
     }
     dir = path.dirname(dir);
   }
-}
+}));
 
 function dedupeLanguages(langs: SupportedLanguage[]): SupportedLanguage[] {
   return [...new Set(langs)];
@@ -233,7 +236,11 @@ function defaultMcp(): ResolvedConfig['mcp'] {
 /**
  * Resolve workspace.yaml path: accepts a directory (containing workspace.yaml) or a direct file path.
  */
-export async function parseWorkspaceManifest(workspacePathInput: string): Promise<ParsedWorkspaceLocation> {
+export const parseWorkspaceManifest: (workspacePathInput: string) => Promise<ParsedWorkspaceLocation> = implements_adr(
+  'ADR-L-0009',
+)(enforces_invariant('INV-0014')(async function parseWorkspaceManifest(
+  workspacePathInput: string,
+): Promise<ParsedWorkspaceLocation> {
   const resolved = path.resolve(workspacePathInput);
   let manifestFile: string;
   let workspaceRoot: string;
@@ -262,25 +269,37 @@ export async function parseWorkspaceManifest(workspacePathInput: string): Promis
     throw new Error(`workspace manifest validation failed: ${parsed.error.message}`);
   }
   return { manifest: parsed.data, workspaceRoot, manifestFile };
-}
+}));
 
 /**
  * Resolve a repository entry to an absolute path and verify it exists as a directory.
  */
-export async function resolveRepoPath(workspaceRoot: string, repo: RepoEntry): Promise<string> {
+export const resolveRepoPath: (workspaceRoot: string, repo: RepoEntry) => Promise<string> = implements_adr(
+  'ADR-L-0009',
+)(enforces_invariant('INV-0014')(async function resolveRepoPath(
+  workspaceRoot: string,
+  repo: RepoEntry,
+): Promise<string> {
   const abs = path.resolve(workspaceRoot, repo.path);
   const st = await fs.stat(abs);
   if (!st.isDirectory()) {
     throw new Error(`workspace repo path is not a directory: ${abs} (repo ${repo.name})`);
   }
   return abs;
-}
+}));
 
 /**
  * Build {@link ResolvedConfig} for one repository in workspace mode.
  * State is written under {@code <workspaceRoot>/<outputDir>/state/<repo.name>/} (Invariant 2: never under the scanned repo tree).
  */
-export async function buildPerRepoConfig(
+export const buildPerRepoConfig: (
+  runtimeDir: string,
+  repo: RepoEntry,
+  workspaceRoot: string,
+  outputDir: string,
+) => Promise<ResolvedConfig> = implements_adr(
+  'ADR-L-0009',
+)(enforces_invariant('INV-0014')(async function buildPerRepoConfig(
   runtimeDir: string,
   repo: RepoEntry,
   workspaceRoot: string,
@@ -342,4 +361,4 @@ export async function buildPerRepoConfig(
     mcp: defaultMcp(),
     rss,
   };
-}
+}));

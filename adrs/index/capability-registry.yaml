@@ -1,258 +1,21 @@
 schema_version: '1.1'
 type: normalized_entity_registry
 entities:
-  - id: CAP-0007
-    entity_type: capability
-    name: Surface graph freshness and obligation projection semantics
-    summary: Provide canonical freshness, invalidation, and obligation semantics for runtime consumers.
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: logical_adr
-      source_ref: ADR-L-0007#CAP-0007
-      artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-L-0007
-      domains:
-        - rss
-        - obligations
-        - freshness
-      implemented_by_components: []
-      enabled_by_decisions: []
-    relationships:
-      declared_in:
-        - ADR-L-0007
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: logical_adr
-      source_ref: ADR-L-0007#CAP-0007
-      extraction_phase: extract_capability
-      classification: explicit
-      generator: adr-architecture-index
-  - id: CAP-0009
-    entity_type: capability
-    name: Workspace-scoped analysis
-    summary: All reconnaissance and evidence emission operates on workspace scope.
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: logical_adr
-      source_ref: ADR-L-0009#CAP-0009
-      artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-L-0009
-      domains:
-        - workspace
-        - scope
-      implemented_by_components: []
-      enabled_by_decisions: []
-    relationships:
-      declared_in:
-        - ADR-L-0009
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: logical_adr
-      source_ref: ADR-L-0009#CAP-0009
-      extraction_phase: extract_capability
-      classification: explicit
-      generator: adr-architecture-index
-  - id: CAP-0010
-    entity_type: capability
-    name: One-command workspace initialization
-    summary: ste init <target> creates a fully configured workspace.
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: logical_adr
-      source_ref: ADR-L-0010#CAP-0010
-      artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-L-0010
-      domains:
-        - workspace
-        - init
-      implemented_by_components: []
-      enabled_by_decisions: []
-    relationships:
-      declared_in:
-        - ADR-L-0010
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: logical_adr
-      source_ref: ADR-L-0010#CAP-0010
-      extraction_phase: extract_capability
-      classification: explicit
-      generator: adr-architecture-index
-  - id: CAP-0011
-    entity_type: capability
-    name: ArchitectureEvidence emission
-    summary: Emit ArchitectureEvidence v2 at .ste-workspace/evidence/architecture-evidence.json.
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: logical_adr
-      source_ref: ADR-L-0011#CAP-0011
-      artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-L-0011
-      domains:
-        - architecture
-        - integration
-      implemented_by_components: []
-      enabled_by_decisions: []
-    relationships:
-      declared_in:
-        - ADR-L-0011
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: logical_adr
-      source_ref: ADR-L-0011#CAP-0011
-      extraction_phase: extract_capability
-      classification: explicit
-      generator: adr-architecture-index
-  - id: CAP-0012
-    entity_type: capability
-    name: Schema fixture synchronization
-    summary: >-
-      ste-runtime consumes architecture-evidence.schema.json via fixture sync in test/fixtures/. Drift is detected by
-      spec-schema-fixture-sync.test.ts.
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: logical_adr
-      source_ref: ADR-L-0012#CAP-0012
-      artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-L-0012
-      domains:
-        - architecture
-        - interop
-      implemented_by_components: []
-      enabled_by_decisions: []
-    relationships:
-      declared_in:
-        - ADR-L-0012
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: logical_adr
-      source_ref: ADR-L-0012#CAP-0012
-      extraction_phase: extract_capability
-      classification: explicit
-      generator: adr-architecture-index
-  - id: CAP-0015
+  - id: 019ff84e-4ece-7231-9c3b-bd93242b3d4d
     entity_type: capability
     name: Workspace-agnostic operation
     summary: >-
       ste-runtime operates identically in any workspace without source code changes. All workspace-specific values (repo
       names, output directories, domain vocabulary) are derived from workspace.yaml at runtime.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
-      source_ref: ADR-L-0015#CAP-0015
+      source_ref: 019ff84e-4ece-76a3-a93f-463d9474ce28#019ff84e-4ece-7231-9c3b-bd93242b3d4d
       artifact_path: adrs/logical/ADR-L-0015-workspace-agnosticism-invariant.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-L-0015
+      adr_id: 019ff84e-4ece-76a3-a93f-463d9474ce28
       domains:
         - workspace
         - portability
@@ -261,7 +24,7 @@ entities:
       enabled_by_decisions: []
     relationships:
       declared_in:
-        - ADR-L-0015
+        - 019ff84e-4ece-76a3-a93f-463d9474ce28
       declares: []
       references: []
       referenced_by: []
@@ -280,29 +43,84 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
-      source_ref: ADR-L-0015#CAP-0015
+      source_ref: 019ff84e-4ece-76a3-a93f-463d9474ce28#019ff84e-4ece-7231-9c3b-bd93242b3d4d
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
-  - id: CAP-0016
+  - id: 019ff84e-4ece-74db-b635-3602e4d0961d
+    entity_type: capability
+    name: Workspace-scoped analysis
+    summary: All reconnaissance and evidence emission operates on workspace scope.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-7ce3-aa17-67193bab337e#019ff84e-4ece-74db-b635-3602e4d0961d
+      artifact_path: adrs/logical/ADR-L-0009-unified-workspace-scope-model.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ece-7ce3-aa17-67193bab337e
+      domains:
+        - workspace
+        - scope
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff84e-4ece-7ce3-aa17-67193bab337e
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-7ce3-aa17-67193bab337e#019ff84e-4ece-74db-b635-3602e4d0961d
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ece-7514-9839-1bcdbf31add9
     entity_type: capability
     name: Schema-compliant slice emission
     summary: >-
       ste-runtime emits workspace graph slices that conform to a defined schema contract, enabling any compliant merger
       to consume them without validation errors.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
-      source_ref: ADR-L-0016#CAP-0016
+      source_ref: 019ff84e-4ece-76ad-ae3e-f92bef05635a#019ff84e-4ece-7514-9839-1bcdbf31add9
       artifact_path: adrs/logical/ADR-L-0016-workspace-graph-slice-schema-contract.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-L-0016
+      adr_id: 019ff84e-4ece-76ad-ae3e-f92bef05635a
       domains:
         - workspace
         - interop
@@ -311,7 +129,7 @@ entities:
       enabled_by_decisions: []
     relationships:
       declared_in:
-        - ADR-L-0016
+        - 019ff84e-4ece-76ad-ae3e-f92bef05635a
       declares: []
       references: []
       referenced_by: []
@@ -330,41 +148,149 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
-      source_ref: ADR-L-0016#CAP-0016
+      source_ref: 019ff84e-4ece-76ad-ae3e-f92bef05635a#019ff84e-4ece-7514-9839-1bcdbf31add9
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
-  - id: CAP-0018
+  - id: 019ff84e-4ece-7713-b43a-942d54b37aa4
+    entity_type: capability
+    name: Schema fixture synchronization
+    summary: >-
+      ste-runtime consumes architecture-evidence.schema.json via fixture sync in test/fixtures/. Drift is detected by
+      spec-schema-fixture-sync.test.ts.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-7fcd-a62e-c8a7982632b0#019ff84e-4ece-7713-b43a-942d54b37aa4
+      artifact_path: adrs/logical/ADR-L-0012-polyglot-interop-contract.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ece-7fcd-a62e-c8a7982632b0
+      domains:
+        - architecture
+        - interop
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff84e-4ece-7fcd-a62e-c8a7982632b0
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-7fcd-a62e-c8a7982632b0#019ff84e-4ece-7713-b43a-942d54b37aa4
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ece-7ba8-980b-2c03ade9551a
+    entity_type: capability
+    name: ArchitectureEvidence emission
+    summary: Emit ArchitectureEvidence v2 at .workspace-graph/evidence/architecture-evidence.json.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-74fc-8839-1d55445660b7#019ff84e-4ece-7ba8-980b-2c03ade9551a
+      artifact_path: adrs/logical/ADR-L-0011-adapter-role-conformance.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ece-74fc-8839-1d55445660b7
+      domains:
+        - architecture
+        - integration
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff84e-4ece-74fc-8839-1d55445660b7
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-74fc-8839-1d55445660b7#019ff84e-4ece-7ba8-980b-2c03ade9551a
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ece-7d33-a91e-00d8638b487d
     entity_type: capability
     name: Deterministic workspace graph querying
     summary: >-
       Load workspace infra graph slices into a typed in-memory graph and execute deterministic, non-LLM traversal
       queries that answer standard workspace-level questions (system dependencies, component integration, blast radius
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
-      source_ref: ADR-L-0018#CAP-0018
+      source_ref: 019ff84e-4ece-7c3b-833e-dbdb54ed76ec#019ff84e-4ece-7d33-a91e-00d8638b487d
       artifact_path: adrs/logical/ADR-L-0018-deterministic-workspace-graph-queries.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-L-0018
+      adr_id: 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
       domains:
         - workspace
         - graph
         - rss
       implemented_by_components:
-        - COMP-0010
-        - COMP-0011
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
       enabled_by_decisions:
-        - DEC-0020
+        - 019ff84e-4ece-7f12-ae27-d1eafc11b6eb
     relationships:
       declared_in:
-        - ADR-L-0018
+        - 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
       declares: []
       references: []
       referenced_by: []
@@ -372,13 +298,13 @@ entities:
       enforces: []
       enforced_by: []
       enabled_by:
-        - DEC-0020
+        - 019ff84e-4ece-7f12-ae27-d1eafc11b6eb
       enables: []
       governs: []
       governed_by: []
       implemented_by:
-        - COMP-0010
-        - COMP-0011
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
       implements: []
       embodied_in: []
       embodies: []
@@ -386,55 +312,51 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
-      source_ref: ADR-L-0018#CAP-0018
+      source_ref: 019ff84e-4ece-7c3b-833e-dbdb54ed76ec#019ff84e-4ece-7d33-a91e-00d8638b487d
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
-  - id: CAP-0019
+  - id: 019ff84e-4ece-7e56-911c-189aa1c7fa48
     entity_type: capability
-    name: Multi-resolution architecture projection
-    summary: >-
-      Produce architecture projections at five deterministic resolution levels (L0-L4) from the same workspace graph
-      substrate, using semantic compression (endpoint grouping, same-type aggregation, edge tier filtering) to opti
+    name: Surface graph freshness and obligation projection semantics
+    summary: Provide canonical freshness, invalidation, and obligation semantics for runtime consumers.
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
-      source_ref: ADR-L-0019#CAP-0019
-      artifact_path: adrs/logical/ADR-L-0019-multi-resolution-architecture-projection.yaml
+      source_ref: 019ff84e-4ece-70ba-bf2e-a0fecd4a986e#019ff84e-4ece-7e56-911c-189aa1c7fa48
+      artifact_path: adrs/logical/ADR-L-0007-graph-freshness-and-obligation-projection-semantics.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-L-0019
+      adr_id: 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
       domains:
-        - workspace
-        - graph
-        - projection
-      implemented_by_components:
-        - COMP-0011
-        - COMP-0010
-      enabled_by_decisions:
-        - DEC-0021
+        - rss
+        - obligations
+        - freshness
+      implemented_by_components: []
+      enabled_by_decisions: []
     relationships:
       declared_in:
-        - ADR-L-0019
+        - 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
       declares: []
       references: []
       referenced_by: []
       related_to: []
       enforces: []
       enforced_by: []
-      enabled_by:
-        - DEC-0021
+      enabled_by: []
       enables: []
       governs: []
       governed_by: []
-      implemented_by:
-        - COMP-0010
-        - COMP-0011
+      implemented_by: []
       implements: []
       embodied_in: []
       embodies: []
@@ -442,29 +364,142 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
-      source_ref: ADR-L-0019#CAP-0019
+      source_ref: 019ff84e-4ece-70ba-bf2e-a0fecd4a986e#019ff84e-4ece-7e56-911c-189aa1c7fa48
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index
-  - id: CAP-0020
+  - id: 019ff84e-4ece-7f69-a92c-20e666655ae6
+    entity_type: capability
+    name: One-command workspace initialization
+    summary: >-
+      ste setup creates a fully configured workspace (config, MCP, gitignore, initial RECON). ste init remains as the
+      sub-capability for scaffolding workspace.yaml specifically.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-730c-b33b-a814a58f221e#019ff84e-4ece-7f69-a92c-20e666655ae6
+      artifact_path: adrs/logical/ADR-L-0010-bootstrap-and-init-capability.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ece-730c-b33b-a814a58f221e
+      domains:
+        - workspace
+        - init
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff84e-4ece-730c-b33b-a814a58f221e
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ece-730c-b33b-a814a58f221e#019ff84e-4ece-7f69-a92c-20e666655ae6
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7089-9e0e-e85189939ffd
+    entity_type: capability
+    name: Experimental MVC-D to MVC-S candidate emission
+    summary: >-
+      Consume ste-spec-owned MVC-D and MVC-S contracts in tests and emit deterministic factual MVC-S candidate snapshots
+      from fully supplied fixture inputs.
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ecf-74b8-8b3b-d33e1ad21f6a#019ff84e-4ecf-7089-9e0e-e85189939ffd
+      artifact_path: adrs/logical/ADR-L-0021-experimental-mvc-d-to-mvc-s-contract-consumption.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-74b8-8b3b-d33e1ad21f6a
+      domains:
+        - mvc
+        - contracts
+        - runtime
+        - provenance
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-74b8-8b3b-d33e1ad21f6a
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - 019ff84e-4ecf-7553-8e3b-40c6fe1bc5c6
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ecf-74b8-8b3b-d33e1ad21f6a#019ff84e-4ecf-7089-9e0e-e85189939ffd
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-710a-ad22-93698361c72b
     entity_type: capability
     name: Source-aware CEM and MVC assembly
     summary: >-
       Resolve workspace graph entities to authoritative source artifacts through stable URI locators, assemble CEM
       bundles with provenance and validation state, derive bounded MVC bundles, and validate MVC bundles against thei
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: logical_adr
-      source_ref: ADR-L-0020#CAP-0020
+      source_ref: 019ff84e-4ecf-7f4e-8b17-1f35008e8877#019ff84e-4ecf-710a-ad22-93698361c72b
       artifact_path: adrs/logical/ADR-L-0020-source-locators-cem-mvc.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-L-0020
+      adr_id: 019ff84e-4ecf-7f4e-8b17-1f35008e8877
       domains:
         - workspace
         - graph
@@ -472,13 +507,13 @@ entities:
         - mvc
         - provenance
       implemented_by_components:
-        - COMP-0011
-        - COMP-0010
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
       enabled_by_decisions:
-        - DEC-0022
+        - 019ff84e-4ecf-7528-8d2b-24dfb64b40f2
     relationships:
       declared_in:
-        - ADR-L-0020
+        - 019ff84e-4ecf-7f4e-8b17-1f35008e8877
       declares: []
       references: []
       referenced_by: []
@@ -486,13 +521,13 @@ entities:
       enforces: []
       enforced_by: []
       enabled_by:
-        - DEC-0022
+        - 019ff84e-4ecf-7528-8d2b-24dfb64b40f2
       enables: []
       governs: []
       governed_by: []
       implemented_by:
-        - COMP-0010
-        - COMP-0011
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
       implements: []
       embodied_in: []
       embodies: []
@@ -500,12 +535,132 @@ entities:
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: logical_adr
-      source_ref: ADR-L-0020#CAP-0020
+      source_ref: 019ff84e-4ecf-7f4e-8b17-1f35008e8877#019ff84e-4ecf-710a-ad22-93698361c72b
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7738-b522-70ed04210188
+    entity_type: capability
+    name: Experimental MVC-S candidate traversal
+    summary: >-
+      Expand MVC-S candidate refs by breadth-first traversal over supplied relationship records only, including
+      relationship_records supplied inside a Linkage Surface-shaped contract object, producing deterministic candidate-o
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ecf-7eed-a03b-5ae24f705e4d#019ff84e-4ecf-7738-b522-70ed04210188
+      artifact_path: adrs/logical/ADR-L-0023-experimental-mvc-s-candidate-traversal-boundary.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7eed-a03b-5ae24f705e4d
+      domains:
+        - mvc
+        - rss
+        - runtime
+        - traversal
+        - provenance
+      implemented_by_components: []
+      enabled_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7eed-a03b-5ae24f705e4d
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - 019ff84e-4ecf-7c22-9a1f-3ea5fed35b00
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ecf-7eed-a03b-5ae24f705e4d#019ff84e-4ecf-7738-b522-70ed04210188
+      extraction_phase: extract_capability
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7de7-b93b-b02c6152fe2b
+    entity_type: capability
+    name: Multi-resolution architecture projection
+    summary: >-
+      Produce architecture projections at five deterministic resolution levels (L0-L4) from the same workspace graph
+      substrate, using semantic compression (endpoint grouping, same-type aggregation, edge tier filtering) to opti
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ecf-74ba-b201-3b02412f39c8#019ff84e-4ecf-7de7-b93b-b02c6152fe2b
+      artifact_path: adrs/logical/ADR-L-0019-multi-resolution-architecture-projection.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-74ba-b201-3b02412f39c8
+      domains:
+        - workspace
+        - graph
+        - projection
+      implemented_by_components:
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+      enabled_by_decisions:
+        - 019ff84e-4ecf-7432-8c1f-313f2a7bd6b4
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-74ba-b201-3b02412f39c8
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by:
+        - 019ff84e-4ecf-7432-8c1f-313f2a7bd6b4
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by:
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff84e-4ecf-74ba-b201-3b02412f39c8#019ff84e-4ecf-7de7-b93b-b02c6152fe2b
       extraction_phase: extract_capability
       classification: explicit
       generator: adr-architecture-index

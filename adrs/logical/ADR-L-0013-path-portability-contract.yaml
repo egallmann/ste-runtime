@@ -1,11 +1,11 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0013
+id: 019ff84e-4ece-7f44-8e26-a71c17ab45d9
 title: Path Portability Contract
 status: proposed
 created_date: '2026-04-21'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - portability
 - paths
@@ -14,32 +14,50 @@ tags:
 - portability
 - cross-platform
 vision_category: false
-context: |
-  Windows, macOS, and Linux represent paths differently. Any path
+context: 'Windows, macOS, and Linux represent paths differently. Any path
+
   persisted to a file, logged, or used as an identifier must be portable.
+
   src/utils/paths.ts already implements the correct helpers
+
   (toPosixPath, getRelativePosixPath).
+
+  '
 constraints:
 - id: CONST-0006
   type: technical
-  description: ste init may not write drive-letter or home-directory paths into any generated file.
-  rationale: Generated files must be portable across platforms; absolute or drive-letter paths break this contract.
+  description: ste init may not write drive-letter or home-directory paths into any
+    generated file.
+  rationale: Generated files must be portable across platforms; absolute or drive-letter
+    paths break this contract.
 decisions:
-- id: DEC-0013
+- id: 019ff84e-4ece-7653-bd1a-a02d9b083ef9
   summary: Persisted paths are POSIX-relative to workspace root
-  rationale: |
-    Platform-specific paths in persisted artifacts break cross-platform
+  rationale: 'Platform-specific paths in persisted artifacts break cross-platform
+
     workflows. Enforcing POSIX-relative paths at the serialization
+
     boundary ensures portability without constraining internal disk-IO.
-decision: |
-  All persisted paths MUST be POSIX-style, MUST be relative to the
+
+    '
+  alias_id: DEC-0013
+  alias_name: persisted-paths-are-posix-relative-to-workspace-root
+decision: 'All persisted paths MUST be POSIX-style, MUST be relative to the
+
   declared workspace root, MUST NOT contain drive letters or absolute
+
   home-directory prefixes. Disk-IO calls MAY use OS-native paths
+
   internally but MUST convert at the serialization boundary using
+
   toPosixPath() or getRelativePosixPath() from src/utils/paths.ts.
+
+  '
 consequences:
   positive:
   - Evidence and configuration files are portable across operating systems.
   - Path-based identifiers are stable regardless of platform.
   negative:
   - All serialization points must be audited for path conversion.
+alias_id: ADR-L-0013
+alias_name: path-portability-contract

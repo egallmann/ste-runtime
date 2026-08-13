@@ -1,41 +1,51 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0011
+id: 019ff84e-4ecf-7a82-ae3a-121886af1b51
 title: ADR YAML Semantic Extraction
 status: proposed
 created_date: '2026-05-26'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - extraction
 - architecture
 - recon
 implements_system:
-- ADR-PS-0002
+- 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
 implements_logical:
-- ADR-L-0001
-- ADR-L-0005
+- 019ff84e-4ece-791b-822f-21f537c95340
+- 019ff84e-4ece-737a-a23f-3f243e6fafda
 related_adrs:
-- ADR-PC-0005
-- ADR-PC-0006
-- ADR-PC-0007
+- 019ff84e-4ecf-7117-853b-c869ac6d7ba6
+- 019ff84e-4ecf-73e1-8c0f-19a06db3004b
+- 019ff84e-4ecf-721a-b936-e1b98d068ec7
 technologies:
 - typescript
 - node.js
 - js-yaml
 - adr-yaml
-context: |
-  ADR YAML semantic extraction converts Architecture Decision Records authored
+context: 'ADR YAML semantic extraction converts Architecture Decision Records authored
+
   in the ADR-kit YAML schema into first-class RECON graph slices. This enables
+
   the MCP query tools (find, impact, usages, similar) to operate over the
+
   architecture domain alongside code-derived domains (graph, behavior, data,
+
   api, infrastructure).
 
+
   The extractor recognizes three ADR types (logical, physical-system,
+
   physical-component) and emits six element types: adr_document, adr_invariant,
+
   adr_decision, adr_capability, adr_component, and adr_system. A new AI-DOC
-  domain 'architecture' with subdirectories (adrs, invariants, decisions,
+
+  domain ''architecture'' with subdirectories (adrs, invariants, decisions,
+
   capabilities, components, systems) is introduced.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
@@ -46,42 +56,47 @@ technology_stack:
   version: 4.x
   rationale: YAML parsing for ADR source files.
 component_specifications:
-- id: COMP-0012
+- id: 019ff84e-4ecf-7422-913f-540519905503
   name: ADR YAML Semantic Extractor
   type: library
-  responsibilities: |
-    - Detect and classify ADR YAML files via path-prefix and content sniffing
-    - Parse ADR YAML using js-yaml
-    - Extract ADR documents, invariants, decisions, capabilities, component
-      specifications, and system boundaries as RawAssertions
-    - Emit source provenance (serialized YAML snippets) for traceability
-    - Handle failure paths: malformed YAML, missing adr_type, unknown adr_type
+  responsibilities: "- Detect and classify ADR YAML files via path-prefix and content\
+    \ sniffing\n- Parse ADR YAML using js-yaml\n- Extract ADR documents, invariants,\
+    \ decisions, capabilities, component\n  specifications, and system boundaries\
+    \ as RawAssertions\n- Emit source provenance (serialized YAML snippets) for traceability\n\
+    - Handle failure paths: malformed YAML, missing adr_type, unknown adr_type\n"
   generation_context:
-    purpose: Extract semantic entities from ADR YAML corpus for RECON architecture domain.
+    purpose: Extract semantic entities from ADR YAML corpus for RECON architecture
+      domain.
     key_responsibilities:
     - ADR YAML discovery and classification
     - Multi-type entity extraction (6 element types)
     - Architecture domain slice population
     constraints:
     - Extraction remains deterministic and path-driven
-    - ADR YAML classification takes precedence over CloudFormation for files under adrs/
+    - ADR YAML classification takes precedence over CloudFormation for files under
+      adrs/
     - Unknown adr_type values are skipped with warning, not errors
     success_criteria:
     - ADR entities are represented as queryable architecture domain slices
     - Failure paths produce zero assertions without crashing the pipeline
     - At least 90 architecture slices emitted from ste-runtime self-pass
   interfaces:
-  - id: IFACE-0012
+  - id: 019ff84e-4ecf-7384-be0f-def4e12f395d
     type: library_api
-    specification: |
-      Public surfaces:
+    specification: 'Public surfaces:
+
       - src/extractors/adr-yaml/index.ts (extractFromAdrYaml)
+
+      '
+    alias_id: IFACE-0012
+    alias_name: iface-0012
   implementation_identifiers:
     module_path: src/extractors/adr-yaml/index.ts
     test_path: src/extractors/adr-yaml/adr-yaml-extractor.test.ts
   implementation_requirements:
     error_handling:
-      strategy: Skip malformed or unrecognized ADR YAML files with warning log; never crash the pipeline.
+      strategy: Skip malformed or unrecognized ADR YAML files with warning log; never
+        crash the pipeline.
     observability:
       logging:
         level: warn
@@ -93,9 +108,17 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - ADR YAML semantic extraction for logical, physical-system, physical-component types
+      integration_tests: '- ADR YAML semantic extraction for logical, physical-system,
+        physical-component types
+
         - Failure path validation (malformed YAML, missing adr_type, unknown adr_type)
+
         - Source provenance verification
+
+        '
+  alias_id: COMP-0012
+  alias_name: adr-yaml-semantic-extractor
 implementation_decisions: []
 gaps: []
+alias_id: ADR-PC-0011
+alias_name: adr-yaml-semantic-extraction

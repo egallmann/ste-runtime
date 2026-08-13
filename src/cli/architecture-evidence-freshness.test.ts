@@ -95,7 +95,7 @@ describe('resolveArchitectureEvidenceFreshness', () => {
 
   it('returns stale-unknown when no canonical ADR source files are found', async () => {
     await writeYaml('adrs/index/architecture-index.yaml');
-    await writeYaml('adrs/rendered/ADR-L-0001-test.md', '# rendered');
+    await writeYaml('adrs/adr-projection/logical/generated.yaml');
     await writeYaml('adrs/entities/registry.yaml');
     await writeYaml('adrs/manifest.yaml');
 

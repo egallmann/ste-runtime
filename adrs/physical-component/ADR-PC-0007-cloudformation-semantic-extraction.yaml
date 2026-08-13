@@ -1,50 +1,68 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0007
+id: 019ff84e-4ecf-721a-b936-e1b98d068ec7
 title: CloudFormation Semantic Extraction
 status: proposed
 created_date: '2026-03-15'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - extraction
 - cloudformation
 - recon
 implements_system:
-- ADR-PS-0002
+- 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
 implements_logical:
-- ADR-L-0001
+- 019ff84e-4ece-791b-822f-21f537c95340
 technologies:
 - typescript
 - cloudformation
 - yaml
 - json
-context: |
-  CloudFormation semantic extraction captures templates, resources, outputs,
+context: 'CloudFormation semantic extraction captures templates, resources, outputs,
+
   parameters, infrastructure relationships, and template-level implementation
+
   intent from CloudFormation sources. This includes nested stack topology
+
   detection: master templates that orchestrate child stacks via
+
   AWS::Serverless::Application and AWS::CloudFormation::Stack resource types
+
   are identified by resource type analysis, and cross-template resolution
+
   structures (StackTopology, OutputIndex) are built for downstream service
+
   wiring. All resolution is static analysis of template files on disk; no
+
   runtime AWS API calls are made.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
   version: 5.3+
   rationale: Existing implementation language.
 component_specifications:
-- id: COMP-0007
+- id: 019ff84e-4ecf-73de-b63f-92e5a829225d
   name: CloudFormation Semantic Extractor
   type: library
-  responsibilities: |
-    - Extract template, parameter, resource, and output semantics
+  responsibilities: '- Extract template, parameter, resource, and output semantics
+
     - Derive infrastructure relationships and API/data model evidence
+
     - Preserve template-level implementation intent metadata
-    - Detect nested stack topology via AWS::Serverless::Application and AWS::CloudFormation::Stack resource types
-    - Build cross-template resolution structures (StackTopology, OutputIndex) for downstream wiring
-    - Identify canonical stackId (<repo-relative-template-path>#<logicalId>) as primary identity model
+
+    - Detect nested stack topology via AWS::Serverless::Application and AWS::CloudFormation::Stack
+    resource types
+
+    - Build cross-template resolution structures (StackTopology, OutputIndex) for
+    downstream wiring
+
+    - Identify canonical stackId (<repo-relative-template-path>#<logicalId>) as primary
+    identity model
+
+    '
   generation_context:
     purpose: Extract CloudFormation semantics for RECON.
     key_responsibilities:
@@ -55,21 +73,30 @@ component_specifications:
     success_criteria:
     - CloudFormation resources and relationships appear in RECON output
   interfaces:
-  - id: IFACE-0007
+  - id: 019ff84e-4ecf-77d1-b61f-6b97112f1615
     type: library_api
-    specification: |
-      Public surfaces:
+    specification: 'Public surfaces:
+
       - src/recon/phases/extraction-cloudformation.ts
+
       - src/extractors/cfn/*
+
       - src/workspace/cfn-stack-resolver.ts
+
+      '
+    alias_id: IFACE-0007
+    alias_name: iface-0007
   implementation_identifiers:
     module_path: src/recon/phases/extraction-cloudformation.ts
     test_path: src/recon/phases/extraction-cloudformation.test.ts
   implementation_requirements:
     constraints:
     - Nested stack resolution is static analysis only -- no runtime AWS API calls
-    - Intrinsic handling is deterministic: Ref and GetAtt resolve to logical IDs; Sub map-form conditionally supported; Join, Select, If, and ImportValue produce structured diagnostics rather than resolved values
-    - All extracted AWS::* resources become workspace graph nodes via the slice emitter; no CFN resource type is silently dropped by extraction or emission
+    - Intrinsic handling is deterministic: Ref and GetAtt resolve to logical IDs;
+        Sub map-form conditionally supported; Join, Select, If, and ImportValue produce
+        structured diagnostics rather than resolved values
+    - All extracted AWS::* resources become workspace graph nodes via the slice emitter;
+      no CFN resource type is silently dropped by extraction or emission
     error_handling:
       strategy: Continue extracting valid template sections while surfacing deterministic
         parsing failures.
@@ -82,34 +109,45 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - CloudFormation extraction
+      integration_tests: '- CloudFormation extraction
+
         - CloudFormation validation extraction coverage
+
         - MFE monorepo extraction (nested apps/*/cfn_templates/ patterns)
+
+        '
+  alias_id: COMP-0007
+  alias_name: cloudformation-semantic-extractor
 implementation_decisions:
-- id: IMPL-0007
-  summary: >
-    CFN type completeness: all extracted AWS::* resources are emitted as
-    workspace graph nodes. Explicitly mapped types receive specific graph
-    type names (Lambda, Queue, Distribution, etc.). Unmapped types receive
-    the InfraResource fallback type with cfn_type preserved in attributes.
-  rationale: >
-    The workspace graph is pattern-agnostic. Backend services, frontend
-    SPAs, and MFE monorepos all produce infrastructure resources that must
-    appear in the graph for Architecture IR fidelity.
+- id: 019ff84e-4ecf-7075-b91b-2a235953fa97
+  summary: 'CFN type completeness: all extracted AWS::* resources are emitted as workspace
+    graph nodes. Explicitly mapped types receive specific graph type names (Lambda,
+    Queue, Distribution, etc.). Unmapped types receive the InfraResource fallback
+    type with cfn_type preserved in attributes.
+
+    '
+  rationale: 'The workspace graph is pattern-agnostic. Backend services, frontend
+    SPAs, and MFE monorepos all produce infrastructure resources that must appear
+    in the graph for Architecture IR fidelity.
+
+    '
+  alias_id: IMPL-0007
+  alias_name: cfn-type-completeness-all-extracted-aws-resources-are-emitted-as-workspace-graph-nod-6b8e8da8b3
 gaps:
 - id: GAP-0001
-  question: >
-    AWS::Serverless::StateMachine is now handled via the shared CFN type
-    mapping module (maps to StateMachine graph type). DefinitionBody/
-    DefinitionUri extraction uses the same logic as
-    AWS::StepFunctions::StateMachine.
+  question: 'AWS::Serverless::StateMachine is now handled via the shared CFN type
+    mapping module (maps to StateMachine graph type). DefinitionBody/ DefinitionUri
+    extraction uses the same logic as AWS::StepFunctions::StateMachine.
+
+    '
   impact: medium
   blocking: false
   status: closed
-  resolution: >
-    Resolved by adding AWS::Serverless::StateMachine to the shared
-    cfn-type-mapping module and reusing existing StepFunctions extraction
-    logic for DefinitionBody/DefinitionUri.
+  resolution: 'Resolved by adding AWS::Serverless::StateMachine to the shared cfn-type-mapping
+    module and reusing existing StepFunctions extraction logic for DefinitionBody/DefinitionUri.
+
+    '
   affects:
   - COMP-0007
+alias_id: ADR-PC-0007
+alias_name: cloudformation-semantic-extraction

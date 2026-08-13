@@ -9,6 +9,8 @@
  */
 import { z } from 'zod';
 
+import { enforces_invariant, implements_adr } from '../architecture/intent-decorators.js';
+
 export const NODE_TYPES = [
   'Service',
   'Lambda',
@@ -104,7 +106,12 @@ const edgeVerbSet = new Set<string>(EDGE_VERBS);
  * Validate a parsed slice document. In warn mode (default), unknown types/verbs
  * produce warnings but the slice is accepted. In reject mode, they produce errors.
  */
-export function validateSlice(
+export const validateSlice: (
+  doc: unknown,
+  mode?: 'warn' | 'reject',
+) => SliceValidationResult = implements_adr(
+  'ADR-L-0016',
+)(enforces_invariant('INV-0017', 'INV-0018')(function validateSlice(
   doc: unknown,
   mode: 'warn' | 'reject' = 'warn',
 ): SliceValidationResult {
@@ -151,4 +158,4 @@ export function validateSlice(
     warnings,
     errors,
   };
-}
+}));

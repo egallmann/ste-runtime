@@ -1,11 +1,11 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-system
-id: ADR-PS-0001
+id: 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
 title: Runtime Orchestration and Assistant Integration
 status: proposed
 created_date: '2026-03-15'
 authors:
-- ste-runtime
+- erik.gallmann
 domains:
 - runtime
 - mcp
@@ -18,31 +18,36 @@ tags:
 - obligations
 modified_date: '2026-05-22'
 implements_logical:
-- ADR-L-0004
-- ADR-L-0006
-- ADR-L-0007
-- ADR-L-0018
+- 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+- 019ff84e-4ece-71c8-af1f-eb35c77b551a
+- 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+- 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
 references_components:
-- ADR-PC-0001
-- ADR-PC-0002
-- ADR-PC-0003
-- ADR-PC-0004
-- ADR-PC-0009
+- 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
+- 019ff84e-4ecf-734c-9f3f-04d15f1079f5
+- 019ff84e-4ecf-7776-bf27-ffc57bc598dd
+- 019ff84e-4ecf-7156-a33b-bc8bba3fac60
+- 019ff84e-4ecf-7a24-801d-7d1e708577ac
+- 019ff876-6dad-7d95-ad68-e13d96ed23a9
 related_adrs:
-- ADR-P-0004
+- 019ff84e-4ed0-78a0-9334-d520d3decf14
 supersedes:
-- ADR-P-0004
+- 019ff84e-4ed0-78a0-9334-d520d3decf14
 technologies:
 - typescript
 - node.js
 - mcp
 - chokidar
 - zod
-context: |
-  ste-runtime now contains a runtime orchestration boundary that keeps semantic
+context: 'ste-runtime now contains a runtime orchestration boundary that keeps semantic
+
   state fresh, exposes assistant-facing MCP tools, performs reconciliation
+
   gating and freshness checks, and assembles implementation context and
+
   obligation projections for agents and operators.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
@@ -63,10 +68,14 @@ technology_stack:
 system_boundaries:
 - id: SYSBOUND-0001
   name: Runtime Orchestration Boundary
-  description: |
-    Encapsulates assistant-facing runtime operations over fresh semantic graph
+  description: 'Encapsulates assistant-facing runtime operations over fresh semantic
+    graph
+
     state, including MCP tools, update coordination, preflight freshness, and
+
     obligation/context assembly.
+
+    '
   external_dependencies:
   - RECON semantic state under `.ste/state`
   - Canonical project sources
@@ -80,23 +89,28 @@ component_topology:
   - name: MCP Server and Tool Registry
     type: service
     purpose: Expose assistant-facing tools over the semantic graph.
-    implements_adr: ADR-PC-0001
+    implements_adr: 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
   - name: Watchdog and Update Coordination
     type: worker
     purpose: Detect changes and coordinate safe runtime updates.
-    implements_adr: ADR-PC-0002
+    implements_adr: 019ff84e-4ecf-734c-9f3f-04d15f1079f5
   - name: Preflight Freshness and Reconciliation Gate
     type: service
     purpose: Evaluate freshness and decide when reconciliation is required.
-    implements_adr: ADR-PC-0003
+    implements_adr: 019ff84e-4ecf-7776-bf27-ffc57bc598dd
   - name: Obligation Projection and Context Assembly
     type: service
     purpose: Project obligations and build source-backed implementation context.
-    implements_adr: ADR-PC-0004
+    implements_adr: 019ff84e-4ecf-7156-a33b-bc8bba3fac60
   - name: Workspace Graph Query Engine
     type: service
-    purpose: Load workspace slices and execute deterministic graph queries with projection renderers.
-    implements_adr: ADR-PC-0009
+    purpose: Load workspace slices and execute deterministic graph queries with projection
+      renderers.
+    implements_adr: 019ff84e-4ecf-7a24-801d-7d1e708577ac
+  - name: RSS CLI and Runtime Graph Traversal
+    type: service
+    purpose: Expose deterministic RSS graph traversal and context assembly operations.
+    implements_adr: 019ff876-6dad-7d95-ad68-e13d96ed23a9
   relationships:
   - from: Watchdog and Update Coordination
     to: Preflight Freshness and Reconciliation Gate
@@ -117,15 +131,29 @@ component_topology:
   - from: MCP Server and Tool Registry
     to: Workspace Graph Query Engine
     type: depends_on
-    description: Workspace graph MCP tools delegate to the query engine for deterministic traversals.
+    description: Workspace graph MCP tools delegate to the query engine for deterministic
+      traversals.
 operational_requirements:
   monitoring: Track freshness status, invalidated validations, and runtime health
     metrics.
   logging: Structured runtime logs for reconciliation and tool invocation flows.
-  startup_latency: |
-    MCP server initialization (from start() to tool availability) must not
+  startup_latency: 'MCP server initialization (from start() to tool availability)
+    must not
+
     degrade super-linearly with graph size. Startup operations over the RECON
+
     state graph (loading, topology analysis, metrics caching) must each be at
+
     most O(N+E) where N and E are graph node and edge counts. At N=5000,
+
     cold-start (cache miss) must complete within 10 seconds.
+
+    '
 gaps: []
+alias_id: ADR-PS-0001
+alias_name: runtime-orchestration-and-assistant-integration
+system:
+  id: 019ff84e-4ed0-727d-9337-e52045221df1
+  alias_id: SYS-0001
+  alias_name: sys-0001-runtime-orchestration-and-assistant-integration
+  name: Runtime Orchestration and Assistant Integration

@@ -621,6 +621,192 @@ function extractStringLiteralValues(node: ts.Expression): string[] {
   return [];
 }
 
+function buildImplementationIntentRecord(
+  implementsAdrs: string[],
+  enforcedInvariants: string[],
+  source: 'decorator' | 'metadata' = 'decorator',
+): Record<string, unknown> | undefined {
+  const uniqueAdrs = [...new Set(implementsAdrs)];
+  const uniqueInvariants = [...new Set(enforcedInvariants)];
+  if (uniqueAdrs.length === 0 && uniqueInvariants.length === 0) {
+    return undefined;
+  }
+
+  return {
+    implements_adrs: uniqueAdrs,
+    enforced_invariants: uniqueInvariants,
+    confidence: 'declared',
+    source,
+  };
+}
+
+function appendLinkageDecoratorArgs(
+  call: ts.CallExpression,
+  implementsAdrs: string[],
+  enforcedInvariants: string[],
+): void {
+  const decoratorName = getDecoratorName(call.expression);
+  if (!decoratorName) {
+    return;
+  }
+
+  const args = call.arguments.flatMap(extractStringLiteralValues);
+  if (args.length === 0) {
+    return;
+  }
+
+  if (decoratorName === 'implements_adr' || decoratorName === 'implements_adrs') {
+    implementsAdrs.push(...args);
+  }
+
+  if (decoratorName === 'enforces_invariant' || decoratorName === 'enforces_invariants') {
+    enforcedInvariants.push(...args);
+  }
+}
+
+function collectLinkageWrapperIntent(
+  expression: ts.Expression,
+): Record<string, unknown> | undefined {
+  const implementsAdrs: string[] = [];
+  const enforcedInvariants: string[] = [];
+  let current: ts.Expression = expression;
+
+  while (ts.isCallExpression(current)) {
+    if (ts.isCallExpression(current.expression)) {
+      appendLinkageDecoratorArgs(current.expression, implementsAdrs, enforcedInvariants);
+    } else {
+      appendLinkageDecoratorArgs(current, implementsAdrs, enforcedInvariants);
+    }
+
+    const inner = current.arguments[0];
+    if (!inner) {
+      break;
+    }
+
+    current = inner;
+    if (ts.isFunctionExpression(current) || ts.isArrowFunction(current)) {
+      break;
+    }
+  }
+
+  return buildImplementationIntentRecord(implementsAdrs, enforcedInvariants, 'decorator');
+}
+
+function isObjectFreezeCall(expression: ts.CallExpression): boolean {
+  const callee = expression.expression;
+  if (!ts.isPropertyAccessExpression(callee)) {
+    return false;
+  }
+  return (
+    callee.name.text === 'freeze' &&
+    ts.isIdentifier(callee.expression) &&
+    callee.expression.text === 'Object'
+  );
+}
+
+function unwrapLinkageInitializer(expression: ts.Expression): ts.Expression {
+  if (ts.isAsExpression(expression)) {
+    return unwrapLinkageInitializer(expression.expression);
+  }
+
+  if (ts.isCallExpression(expression) && isObjectFreezeCall(expression) && expression.arguments[0]) {
+    return unwrapLinkageInitializer(expression.arguments[0]);
+  }
+
+  return expression;
+}
+
+function extractClassStaticLinkageIntent(
+  node: ts.ClassDeclaration,
+  sourceFile: ts.SourceFile,
+): Record<string, unknown> | undefined {
+  const implementsAdrs: string[] = [];
+  const enforcedInvariants: string[] = [];
+
+  for (const member of node.members) {
+    if (!ts.isPropertyDeclaration(member) || !member.name || !member.initializer) {
+      continue;
+    }
+
+    const isStatic = !!(member.modifiers?.some(m => m.kind === ts.SyntaxKind.StaticKeyword));
+    if (!isStatic) {
+      continue;
+    }
+
+    const propertyName = member.name.getText(sourceFile);
+    const values = extractStringLiteralValues(unwrapLinkageInitializer(member.initializer));
+    if (values.length === 0 && propertyName !== '__enforces_invariants__') {
+      continue;
+    }
+
+    if (propertyName === '__implements_adrs__') {
+      implementsAdrs.push(...values);
+    }
+
+    if (propertyName === '__enforces_invariants__') {
+      enforcedInvariants.push(...values);
+    }
+  }
+
+  return buildImplementationIntentRecord(implementsAdrs, enforcedInvariants, 'metadata');
+}
+
+function unwrapFunctionFromExpression(
+  expression: ts.Expression,
+): ts.FunctionExpression | ts.ArrowFunction | undefined {
+  if (ts.isFunctionExpression(expression) || ts.isArrowFunction(expression)) {
+    return expression;
+  }
+
+  if (!ts.isCallExpression(expression)) {
+    return undefined;
+  }
+
+  let current: ts.Expression = expression;
+  while (ts.isCallExpression(current)) {
+    const inner = current.arguments[0];
+    if (!inner) {
+      return undefined;
+    }
+
+    if (ts.isFunctionExpression(inner) || ts.isArrowFunction(inner)) {
+      return inner;
+    }
+
+    current = inner;
+  }
+
+  return undefined;
+}
+
+function mergeImplementationIntent(
+  primary: Record<string, unknown> | undefined,
+  secondary: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!primary) {
+    return secondary;
+  }
+  if (!secondary) {
+    return primary;
+  }
+
+  const implementsAdrs = [
+    ...(primary.implements_adrs as string[] | undefined ?? []),
+    ...(secondary.implements_adrs as string[] | undefined ?? []),
+  ];
+  const enforcedInvariants = [
+    ...(primary.enforced_invariants as string[] | undefined ?? []),
+    ...(secondary.enforced_invariants as string[] | undefined ?? []),
+  ];
+
+  const source =
+    primary.source === 'decorator' || secondary.source === 'decorator'
+      ? 'decorator'
+      : 'metadata';
+
+  return buildImplementationIntentRecord(implementsAdrs, enforcedInvariants, source);
+}
+
 function extractRawDecorators(node: ts.Node, sourceFile: ts.SourceFile): string[] {
   const decorators = ts.getDecorators(node as ts.HasDecorators);
   if (!decorators) {
@@ -656,7 +842,7 @@ function extractTypeScriptImplementationIntent(
       continue;
     }
 
-    if (decoratorName === 'implements_adr' || decoratorName === 'implements_adrs') {
+    if (decoratorName === 'implements_adr' || decoratorName === 'implements_adrs' || decoratorName === 'implements_adr_method') {
       implementsAdrs.push(...args);
     }
 
@@ -668,16 +854,7 @@ function extractTypeScriptImplementationIntent(
   const uniqueAdrs = [...new Set(implementsAdrs)];
   const uniqueInvariants = [...new Set(enforcedInvariants)];
 
-  if (uniqueAdrs.length === 0 && uniqueInvariants.length === 0) {
-    return undefined;
-  }
-
-  return {
-    implements_adrs: uniqueAdrs,
-    enforced_invariants: uniqueInvariants,
-    confidence: 'declared',
-    source: 'decorator',
-  };
+  return buildImplementationIntentRecord(uniqueAdrs, uniqueInvariants, 'decorator');
 }
 
 /**
@@ -754,6 +931,51 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
       currentFunction = previousFunction;
       return; // Don't visit children again
     }
+
+    if (ts.isVariableStatement(node)) {
+      const isExported = hasExportModifier(node);
+      for (const decl of node.declarationList.declarations) {
+        if (!ts.isIdentifier(decl.name) || !decl.initializer) {
+          continue;
+        }
+
+        const name = decl.name.text;
+        const fn = unwrapFunctionFromExpression(decl.initializer);
+        if (!fn) {
+          continue;
+        }
+
+        const lineNumber = getLineNumber(sourceFile, fn);
+        const endLineNumber = getEndLineNumber(sourceFile, fn);
+        const jsDocInfo = extractJsDoc(fn, sourceFile);
+        const implementationIntent = mergeImplementationIntent(
+          collectLinkageWrapperIntent(decl.initializer),
+          extractTypeScriptImplementationIntent(fn),
+        );
+        const source = extractSourceLines(content, lineNumber, endLineNumber);
+        const parameters = fn.parameters.map(p => p.name.getText(sourceFile));
+
+        assertions.push({
+          elementId: generateSliceId('function', normalizedPath, `${name}:${lineNumber}`),
+          elementType: 'function',
+          file: normalizedPath,
+          line: lineNumber,
+          end_line: endLineNumber,
+          language: 'typescript',
+          signature: `${name}()`,
+          source,
+          metadata: {
+            name,
+            isExported,
+            isAsync: !!(fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword)),
+            parameters,
+            decorators: [],
+            implementationIntent,
+            ...jsDocInfo,
+          },
+        });
+      }
+    }
     
     // Extract class declarations - IDs include file path for uniqueness per ADR-007
     if (ts.isClassDeclaration(node) && node.name) {
@@ -763,7 +985,10 @@ async function extractFromTypeScript(file: DiscoveredFile): Promise<RawAssertion
       const classStartLine = getLineNumber(sourceFile, node);
       const classEndLine = getEndLineNumber(sourceFile, node);
       const decorators = extractRawDecorators(node, sourceFile);
-      const implementationIntent = extractTypeScriptImplementationIntent(node);
+      const implementationIntent = mergeImplementationIntent(
+        extractClassStaticLinkageIntent(node, sourceFile),
+        extractTypeScriptImplementationIntent(node),
+      );
       
       // Pillar 1: Rich Slices - capture source code
       const source = extractSourceLines(content, classStartLine, classEndLine);

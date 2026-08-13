@@ -1,21 +1,80 @@
 schema_version: '1.1'
 type: normalized_entity_registry
 entities:
-  - id: COMP-0001
+  - id: 019ff84e-4ecf-7072-bd2f-aeb73b26b100
+    entity_type: component
+    name: Preflight Freshness and Reconciliation Gate
+    summary: >-
+      - Resolve intent scope - Evaluate graph freshness - Determine whether reconciliation is required - Surface
+      freshness status for downstream tools
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7776-bf27-ffc57bc598dd#019ff84e-4ecf-7072-bd2f-aeb73b26b100
+      artifact_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7776-bf27-ffc57bc598dd
+      legacy_component_id: 019ff84e-4ecf-7072-bd2f-aeb73b26b100
+      technologies:
+        - typescript
+        - node.js
+        - zod
+      module_path: src/mcp/preflight.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7776-bf27-ffc57bc598dd
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-727d-9337-e52045221df1
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7776-bf27-ffc57bc598dd#019ff84e-4ecf-7072-bd2f-aeb73b26b100
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7102-af3f-302a74e31f59
     entity_type: component
     name: MCP Server and Tool Registry
     summary: >-
       - Serve MCP stdio runtime for assistant integration - Register structural, operational, context, optimized,
       obligation, and workspace graph query tools - Route tool requests onto runtime graph, context, and workspace que
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0001#COMP-0001
+      source_ref: 019ff84e-4ecf-7d5e-a53c-bae8c74aca48#019ff84e-4ecf-7102-af3f-302a74e31f59
       artifact_path: adrs/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-PC-0001
-      legacy_component_id: COMP-0001
+      adr_id: 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
+      legacy_component_id: 019ff84e-4ecf-7102-af3f-302a74e31f59
       technologies:
         - typescript
         - node.js
@@ -24,10 +83,10 @@ entities:
       module_path: src/mcp/mcp-server.ts
       implements_capabilities: []
       implements_system:
-        - ADR-PS-0001
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
     relationships:
       declared_in:
-        - ADR-PC-0001
+        - 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
       declares: []
       references: []
       referenced_by: []
@@ -41,51 +100,58 @@ entities:
       implemented_by: []
       implements: []
       embodied_in:
-        - SYS-0001
+        - 019ff84e-4ed0-727d-9337-e52045221df1
       embodies: []
       supersedes: []
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0001#COMP-0001
+      source_ref: 019ff84e-4ecf-7d5e-a53c-bae8c74aca48#019ff84e-4ecf-7102-af3f-302a74e31f59
       extraction_phase: extract_component
       classification: explicit
       generator: adr-architecture-index
-  - id: COMP-0002
+  - id: 019ff84e-4ecf-736e-9d3d-dc19c7223122
     entity_type: component
-    name: Watchdog and Update Coordination
+    name: Workspace Graph Query Engine
     summary: >-
-      - Watch source and state changes - Detect coherent edit transactions - Coordinate update batches and
-      reconciliation triggers - Protect runtime behavior from unsafe write loops
+      - Load workspace graph slices into typed in-memory WorkspaceGraph - Build outAdj/inAdj adjacency maps at load time
+      for O(1) neighbor lookups - Execute systemDependencies, componentIntegration, blastRadiusWorkspace querie
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0002#COMP-0002
-      artifact_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+      source_ref: 019ff84e-4ecf-7a24-801d-7d1e708577ac#019ff84e-4ecf-736e-9d3d-dc19c7223122
+      artifact_path: adrs/physical-component/ADR-PC-0009-workspace-graph-query-engine.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-PC-0002
-      legacy_component_id: COMP-0002
+      adr_id: 019ff84e-4ecf-7a24-801d-7d1e708577ac
+      legacy_component_id: 019ff84e-4ecf-736e-9d3d-dc19c7223122
       technologies:
         - typescript
         - node.js
-        - chokidar
-      module_path: src/watch/watchdog.ts
-      implements_capabilities: []
+        - yaml
+      module_path: src/workspace/workspace-graph-loader.ts
+      implements_capabilities:
+        - 019ff84e-4ece-7d33-a91e-00d8638b487d
+        - 019ff84e-4ecf-7de7-b93b-b02c6152fe2b
       implements_system:
-        - ADR-PS-0001
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
     relationships:
       declared_in:
-        - ADR-PC-0002
+        - 019ff84e-4ecf-7a24-801d-7d1e708577ac
       declares: []
       references: []
       referenced_by: []
-      related_to: []
+      related_to:
+        - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
       enforces: []
       enforced_by: []
       enabled_by: []
@@ -93,255 +159,45 @@ entities:
       governs: []
       governed_by: []
       implemented_by: []
-      implements: []
+      implements:
+        - 019ff84e-4ece-7d33-a91e-00d8638b487d
+        - 019ff84e-4ecf-710a-ad22-93698361c72b
+        - 019ff84e-4ecf-7de7-b93b-b02c6152fe2b
       embodied_in:
-        - SYS-0001
+        - 019ff84e-4ed0-727d-9337-e52045221df1
       embodies: []
       supersedes: []
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0002#COMP-0002
+      source_ref: 019ff84e-4ecf-7a24-801d-7d1e708577ac#019ff84e-4ecf-736e-9d3d-dc19c7223122
       extraction_phase: extract_component
       classification: explicit
       generator: adr-architecture-index
-  - id: COMP-0003
-    entity_type: component
-    name: Preflight Freshness and Reconciliation Gate
-    summary: >-
-      - Resolve intent scope - Evaluate graph freshness - Determine whether reconciliation is required - Surface
-      freshness status for downstream tools
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0003#COMP-0003
-      artifact_path: adrs/physical-component/ADR-PC-0003-preflight-freshness-and-reconciliation-gating.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0003
-      legacy_component_id: COMP-0003
-      technologies:
-        - typescript
-        - node.js
-        - zod
-      module_path: src/mcp/preflight.ts
-      implements_capabilities: []
-      implements_system:
-        - ADR-PS-0001
-    relationships:
-      declared_in:
-        - ADR-PC-0003
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in:
-        - SYS-0001
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0003#COMP-0003
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0004
-    entity_type: component
-    name: Obligation Projection and Context Assembly
-    summary: >-
-      - Project obligations from change intent and graph state - Surface invalidated validations and advisories - Load
-      source-backed implementation context - Format runtime context for assistant consumption
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0004#COMP-0004
-      artifact_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0004
-      legacy_component_id: COMP-0004
-      technologies:
-        - typescript
-        - node.js
-        - zod
-      module_path: src/mcp/obligation-projector.ts
-      implements_capabilities: []
-      implements_system:
-        - ADR-PS-0001
-    relationships:
-      declared_in:
-        - ADR-PC-0004
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in:
-        - SYS-0001
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0004#COMP-0004
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0005
-    entity_type: component
-    name: JSON Semantic Extractor
-    summary: >-
-      - Detect semantically relevant JSON files - Extract controls, schemas, and configuration semantics - Provide
-      RECON-ready assertions for normalization
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0005#COMP-0005
-      artifact_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0005
-      legacy_component_id: COMP-0005
-      technologies:
-        - typescript
-        - json
-        - node.js
-      module_path: src/extractors/json/json-extractor.ts
-      implements_capabilities: []
-      implements_system:
-        - ADR-PS-0002
-    relationships:
-      declared_in:
-        - ADR-PC-0005
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in:
-        - SYS-0002
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0005#COMP-0005
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0006
-    entity_type: component
-    name: Frontend Semantic Extractor
-    summary: >-
-      - Extract Angular component, service, route, and template semantics - Extract CSS/SCSS tokens, styles, and related
-      frontend semantics - Provide frontend assertions for RECON normalization
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0006#COMP-0006
-      artifact_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0006
-      legacy_component_id: COMP-0006
-      technologies:
-        - typescript
-        - angular
-        - css
-        - scss
-      module_path: src/extractors/angular/angular-extractor.ts
-      implements_capabilities: []
-      implements_system:
-        - ADR-PS-0002
-    relationships:
-      declared_in:
-        - ADR-PC-0006
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in:
-        - SYS-0002
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0006#COMP-0006
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0007
+  - id: 019ff84e-4ecf-73de-b63f-92e5a829225d
     entity_type: component
     name: CloudFormation Semantic Extractor
     summary: >-
       - Extract template, parameter, resource, and output semantics - Derive infrastructure relationships and API/data
       model evidence - Preserve template-level implementation intent metadata - Detect nested stack topology via 
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0007#COMP-0007
+      source_ref: 019ff84e-4ecf-721a-b936-e1b98d068ec7#019ff84e-4ecf-73de-b63f-92e5a829225d
       artifact_path: adrs/physical-component/ADR-PC-0007-cloudformation-semantic-extraction.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-PC-0007
-      legacy_component_id: COMP-0007
+      adr_id: 019ff84e-4ecf-721a-b936-e1b98d068ec7
+      legacy_component_id: 019ff84e-4ecf-73de-b63f-92e5a829225d
       technologies:
         - typescript
         - cloudformation
@@ -350,10 +206,10 @@ entities:
       module_path: src/recon/phases/extraction-cloudformation.ts
       implements_capabilities: []
       implements_system:
-        - ADR-PS-0002
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
     relationships:
       declared_in:
-        - ADR-PC-0007
+        - 019ff84e-4ecf-721a-b936-e1b98d068ec7
       declares: []
       references: []
       referenced_by: []
@@ -367,262 +223,40 @@ entities:
       implemented_by: []
       implements: []
       embodied_in:
-        - SYS-0002
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
       embodies: []
       supersedes: []
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0007#COMP-0007
+      source_ref: 019ff84e-4ecf-721a-b936-e1b98d068ec7#019ff84e-4ecf-73de-b63f-92e5a829225d
       extraction_phase: extract_component
       classification: explicit
       generator: adr-architecture-index
-  - id: COMP-0008
-    entity_type: component
-    name: Resource Resolver
-    summary: >-
-      - Build env-var-to-CFN-resource join maps from per-repo RECON state - Build SDK-service-to-graph-type maps
-      (dynamodb->Database, s3->Bucket, etc.) - Build Lambda-handler-to-function maps from CFN handler metadata - Resolv
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0008#COMP-0008
-      artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0008
-      legacy_component_id: COMP-0008
-      technologies:
-        - typescript
-        - node.js
-        - yaml
-      module_path: src/workspace/resource-resolver.ts
-      implements_capabilities: []
-      implements_system:
-        - ADR-PS-0002
-    relationships:
-      declared_in:
-        - ADR-PC-0008
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in:
-        - SYS-0002
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0008#COMP-0008
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0009
-    entity_type: component
-    name: Slice Emitter Edge Wiring
-    summary: >-
-      - Produce reads/writes edges by joining SDK usage with infrastructure resources via env-var bridge - Produce
-      publishes edges for SQS/SNS SDK usage - Improve consumes edge resolution via CFN logical ID lookup - Produce de
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0008#COMP-0009
-      artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0008
-      legacy_component_id: COMP-0009
-      technologies:
-        - typescript
-        - node.js
-        - yaml
-      module_path: src/workspace/slice-emitter.ts
-      implements_capabilities: []
-      implements_system:
-        - ADR-PS-0002
-    relationships:
-      declared_in:
-        - ADR-PC-0008
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in:
-        - SYS-0002
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0008#COMP-0009
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0010
-    entity_type: component
-    name: Workspace Graph Query Engine
-    summary: >-
-      - Load workspace graph slices into typed in-memory WorkspaceGraph - Build outAdj/inAdj adjacency maps at load time
-      for O(1) neighbor lookups - Execute systemDependencies, componentIntegration, blastRadiusWorkspace querie
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0009#COMP-0010
-      artifact_path: adrs/physical-component/ADR-PC-0009-workspace-graph-query-engine.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0009
-      legacy_component_id: COMP-0010
-      technologies:
-        - typescript
-        - node.js
-        - yaml
-      module_path: src/workspace/workspace-graph-loader.ts
-      implements_capabilities:
-        - CAP-0018
-        - CAP-0019
-      implements_system:
-        - ADR-PS-0001
-    relationships:
-      declared_in:
-        - ADR-PC-0009
-      declares: []
-      references: []
-      referenced_by: []
-      related_to:
-        - COMP-0011
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements:
-        - CAP-0018
-        - CAP-0019
-        - CAP-0020
-      embodied_in:
-        - SYS-0001
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0009#COMP-0010
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0011
-    entity_type: component
-    name: Semantic Compression Engine
-    summary: >-
-      - Compress CannedQueryResult into CompressedProjection at configurable resolution levels (L0-L4) - Group endpoints
-      by capability domain using path-prefix extraction - Aggregate same-type nodes above threshold into count-
-    lifecycle_stage: proposed
-    canonical_source:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0010#COMP-0011
-      artifact_path: adrs/physical-component/ADR-PC-0010-semantic-compression-engine.yaml
-    source_refs: []
-    metadata:
-      adr_id: ADR-PC-0010
-      legacy_component_id: COMP-0011
-      technologies:
-        - typescript
-        - node.js
-      module_path: src/workspace/compression.ts
-      implements_capabilities:
-        - CAP-0019
-      implements_system:
-        - ADR-PS-0001
-    relationships:
-      declared_in:
-        - ADR-PC-0010
-      declares: []
-      references: []
-      referenced_by: []
-      related_to:
-        - COMP-0010
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements:
-        - CAP-0018
-        - CAP-0019
-        - CAP-0020
-      embodied_in:
-        - SYS-0001
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_component_adr
-      source_ref: ADR-PC-0010#COMP-0011
-      extraction_phase: extract_component
-      classification: explicit
-      generator: adr-architecture-index
-  - id: COMP-0012
+  - id: 019ff84e-4ecf-7422-913f-540519905503
     entity_type: component
     name: ADR YAML Semantic Extractor
     summary: >-
       - Detect and classify ADR YAML files via path-prefix and content sniffing - Parse ADR YAML using js-yaml - Extract
       ADR documents, invariants, decisions, capabilities, component specifications, and system boundaries as Ra
     lifecycle_stage: proposed
+    admission_status: admitted
     canonical_source:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0011#COMP-0012
+      source_ref: 019ff84e-4ecf-7a82-ae3a-121886af1b51#019ff84e-4ecf-7422-913f-540519905503
       artifact_path: adrs/physical-component/ADR-PC-0011-adr-yaml-semantic-extraction.yaml
     source_refs: []
     metadata:
-      adr_id: ADR-PC-0011
-      legacy_component_id: COMP-0012
+      adr_id: 019ff84e-4ecf-7a82-ae3a-121886af1b51
+      legacy_component_id: 019ff84e-4ecf-7422-913f-540519905503
       technologies:
         - typescript
         - node.js
@@ -631,10 +265,10 @@ entities:
       module_path: src/extractors/adr-yaml/index.ts
       implements_capabilities: []
       implements_system:
-        - ADR-PS-0002
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
     relationships:
       declared_in:
-        - ADR-PC-0011
+        - 019ff84e-4ecf-7a82-ae3a-121886af1b51
       declares: []
       references: []
       referenced_by: []
@@ -648,18 +282,549 @@ entities:
       implemented_by: []
       implements: []
       embodied_in:
-        - SYS-0002
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
       embodies: []
       supersedes: []
       superseded_by: []
       refines: []
       refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
     completeness:
       status: complete
       missing_fields: []
     provenance:
       source_type: physical_component_adr
-      source_ref: ADR-PC-0011#COMP-0012
+      source_ref: 019ff84e-4ecf-7a82-ae3a-121886af1b51#019ff84e-4ecf-7422-913f-540519905503
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-745c-903f-18d2f4b20e63
+    entity_type: component
+    name: Watchdog and Update Coordination
+    summary: >-
+      - Watch source and state changes - Detect coherent edit transactions - Coordinate update batches and
+      reconciliation triggers - Protect runtime behavior from unsafe write loops
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-734c-9f3f-04d15f1079f5#019ff84e-4ecf-745c-903f-18d2f4b20e63
+      artifact_path: adrs/physical-component/ADR-PC-0002-watchdog-and-update-coordination.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-734c-9f3f-04d15f1079f5
+      legacy_component_id: 019ff84e-4ecf-745c-903f-18d2f4b20e63
+      technologies:
+        - typescript
+        - node.js
+        - chokidar
+      module_path: src/watch/watchdog.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-734c-9f3f-04d15f1079f5
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-727d-9337-e52045221df1
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-734c-9f3f-04d15f1079f5#019ff84e-4ecf-745c-903f-18d2f4b20e63
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-745c-9a2f-9fef67bdbe8d
+    entity_type: component
+    name: Frontend Semantic Extractor
+    summary: >-
+      - Extract Angular component, service, route, and template semantics - Extract CSS/SCSS tokens, styles, and related
+      frontend semantics - Provide frontend assertions for RECON normalization
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-73e1-8c0f-19a06db3004b#019ff84e-4ecf-745c-9a2f-9fef67bdbe8d
+      artifact_path: adrs/physical-component/ADR-PC-0006-frontend-semantic-extraction.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-73e1-8c0f-19a06db3004b
+      legacy_component_id: 019ff84e-4ecf-745c-9a2f-9fef67bdbe8d
+      technologies:
+        - typescript
+        - angular
+        - css
+        - scss
+      module_path: src/extractors/angular/angular-extractor.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-73e1-8c0f-19a06db3004b
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-73e1-8c0f-19a06db3004b#019ff84e-4ecf-745c-9a2f-9fef67bdbe8d
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7568-9a2b-9ca73464cb45
+    entity_type: component
+    name: Slice Emitter Edge Wiring
+    summary: >-
+      - Emit all extracted CFN resources as workspace graph nodes (no allowlist gate; InfraResource fallback for
+      unmapped types) - Emit Stack nodes from infrastructure/template slices with contains edges to child resources - P
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d#019ff84e-4ecf-7568-9a2b-9ca73464cb45
+      artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d
+      legacy_component_id: 019ff84e-4ecf-7568-9a2b-9ca73464cb45
+      technologies:
+        - typescript
+        - node.js
+        - yaml
+      module_path: src/workspace/slice-emitter.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d#019ff84e-4ecf-7568-9a2b-9ca73464cb45
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-774e-b239-5c80be840bd0
+    entity_type: component
+    name: JSON Semantic Extractor
+    summary: >-
+      - Detect semantically relevant JSON files - Extract controls, schemas, and configuration semantics - Provide
+      RECON-ready assertions for normalization
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7117-853b-c869ac6d7ba6#019ff84e-4ecf-774e-b239-5c80be840bd0
+      artifact_path: adrs/physical-component/ADR-PC-0005-json-semantic-extraction.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7117-853b-c869ac6d7ba6
+      legacy_component_id: 019ff84e-4ecf-774e-b239-5c80be840bd0
+      technologies:
+        - typescript
+        - json
+        - node.js
+      module_path: src/extractors/json/json-extractor.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7117-853b-c869ac6d7ba6
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7117-853b-c869ac6d7ba6#019ff84e-4ecf-774e-b239-5c80be840bd0
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7962-b83d-01e7e385b783
+    entity_type: component
+    name: Obligation Projection and Context Assembly
+    summary: >-
+      - Project obligations from change intent and graph state - Surface invalidated validations and advisories - Load
+      source-backed implementation context - Format runtime context for assistant consumption
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7156-a33b-bc8bba3fac60#019ff84e-4ecf-7962-b83d-01e7e385b783
+      artifact_path: adrs/physical-component/ADR-PC-0004-obligation-projection-and-context-assembly.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7156-a33b-bc8bba3fac60
+      legacy_component_id: 019ff84e-4ecf-7962-b83d-01e7e385b783
+      technologies:
+        - typescript
+        - node.js
+        - zod
+      module_path: src/mcp/obligation-projector.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7156-a33b-bc8bba3fac60
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-727d-9337-e52045221df1
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7156-a33b-bc8bba3fac60#019ff84e-4ecf-7962-b83d-01e7e385b783
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7972-bf39-c81c4a74ae65
+    entity_type: component
+    name: Resource Resolver
+    summary: >-
+      - Build env-var-to-CFN-resource join maps from per-repo RECON state - Build SDK-service-to-graph-type maps
+      (dynamodb->Database, s3->Bucket, etc.) - Build Lambda-handler-to-function maps from CFN handler metadata - Resolv
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d#019ff84e-4ecf-7972-bf39-c81c4a74ae65
+      artifact_path: adrs/physical-component/ADR-PC-0008-service-wiring-post-processing.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d
+      legacy_component_id: 019ff84e-4ecf-7972-bf39-c81c4a74ae65
+      technologies:
+        - typescript
+        - node.js
+        - yaml
+      module_path: src/workspace/resource-resolver.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7e82-bb1f-8a42fe4d7e4d#019ff84e-4ecf-7972-bf39-c81c4a74ae65
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+    entity_type: component
+    name: Semantic Compression Engine
+    summary: >-
+      - Compress CannedQueryResult into CompressedProjection at configurable resolution levels (L0-L4) - Group endpoints
+      by capability domain using path-prefix extraction - Aggregate same-type nodes above threshold into count-
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7d09-802f-c14b1802b27c#019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+      artifact_path: adrs/physical-component/ADR-PC-0010-semantic-compression-engine.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff84e-4ecf-7d09-802f-c14b1802b27c
+      legacy_component_id: 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+      technologies:
+        - typescript
+        - node.js
+      module_path: src/workspace/compression.ts
+      implements_capabilities:
+        - 019ff84e-4ecf-7de7-b93b-b02c6152fe2b
+      implements_system:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    relationships:
+      declared_in:
+        - 019ff84e-4ecf-7d09-802f-c14b1802b27c
+      declares: []
+      references: []
+      referenced_by: []
+      related_to:
+        - 019ff84e-4ecf-736e-9d3d-dc19c7223122
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements:
+        - 019ff84e-4ece-7d33-a91e-00d8638b487d
+        - 019ff84e-4ecf-710a-ad22-93698361c72b
+        - 019ff84e-4ecf-7de7-b93b-b02c6152fe2b
+      embodied_in:
+        - 019ff84e-4ed0-727d-9337-e52045221df1
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff84e-4ecf-7d09-802f-c14b1802b27c#019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+    entity_type: component
+    name: RSS CLI and Runtime Graph Traversal
+    summary: >-
+      - Expose lookup, search, dependency, dependent, blast-radius, tag, and context commands through the RSS CLI - Load
+      and traverse AI-DOC graph state deterministically - Assemble source-backed context from graph entry point
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6dad-7d95-ad68-e13d96ed23a9#019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+      artifact_path: adrs/physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff876-6dad-7d95-ad68-e13d96ed23a9
+      legacy_component_id: 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+      technologies:
+        - typescript
+        - node.js
+        - yaml
+      module_path: src/cli/rss-cli.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    relationships:
+      declared_in:
+        - 019ff876-6dad-7d95-ad68-e13d96ed23a9
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-727d-9337-e52045221df1
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6dad-7d95-ad68-e13d96ed23a9#019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
+    entity_type: component
+    name: Extractor Validation Framework
+    summary: >-
+      - Validate extractor output quality and correctness - Check graph, coverage, identity, schema, and repeatability
+      invariants - Produce deterministic validation reports for RECON self-validation
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6daf-773a-b017-7d967b7a7add#019ff84e-4ed0-79a5-af08-91e55be4f49e
+      artifact_path: adrs/physical-component/ADR-PC-0013-extractor-validation-framework.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff876-6daf-773a-b017-7d967b7a7add
+      legacy_component_id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
+      technologies:
+        - typescript
+        - node.js
+        - schema-validation
+        - testing
+      module_path: src/recon/validation/
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    relationships:
+      declared_in:
+        - 019ff876-6daf-773a-b017-7d967b7a7add
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6daf-773a-b017-7d967b7a7add#019ff84e-4ed0-79a5-af08-91e55be4f49e
       extraction_phase: extract_component
       classification: explicit
       generator: adr-architecture-index

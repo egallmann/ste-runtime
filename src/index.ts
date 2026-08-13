@@ -154,6 +154,32 @@ export {
   type AdjacencyMatrixResult,
 } from './workspace/index.js';
 
+export {
+  assertMvcDefinitionContract,
+  assertMvcFederatedIdentity,
+  assertMvcSnapshotCandidateOnly,
+  buildMvcSnapshotCandidate,
+  canonicalMvcFingerprintInput,
+  recommendMvcDepthFromTopology,
+  traverseMvcSFromLinkageSurface,
+  traverseMvcSCandidates,
+  type BuildMvcSnapshotInput,
+  type MvcLinkageSurface,
+  type MvcLinkageSurfaceRelationshipRecord,
+  type MvcDepthRecommendation,
+  type MvcDepthRecommendationInput,
+  type MvcDefinition,
+  type MvcNegativeSpace,
+  type MvcRationale,
+  type MvcRef,
+  type MvcRefWithHash,
+  type MvcSnapshot,
+  type MvcTopologyMetrics,
+  type MvcTraversalRelationshipRecord,
+  type TraverseMvcSFromLinkageSurfaceInput,
+  type TraverseMvcSCandidatesInput,
+} from './workspace/mvc-evolution.js';
+
 // ============================================================================
 // Architecture compiler (ADR → registries / index / manifest)
 // ============================================================================
