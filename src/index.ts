@@ -1,28 +1,32 @@
 /**
- * STE Runtime - Semantic Truth Engine
- * 
- * Portable RECON and RSS implementation for AI-assisted development.
+ * ste-runtime
+ *
+ * Portable RECON, RSS, workspace-graph, and runtime-evidence implementation
+ * for supervised AI-assisted development workflows.
  * 
  * ## For AI Coding Assistants (Cursor, Copilot, etc.)
  * 
- * This package provides programmatic access to the semantic graph.
- * Instead of using the CLI, import and call the functions directly:
+ * A built source checkout provides programmatic access to the semantic graph.
+ * Instead of using the CLI, local consumers can import and call the functions
+ * directly:
  * 
  * ```typescript
- * import { initRssContext, search, blastRadius } from 'ste-runtime';
+ * import { initRssContext, search, blastRadius } from './dist/index.js';
  * 
  * const ctx = await initRssContext('.ste/state');
  * const results = search(ctx, 'user authentication');
  * const impact = blastRadius(ctx, results.nodes[0].key);
  * ```
  * 
- * See RSS-PROGRAMMATIC-API.md for full documentation.
+ * See instructions/RSS-PROGRAMMATIC-API.md for current documentation. These
+ * exports are documented for source-checkout use and do not create an npm
+ * compatibility commitment while the package remains private and unpublished.
  * 
  * @module ste-runtime
  */
 
 // ============================================================================
-// RSS - Reference State Service (Semantic Graph Traversal)
+// RSS - Runtime State Slicing (semantic graph traversal)
 // ============================================================================
 
 export {
@@ -84,7 +88,7 @@ export {
 export { executeRecon, type ReconOptions, type ReconResult } from './recon/index.js';
 
 // ============================================================================
-// CQI - Conversational Query Interface (E-ADR-010)
+// CQI - Conversational Query Interface
 // ============================================================================
 
 export {
@@ -181,7 +185,7 @@ export {
 } from './workspace/mvc-evolution.js';
 
 // ============================================================================
-// Architecture compiler (ADR → registries / index / manifest)
+// Architecture compilation and runtime-owned evidence artifacts
 // ============================================================================
 
 export {
