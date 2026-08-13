@@ -43,9 +43,56 @@ jobs:
 
     - name: Prove architecture compiler (ADR sources only)
       run: npm run test:integration
+
+    - name: Verify public-source release policy
+      run: npm run release:check
     
     - name: Verify RECON self-documentation
       run: |
         npm run recon:self
         echo "RECON self-documentation completed successfully"
+
+  portability:
+    name: OS portability / ${{ matrix.os }} / Node 20
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: npm
+        cache-dependency-path: package-lock.json
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies and repository hooks
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    - name: Run unit tests
+      run: npm test
+
+    - name: Prove architecture compiler
+      run: npm run test:integration
+
+    - name: Run contract guards
+      run: npm run test:contract-guards
+
+    - name: Verify public-source release policy
+      run: npm run release:check
 

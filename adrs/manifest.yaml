@@ -1,6 +1,6 @@
 schema_version: '1.0'
 type: manifest
-generated_date: '2026-08-13T00:20:50Z'
+generated_date: '2026-08-13T00:43:39Z'
 generated_from: adrs/**/*.yaml
 adrs:
   - id: 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
@@ -935,6 +935,32 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
+  - id: 019ff88c-4cbd-7725-892a-3762052360de
+    type: logical
+    title: Public Source Release and Production Publication Boundary
+    status: accepted
+    file_path: adrs/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.yaml
+    domains:
+      - release
+      - governance
+      - runtime
+      - public-repository
+    tags:
+      - branch-promotion
+      - public-source
+      - production-overhaul
+      - npm-publication
+      - release-evidence
+    implements_logical: []
+    technologies: []
+    decision_count: 1
+    invariant_count: 2
+    gap_count: 0
+    blocking_gaps: 0
+    component_count: 0
+    related_reviews: []
+    related_overrides: []
+    related_ledgers: []
 by_domain: {}
 by_status: {}
 by_technology: {}
@@ -951,14 +977,14 @@ gaps_summary:
   blocking: 0
   by_adr: {}
 statistics:
-  total_adrs: 37
-  logical_adrs: 22
+  total_adrs: 38
+  logical_adrs: 23
   physical_adrs: 0
   physical_system_adrs: 2
   physical_component_adrs: 13
   decision_adrs: 0
-  total_decisions: 24
-  total_invariants: 36
+  total_decisions: 25
+  total_invariants: 38
   total_components: 14
   total_gaps: 2
   blocking_gaps: 0

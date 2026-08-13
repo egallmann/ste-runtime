@@ -27,7 +27,7 @@ adrs/
 
 ## ADR Types
 
-### Logical ADRs (6 total)
+### Logical ADRs (23 total)
 Conceptual architecture decisions - the "what" and "why":
 - **ADR-L-0001**: RECON Provisional Execution
 - **ADR-L-0002**: RECON Self-Validation Strategy
@@ -35,6 +35,7 @@ Conceptual architecture decisions - the "what" and "why":
 - **ADR-L-0004**: Watchdog Authoritative Mode
 - **ADR-L-0005**: Self-Configuring Domain Discovery
 - **ADR-L-0006**: Conversational Query Interface
+- **ADR-L-0024**: Public Source Release and Production Publication Boundary
 
 ### Physical-system ADRs (2 total)
 System implementation boundaries:
@@ -61,15 +62,15 @@ grep -A 10 "statistics:" manifest.yaml
 ```
 
 **Key statistics:**
-- Total ADRs: 37
-- Logical ADRs: 22
+- Total ADRs: 38
+- Logical ADRs: 23
 - Physical-system ADRs: 2
 - Physical-component ADRs: 13
-- Total Invariants: 13
+- Total Invariants: 38
 
 ## ADR Kit Schema
 
-ADRs follow the [ADR Kit v1.0 schema](https://github.com/egallmann/adr-architecture-kit):
+ADRs follow the [ADR Kit v1.3 schema](https://github.com/egallmann/adr-architecture-kit):
 
 - **YAML frontmatter** for machine-readable metadata
 - **Embedded Markdown** for human-readable prose
@@ -104,10 +105,10 @@ names — ownership is already expressed in `PROJECT.yaml` and `architecture_nam
 
 After `adr scaffold` or generator commands, set `authors` before committing.
 
-1. Edit YAML file directly
-2. Validate: `python -m adr_kit.validator adrs/logical/ADR-L-0001.yaml`
-3. Regenerate manifest: `python -m adr_kit.generators.manifest_generator adrs/`
-4. Regenerate views: `python -m adr_kit.generators.views.markdown adrs/`
+1. Edit the canonical YAML file directly
+2. Validate: `adr validate --scope . --cross-references`
+3. Regenerate projections: `adr generate-adr-projection --scope .`
+4. Regenerate runtime-owned registries: `node dist/cli/index.js architecture compile --project-root .`
 
 ## Migration History
 
@@ -130,3 +131,4 @@ See [MIGRATION.md](MIGRATION.md) for detailed migration process and rationale.
 - [ADR Kit Documentation](https://github.com/egallmann/adr-architecture-kit)
 - [STE Architecture Specification](../spec/ste-spec/)
 - [Migration Guide](MIGRATION.md)
+- [Release Strategy](adr-projection/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.md)
