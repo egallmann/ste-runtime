@@ -5,11 +5,27 @@ import {
   createRawImportAssertion,
   createModuleAssertion,
   assertInferenceCreatesEdges,
+  assertRelativeImportResolution,
   assertNoOrphanedReferences,
   assertBidirectionalConsistency,
 } from '../../test/extractor-test-utils.js';
 
 describe('inferRelationships - Module Import Edges', () => {
+  it.each([
+    {
+      fromFile: 'src/mcp/server.ts',
+      importPath: '../rss/rss-operations.js',
+      expectedModuleId: 'module-src-rss-rss-operations',
+    },
+    {
+      fromFile: 'src/mcp/deep/server.ts',
+      importPath: '../../rss/rss-operations.js',
+      expectedModuleId: 'module-src-rss-rss-operations',
+    },
+  ])('should validate normalized relative import paths', ({ fromFile, importPath, expectedModuleId }) => {
+    assertRelativeImportResolution(fromFile, importPath, expectedModuleId);
+  });
+
   it('should create module->module references from imports', () => {
     // Given: Two modules where one imports the other
     const assertions: NormalizedAssertion[] = [
