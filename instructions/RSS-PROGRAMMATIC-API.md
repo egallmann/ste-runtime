@@ -1,14 +1,16 @@
 # RSS Programmatic API
 
-**Authority:** E-ADR-004 (RSS CLI Implementation for Developer-Invoked Graph Traversal)  
 **Audience:** AI coding assistants (Cursor, Copilot, etc.) and machine consumers  
-**Version:** 1.0.0
+**Status:** Current source-checkout reference documentation; not a package compatibility commitment.
 
 ---
 
 ## Overview
 
-RSS (Runtime State Slicing) exposes a **TypeScript API** for programmatic access to the semantic graph. RSS is a graph traversal protocol for deterministic context assembly. This is the preferred interface for AI coding assistants and automated tools.
+RSS (Runtime State Slicing) exposes a **TypeScript API** for programmatic access
+to the semantic graph. RSS is a graph traversal protocol for deterministic
+context assembly. This guide documents the current exports for local source-
+checkout use; the package remains private and unpublished.
 
 **Key Point:** The CLI (`rss-cli.js`) is a wrapper for human developers. Machines should use the programmatic API directly for:
 - Faster execution (no process spawning)
@@ -21,7 +23,9 @@ RSS (Runtime State Slicing) exposes a **TypeScript API** for programmatic access
 
 ### Installation
 
-The RSS API is exported from the `ste-runtime` package:
+The RSS API is exported from the built source checkout. After `npm ci` and
+`npm run build`, local code may import from `./dist/index.js` or use a local
+`npm link`. Do not use `npm install ste-runtime`; the package is not published.
 
 ```typescript
 import {
@@ -57,10 +61,10 @@ import {
   type RssQueryResult,
   type BrokenEdge,
   type BidirectionalInconsistency,
-} from 'ste-runtime';
+} from './dist/index.js';
 ```
 
-Or import directly from the source:
+For TypeScript tooling, importing directly from the source is also possible:
 
 ```typescript
 import { initRssContext, search } from './ste-runtime/src/rss/rss-operations.js';

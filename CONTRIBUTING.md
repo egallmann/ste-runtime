@@ -1,99 +1,123 @@
 # Contributing to ste-runtime
 
-## Current Status
+## Current collaboration model
 
-ste-runtime is a public experimental repository and reference implementation. Direct pull requests are not the primary collaboration model right now.
+ste-runtime is a public experimental repository and reference implementation.
+Maintainer-driven changes are the primary collaboration model. Bug reports,
+questions, documentation feedback, architectural discussion, forks, and
+downstream experiments are welcome; direct pull requests are not assumed to be
+accepted without maintainer direction.
 
-What is welcome:
-- Bug reports
-- Questions about behavior or documentation
-- Architectural discussion
-- Forks and downstream experimentation
+The package is `private: true` and unpublished. Local source checkout and
+linking are the supported ways to experiment with it today.
 
-What to expect:
-- Maintainer-driven changes land first
-- The public repo may change quickly as the runtime is cleaned up and refactored
-- Forks are the recommended path for custom features or production hardening
-
-## Local Development
+## Local development
 
 Prerequisites:
-- Node.js 18 or later
-- npm
-- Python 3 for Python extractor development
 
-Setup:
+- Node.js 18 or later;
+- npm;
+- Python 3 for Python extractor development.
+
+From the repository root:
 
 ```bash
-npm install
+npm ci
 npm run build
-npm run rss:stats
 npm run recon:self
+npm run rss:stats
 ```
 
-`npm install` also configures the repository hooks. They are implemented with
-Node.js and do not require Bash, WSL, or a platform-specific shell. If the
-local Git configuration needs to be repaired, run:
+`npm ci` installs the repository hooks. They are implemented with Node.js and
+do not require Bash, WSL, or a platform-specific shell. If hooks need repair:
 
 ```bash
 node scripts/install-git-hooks.cjs
 ```
 
-Or use the automated bootstrap which checks prerequisites, installs, builds,
-runs initial RECON, and validates the installation:
+The automated bootstrap is also available:
 
 ```bash
 npm run init
 ```
 
-### CLI commands on PATH
-
-ste-runtime declares `ste`, `recon`, and `rss` as bin entry points but the
-package is `private: true` and not published to npm. To make these commands
-available on your PATH, link the package locally:
+The package declares `ste`, `recon`, and `rss` binaries but is not published.
+For local PATH access:
 
 ```bash
 npm link
-ste --version
+ste --help
 ```
 
-Without linking, use `node dist/cli/index.js <subcommand>` or the `npm run`
-scripts (e.g., `npm run recon:full`).
+Without linking, use `node dist/cli/index.js <command>` or the npm scripts.
 
-### Useful commands
+## Validation
+
+Run the relevant checks before proposing a change:
 
 ```bash
+npm run build
 npm test
-npm run test:coverage
-npm run recon:full
+npm run test:integration
+npm run test:contract-guards
+npm run lint
+npm run release:check
 npm run recon:self
-npm run rss:stats
+adr validate --scope . --cross-references
 ```
 
-## Repository Standards
+Before ADR validation, use an ADR Kit CLI that supports the repository's ADR
+Kit schema v1.3 records.
+
+## Repository standards
 
 - Keep changes focused and reviewable.
-- Add or update tests when behavior changes.
-- Update docs when CLI behavior, configuration, or architecture claims change.
-- Prefer current ADR Kit records in `adrs/` and `SYSTEM-OVERVIEW.md` over legacy narrative docs.
+- Add or update tests when runtime behavior changes.
+- Update documentation when CLI behavior, configuration, or architecture
+  claims change.
+- Do not change runtime behavior or public exports in a documentation-only
+  change.
+- Treat canonical ADR YAML under `adrs/` as architecture authority.
+- Do not hand-edit `SYSTEM-OVERVIEW.md`, `adrs/manifest.yaml`,
+  `adrs/adr-projection/`, runtime registries, or generated graph/state.
+- Change canonical inputs and regenerate derived artifacts through their
+  owning tools when an implementation change genuinely requires it.
 
-## Architecture References
+## Architecture references
 
-- Generated repo overview: `SYSTEM-OVERVIEW.md`
-- Current ADRs: `adrs/`
+- Canonical ADRs: `adrs/`
 - Generated ADR projections: `adrs/adr-projection/`
+- Generated repository overview: `SYSTEM-OVERVIEW.md`
 - Project metadata: `PROJECT.yaml`
-- Architecture overview: `documentation/architecture.md`
+- Runtime artifact authority: `COMPILER-AUTHORITY.md`
+- Technical architecture: `documentation/architecture.md`
 
-## Reporting Issues
+ADR Kit owns ADR authoring and schema-validation workflows. `ste-spec` owns
+shared public contracts, ste-runtime owns runtime evidence and runtime-owned
+machine artifacts, ste-kernel owns admission decisions, and
+ste-rules-library provides advisory/custom governance rules.
 
-When reporting a bug, include:
-- ste-runtime version
-- Node.js version
-- command run
-- full error output
-- relevant config snippets
+## Branch and promotion workflow
+
+Runtime changes follow the governed path:
+
+```text
+feature/* -> develop -> main
+```
+
+Start from an updated `develop`, open a reviewed feature PR into `develop`,
+and use a separate reviewed promotion PR from `develop` to `main`. Feature
+branches must not bypass `develop`.
+
+## Reporting
+
+For ordinary issues, include the repository revision, Node.js version, command
+run, complete error output, and relevant configuration. Do not disclose
+security-sensitive details in a public issue. A confidential vulnerability
+reporting path is not currently documented for this repository and remains an
+explicit infrastructure gap.
 
 ## License
 
-By contributing ideas, issues, or documentation feedback, you agree that resulting project changes remain under the Apache 2.0 license used by this repository.
+Contributions and documentation feedback are provided under the Apache License
+2.0 used by this repository. See [LICENSE](LICENSE).
