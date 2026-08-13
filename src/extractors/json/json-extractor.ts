@@ -103,14 +103,46 @@ function categorizeJsonFile(
  * Simple glob-like pattern matching
  */
 function matchesPattern(filePath: string, pattern: string): boolean {
-  // Convert glob pattern to regex
-  const regexPattern = pattern
-    .replace(/\*\*/g, '.*')
-    .replace(/\*/g, '[^/]*')
-    .replace(/\//g, '\\/');
-  
-  const regex = new RegExp(regexPattern);
-  return regex.test(filePath);
+  let regexSource = '^';
+
+  for (let index = 0; index < pattern.length; index += 1) {
+    const character = pattern[index];
+    if (character === '*') {
+      if (pattern[index + 1] === '*') {
+        regexSource += '.*';
+        index += 1;
+      } else {
+        regexSource += '[^/]*';
+      }
+    } else if (character === '/') {
+      regexSource += '\\/';
+    } else {
+      regexSource += escapeRegexCharacter(character);
+    }
+  }
+
+  return new RegExp(`${regexSource}$`).test(filePath);
+}
+
+function escapeRegexCharacter(character: string): string {
+  switch (character) {
+    case '\\':
+    case '^':
+    case '$':
+    case '.':
+    case '+':
+    case '?':
+    case '(':
+    case ')':
+    case '[':
+    case ']':
+    case '{':
+    case '}':
+    case '|':
+      return `\\${character}`;
+    default:
+      return character;
+  }
 }
 
 /**
@@ -364,5 +396,4 @@ function extractByCategory(
       return null;
   }
 }
-
 

@@ -1008,7 +1008,7 @@ async function extractTemplate(file: DiscoveredFile): Promise<RawAssertion[]> {
   const directivePatterns = ['*ngIf', '*ngFor', '*ngSwitch', 'ngClass', 'ngStyle', 'ngModel'];
   for (const directive of directivePatterns) {
     if (content.includes(directive)) {
-      directives.push(directive.replace('*', ''));
+      directives.push(directive.slice(1));
     }
   }
   

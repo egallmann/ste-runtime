@@ -22,6 +22,9 @@ on:
   pull_request:
     branches: ['**']
 
+permissions:
+  contents: read
+
 jobs:
   shape-patterns:
     runs-on: ubuntu-latest
