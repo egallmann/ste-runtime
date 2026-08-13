@@ -1,6 +1,7 @@
 # STE Runtime Instructions
 
-**Semantic Truth Engine** - A portable semantic extraction and graph traversal toolkit for AI-assisted development.
+**System of Thought Engineering (STE)** - A portable semantic extraction and
+graph traversal toolkit for supervised AI-assisted development.
 
 ---
 
@@ -17,7 +18,7 @@
 
 ## For AI Coding Assistants (Cursor, Copilot, etc.)
 
-**Use the programmatic API, not the CLI.**
+**For local programmatic experiments, use the API when appropriate.**
 
 The CLI (`rss-cli.js`) is designed for human developers at the terminal. AI assistants should import the TypeScript API directly:
 
@@ -29,7 +30,9 @@ const results = search(ctx, 'user authentication');
 const impact = blastRadius(ctx, results.nodes[0].key);
 ```
 
-**See [RSS-PROGRAMMATIC-API.md](./RSS-PROGRAMMATIC-API.md) for full documentation.**
+**See [RSS-PROGRAMMATIC-API.md](./RSS-PROGRAMMATIC-API.md) for the current
+source-checkout API documentation. It does not represent an npm publication or
+compatibility promise.**
 
 ---
 
