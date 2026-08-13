@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, rm, writeFile, readFile, readdir } from 'node:fs/promis
 import { existsSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +23,7 @@ afterEach(async () => {
 
 function runSetup(args: string[] = []): string {
   const allArgs = ['setup', '--skip-recon', '--ste-runtime-path', runtimeRoot, '--project-root', tempDir, ...args];
-  return execSync(`node "${cliPath}" ${allArgs.join(' ')}`, {
+  return execFileSync(process.execPath, [cliPath, ...allArgs], {
     encoding: 'utf8',
     cwd: tempDir,
     timeout: 30_000,

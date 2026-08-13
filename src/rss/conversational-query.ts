@@ -82,6 +82,35 @@ export interface ConversationalResponse {
   };
 }
 
+function parseRelationshipEntities(query: string): [string, string] | null {
+  const trimmed = query.trim();
+  const keyword = 'between';
+  const keywordIndex = trimmed.toLowerCase().indexOf(keyword);
+  if (keywordIndex < 0) {
+    return null;
+  }
+
+  const afterKeyword = trimmed.slice(keywordIndex + keyword.length);
+  const body = afterKeyword.trimStart();
+  if (!body || body.length === afterKeyword.length) {
+    return null;
+  }
+
+  const separator = ' and ';
+  const separatorIndex = body.toLowerCase().indexOf(separator);
+  if (separatorIndex < 0) {
+    return null;
+  }
+
+  const entity1 = body.slice(0, separatorIndex).trim();
+  let entity2 = body.slice(separatorIndex + separator.length).trim();
+  while (entity2.endsWith('?')) {
+    entity2 = entity2.slice(0, -1).trim();
+  }
+
+  return entity1 && entity2 ? [entity1, entity2] : null;
+}
+
 export interface NodeSummary {
   key: string;
   domain: string;
@@ -504,14 +533,13 @@ export class ConversationalQueryEngine {
     query: string,
     startTime: number
   ): Promise<ConversationalResponse> {
-    // Extract the two entities from the query
-    const match = query.match(/between\s+(.+?)\s+and\s+(.+?)(?:\?|$)/i);
-    
-    if (!match) {
+    // Extract the two entities from the query without a backtracking regex.
+    const entities = parseRelationshipEntities(query);
+    if (!entities) {
       return this.handleGeneric(query, startTime);
     }
-    
-    const [, entity1, entity2] = match;
+
+    const [entity1, entity2] = entities;
     
     const searchStart = performance.now();
     const results1 = search(this.ctx, entity1, { maxResults: 1 });

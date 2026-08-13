@@ -791,10 +791,40 @@ function extractSearchTerms(query: string): string[] {
     .split(/\s+/)
     .filter(w => w.length > 2 && !stopWords.has(w));
   
-  // Also look for compound terms (e.g., "finding-processor", "lambda_handler")
-  const compoundTerms = query.toLowerCase()
-    .match(/[\w]+-[\w]+|[\w]+_[\w]+/g) ?? [];
-  
+  // Also look for compound terms (e.g., "finding-processor", "lambda_handler").
+  // Scan once instead of applying a backtracking expression to user input.
+  const compoundTerms: string[] = [];
+  let token = '';
+  const isAsciiWordCharacter = (character: string): boolean => {
+    const code = character.charCodeAt(0);
+    return (code >= 48 && code <= 57) ||
+      (code >= 97 && code <= 122) ||
+      (code >= 65 && code <= 90);
+  };
+  const flushToken = (): void => {
+    if (!token.includes('-') && !token.includes('_')) {
+      token = '';
+      return;
+    }
+
+    const parts = token.split(/[-_]/);
+    if (parts.length > 1 && parts.every((part) =>
+      part.length > 0 && [...part].every(isAsciiWordCharacter)
+    )) {
+      compoundTerms.push(token);
+    }
+    token = '';
+  };
+
+  for (const character of query.toLowerCase()) {
+    if (isAsciiWordCharacter(character) || character === '-' || character === '_') {
+      token += character;
+    } else {
+      flushToken();
+    }
+  }
+  flushToken();
+
   return [...new Set([...words, ...compoundTerms])];
 }
 
