@@ -98,7 +98,7 @@ ${c.cyan}EXAMPLES:${c.reset}
   node scripts/init.cjs --mcp
 
 ${c.cyan}WHAT THIS DOES:${c.reset}
-  1. Validates prerequisites (Node.js 18+, npm)
+  1. Validates prerequisites (Node.js 22+, npm)
   2. Installs dependencies (npm install)
   3. Builds the project (npm run build)
   4. Runs initial RECON to create semantic graph
@@ -405,7 +405,7 @@ function printSummary(success, options) {
     log(`${c.red}${c.bold}Bootstrap failed. See errors above.${c.reset}`);
     log('');
     log('Common fixes:');
-    log('  1. Ensure Node.js 18+ is installed');
+    log('  1. Ensure Node.js 22+ is installed');
     log('  2. Run from the ste-runtime-private directory');
     log('  3. Check network connectivity for npm install');
     log('  4. Try: rm -rf node_modules && npm install');
