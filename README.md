@@ -261,6 +261,7 @@ See [MATURITY.md](MATURITY.md) for current evidence and limitations.
 | [Compiler authority](COMPILER-AUTHORITY.md) | Artifact-family ownership boundaries |
 | [MATURITY.md](MATURITY.md) | Evidence-backed maturity and limitations |
 | [Boundary enforcement](documentation/security/boundary-enforcement.md) | Implemented project-boundary controls |
+| [Security policy](SECURITY.md) | Vulnerability reporting, security scope, and trust boundary |
 
 ### Contributors
 
@@ -278,10 +279,16 @@ run the documented validation suite, and use the reviewed
 
 ## Security
 
-The current documentation does not provide a confidential vulnerability
-reporting channel. Do not place sensitive vulnerability details in public
-issues. A formal reporting path must be verified before a SECURITY.md policy
-or supported-service security promise can be published.
+`ste-runtime` is currently designed for local, human-supervised use and is not
+presented as a hardened multi-user or hostile-input service.
+
+Please report suspected security vulnerabilities privately. Do not disclose
+sensitive vulnerability details through public GitHub issues.
+
+See [SECURITY.md](SECURITY.md) for the reporting process, current trust
+boundary, supported-version posture, and vulnerability scope. Technical details
+for the implemented filesystem and project-scope controls are documented in
+[boundary enforcement](documentation/security/boundary-enforcement.md).
 
 ## License
 
