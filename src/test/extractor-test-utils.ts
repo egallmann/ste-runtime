@@ -6,6 +6,7 @@
  */
 
 import { expect } from 'vitest';
+import { posix as posixPath } from 'node:path';
 import type { NormalizedAssertion, RawAssertion } from '../recon/phases/index.js';
 import { inferRelationships } from '../recon/phases/inference.js';
 
@@ -197,7 +198,7 @@ export function assertRelativeImportResolution(
   );
   
   const toModule = createModuleAssertion(
-    fromFile.replace(/[^/]+$/, '') + importPath.replace('./', '').replace('../', ''),
+    posixPath.normalize(posixPath.join(posixPath.dirname(fromFile), importPath)),
     expectedModuleId
   );
 
