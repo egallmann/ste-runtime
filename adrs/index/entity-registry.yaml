@@ -2285,6 +2285,69 @@ entities:
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
+  - id: 019ff88c-4cbd-7725-892a-3762052360de
+    entity_type: adr
+    name: Public Source Release and Production Publication Boundary
+    summary: >-
+      ste-runtime is maintained in a public repository, but its package remains intentionally private and unpublished
+      because the runtime is an experimental reference implementation rather than a production-supported npm distr
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de
+      artifact_path: adrs/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.yaml
+    source_refs: []
+    metadata:
+      status: accepted
+      domains:
+        - release
+        - governance
+        - runtime
+        - public-repository
+      tags:
+        - branch-promotion
+        - public-source
+        - production-overhaul
+        - npm-publication
+        - release-evidence
+      related_reviews: []
+      related_overrides: []
+    relationships:
+      declared_in: []
+      declares:
+        - 019ff88c-4cbd-7725-892a-3762052360df
+        - 019ff88c-4cbd-7725-892a-3762052360e0
+        - 019ff88c-4cbd-7725-892a-3762052360e1
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de
+      extraction_phase: extract_adr
+      classification: explicit
+      generator: adr-architecture-index
   - id: 019ff84e-4ece-7231-9c3b-bd93242b3d4d
     entity_type: capability
     name: Workspace-agnostic operation
@@ -5237,6 +5300,71 @@ entities:
       extraction_phase: extract_decision
       classification: explicit
       generator: adr-architecture-index
+  - id: 019ff88c-4cbd-7725-892a-3762052360e1
+    entity_type: decision
+    name: Keep source public, defer package publication to the production overhaul
+    summary: >-
+      The current runtime is experimental and its package metadata already declares a private, unpublished distribution.
+      The repository can still provide transparent source, canonical ADRs, generated architecture artifacts, an
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de#019ff88c-4cbd-7725-892a-3762052360e1
+      artifact_path: adrs/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff88c-4cbd-7725-892a-3762052360de
+      related_invariants:
+        - 019ff88c-4cbd-7725-892a-3762052360df
+        - 019ff88c-4cbd-7725-892a-3762052360e0
+      enforces_invariants: []
+      enables_capabilities: []
+      governs_components: []
+      supersedes: []
+      refines: []
+      contradicts: []
+      accumulated_consequences:
+        - Public source remains reviewable and reusable.
+        - develop provides an explicit integration boundary before main promotion.
+        - npm publication remains blocked until production readiness is deliberate and evidenced.
+        - Consumers must use source checkout or local linking until publication is approved.
+        - A future production-overhaul decision and release implementation remain necessary.
+    relationships:
+      declared_in:
+        - 019ff88c-4cbd-7725-892a-3762052360de
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces:
+        - 019ff88c-4cbd-7725-892a-3762052360df
+        - 019ff88c-4cbd-7725-892a-3762052360e0
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de#019ff88c-4cbd-7725-892a-3762052360e1
+      extraction_phase: extract_decision
+      classification: explicit
+      generator: adr-architecture-index
   - id: 019ff84e-4ece-7186-b102-4c667f5ed9f0
     entity_type: invariant
     name: 019ff84e-4ece-7186-b102-4c667f5ed9f0
@@ -7201,6 +7329,120 @@ entities:
     provenance:
       source_type: logical_adr
       source_ref: 019ff84e-4ecf-745f-9832-3155d323e40c#019ff84e-4ecf-7f97-9239-716da8f2a953
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff88c-4cbd-7725-892a-3762052360df
+    entity_type: invariant
+    name: 019ff88c-4cbd-7725-892a-3762052360df
+    summary: >-
+      Runtime changes MUST promote through a reviewed pull request from a feature branch to develop, followed by a
+      reviewed develop-to-main promotion. Feature branches MUST NOT bypass develop when updating main.
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de#019ff88c-4cbd-7725-892a-3762052360df
+      artifact_path: adrs/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff88c-4cbd-7725-892a-3762052360de
+      scope: global
+      statement: >-
+        Runtime changes MUST promote through a reviewed pull request from a feature branch to develop, followed by a
+        reviewed develop-to-main promotion. Feature branches MUST NOT bypass develop when updating main.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff88c-4cbd-7725-892a-3762052360de
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - 019ff88c-4cbd-7725-892a-3762052360e1
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de#019ff88c-4cbd-7725-892a-3762052360df
+      extraction_phase: assign_canonical_invariant
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff88c-4cbd-7725-892a-3762052360e0
+    entity_type: invariant
+    name: 019ff88c-4cbd-7725-892a-3762052360e0
+    summary: >-
+      The ste-runtime package MUST remain marked private and MUST NOT be published to npm until an accepted
+      production-overhaul decision establishes a supported public API, package compatibility policy, release evidence,
+      and p
+    lifecycle_stage: active
+    admission_status: admitted
+    canonical_source:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de#019ff88c-4cbd-7725-892a-3762052360e0
+      artifact_path: adrs/logical/ADR-L-0024-public-source-release-and-production-publication-boundary.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff88c-4cbd-7725-892a-3762052360de
+      scope: global
+      statement: >-
+        The ste-runtime package MUST remain marked private and MUST NOT be published to npm until an accepted
+        production-overhaul decision establishes a supported public API, package compatibility policy, release evidence,
+        and publication provenance.
+      enforcement_level: must
+      declaration_mode: local
+      upheld_by_decisions: []
+    relationships:
+      declared_in:
+        - 019ff88c-4cbd-7725-892a-3762052360de
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by:
+        - 019ff88c-4cbd-7725-892a-3762052360e1
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in: []
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: logical_adr
+      source_ref: 019ff88c-4cbd-7725-892a-3762052360de#019ff88c-4cbd-7725-892a-3762052360e0
       extraction_phase: assign_canonical_invariant
       classification: explicit
       generator: adr-architecture-index
