@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0021
+id: 019ff84e-4ecf-74b8-8b3b-d33e1ad21f6a
 title: Experimental MVC-D to MVC-S Contract Consumption
 status: proposed
 created_date: '2026-05-30'
@@ -18,83 +18,128 @@ tags:
 - candidate-surface
 - provenance
 related_adrs:
-- ADR-L-0012
-- ADR-L-0016
-- ADR-L-0020
+- 019ff84e-4ece-7fcd-a62e-c8a7982632b0
+- 019ff84e-4ece-76ad-ae3e-f92bef05635a
+- 019ff84e-4ecf-7f4e-8b17-1f35008e8877
 introduces_entities:
-- CAP-0021
-- DEC-0023
-- INV-0030
-- INV-0031
-- INV-0032
+- 019ff84e-4ecf-7089-9e0e-e85189939ffd
+- 019ff84e-4ecf-7553-8e3b-40c6fe1bc5c6
+- 019ff84e-4ecf-7cb6-8f2e-9ea0bafe9052
+- 019ff84e-4ecf-7381-953f-a53af77032aa
+- 019ff84e-4ecf-7f16-843f-242411e53189
 vision_category: false
-context: |
-  ste-spec now defines draft MVC-D and MVC-S schemas as part of the MVC evolution
+context: 'ste-spec now defines draft MVC-D and MVC-S schemas as part of the MVC evolution
+
   contract surface. ste-runtime needs an experimental contract-consumption slice
+
   that proves it can validate MVC-D fixtures and emit factual MVC-S candidate
+
   snapshots without becoming a second schema authority and without crossing into
+
   kernel-owned admission.
 
+
   This ADR is intentionally narrow. It does not authorize RSS traversal, graph
+
   database support, Context Domain execution, Graph Domain execution, Linkage
+
   Surface materialization, runtime query planning, or MVC-M admission.
+
+  '
 capabilities:
-- id: CAP-0021
+- id: 019ff84e-4ecf-7089-9e0e-e85189939ffd
   name: Experimental MVC-D to MVC-S candidate emission
-  description: |
-    Consume ste-spec-owned MVC-D and MVC-S contracts in tests and emit deterministic
+  description: 'Consume ste-spec-owned MVC-D and MVC-S contracts in tests and emit
+    deterministic
+
     factual MVC-S candidate snapshots from fully supplied fixture inputs.
+
+    '
+  alias_id: CAP-0021
+  alias_name: experimental-mvc-d-to-mvc-s-candidate-emission
 invariants:
-- id: INV-0030
-  statement: |
-    ste-runtime MUST treat MVC-D and MVC-S schemas as external ste-spec contracts.
+- id: 019ff84e-4ecf-7cb6-8f2e-9ea0bafe9052
+  statement: 'ste-runtime MUST treat MVC-D and MVC-S schemas as external ste-spec
+    contracts.
+
     Runtime tests may mirror schema fixtures for local validation, but runtime
+
     code MUST NOT redefine the public schema authority.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: |
-    Prevents runtime from becoming a secondary schema authority for MVC contracts.
-- id: INV-0031
-  statement: |
-    Experimental MVC-S candidate emission MUST NOT include admission decisions,
+  rationale: 'Prevents runtime from becoming a secondary schema authority for MVC
+    contracts.
+
+    '
+  alias_id: INV-0030
+  alias_name: inv-0030
+- id: 019ff84e-4ecf-7381-953f-a53af77032aa
+  statement: 'Experimental MVC-S candidate emission MUST NOT include admission decisions,
+
     caller-facing eligibility, enforcement outcomes, kernel verdicts, governance
+
     state, or admitted payloads.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: |
-    Preserves the MVC-S to MVC-M boundary and the ste-kernel admission authority.
-- id: INV-0032
-  statement: |
-    Experimental MVC-S candidate emission MUST be deterministic for identical
+  rationale: 'Preserves the MVC-S to MVC-M boundary and the ste-kernel admission authority.
+
+    '
+  alias_id: INV-0031
+  alias_name: inv-0031
+- id: 019ff84e-4ecf-7f16-843f-242411e53189
+  statement: 'Experimental MVC-S candidate emission MUST be deterministic for identical
+
     MVC-D, candidate refs, selector refs, topology metrics, rationale, and
+
     negative-space inputs. Fingerprints MUST be computed over canonicalized input.
+
+    '
   scope: global
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: |
-    Deterministic candidate identity is required before RSS assembly or kernel
+  rationale: 'Deterministic candidate identity is required before RSS assembly or
+    kernel
+
     admission work can safely build on MVC-S.
+
+    '
+  alias_id: INV-0032
+  alias_name: inv-0032
 decisions:
-- id: DEC-0023
+- id: 019ff84e-4ecf-7553-8e3b-40c6fe1bc5c6
   summary: Add an experimental contract-consumption builder for MVC-D to MVC-S fixtures
-  rationale: |
-    A narrow fixture validator gives ste-runtime a contract-safe baseline before
+  rationale: 'A narrow fixture validator gives ste-runtime a contract-safe baseline
+    before
+
     implementing RSS traversal or kernel handoff. All candidate material is fully
+
     supplied to the builder; runtime does not reconstruct architecture or discover
+
     topology in this slice.
+
+    '
   alternatives_considered:
   - name: Implement RSS traversal first
-    rejected_because: |
-      Traversal would mix contract consumption with reality assembly and make it
+    rejected_because: 'Traversal would mix contract consumption with reality assembly
+      and make it
+
       harder to prove the MVC-S candidate boundary.
+
+      '
   - name: Emit MVC-M directly
-    rejected_because: |
-      MVC-M requires kernel-owned admission and is outside runtime authority.
+    rejected_because: 'MVC-M requires kernel-owned admission and is outside runtime
+      authority.
+
+      '
   consequences:
     positive:
     - Runtime can validate ste-spec MVC contracts locally
@@ -103,8 +148,12 @@ decisions:
     negative:
     - Additional experimental surface must remain clearly separated from legacy CEM/MVC
   related_invariants:
-  - INV-0030
-  - INV-0031
-  - INV-0032
+  - 019ff84e-4ecf-7cb6-8f2e-9ea0bafe9052
+  - 019ff84e-4ecf-7381-953f-a53af77032aa
+  - 019ff84e-4ecf-7f16-843f-242411e53189
   enables_capabilities:
-  - CAP-0021
+  - 019ff84e-4ecf-7089-9e0e-e85189939ffd
+  alias_id: DEC-0023
+  alias_name: add-an-experimental-contract-consumption-builder-for-mvc-d-to-mvc-s-fixtures
+alias_id: ADR-L-0021
+alias_name: experimental-mvc-d-to-mvc-s-contract-consumption

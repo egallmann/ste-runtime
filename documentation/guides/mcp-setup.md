@@ -439,7 +439,7 @@ This design minimizes token usage while providing rich context.
 ## See Also
 
 - [Workspace Initialization Guide](./workspace-initialization.md) -- Multi-repo workspace setup
-- [ADR-P-0004: ste-runtime MCP Server Implementation](../../adrs/rendered/ADR-P-0004.md)
+- [ADR-PS-0001: Runtime Orchestration and Assistant Integration](../../adrs/adr-projection/physical-system/ADR-PS-0001-runtime-orchestration-and-assistant-integration.md)
 - [RSS Usage Guide](../../instructions/RSS-USAGE-GUIDE.md)
 - [RECON README](../../instructions/RECON-README.md)
 

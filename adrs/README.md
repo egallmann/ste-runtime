@@ -16,11 +16,9 @@ adrs/
 │   ├── ADR-L-0001.yaml
 │   ├── ADR-L-0002.yaml
 │   └── ...
-├── physical/         # Implementation specs (how)
-│   ├── ADR-P-0001.yaml
-│   ├── ADR-P-0002.yaml
-│   └── ...
-├── rendered/         # Auto-generated markdown views
+├── physical-system/  # Runtime/system implementation boundaries
+├── physical-component/ # Concrete implementation components
+├── adr-projection/   # Auto-generated markdown projections
 │   ├── ADR-L-0001.md
 │   └── ...
 ├── manifest.yaml     # Auto-generated discovery index
@@ -38,13 +36,14 @@ Conceptual architecture decisions - the "what" and "why":
 - **ADR-L-0005**: Self-Configuring Domain Discovery
 - **ADR-L-0006**: Conversational Query Interface
 
-### Physical ADRs (5 total)
-Implementation specifications - the "how":
-- **ADR-P-0001**: RSS CLI Implementation
-- **ADR-P-0002**: JSON Data Extraction
-- **ADR-P-0003**: Angular/CSS Semantic Extraction
-- **ADR-P-0004**: ste-runtime MCP Server
-- **ADR-P-0005**: Extractor Validation Requirements
+### Physical-system ADRs (2 total)
+System implementation boundaries:
+- **ADR-PS-0001**: Runtime Orchestration and Assistant Integration
+- **ADR-PS-0002**: Semantic Extraction Subsystem
+
+### Physical-component ADRs (13 total)
+Concrete implementation components are stored under `physical-component/`.
+The former `physical/` ADR type has been retired.
 
 ## Using the Manifest
 
@@ -62,9 +61,10 @@ grep -A 10 "statistics:" manifest.yaml
 ```
 
 **Key statistics:**
-- Total ADRs: 11
-- Logical ADRs: 6
-- Physical ADRs: 5
+- Total ADRs: 37
+- Logical ADRs: 22
+- Physical-system ADRs: 2
+- Physical-component ADRs: 13
 - Total Invariants: 13
 
 ## ADR Kit Schema
@@ -84,9 +84,9 @@ ADRs follow the [ADR Kit v1.0 schema](https://github.com/egallmann/adr-architect
 cat adrs/logical/ADR-L-0001-*.yaml
 ```
 
-### Option 2: Read rendered markdown
+### Option 2: Read generated markdown projection
 ```bash
-cat adrs/rendered/ADR-L-0001.md
+cat adrs/adr-projection/logical/ADR-L-0001-recon-provisional-execution-for-project-level-semantic-state.md
 ```
 
 ### Option 3: Query via RSS

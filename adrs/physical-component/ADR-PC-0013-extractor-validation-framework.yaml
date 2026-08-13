@@ -1,0 +1,106 @@
+schema_version: '1.3'
+adr_type: physical-component
+id: 019ff876-6daf-773a-b017-7d967b7a7add
+title: Extractor Validation Framework
+status: proposed
+created_date: '2026-08-12'
+authors:
+- erik.gallmann
+domains:
+- extraction
+- validation
+- recon
+tags:
+- validation
+- extractors
+- quality-assurance
+modified_date: '2026-08-12'
+implements_system:
+- 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+implements_logical:
+- 019ff84e-4ece-7378-b637-eaea5a1d3bc2
+related_adrs:
+- 019ff84e-4ed0-7c04-af35-82ee16e5dc81
+supersedes:
+- 019ff84e-4ed0-7c04-af35-82ee16e5dc81
+technologies:
+- typescript
+- node.js
+- schema-validation
+- testing
+context: 'The semantic extraction subsystem needs a concrete validation component
+  that checks extractor output quality, graph consistency, coverage, identity,
+  schema conformance, and repeatability before derived state is accepted.
+
+  '
+technology_stack:
+- category: language
+  name: TypeScript
+  version: 5.3+
+  rationale: Existing runtime implementation language.
+- category: framework
+  name: Node.js
+  version: 18.x+
+  rationale: Existing runtime execution environment.
+component_specifications:
+- id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
+  name: Extractor Validation Framework
+  type: library
+  responsibilities: '- Validate extractor output quality and correctness
+
+    - Check graph, coverage, identity, schema, and repeatability invariants
+
+    - Produce deterministic validation reports for RECON self-validation
+
+    '
+  generation_context:
+    purpose: Guard semantic extraction quality before runtime consumers rely on derived state.
+    key_responsibilities:
+    - Extractor output validation
+    - Validation report generation
+    - Repeatability and identity checks
+    constraints:
+    - Validation remains deterministic and source-backed.
+    - Validation findings must distinguish blocking errors from non-blocking warnings.
+    success_criteria:
+    - Extractor validation reports are generated for RECON self-validation.
+    - Invalid derived state is surfaced before downstream runtime use.
+  implementation_identifiers:
+    module_path: src/recon/validation/
+    additional_modules:
+    - src/recon/phases/self-validation.ts
+    test_path: src/recon/validation/report-generator.test.ts
+    additional_test_paths:
+    - src/recon/validation/graph-validator.test.ts
+    - src/recon/validation/coverage-validator.test.ts
+    - src/recon/validation/identity-validator.test.ts
+    - src/recon/validation/repeatability-validator.test.ts
+    - src/recon/validation/schema-validator.test.ts
+  implementation_requirements:
+    error_handling:
+      strategy: Continue independent validators while collecting deterministic findings and preserving blocking severity.
+    testing_requirements:
+      unit_test_coverage: '>= 80%'
+      integration_tests: '- RECON self-validation execution
+
+        - Validator report generation
+
+        - Failure severity and repeatability behavior
+
+        '
+  alias_id: COMP-0016
+  alias_name: extractor-validation-framework
+implementation_decisions: []
+gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: adr
+    from: ADR-P-0005
+    to: ADR-PC-0013
+    source_pointer: /id
+  - entity_type: component
+    from: COMP-0016
+    to: COMP-0016
+    source_pointer: /component_specifications/0/id
+alias_id: ADR-PC-0013
+alias_name: extractor-validation-framework

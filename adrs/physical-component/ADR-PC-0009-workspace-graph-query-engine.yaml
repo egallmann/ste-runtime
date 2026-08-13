@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0009
+id: 019ff84e-4ecf-7a24-801d-7d1e708577ac
 title: Workspace Graph Query Engine
 status: proposed
 created_date: '2026-05-22'
@@ -16,25 +16,30 @@ tags:
 - canned-queries
 - projections
 introduces_entities:
-- COMP-0010
+- 019ff84e-4ecf-736e-9d3d-dc19c7223122
 realizes_entities:
-- CAP-0018
+- 019ff84e-4ece-7d33-a91e-00d8638b487d
 implements_system:
-- ADR-PS-0001
+- 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
 implements_logical:
-- ADR-L-0018
-- ADR-L-0009
-- ADR-L-0016
+- 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
+- 019ff84e-4ece-7ce3-aa17-67193bab337e
+- 019ff84e-4ece-76ad-ae3e-f92bef05635a
 technologies:
 - typescript
 - node.js
 - yaml
-context: |
-  ADR-L-0018 established the capability for deterministic workspace graph
+context: 'ADR-L-0018 established the capability for deterministic workspace graph
+
   querying. This component implements the loader, three canned query functions,
+
   and three projection renderers that realize that capability. It consumes
+
   workspace slices (per ADR-L-0016 schema contract) and exposes results through
-  the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+
+  the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
@@ -45,27 +50,38 @@ technology_stack:
   version: 4.x
   rationale: YAML parsing for workspace slice files, consistent with existing codebase.
 component_specifications:
-- id: COMP-0010
+- id: 019ff84e-4ecf-736e-9d3d-dc19c7223122
   name: Workspace Graph Query Engine
   type: library
-  responsibilities: |
-    - Load workspace graph slices into typed in-memory WorkspaceGraph
+  responsibilities: '- Load workspace graph slices into typed in-memory WorkspaceGraph
+
     - Build outAdj/inAdj adjacency maps at load time for O(1) neighbor lookups
+
     - Execute systemDependencies, componentIntegration, blastRadiusWorkspace queries
+
     - Render results to Mermaid, table, and adjacency matrix projections
-    - Materialize deterministic projections to output_dir/projections/ on workspace recon (emitProjections)
+
+    - Materialize deterministic projections to output_dir/projections/ on workspace
+    recon (emitProjections)
+
+    '
   generation_context:
-    purpose: |
-      Deterministic, non-LLM graph traversal over workspace infra slices producing structured results for diagrams and tables.
+    purpose: 'Deterministic, non-LLM graph traversal over workspace infra slices producing
+      structured results for diagrams and tables.
+
+      '
     key_responsibilities:
     - Load workspace-index.yaml and slices/*.yaml into WorkspaceGraph
     - Traverse typed verb edges to answer system-level questions
     - Project query results into Mermaid diagrams, row tables, and adjacency matrices
-    - Emit deterministic projection files (system-dependencies.md, component-integration.md, per-repo files, architecture-overview skeleton) to output_dir/projections/ as part of workspace recon
+    - Emit deterministic projection files (system-dependencies.md, component-integration.md,
+      per-repo files, architecture-overview skeleton) to output_dir/projections/ as
+      part of workspace recon
     constraints:
     - No LLM inference in any query or projection function
     - No file system access in query or projection renderer functions (graph is pre-loaded)
-    - emitProjections is the only function that writes to disk; it is called from workspace-recon.ts as a non-fatal post-processing step
+    - emitProjections is the only function that writes to disk; it is called from
+      workspace-recon.ts as a non-fatal post-processing step
     - Projection emission failure does not affect WorkspaceReconResult.success
     success_criteria:
     - Fixture workspace with 2+ repos loads with correct node/edge counts
@@ -73,31 +89,32 @@ component_specifications:
     - blastRadiusWorkspace tier-0 contains exactly the target node
     - toMermaid output is valid Mermaid syntax
     - toTable output columns match documented schema per query type
-    - emitProjections writes system-dependencies.md, component-integration.md, per-repo files, and architecture-overview.md to projections/
+    - emitProjections writes system-dependencies.md, component-integration.md, per-repo
+      files, and architecture-overview.md to projections/
     - Empty graph produces valid but minimal projection files
-    - Missing workspace-index.yaml causes emitProjections to throw (caller handles non-fatally)
+    - Missing workspace-index.yaml causes emitProjections to throw (caller handles
+      non-fatally)
   interfaces:
-  - id: IFACE-0010
+  - id: 019ff84e-4ecf-7782-a701-e052b1d0b3be
     type: library_api
-    specification: |
-      Programmatic API:
-        - loadWorkspaceGraph(outputDir: string): Promise<WorkspaceGraph>
-        - systemDependencies(graph: WorkspaceGraph): SystemDependencyResult
-        - componentIntegration(graph: WorkspaceGraph, opts?: { repo?: string }): ComponentIntegrationResult
-        - blastRadiusWorkspace(graph: WorkspaceGraph, targetId: string, opts?: { maxDepth?: number }): WorkspaceBlastRadiusResult
-        - toMermaid(result: CannedQueryResult): string
-        - toTable(result: CannedQueryResult): Array<Record<string, string>>
-        - toAdjacencyMatrix(result: CannedQueryResult): AdjacencyMatrixResult
-        - emitProjections(outputDir: string, manifest: WorkspaceManifest): Promise<ProjectionEmitResult>
-
-      Resolution-aware API (added by COMP-0011):
-        - compress(result: CannedQueryResult, config: { level: ResolutionLevel }): CompressedProjection
-        - toMermaidAtResolution(projection: CompressedProjection): string
-        - toTableAtResolution(projection: CompressedProjection): Array<Record<string, string>>
-        - emitMultiResProjections(outputDir: string, manifest: WorkspaceManifest): Promise<MultiResEmitResult>
-
-      MCP tools ws_dependencies and ws_integration accept optional resolution parameter (L0|L1|L2|L3|L4, default L4).
-      CLI ws deps and ws integration accept --resolution flag.
+    specification: "Programmatic API:\n  - loadWorkspaceGraph(outputDir: string):\
+      \ Promise<WorkspaceGraph>\n  - systemDependencies(graph: WorkspaceGraph): SystemDependencyResult\n\
+      \  - componentIntegration(graph: WorkspaceGraph, opts?: { repo?: string }):\
+      \ ComponentIntegrationResult\n  - blastRadiusWorkspace(graph: WorkspaceGraph,\
+      \ targetId: string, opts?: { maxDepth?: number }): WorkspaceBlastRadiusResult\n\
+      \  - toMermaid(result: CannedQueryResult): string\n  - toTable(result: CannedQueryResult):\
+      \ Array<Record<string, string>>\n  - toAdjacencyMatrix(result: CannedQueryResult):\
+      \ AdjacencyMatrixResult\n  - emitProjections(outputDir: string, manifest: WorkspaceManifest):\
+      \ Promise<ProjectionEmitResult>\n\nResolution-aware API (added by COMP-0011):\n\
+      \  - compress(result: CannedQueryResult, config: { level: ResolutionLevel }):\
+      \ CompressedProjection\n  - toMermaidAtResolution(projection: CompressedProjection):\
+      \ string\n  - toTableAtResolution(projection: CompressedProjection): Array<Record<string,\
+      \ string>>\n  - emitMultiResProjections(outputDir: string, manifest: WorkspaceManifest):\
+      \ Promise<MultiResEmitResult>\n\nMCP tools ws_dependencies and ws_integration\
+      \ accept optional resolution parameter (L0|L1|L2|L3|L4, default L4).\nCLI ws\
+      \ deps and ws integration accept --resolution flag.\n"
+    alias_id: IFACE-0010
+    alias_name: iface-0010
   implementation_identifiers:
     module_path: src/workspace/workspace-graph-loader.ts
     additional_modules:
@@ -114,8 +131,10 @@ component_specifications:
     - src/workspace/projection-families.test.ts
   implementation_requirements:
     error_handling:
-      strategy: |
-        Throw descriptive errors for missing workspace-index.yaml or non-existent target nodes. Skip unreadable slice files silently.
+      strategy: 'Throw descriptive errors for missing workspace-index.yaml or non-existent
+        target nodes. Skip unreadable slice files silently.
+
+        '
     observability:
       logging:
         level: info
@@ -127,12 +146,21 @@ component_specifications:
         type: histogram
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - Loader tests: fixture loading, empty workspace, missing slices, adjacency correctness
-        - Query tests: three functions against in-memory fixture, edge cases (single-repo, no edges, cyclic)
+      integration_tests: '- Loader tests: fixture loading, empty workspace, missing
+        slices, adjacency correctness
+
+        - Query tests: three functions against in-memory fixture, edge cases (single-repo,
+        no edges, cyclic)
+
         - Projection tests: Mermaid syntax, table columns, matrix shape
+
+        '
   implements_capabilities:
-  - CAP-0018
-  - CAP-0019
+  - 019ff84e-4ece-7d33-a91e-00d8638b487d
+  - 019ff84e-4ecf-7de7-b93b-b02c6152fe2b
   dependencies:
-  - COMP-0011
+  - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+  alias_id: COMP-0010
+  alias_name: workspace-graph-query-engine
+alias_id: ADR-PC-0009
+alias_name: adr-pc-0009-workspace-graph-query-engine

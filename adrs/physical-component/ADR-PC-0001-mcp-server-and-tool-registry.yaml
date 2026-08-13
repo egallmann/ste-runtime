@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0001
+id: 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
 title: MCP Server and Tool Registry
 status: proposed
 created_date: '2026-03-15'
@@ -11,22 +11,25 @@ domains:
 - integration
 - runtime
 implements_system:
-- ADR-PS-0001
+- 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
 modified_date: '2026-05-22'
 implements_logical:
-- ADR-L-0004
-- ADR-L-0006
-- ADR-L-0007
-- ADR-L-0018
+- 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
+- 019ff84e-4ece-71c8-af1f-eb35c77b551a
+- 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
+- 019ff84e-4ece-7c3b-833e-dbdb54ed76ec
 technologies:
 - typescript
 - node.js
 - mcp
 - zod
-context: |
-  This component exposes assistant-facing runtime tools over MCP and binds
+context: 'This component exposes assistant-facing runtime tools over MCP and binds
+
   structural, operational, context, optimized, obligation-oriented, and
+
   workspace graph query tool surfaces into one discoverable server boundary.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
@@ -37,13 +40,17 @@ technology_stack:
   version: 1.x
   rationale: MCP protocol implementation.
 component_specifications:
-- id: COMP-0001
+- id: 019ff84e-4ecf-7102-af3f-302a74e31f59
   name: MCP Server and Tool Registry
   type: service
-  responsibilities: |
-    - Serve MCP stdio runtime for assistant integration
-    - Register structural, operational, context, optimized, obligation, and workspace graph query tools
+  responsibilities: '- Serve MCP stdio runtime for assistant integration
+
+    - Register structural, operational, context, optimized, obligation, and workspace
+    graph query tools
+
     - Route tool requests onto runtime graph, context, and workspace query services
+
+    '
   generation_context:
     purpose: Expose runtime semantic capabilities to assistants through MCP.
     key_responsibilities:
@@ -56,12 +63,19 @@ component_specifications:
     - MCP server advertises the implemented tool surfaces
     - Tool responses remain aligned with runtime freshness and obligation logic
   interfaces:
-  - id: IFACE-0001
+  - id: 019ff84e-4ecf-7d46-b91f-b8429a7828d6
     type: CLI
-    specification: |
-      Entry surfaces:
+    specification: 'Entry surfaces:
+
       - src/mcp/mcp-server.ts
-      - MCP stdio tool registration for structural, operational, context, optimized, obligation, and workspace graph query tools (ws_dependencies, ws_integration, ws_blast_radius)
+
+      - MCP stdio tool registration for structural, operational, context, optimized,
+      obligation, and workspace graph query tools (ws_dependencies, ws_integration,
+      ws_blast_radius)
+
+      '
+    alias_id: IFACE-0001
+    alias_name: iface-0001
   implementation_identifiers:
     module_path: src/mcp/mcp-server.ts
     entry_point: src/mcp/mcp-server.ts
@@ -79,66 +93,97 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - MCP server startup
+      integration_tests: '- MCP server startup
+
         - Tool registration and execution
+
+        '
+  alias_id: COMP-0017
+  alias_name: mcp-server-and-tool-registry
 implementation_decisions:
-- id: IMPL-0001
-  summary: >
-    Graph topology analysis uses single-pass BFS layering (Kahn's algorithm)
-    computing forward dependency depths in O(N+E). The original per-node
-    recursive DFS (O(N x (N+E))) caused the MCP server to hang at startup
-    when the graph exceeded ~500 nodes. Backward depth metrics are dead
-    (never consumed by detectPattern() or calculateOptimalDepth()); fields
-    retained at zero for cache compatibility. Alternatives rejected: (1)
-    increase sampling threshold -- constant factor improvement only, (2) skip
-    topology analysis -- loses pattern detection and recommended depth.
-  rationale: >
-    Infrastructure domain expansion (ADR-L-0016 INV-0025) grew the graph
-    from ~200 to ~1200 nodes, triggering the O(N*DFS) hang. Linear-time
-    analysis is required for the IR substrate to grow to 5K-10K+ nodes.
-- id: IMPL-0002
-  summary: >
-    MCP startup loads the RECON graph exactly once per initialization or
-    reload cycle. rssContext.graph (already in memory from initRssContext) is
-    passed directly to analyzeGraphTopology(). The redundant second call to
-    loadAidocGraph on cache miss and on every reloadContext() is eliminated.
-  rationale: >
-    At N=5000 with sequential YAML I/O, each redundant loadAidocGraph call
+- id: 019ff84e-4ecf-7c57-9625-5770044140fc
+  summary: 'Graph topology analysis uses single-pass BFS layering (Kahn''s algorithm)
+    computing forward dependency depths in O(N+E). The original per-node recursive
+    DFS (O(N x (N+E))) caused the MCP server to hang at startup when the graph exceeded
+    ~500 nodes. Backward depth metrics are dead (never consumed by detectPattern()
+    or calculateOptimalDepth()); fields retained at zero for cache compatibility.
+    Alternatives rejected: (1) increase sampling threshold -- constant factor improvement
+    only, (2) skip topology analysis -- loses pattern detection and recommended depth.
+
+    '
+  rationale: 'Infrastructure domain expansion (ADR-L-0016 INV-0025) grew the graph
+    from ~200 to ~1200 nodes, triggering the O(N*DFS) hang. Linear-time analysis is
+    required for the IR substrate to grow to 5K-10K+ nodes.
+
+    '
+  alias_id: IMPL-0001
+  alias_name: graph-topology-analysis-uses-single-pass-bfs-layering-kahn-s-algorithm-computing-for-39284fa7f6
+- id: 019ff84e-4ecf-7757-af0f-71aabefec067
+  summary: 'MCP startup loads the RECON graph exactly once per initialization or reload
+    cycle. rssContext.graph (already in memory from initRssContext) is passed directly
+    to analyzeGraphTopology(). The redundant second call to loadAidocGraph on cache
+    miss and on every reloadContext() is eliminated.
+
+    '
+  rationale: 'At N=5000 with sequential YAML I/O, each redundant loadAidocGraph call
     added ~50 seconds. Eliminating the double load halves cold-start I/O.
-- id: IMPL-0003
-  summary: >
-    Graph metrics cache (graph-metrics.json) is validated by node-count
-    delta: recompute when |cached.totalComponents - graph.size| exceeds 10%
-    of graph.size. The check is O(1); recomputation is O(N+E) per IMPL-0001.
-  rationale: >
-    Previously graph-metrics.json was accepted without staleness validation.
-    A stale cache could silently produce incorrect topology metadata after
-    graph growth, leading to suboptimal traversal parameter tuning.
+
+    '
+  alias_id: IMPL-0002
+  alias_name: mcp-startup-loads-the-recon-graph-exactly-once-per-initialization-or-reload-cycle-rs-6b9002d9f8
+- id: 019ff84e-4ecf-7562-9b3b-fa3f8abc5a4a
+  summary: 'Graph metrics cache (graph-metrics.json) is validated by node-count delta:
+    recompute when |cached.totalComponents - graph.size| exceeds 10% of graph.size.
+    The check is O(1); recomputation is O(N+E) per IMPL-0001.
+
+    '
+  rationale: 'Previously graph-metrics.json was accepted without staleness validation.
+    A stale cache could silently produce incorrect topology metadata after graph growth,
+    leading to suboptimal traversal parameter tuning.
+
+    '
+  alias_id: IMPL-0003
+  alias_name: graph-metrics-cache-graph-metrics-json-is-validated-by-node-count-delta-recompute-wh-8371e2be6e
 invariants:
 - id: INV-0026
-  statement: >
-    MCP startup graph topology analysis completes in O(N+E) time where N is
-    the node count and E is the edge count of the loaded RECON state graph.
-    Per-node recursive traversal is prohibited.
+  statement: 'MCP startup graph topology analysis completes in O(N+E) time where N
+    is the node count and E is the edge count of the loaded RECON state graph. Per-node
+    recursive traversal is prohibited.
+
+    '
   scope: component
   enforcement_level: must
   enforcement_mechanism: design
   verification_method: automated
-  rationale: >
-    The O(N x DFS) algorithm caused MCP server startup to hang beyond ~500
-    nodes. Linear-time analysis is required for growth to 5K-10K+ nodes.
-    Enforced by IMPL-0001 (BFS layering) and verified by the 5000-node
-    performance test completing under 100ms.
+  rationale: 'The O(N x DFS) algorithm caused MCP server startup to hang beyond ~500
+    nodes. Linear-time analysis is required for growth to 5K-10K+ nodes. Enforced
+    by IMPL-0001 (BFS layering) and verified by the 5000-node performance test completing
+    under 100ms.
+
+    '
 gaps:
 - id: GAP-0001
-  question: >
-    The O(N*DFS) topology analysis caused MCP server startup to hang when
-    graph size exceeded ~500 nodes. Was there a performance bound for
-    startup graph analysis?
+  question: 'The O(N*DFS) topology analysis caused MCP server startup to hang when
+    graph size exceeded ~500 nodes. Was there a performance bound for startup graph
+    analysis?
+
+    '
   impact: high
   blocking: false
   status: closed
-  resolution: >
-    Resolved by IMPL-PC0001-01 (BFS layering in O(N+E)) and INV-0026
-    (prohibiting per-node recursive traversal on startup).
+  resolution: 'Resolved by IMPL-PC0001-01 (BFS layering in O(N+E)) and INV-0026 (prohibiting
+    per-node recursive traversal on startup).
+
+    '
+migration_origin:
+  remapped_entities:
+  - entity_type: component
+    from: COMP-0001
+    to: COMP-0017
+    source_pointer: /component_specifications/0/id
+  - entity_type: component
+    from: COMP-0015
+    to: COMP-0017
+    source_pointer: /component_specifications/0/id
+alias_id: ADR-PC-0001
+alias_name: adr-pc-0001-mcp-server-and-tool-registry

@@ -109,10 +109,10 @@ const LANGUAGE_IGNORES: Record<SupportedLanguage, string[]> = {
     '**/dist/**',
     '**/*.min.css',
   ],
-  // ADR-PC-0010: ADR YAML ignores (skip derived registries and rendered output)
+  // ADR-PC-0010: ADR YAML ignores (skip derived registries and generated projections)
   'adr-yaml': [
     'adrs/index/**',
-    'adrs/rendered/**',
+    'adrs/adr-projection/**',
   ],
   markdown: [
     '**/node_modules/**',
@@ -333,8 +333,8 @@ export async function discoverFiles(options: DiscoveryOptions): Promise<Discover
           // ADR YAML takes precedence for files under adrs/ (path-prefix match)
           const posixFile = toPosixPath(file);
           if (languages.includes('adr-yaml') && posixFile.match(/(?:^|\/|\\)adrs\//)) {
-            const isIndexOrRendered = posixFile.match(/(?:^|\/|\\)adrs\/(?:index|rendered)\//);
-            if (!isIndexOrRendered) {
+            const isDerivedAdrOutput = posixFile.match(/(?:^|\/|\\)adrs\/(?:index|adr-projection)\//);
+            if (!isDerivedAdrOutput) {
               language = 'adr-yaml';
               discoveredFiles.push({
                 path: absolutePath,

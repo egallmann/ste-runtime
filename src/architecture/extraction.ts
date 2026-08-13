@@ -306,7 +306,9 @@ export function extractPhysicalEntities(
     });
 
     if (kind === 'physical-system') {
-      const sysId = systemEntityId(id);
+      const schemaVersion = asOptionalString(adr.schema_version);
+      const authoredSystem = schemaVersion === '1.3' ? asRecord(adr.system, 'adr.system') : undefined;
+      const sysId = authoredSystem ? asString(authoredSystem.id, 'adr.system.id') : systemEntityId(id);
       systemIds.set(id, sysId);
       entities.push({
         entity: newIrEntity({
@@ -317,6 +319,8 @@ export function extractPhysicalEntities(
           canonical_source: makeCanonical('physical_system_adr', id, artifact),
           metadata: {
             adr_id: id,
+            system_alias_id: authoredSystem ? asOptionalString(authoredSystem.alias_id) : undefined,
+            system_alias_name: authoredSystem ? asOptionalString(authoredSystem.alias_name) : undefined,
             implements_logical: asStringArray(adr.implements_logical),
             technologies: asStringArray(adr.technologies),
           },
@@ -676,20 +680,23 @@ export function deriveRelationships(
           });
         }
       }
-      for (const systemAdrId of asStringArray(adr.implements_system)) {
-        const resolvedSystemId = systemIds.get(systemAdrId) ?? `SYS-${systemAdrId.replace('ADR-PS-', '')}`;
-        if (projected.has(resolvedSystemId)) {
+      for (const systemRef of asStringArray(adr.implements_system)) {
+        const resolvedSystemId = projected.get(systemRef)?.entity_type === 'system'
+          ? systemRef
+          : systemIds.get(systemRef)
+            ?? (systemRef.startsWith('ADR-PS-') ? systemEntityId(systemRef) : undefined);
+        if (resolvedSystemId && projected.has(resolvedSystemId)) {
           addRel('embodied_in', componentId, resolvedSystemId, `${adrId}#${componentId}`, [adrId]);
           addRel('embodies', resolvedSystemId, componentId, `${adrId}#${componentId}`, [adrId], 'derived');
         } else {
           addGap({
-            gap_id: `GAP-MISSING-SYS-${componentId}-${systemAdrId}`,
+            gap_id: `GAP-MISSING-SYS-${componentId}-${systemRef}`,
             gap_type: 'component_without_system',
             source_entity_id: componentId,
             severity: 'important',
             source_ref: `${adrId}#${componentId}`,
-            evidence: [adrId, systemAdrId],
-            related_entity_id: systemAdrId,
+            evidence: [adrId, systemRef],
+            related_entity_id: systemRef,
             expected_relationship: 'embodied_in',
           });
         }

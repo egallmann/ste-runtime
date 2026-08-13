@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: logical
-id: ADR-L-0005
+id: 019ff84e-4ece-737a-a23f-3f243e6fafda
 title: Self-Configuring Domain Discovery
 status: proposed
 created_date: '2026-01-07'
@@ -24,7 +24,7 @@ constraints: []
 invariants: []
 non_functional_requirements: []
 decisions:
-- id: DEC-0005
+- id: 019ff84e-4ece-7aca-8733-bb3a375f4934
   summary: ''
   rationale: ''
   alternatives_considered: []
@@ -66,9 +66,13 @@ decisions:
     - Optional configuration override for edge cases
     - Clear discovery debugging output
   related_invariants: []
+  alias_id: DEC-0005
+  alias_name: dec-0005
 gaps: []
 migration_origin:
   remapped_entities:
   - entity_type: decision
     from: DEC-0001
     to: DEC-0005
+alias_id: ADR-L-0005
+alias_name: self-configuring-domain-discovery

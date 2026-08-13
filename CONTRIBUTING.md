@@ -31,6 +31,14 @@ npm run rss:stats
 npm run recon:self
 ```
 
+`npm install` also configures the repository hooks. They are implemented with
+Node.js and do not require Bash, WSL, or a platform-specific shell. If the
+local Git configuration needs to be repaired, run:
+
+```bash
+node scripts/install-git-hooks.cjs
+```
+
 Or use the automated bootstrap which checks prerequisites, installs, builds,
 runs initial RECON, and validates the installation:
 
@@ -73,7 +81,7 @@ npm run rss:stats
 
 - Generated repo overview: `SYSTEM-OVERVIEW.md`
 - Current ADRs: `adrs/`
-- Rendered ADR docs: `adrs/rendered/`
+- Generated ADR projections: `adrs/adr-projection/`
 - Project metadata: `PROJECT.yaml`
 - Architecture overview: `documentation/architecture.md`
 

@@ -1,6 +1,6 @@
-schema_version: '1.0'
+schema_version: '1.3'
 adr_type: physical-component
-id: ADR-PC-0006
+id: 019ff84e-4ecf-73e1-8c0f-19a06db3004b
 title: Frontend Semantic Extraction
 status: proposed
 created_date: '2026-03-15'
@@ -11,34 +11,39 @@ domains:
 - frontend
 - recon
 implements_system:
-- ADR-PS-0002
+- 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
 implements_logical:
-- ADR-L-0001
+- 019ff84e-4ece-791b-822f-21f537c95340
 related_adrs:
-- ADR-P-0003
+- 019ff84e-4ed0-7fa4-b739-80447b4e3085
 supersedes:
-- ADR-P-0003
+- 019ff84e-4ed0-7fa4-b739-80447b4e3085
 technologies:
 - typescript
 - angular
 - css
 - scss
-context: |
-  Frontend semantic extraction captures Angular and CSS/SCSS-specific semantics
+context: 'Frontend semantic extraction captures Angular and CSS/SCSS-specific semantics
+
   beyond generic TypeScript structure and feeds them into RECON normalization.
+
+  '
 technology_stack:
 - category: language
   name: TypeScript
   version: 5.3+
   rationale: Existing implementation language.
 component_specifications:
-- id: COMP-0006
+- id: 019ff84e-4ecf-745c-9a2f-9fef67bdbe8d
   name: Frontend Semantic Extractor
   type: library
-  responsibilities: |
-    - Extract Angular component, service, route, and template semantics
+  responsibilities: '- Extract Angular component, service, route, and template semantics
+
     - Extract CSS/SCSS tokens, styles, and related frontend semantics
+
     - Provide frontend assertions for RECON normalization
+
+    '
   generation_context:
     purpose: Extract frontend-specific semantic information for RECON.
     key_responsibilities:
@@ -49,12 +54,17 @@ component_specifications:
     success_criteria:
     - Frontend-specific semantics appear in RECON output
   interfaces:
-  - id: IFACE-0006
+  - id: 019ff84e-4ecf-7900-893e-359d4c304446
     type: library_api
-    specification: |
-      Public surfaces:
+    specification: 'Public surfaces:
+
       - src/extractors/angular/angular-extractor.ts
+
       - src/extractors/css/css-extractor.ts
+
+      '
+    alias_id: IFACE-0006
+    alias_name: iface-0006
   implementation_identifiers:
     module_path: src/extractors/angular/angular-extractor.ts
     test_path: src/extractors/angular/angular-extractor.test.ts
@@ -71,8 +81,28 @@ component_specifications:
         type: counter
     testing_requirements:
       unit_test_coverage: '>= 80%'
-      integration_tests: |
-        - Angular semantic extraction
+      integration_tests: '- Angular semantic extraction
+
         - CSS/SCSS semantic extraction
+
+        '
+  alias_id: COMP-0006
+  alias_name: frontend-semantic-extractor
 implementation_decisions: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: adr
+    from: ADR-P-0003
+    to: ADR-PC-0006
+    source_pointer: /id
+  - entity_type: component
+    from: COMP-0014
+    to: COMP-0006
+    source_pointer: /component_specifications/0/id
+  - entity_type: component
+    from: COMP-0002
+    to: COMP-0006
+    source_pointer: /component_specifications/1/id
+alias_id: ADR-PC-0006
+alias_name: frontend-semantic-extraction
