@@ -37,7 +37,7 @@ context: 'ADR-L-0018 established the capability for deterministic workspace grap
 
   workspace slices (per ADR-L-0016 schema contract) and exposes results through
 
-  the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+  the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
 
   '
 technology_stack:

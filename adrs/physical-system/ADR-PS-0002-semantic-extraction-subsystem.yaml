@@ -22,6 +22,7 @@ references_components:
 - 019ff84e-4ecf-73e1-8c0f-19a06db3004b
 - 019ff84e-4ecf-721a-b936-e1b98d068ec7
 - 019ff84e-4ecf-7a82-ae3a-121886af1b51
+- 019ff876-6daf-773a-b017-7d967b7a7add
 related_adrs:
 - 019ff84e-4ed0-7ba6-a33f-812df2eef432
 - 019ff84e-4ed0-7fa4-b739-80447b4e3085
@@ -84,6 +85,10 @@ component_topology:
     purpose: Extract ADR documents, invariants, decisions, capabilities, components,
       and system boundaries from ADR YAML corpus.
     implements_adr: 019ff84e-4ecf-7a82-ae3a-121886af1b51
+  - name: Extractor Validation Framework
+    type: service
+    purpose: Validate extractor output quality and derived-state consistency.
+    implements_adr: 019ff876-6daf-773a-b017-7d967b7a7add
   relationships:
   - from: JSON Semantic Extractor
     to: Frontend Semantic Extractor

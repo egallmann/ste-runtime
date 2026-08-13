@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 3c9adeb674aece94071be799e57dba0fc196d78f0aff42f6a3591e9ba315bf65
-rendered_hash: c3700b807c8caea77c6395f302648987e73d80fe68e31db944a1504305814916
+source_hash: 927adbcf38b9a73bc79aa201aa4fc7c4481ec3aba3d6be12ae1926b80bf36194
+rendered_hash: 70670b028b575dbaa7e45cf912aca22298042b730b85a901f687096d1e306987
 -->
 
 # ADR-L-0009: Unified Workspace Scope Model
@@ -144,7 +144,7 @@ adr-architecture-kit vs ste-runtime).
 querying. This component implements the loader, three canned query functions,
 and three projection renderers that realize that capability. It consumes
 workspace slices (per ADR-L-0016 schema contract) and exposes results through
-the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
 
 [Open projection](../physical-component/ADR-PC-0009-workspace-graph-query-engine.md)
 

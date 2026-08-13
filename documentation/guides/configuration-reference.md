@@ -680,6 +680,6 @@ Some settings can be overridden via environment variables:
 
 - [RECON README](../instructions/RECON-README.md) - RECON usage and configuration
 - [MCP Setup Guide](./mcp-setup.md) - MCP server configuration
-- [ADR-P-0004](../../adrs/adr-projection/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.md) - MCP server architecture
+- [ADR-PC-0001](../../adrs/adr-projection/physical-component/ADR-PC-0001-mcp-server-and-tool-registry.md) - MCP server architecture
 
 

@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: f4f2d6403bc631590d6fd7823d79ba7df8d287b2ceae5699750efff05097bb14
-rendered_hash: 83f2418d7dcf52876b57ec5c20fda92aaf00593ff6132135d1d90f164ed928bd
+source_hash: f94ddb8754bc669960941fd051438821a6315861e737a3c0b8b472c78ad65730
+rendered_hash: 101d7bf55e0c88238320d8420cae5d30ebfde5b1f485a7cf13cdcbf2b528b5f8
 -->
 
 # ADR-L-0006: Conversational Query Interface for RSS
@@ -58,12 +58,10 @@ flowchart LR
   n_019ff84e_4ecf_7156_a33b_bc8bba3fac60["ADR-PC-0004"]
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a["ADR-PS-0001"]
   n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48["ADR-PC-0001"]
-  n_019ff84e_4ed0_78a0_9334_d520d3decf14["ADR-P-0004"]
   n_019ff84e_4ece_7409_961d_14dde46e2cb5 -->|"declared_in"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
   n_019ff84e_4ecf_7156_a33b_bc8bba3fac60 -->|"implements_logical"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"implements_logical"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
   n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48 -->|"implements_logical"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
-  n_019ff84e_4ed0_78a0_9334_d520d3decf14 -->|"implements_logical"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
   n_019ff84e_4ece_70ba_bf2e_a0fecd4a986e -->|"references"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
   n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec -->|"references"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
 ```
@@ -94,18 +92,6 @@ questions require either manual MCP tool invocation by an LLM or reading raw
 YAML.
 
 [Open projection](ADR-L-0018-deterministic-workspace-graph-queries.md)
-### ADR-P-0004 — ste-runtime MCP Server Implementation
-
-**Relationships:**
-- 019ff84e-4ed0-78a0-9334-d520d3decf14 -[:implements_logical]-> this ADR
-
-**Context:** Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
-- **Provisional state** maintenance (pre-merge, feature branches)
-- **Soft + hard enforcement** (LLM instruction-following + validation tools)
-- **Post-reasoning validation** (catch violations after generation)
-- **Context assembly via RSS** (CEM Stage 2: State Loading)
-
-[Open projection](../physical/ADR-P-0004-ste-runtime-mcp-server-implementation.md)
 ### ADR-PC-0001 — MCP Server and Tool Registry
 
 **Relationships:**

@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: eef4e79fafbadc6db6d0c0dee6999ef12769a90554e834163e9769d0ee81305b
-rendered_hash: 5fcfd27216f8ccc40bb0753d07c76490547a3622e92c495b753ffd0d9d6b74cc
+source_hash: 8af78a1415ed3fd64832e0182cb52b508c96d4f9278501b62d440dd041c729a3
+rendered_hash: 42f107c911f4f19b34220f4e41f85f63f52a7dc95c32db98513971b0537bb883
 -->
 
 # ADR-L-0001: RECON Provisional Execution for Project-Level Semantic State
@@ -59,8 +59,6 @@ flowchart LR
   n_019ff84e_4ecf_73e1_8c0f_19a06db3004b["ADR-PC-0006"]
   n_019ff84e_4ecf_7a82_ae3a_121886af1b51["ADR-PC-0011"]
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c["ADR-PS-0002"]
-  n_019ff84e_4ed0_7ba6_a33f_812df2eef432["ADR-P-0002"]
-  n_019ff84e_4ed0_7fa4_b739_80447b4e3085["ADR-P-0003"]
   n_019ff84e_4ece_7186_b102_4c667f5ed9f0 -->|"declared_in"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ece_71a8_b83f_c85f830514e4 -->|"declared_in"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ece_7387_b33f_3d203e3c968c -->|"declared_in"| n_019ff84e_4ece_791b_822f_21f537c95340
@@ -80,8 +78,6 @@ flowchart LR
   n_019ff84e_4ecf_73e1_8c0f_19a06db3004b -->|"implements_logical"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ecf_7a82_ae3a_121886af1b51 -->|"implements_logical"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"implements_logical"| n_019ff84e_4ece_791b_822f_21f537c95340
-  n_019ff84e_4ed0_7ba6_a33f_812df2eef432 -->|"implements_logical"| n_019ff84e_4ece_791b_822f_21f537c95340
-  n_019ff84e_4ed0_7fa4_b739_80447b4e3085 -->|"implements_logical"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ece_7378_b637_eaea5a1d3bc2 -->|"references"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5 -->|"references"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ece_7693_ab03_49271bde3535 -->|"references"| n_019ff84e_4ece_791b_822f_21f537c95340
@@ -121,26 +117,6 @@ flowchart LR
 2. **Runtime Execution Boundary** - Canonical state, cryptographic enforcement, pre-reasoning admission control
 
 [Open projection](ADR-L-0004-watchdog-authoritative-mode-for-workspace-boundary.md)
-### ADR-P-0002 — JSON Data Extraction for Compliance Controls and Schemas
-
-**Relationships:**
-- 019ff84e-4ed0-7ba6-a33f-812df2eef432 -[:implements_logical]-> this ADR
-
-**Context:** Many enterprise codebases contain JSON files with semantic value beyond simple configuration:
-
-[Open projection](../physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-schemas.md)
-### ADR-P-0003 — Angular and CSS/SCSS Semantic Extraction
-
-**Relationships:**
-- 019ff84e-4ed0-7fa4-b739-80447b4e3085 -[:implements_logical]-> this ADR
-
-**Context:** The TypeScript extractor currently processes Angular files as standard TypeScript, capturing:
-- Functions and their signatures
-- Classes and their methods
-- Import/export relationships
-- Module structure
-
-[Open projection](../physical/ADR-P-0003-angular-and-css-scss-semantic-extraction.md)
 ### ADR-PC-0005 — JSON Semantic Extraction
 
 **Relationships:**

@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 72aa06425372a401008b627efe2ff3ff744794a4a69bd77f6e29acbfa4c935ce
-rendered_hash: afd7d674466a3ecd7f28ea1996267880c781609468c493a0a28fa28c03127986
+source_hash: de23d7e8875ca831623bf9cc6a44a2f9adbfb315b26a1ad90be86aeca5d25e47
+rendered_hash: 2e71c7944bfaa02f8acaf067a4f8f37104f21b5710d2e778f3794a9573c3ed18
 -->
 
 # ADR-PC-0010: Semantic Compression Engine
@@ -48,6 +48,8 @@ Existing ste-runtime implementation language.
 ```mermaid
 flowchart LR
   n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec["ADR-L-0018"]
+  n_019ff84e_4ece_7d33_a91e_00d8638b487d["CAP-0018"]
+  n_019ff84e_4ecf_710a_ad22_93698361c72b["CAP-0020"]
   n_019ff84e_4ecf_736e_9d3d_dc19c7223122["COMP-0010"]
   n_019ff84e_4ecf_74ba_b201_3b02412f39c8["ADR-L-0019"]
   n_019ff84e_4ecf_7753_9137_8b03153ddf7e["IFACE-0011"]
@@ -58,6 +60,8 @@ flowchart LR
   n_019ff84e_4ecf_7753_9137_8b03153ddf7e -->|"declared_in"| n_019ff84e_4ecf_7d09_802f_c14b1802b27c
   n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c -->|"declared_in"| n_019ff84e_4ecf_7d09_802f_c14b1802b27c
   n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
+  n_019ff84e_4ece_7d33_a91e_00d8638b487d -->|"implemented_by"| n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c
+  n_019ff84e_4ecf_710a_ad22_93698361c72b -->|"implemented_by"| n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c
   n_019ff84e_4ecf_7de7_b93b_b02c6152fe2b -->|"implemented_by"| n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c
   n_019ff84e_4ecf_7d09_802f_c14b1802b27c -->|"implements_logical"| n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec
   n_019ff84e_4ecf_7d09_802f_c14b1802b27c -->|"implements_logical"| n_019ff84e_4ecf_74ba_b201_3b02412f39c8

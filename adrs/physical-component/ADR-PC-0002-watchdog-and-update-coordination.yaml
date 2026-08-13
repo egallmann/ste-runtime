@@ -105,5 +105,9 @@ migration_origin:
     from: COMP-0002
     to: COMP-0019
     source_pointer: /component_specifications/0/id
+  - entity_type: component
+    from: COMP-0018
+    to: COMP-0019
+    source_pointer: /component_specifications/0/id
 alias_id: ADR-PC-0002
 alias_name: adr-pc-0002-watchdog-and-update-coordination

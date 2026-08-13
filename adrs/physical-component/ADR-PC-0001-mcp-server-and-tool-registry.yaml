@@ -181,5 +181,9 @@ migration_origin:
     from: COMP-0001
     to: COMP-0017
     source_pointer: /component_specifications/0/id
+  - entity_type: component
+    from: COMP-0015
+    to: COMP-0017
+    source_pointer: /component_specifications/0/id
 alias_id: ADR-PC-0001
 alias_name: adr-pc-0001-mcp-server-and-tool-registry

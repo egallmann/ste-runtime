@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 89b07e76d447b869086f14da4178dc2f3a6bd8648149167cea8e43b1192b3794
-rendered_hash: d0d4c845296792654e06ae4d4b24ce2666e6586ef1849fd27dc5e5c6385b640e
+source_hash: 5d682166ef709496e976f57c60c332ac0de9cd823f6d274a8816d83a88c40ddb
+rendered_hash: b16d130fb9a61a01f8be76a6ba8cba5b1feb46934cee9548c99539acc81e233f
 -->
 
 # ADR-PC-0009: Workspace Graph Query Engine
@@ -29,7 +29,7 @@ ADR-L-0018 established the capability for deterministic workspace graph
 querying. This component implements the loader, three canned query functions,
 and three projection renderers that realize that capability. It consumes
 workspace slices (per ADR-L-0016 schema contract) and exposes results through
-the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
 
 
 ## Technology Stack
@@ -57,6 +57,7 @@ flowchart LR
   n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec["ADR-L-0018"]
   n_019ff84e_4ece_7ce3_aa17_67193bab337e["ADR-L-0009"]
   n_019ff84e_4ece_7d33_a91e_00d8638b487d["CAP-0018"]
+  n_019ff84e_4ecf_710a_ad22_93698361c72b["CAP-0020"]
   n_019ff84e_4ecf_736e_9d3d_dc19c7223122["COMP-0010"]
   n_019ff84e_4ecf_7782_a701_e052b1d0b3be["IFACE-0010"]
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a["ADR-PS-0001"]
@@ -68,6 +69,7 @@ flowchart LR
   n_019ff84e_4ecf_7782_a701_e052b1d0b3be -->|"declared_in"| n_019ff84e_4ecf_7a24_801d_7d1e708577ac
   n_019ff84e_4ecf_736e_9d3d_dc19c7223122 -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
   n_019ff84e_4ece_7d33_a91e_00d8638b487d -->|"implemented_by"| n_019ff84e_4ecf_736e_9d3d_dc19c7223122
+  n_019ff84e_4ecf_710a_ad22_93698361c72b -->|"implemented_by"| n_019ff84e_4ecf_736e_9d3d_dc19c7223122
   n_019ff84e_4ecf_7de7_b93b_b02c6152fe2b -->|"implemented_by"| n_019ff84e_4ecf_736e_9d3d_dc19c7223122
   n_019ff84e_4ecf_7a24_801d_7d1e708577ac -->|"implements_logical"| n_019ff84e_4ece_76ad_ae3e_f92bef05635a
   n_019ff84e_4ecf_7a24_801d_7d1e708577ac -->|"implements_logical"| n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec

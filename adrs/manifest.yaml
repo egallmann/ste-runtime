@@ -1,6 +1,6 @@
 schema_version: '1.0'
 type: manifest
-generated_date: '2026-08-12T23:42:02Z'
+generated_date: '2026-08-13T00:20:50Z'
 generated_from: adrs/**/*.yaml
 adrs:
   - id: 019ff84e-4ece-70ba-bf2e-a0fecd4a986e
@@ -879,123 +879,43 @@ adrs:
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: 019ff84e-4ed0-78a0-9334-d520d3decf14
-    type: physical
-    title: ste-runtime MCP Server Implementation
-    status: superseded
-    file_path: adrs/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.yaml
+  - id: 019ff876-6dad-7d95-ad68-e13d96ed23a9
+    type: physical-component
+    title: RSS CLI and Runtime Graph Traversal
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.yaml
     domains:
-      - mcp
-      - integration
-      - implementation
-    tags:
-      - mcp
-      - server
-      - cursor-integration
-      - file-watching
-    implements_logical:
-      - 019ff84e-4ece-75dd-9f0b-ccb51cedc4f5
-      - 019ff84e-4ece-71c8-af1f-eb35c77b551a
-    technologies:
-      - cli
-      - file-discovery
-      - file-watching
-      - incremental-recon
-      - mcp
-      - node.js
-      - schema-validation
-      - stdio
-      - testing
-      - typescript
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 2
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: 019ff84e-4ed0-79c2-843f-57944e4ec69c
-    type: physical
-    title: RSS CLI Implementation for Developer-Invoked Graph Traversal
-    status: accepted
-    file_path: adrs/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph.yaml
-    domains:
+      - runtime
       - rss
       - cli
-      - implementation
     tags:
       - rss
-      - cli
       - graph-traversal
-      - developer-tools
+      - cli
+      - context-assembly
     implements_logical:
       - 019ff84e-4ece-7378-b637-eaea5a1d3bc2
     technologies:
-      - cli
-      - file-discovery
-      - file-watching
-      - graph-traversal
-      - mcp
-      - node.js
-      - schema-validation
-      - testing
       - typescript
+      - node.js
       - yaml
     decision_count: 0
     invariant_count: 0
     gap_count: 0
     blocking_gaps: 0
-    component_count: 0
+    component_count: 1
     related_reviews: []
     related_overrides: []
     related_ledgers: []
-  - id: 019ff84e-4ed0-7ba6-a33f-812df2eef432
-    type: physical
-    title: JSON Data Extraction for Compliance Controls and Schemas
-    status: superseded
-    file_path: adrs/physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-s.yaml
+  - id: 019ff876-6daf-773a-b017-7d967b7a7add
+    type: physical-component
+    title: Extractor Validation Framework
+    status: proposed
+    file_path: adrs/physical-component/ADR-PC-0013-extractor-validation-framework.yaml
     domains:
       - extraction
-      - data
-      - implementation
-    tags:
-      - json
-      - extractor
-      - compliance
-      - schemas
-    implements_logical:
-      - 019ff84e-4ece-791b-822f-21f537c95340
-    technologies:
-      - cli
-      - data-extraction
-      - file-discovery
-      - file-watching
-      - json
-      - mcp
-      - node.js
-      - schema-validation
-      - testing
-      - typescript
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: 019ff84e-4ed0-7c04-af35-82ee16e5dc81
-    type: physical
-    title: Extractor Validation Requirements
-    status: accepted
-    file_path: adrs/physical/ADR-P-0005-extractor-validation-requirements.yaml
-    domains:
       - validation
-      - extraction
-      - implementation
+      - recon
     tags:
       - validation
       - extractors
@@ -1003,60 +923,15 @@ adrs:
     implements_logical:
       - 019ff84e-4ece-7378-b637-eaea5a1d3bc2
     technologies:
-      - cli
-      - file-discovery
-      - file-watching
-      - mcp
+      - typescript
       - node.js
       - schema-validation
       - testing
-      - typescript
-      - validation
-      - yaml
     decision_count: 0
     invariant_count: 0
     gap_count: 0
     blocking_gaps: 0
-    component_count: 0
-    related_reviews: []
-    related_overrides: []
-    related_ledgers: []
-  - id: 019ff84e-4ed0-7fa4-b739-80447b4e3085
-    type: physical
-    title: Angular and CSS/SCSS Semantic Extraction
-    status: superseded
-    file_path: adrs/physical/ADR-P-0003-angular-and-cssscss-semantic-extraction.yaml
-    domains:
-      - extraction
-      - frontend
-      - implementation
-    tags:
-      - angular
-      - css
-      - scss
-      - extractor
-      - frontend
-    implements_logical:
-      - 019ff84e-4ece-791b-822f-21f537c95340
-    technologies:
-      - angular
-      - ast-parsing
-      - cli
-      - css
-      - file-discovery
-      - file-watching
-      - mcp
-      - node.js
-      - schema-validation
-      - scss
-      - testing
-      - typescript
-      - yaml
-    decision_count: 0
-    invariant_count: 0
-    gap_count: 0
-    blocking_gaps: 0
-    component_count: 0
+    component_count: 1
     related_reviews: []
     related_overrides: []
     related_ledgers: []
@@ -1072,20 +947,20 @@ decision_ledgers: []
 objection_overrides: []
 steelman_reviews: []
 gaps_summary:
-  total: 4
+  total: 2
   blocking: 0
   by_adr: {}
 statistics:
-  total_adrs: 40
+  total_adrs: 37
   logical_adrs: 22
-  physical_adrs: 5
+  physical_adrs: 0
   physical_system_adrs: 2
-  physical_component_adrs: 11
+  physical_component_adrs: 13
   decision_adrs: 0
   total_decisions: 24
   total_invariants: 36
-  total_components: 19
-  total_gaps: 4
+  total_components: 14
+  total_gaps: 2
   blocking_gaps: 0
   total_entities: 0
   total_requirements_snapshots: 0

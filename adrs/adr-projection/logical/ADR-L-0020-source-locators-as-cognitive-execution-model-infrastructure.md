@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: c85dcd2bc656311fc9d9925a576d239319c1321f8c5c33f6dd483a2dc07a8ba4
-rendered_hash: 07a808ed20510d77eaa141d555d0c47572f8cd524af898979859973b63ca0baa
+source_hash: 0b5a647c57351512d8e0dead6fee2304980ac6f85a6f60dd6ff9841f9af3662d
+rendered_hash: 6dcf9147045b876ceed3d36f08f817c074f7b3dd619b75cb979babf9af3ad68c
 -->
 
 # ADR-L-0020: Source Locators as Cognitive Execution Model Infrastructure
@@ -46,12 +46,14 @@ flowchart LR
   n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec["ADR-L-0018"]
   n_019ff84e_4ece_7ddc_b31f_3a009abe14b3["ADR-L-0017"]
   n_019ff84e_4ecf_710a_ad22_93698361c72b["CAP-0020"]
+  n_019ff84e_4ecf_736e_9d3d_dc19c7223122["COMP-0010"]
   n_019ff84e_4ecf_74b8_8b3b_d33e1ad21f6a["ADR-L-0021"]
   n_019ff84e_4ecf_74ba_b201_3b02412f39c8["ADR-L-0019"]
   n_019ff84e_4ecf_7528_8d2b_24dfb64b40f2["DEC-0022"]
   n_019ff84e_4ecf_771d_9a3c_ef75ea44643f["INV-0027"]
   n_019ff84e_4ecf_7766_a829_6425e5ad305e["INV-0029"]
   n_019ff84e_4ecf_7912_af16_46a17ff8fc57["INV-0028"]
+  n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c["COMP-0011"]
   n_019ff84e_4ecf_7f4e_8b17_1f35008e8877["ADR-L-0020"]
   n_019ff84e_4ecf_710a_ad22_93698361c72b -->|"declared_in"| n_019ff84e_4ecf_7f4e_8b17_1f35008e8877
   n_019ff84e_4ecf_7528_8d2b_24dfb64b40f2 -->|"declared_in"| n_019ff84e_4ecf_7f4e_8b17_1f35008e8877
@@ -63,6 +65,8 @@ flowchart LR
   n_019ff84e_4ecf_7528_8d2b_24dfb64b40f2 -->|"enforces"| n_019ff84e_4ecf_771d_9a3c_ef75ea44643f
   n_019ff84e_4ecf_7528_8d2b_24dfb64b40f2 -->|"enforces"| n_019ff84e_4ecf_7766_a829_6425e5ad305e
   n_019ff84e_4ecf_7528_8d2b_24dfb64b40f2 -->|"enforces"| n_019ff84e_4ecf_7912_af16_46a17ff8fc57
+  n_019ff84e_4ecf_710a_ad22_93698361c72b -->|"implemented_by"| n_019ff84e_4ecf_736e_9d3d_dc19c7223122
+  n_019ff84e_4ecf_710a_ad22_93698361c72b -->|"implemented_by"| n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c
   n_019ff84e_4ecf_74b8_8b3b_d33e1ad21f6a -->|"references"| n_019ff84e_4ecf_7f4e_8b17_1f35008e8877
   n_019ff84e_4ecf_7f4e_8b17_1f35008e8877 -->|"references"| n_019ff84e_4ece_76ad_ae3e_f92bef05635a
   n_019ff84e_4ecf_7f4e_8b17_1f35008e8877 -->|"references"| n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec

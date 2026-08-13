@@ -88,5 +88,15 @@ component_specifications:
   alias_name: json-semantic-extractor
 implementation_decisions: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: adr
+    from: ADR-P-0002
+    to: ADR-PC-0005
+    source_pointer: /id
+  - entity_type: component
+    from: COMP-0013
+    to: COMP-0005
+    source_pointer: /component_specifications/0/id
 alias_id: ADR-PC-0005
 alias_name: json-semantic-extraction

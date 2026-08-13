@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 7c4c433780a666b14b24dd0b8b440295b323e7ff4d02b0144062ed5ac5e1a780
-rendered_hash: 7da9f80e303cd4150d20b42dc3af70c9a3e7845dfa8b8f15891fd5393a79c3fe
+source_hash: 4d154470316f66738f56db9b17423c51fc3414288a753fa38ca623752d178fcc
+rendered_hash: f6c84a9e643b38ec760208d89d29069ef8a033f6bd28dd544dcd2954919d2450
 -->
 
 # ADR-L-0004: Watchdog Authoritative Mode for Workspace Boundary
@@ -74,13 +74,11 @@ flowchart LR
   n_019ff84e_4ecf_7776_bf27_ffc57bc598dd["ADR-PC-0003"]
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a["ADR-PS-0001"]
   n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48["ADR-PC-0001"]
-  n_019ff84e_4ed0_78a0_9334_d520d3decf14["ADR-P-0004"]
   n_019ff84e_4ece_77ef_9b2f_c46e2421c843 -->|"declared_in"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
   n_019ff84e_4ecf_734c_9f3f_04d15f1079f5 -->|"implements_logical"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
   n_019ff84e_4ecf_7776_bf27_ffc57bc598dd -->|"implements_logical"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"implements_logical"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
   n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48 -->|"implements_logical"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
-  n_019ff84e_4ed0_78a0_9334_d520d3decf14 -->|"implements_logical"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
   n_019ff84e_4ece_70ba_bf2e_a0fecd4a986e -->|"references"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
   n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5 -->|"references"| n_019ff84e_4ece_791b_822f_21f537c95340
 ```
@@ -106,18 +104,6 @@ RSS and MCP tooling. These semantics are broader than implementation detail
 and require an explicit logical authority.
 
 [Open projection](ADR-L-0007-graph-freshness-and-obligation-projection-semantics.md)
-### ADR-P-0004 — ste-runtime MCP Server Implementation
-
-**Relationships:**
-- 019ff84e-4ed0-78a0-9334-d520d3decf14 -[:implements_logical]-> this ADR
-
-**Context:** Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
-- **Provisional state** maintenance (pre-merge, feature branches)
-- **Soft + hard enforcement** (LLM instruction-following + validation tools)
-- **Post-reasoning validation** (catch violations after generation)
-- **Context assembly via RSS** (CEM Stage 2: State Loading)
-
-[Open projection](../physical/ADR-P-0004-ste-runtime-mcp-server-implementation.md)
 ### ADR-PC-0001 — MCP Server and Tool Registry
 
 **Relationships:**

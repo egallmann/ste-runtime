@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 213374062937db3ccc2835d78913f1183169added70b3409d79509b3a7e7b9bb
-rendered_hash: 1383a207fede1a64aab3e2fba4a9b52f35a1b49bcba9f34f0b9c61f76754d32e
+source_hash: 74a9562fcc0f033626a5fa54a5e6c9ffc5795c1dfc6143c6a1edfd1be94b13d7
+rendered_hash: a768c53bfa7629d9f66444553e17e6b54fb3a38863880e553f16ee442b8a5e32
 -->
 
 # ADR-PS-0001: Runtime Orchestration and Assistant Integration
@@ -83,7 +83,8 @@ flowchart LR
   n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c["COMP-0011"]
   n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48["ADR-PC-0001"]
   n_019ff84e_4ed0_727d_9337_e52045221df1["SYS-0001"]
-  n_019ff84e_4ed0_78a0_9334_d520d3decf14["ADR-P-0004"]
+  n_019ff84e_4ed0_747c_b51f_dc3ec8b29bef["COMP-0001"]
+  n_019ff876_6dad_7d95_ad68_e13d96ed23a9["ADR-PC-0012"]
   n_019ff84e_4ed0_727d_9337_e52045221df1 -->|"declared_in"| n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a
   n_019ff84e_4ecf_7072_bd2f_aeb73b26b100 -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
   n_019ff84e_4ecf_7102_af3f_302a74e31f59 -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
@@ -91,6 +92,7 @@ flowchart LR
   n_019ff84e_4ecf_745c_903f_18d2f4b20e63 -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
   n_019ff84e_4ecf_7962_b83d_01e7e385b783 -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
   n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
+  n_019ff84e_4ed0_747c_b51f_dc3ec8b29bef -->|"embodied_in"| n_019ff84e_4ed0_727d_9337_e52045221df1
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"implements_logical"| n_019ff84e_4ece_70ba_bf2e_a0fecd4a986e
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"implements_logical"| n_019ff84e_4ece_71c8_af1f_eb35c77b551a
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"implements_logical"| n_019ff84e_4ece_75dd_9f0b_ccb51cedc4f5
@@ -100,8 +102,7 @@ flowchart LR
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"related_to"| n_019ff84e_4ecf_7776_bf27_ffc57bc598dd
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"related_to"| n_019ff84e_4ecf_7a24_801d_7d1e708577ac
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"related_to"| n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48
-  n_019ff84e_4ed0_78a0_9334_d520d3decf14 -->|"superseded_by"| n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a
-  n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"supersedes"| n_019ff84e_4ed0_78a0_9334_d520d3decf14
+  n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"related_to"| n_019ff876_6dad_7d95_ad68_e13d96ed23a9
 ```
 
 ## Related ADRs
@@ -148,19 +149,6 @@ questions require either manual MCP tool invocation by an LLM or reading raw
 YAML.
 
 [Open projection](../logical/ADR-L-0018-deterministic-workspace-graph-queries.md)
-### ADR-P-0004 — ste-runtime MCP Server Implementation
-
-**Relationships:**
-- 019ff84e-4ed0-78a0-9334-d520d3decf14 -[:superseded_by]-> this ADR
-- this ADR -[:supersedes]-> 019ff84e-4ed0-78a0-9334-d520d3decf14
-
-**Context:** Per STE Architecture Section 3.1, the Workspace Development Boundary requires:
-- **Provisional state** maintenance (pre-merge, feature branches)
-- **Soft + hard enforcement** (LLM instruction-following + validation tools)
-- **Post-reasoning validation** (catch violations after generation)
-- **Context assembly via RSS** (CEM Stage 2: State Loading)
-
-[Open projection](../physical/ADR-P-0004-ste-runtime-mcp-server-implementation.md)
 ### ADR-PC-0001 — MCP Server and Tool Registry
 
 **Relationships:**
@@ -209,9 +197,17 @@ assistant-facing reasoning.
 querying. This component implements the loader, three canned query functions,
 and three projection renderers that realize that capability. It consumes
 workspace slices (per ADR-L-0016 schema contract) and exposes results through
-the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
 
 [Open projection](../physical-component/ADR-PC-0009-workspace-graph-query-engine.md)
+### ADR-PC-0012 — RSS CLI and Runtime Graph Traversal
+
+**Relationships:**
+- this ADR -[:related_to]-> 019ff876-6dad-7d95-ad68-e13d96ed23a9
+
+**Context:** The runtime requires a developer-facing interface for deterministic traversal and context assembly over the RECON semantic graph. This component provides the RSS CLI and the underlying graph operations used by runtime and assistant-facing workflows.
+
+[Open projection](../physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.md)
 
 
 

@@ -90,5 +90,19 @@ component_specifications:
   alias_name: frontend-semantic-extractor
 implementation_decisions: []
 gaps: []
+migration_origin:
+  remapped_entities:
+  - entity_type: adr
+    from: ADR-P-0003
+    to: ADR-PC-0006
+    source_pointer: /id
+  - entity_type: component
+    from: COMP-0014
+    to: COMP-0006
+    source_pointer: /component_specifications/0/id
+  - entity_type: component
+    from: COMP-0002
+    to: COMP-0006
+    source_pointer: /component_specifications/1/id
 alias_id: ADR-PC-0006
 alias_name: frontend-semantic-extraction

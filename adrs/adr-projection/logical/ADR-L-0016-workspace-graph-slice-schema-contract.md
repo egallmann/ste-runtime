@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 3c30d8b32511fbd1773f213579b2c283a994f31074eeee6a750cecdf0239a110
-rendered_hash: d4b51e3660322e6ab57a2b842d2e4d22ce1842c5132204954f5dd0491f3ab50d
+source_hash: 8a47db8d9a34ae2702564bd8a7172c02c089be4ed6e9533104dc3ca2e7022d4d
+rendered_hash: 7951d8eafe81cbc69590eca8bce0ddcb3e8bfca900bcec01dc81cdb4e83fcfaf
 -->
 
 # ADR-L-0016: Workspace Graph Slice Schema Contract
@@ -189,7 +189,7 @@ state, never modifying extraction output.
 querying. This component implements the loader, three canned query functions,
 and three projection renderers that realize that capability. It consumes
 workspace slices (per ADR-L-0016 schema contract) and exposes results through
-the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
 
 [Open projection](../physical-component/ADR-PC-0009-workspace-graph-query-engine.md)
 

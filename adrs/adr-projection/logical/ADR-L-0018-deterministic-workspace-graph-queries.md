@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: b5db57d70da3162fdb936c54029ced2b91c582634e275eaf24fb0585b70661ab
-rendered_hash: c1ed7b89dc93c0b9348c8093f5fac79d93a8dbcb37a5d859c4dee943f8f60ddf
+source_hash: 91132207c3fe753880af2d7d4383b3edd199493cdf7cf375d82e68b1b042af1d
+rendered_hash: 411a6c97e1cb1a9a0439b724d57a90c018d24e51ac1fec7b0ac48e9ebbbcc44b
 -->
 
 # ADR-L-0018: Deterministic Workspace Graph Queries
@@ -56,6 +56,7 @@ flowchart LR
   n_019ff84e_4ecf_74ba_b201_3b02412f39c8["ADR-L-0019"]
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a["ADR-PS-0001"]
   n_019ff84e_4ecf_7a24_801d_7d1e708577ac["ADR-PC-0009"]
+  n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c["COMP-0011"]
   n_019ff84e_4ecf_7d09_802f_c14b1802b27c["ADR-PC-0010"]
   n_019ff84e_4ecf_7d5e_a53c_bae8c74aca48["ADR-PC-0001"]
   n_019ff84e_4ecf_7f4e_8b17_1f35008e8877["ADR-L-0020"]
@@ -69,6 +70,7 @@ flowchart LR
   n_019ff84e_4ece_7f12_ae27_d1eafc11b6eb -->|"enforces"| n_019ff84e_4ece_7329_8c34_bbee9f5aea8f
   n_019ff84e_4ece_7f12_ae27_d1eafc11b6eb -->|"enforces"| n_019ff84e_4ece_7ffd_8202_831399ecb2a0
   n_019ff84e_4ece_7d33_a91e_00d8638b487d -->|"implemented_by"| n_019ff84e_4ecf_736e_9d3d_dc19c7223122
+  n_019ff84e_4ece_7d33_a91e_00d8638b487d -->|"implemented_by"| n_019ff84e_4ecf_7ba6_ac1f_2a56af7d146c
   n_019ff84e_4ecf_78a6_bb1c_676e50a3d97a -->|"implements_logical"| n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec
   n_019ff84e_4ecf_7a24_801d_7d1e708577ac -->|"implements_logical"| n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec
   n_019ff84e_4ecf_7d09_802f_c14b1802b27c -->|"implements_logical"| n_019ff84e_4ece_7c3b_833e_dbdb54ed76ec
@@ -158,7 +160,7 @@ workspace graph query tool surfaces into one discoverable server boundary.
 querying. This component implements the loader, three canned query functions,
 and three projection renderers that realize that capability. It consumes
 workspace slices (per ADR-L-0016 schema contract) and exposes results through
-the MCP tool registry (ADR-PC-0001) and CLI (ADR-P-0001).
+the MCP tool registry (ADR-PC-0001) and RSS CLI (ADR-PC-0012).
 
 [Open projection](../physical-component/ADR-PC-0009-workspace-graph-query-engine.md)
 ### ADR-PC-0010 — Semantic Compression Engine

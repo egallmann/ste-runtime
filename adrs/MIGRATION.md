@@ -2,6 +2,18 @@
 
 ## Schema v1.3 Identity Migration (2026-08-12)
 
+## Legacy Physical ADR Modernization (2026-08-12)
+
+The legacy `physical` ADR type was retired after review. The canonical implementation records were resolved as follows:
+
+- `ADR-P-0001` → new `ADR-PC-0012` (RSS CLI and Runtime Graph Traversal), preserving component alias `COMP-0001`.
+- `ADR-P-0002` → retired as superseded by `ADR-PC-0005` (JSON Semantic Extraction).
+- `ADR-P-0003` → retired as superseded by `ADR-PC-0006` (Frontend Semantic Extraction), consolidating `COMP-0014` and `COMP-0002` into the modern frontend component.
+- `ADR-P-0004` → folded into `ADR-PS-0001`; MCP and watchdog implementation ownership remains explicit in `ADR-PC-0001` and `ADR-PC-0002`.
+- `ADR-P-0005` → new `ADR-PC-0013` (Extractor Validation Framework), preserving component alias `COMP-0016` under `ADR-PS-0002`.
+
+The legacy ADR UUIDs and component aliases remain traceable through `supersedes`, `related_adrs`, and `migration_origin` metadata. The five canonical `adrs/physical/` sources and their generated projections were removed only as a consequence of this canonical migration and projection regeneration; historical references in this document remain historical.
+
 This meaning-preserving migration was executed on `feature/adr-v13-migration` from `BASE_SHA` `5ee21d1d8e8a23cbeefbae80decd6164d46322cb` using `adr-architecture-kit==0.4.0`.
 
 - Canonical source truth: 40 ADR YAML files; schema distribution `1.3: 40` (previously `1.0: 40`)

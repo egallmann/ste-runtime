@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: 36740522cc176d7cb1eac693707baf18bd0d236f32f299636066e433bb8f96a1
-rendered_hash: 6ccbcb608e2c58e376d01d402da873317932fdc6df555cc3f05fb94d61453b8a
+source_hash: 986bda98497b3e1c4b358199c4fa837944c8955770a59afeba20179dda5bac85
+rendered_hash: 78a673c358013687056fd462bf33844d614ee79afac12e5d3ced1a1b32bbfea4
 -->
 
 # ADR-L-0002: RECON Self-Validation Strategy
@@ -38,11 +38,11 @@ flowchart LR
   n_019ff84e_4ece_7378_b637_eaea5a1d3bc2["ADR-L-0002"]
   n_019ff84e_4ece_76c1_bb3e_45323e77f7ec["DEC-0002"]
   n_019ff84e_4ece_791b_822f_21f537c95340["ADR-L-0001"]
-  n_019ff84e_4ed0_79c2_843f_57944e4ec69c["ADR-P-0001"]
-  n_019ff84e_4ed0_7c04_af35_82ee16e5dc81["ADR-P-0005"]
+  n_019ff876_6dad_7d95_ad68_e13d96ed23a9["ADR-PC-0012"]
+  n_019ff876_6daf_773a_b017_7d967b7a7add["ADR-PC-0013"]
   n_019ff84e_4ece_76c1_bb3e_45323e77f7ec -->|"declared_in"| n_019ff84e_4ece_7378_b637_eaea5a1d3bc2
-  n_019ff84e_4ed0_79c2_843f_57944e4ec69c -->|"implements_logical"| n_019ff84e_4ece_7378_b637_eaea5a1d3bc2
-  n_019ff84e_4ed0_7c04_af35_82ee16e5dc81 -->|"implements_logical"| n_019ff84e_4ece_7378_b637_eaea5a1d3bc2
+  n_019ff876_6dad_7d95_ad68_e13d96ed23a9 -->|"implements_logical"| n_019ff84e_4ece_7378_b637_eaea5a1d3bc2
+  n_019ff876_6daf_773a_b017_7d967b7a7add -->|"implements_logical"| n_019ff84e_4ece_7378_b637_eaea5a1d3bc2
   n_019ff84e_4ece_7378_b637_eaea5a1d3bc2 -->|"references"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ece_791b_822f_21f537c95340 -->|"references"| n_019ff84e_4ece_7378_b637_eaea5a1d3bc2
 ```
@@ -58,22 +58,22 @@ flowchart LR
 **Context:** The STE Architecture Specification defines RECON (Reconciliation Engine) as the mechanism for extracting semantic state from source code and populating AI-DOC. The question arose: How should RECON operate during the exploratory development phase when foundational components are still being built?
 
 [Open projection](ADR-L-0001-recon-provisional-execution-for-project-level-semantic-state.md)
-### ADR-P-0001 — RSS CLI Implementation for Developer-Invoked Graph Traversal
+### ADR-PC-0012 — RSS CLI and Runtime Graph Traversal
 
 **Relationships:**
-- 019ff84e-4ed0-79c2-843f-57944e4ec69c -[:implements_logical]-> this ADR
+- 019ff876-6dad-7d95-ad68-e13d96ed23a9 -[:implements_logical]-> this ADR
 
-**Context:** The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing) as the component responsible for graph traversal and context assembly from AI-DOC state. RSS provides six core operations:
+**Context:** The runtime requires a developer-facing interface for deterministic traversal and context assembly over the RECON semantic graph. This component provides the RSS CLI and the underlying graph operations used by runtime and assistant-facing workflows.
 
-[Open projection](../physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph-traversal.md)
-### ADR-P-0005 — Extractor Validation Requirements
+[Open projection](../physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.md)
+### ADR-PC-0013 — Extractor Validation Framework
 
 **Relationships:**
-- 019ff84e-4ed0-7c04-af35-82ee16e5dc81 -[:implements_logical]-> this ADR
+- 019ff876-6daf-773a-b017-7d967b7a7add -[:implements_logical]-> this ADR
 
-**Context:** (no context)
+**Context:** The semantic extraction subsystem needs a concrete validation component that checks extractor output quality, graph consistency, coverage, identity, schema conformance, and repeatability before derived state is accepted.
 
-[Open projection](../physical/ADR-P-0005-extractor-validation-requirements.md)
+[Open projection](../physical-component/ADR-PC-0013-extractor-validation-framework.md)
 
 
 

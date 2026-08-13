@@ -28,6 +28,7 @@ references_components:
 - 019ff84e-4ecf-7776-bf27-ffc57bc598dd
 - 019ff84e-4ecf-7156-a33b-bc8bba3fac60
 - 019ff84e-4ecf-7a24-801d-7d1e708577ac
+- 019ff876-6dad-7d95-ad68-e13d96ed23a9
 related_adrs:
 - 019ff84e-4ed0-78a0-9334-d520d3decf14
 supersedes:
@@ -106,6 +107,10 @@ component_topology:
     purpose: Load workspace slices and execute deterministic graph queries with projection
       renderers.
     implements_adr: 019ff84e-4ecf-7a24-801d-7d1e708577ac
+  - name: RSS CLI and Runtime Graph Traversal
+    type: service
+    purpose: Expose deterministic RSS graph traversal and context assembly operations.
+    implements_adr: 019ff876-6dad-7d95-ad68-e13d96ed23a9
   relationships:
   - from: Watchdog and Update Coordination
     to: Preflight Freshness and Reconciliation Gate

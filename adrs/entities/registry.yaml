@@ -1038,3 +1038,27 @@ entities:
       depends_on: []
       implements: []
       realizes: []
+  - entity_id: 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+    entity_type: component
+    name: RSS CLI and Runtime Graph Traversal
+    introduced_by: 019ff876-6dad-7d95-ad68-e13d96ed23a9
+    lifecycle_stage: proposed
+    source_path: adrs/physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []
+  - entity_id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
+    entity_type: component
+    name: Extractor Validation Framework
+    introduced_by: 019ff876-6daf-773a-b017-7d967b7a7add
+    lifecycle_stage: proposed
+    source_path: adrs/physical-component/ADR-PC-0013-extractor-validation-framework.yaml
+    source_artifact_type: physical_component_adr
+    related_adrs: []
+    relationships:
+      depends_on: []
+      implements: []
+      realizes: []

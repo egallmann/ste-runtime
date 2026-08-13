@@ -5,8 +5,8 @@ artifact_kind: rendered_adr_markdown
 generator_id: adr-projection-markdown
 generator_version: 2
 hash_algorithm: sha256
-source_hash: aed710029fc591dfdad65c0ed246e1eb6c2d91090e45419363a9d12379b4791e
-rendered_hash: 02bd6908a8ea05329bc1c6cd37b57322b1180fd8a218fe9290ba609937b2c02d
+source_hash: 3cfe645ea1d5d8eb84343447dbec644cff7890e787598869d378920215928ce2
+rendered_hash: be53d85520eb48bd286142251caa6dc648c721672c64571a457c8c8b2146a2d4
 -->
 
 # ADR-PS-0002: Semantic Extraction Subsystem
@@ -65,6 +65,8 @@ flowchart LR
   n_019ff84e_4ecf_7a82_ae3a_121886af1b51["ADR-PC-0011"]
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c["ADR-PS-0002"]
   n_019ff84e_4ed0_767d_a90d_e98e673532cc["SYS-0002"]
+  n_019ff84e_4ed0_79a5_af08_91e55be4f49e["COMP-0016"]
+  n_019ff876_6daf_773a_b017_7d967b7a7add["ADR-PC-0013"]
   n_019ff84e_4ed0_767d_a90d_e98e673532cc -->|"declared_in"| n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c
   n_019ff84e_4ecf_73de_b63f_92e5a829225d -->|"embodied_in"| n_019ff84e_4ed0_767d_a90d_e98e673532cc
   n_019ff84e_4ecf_7422_913f_540519905503 -->|"embodied_in"| n_019ff84e_4ed0_767d_a90d_e98e673532cc
@@ -72,12 +74,14 @@ flowchart LR
   n_019ff84e_4ecf_7568_9a2b_9ca73464cb45 -->|"embodied_in"| n_019ff84e_4ed0_767d_a90d_e98e673532cc
   n_019ff84e_4ecf_774e_b239_5c80be840bd0 -->|"embodied_in"| n_019ff84e_4ed0_767d_a90d_e98e673532cc
   n_019ff84e_4ecf_7972_bf39_c81c4a74ae65 -->|"embodied_in"| n_019ff84e_4ed0_767d_a90d_e98e673532cc
+  n_019ff84e_4ed0_79a5_af08_91e55be4f49e -->|"embodied_in"| n_019ff84e_4ed0_767d_a90d_e98e673532cc
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"implements_logical"| n_019ff84e_4ece_737a_a23f_3f243e6fafda
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"implements_logical"| n_019ff84e_4ece_791b_822f_21f537c95340
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"related_to"| n_019ff84e_4ecf_7117_853b_c869ac6d7ba6
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"related_to"| n_019ff84e_4ecf_721a_b936_e1b98d068ec7
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"related_to"| n_019ff84e_4ecf_73e1_8c0f_19a06db3004b
   n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"related_to"| n_019ff84e_4ecf_7a82_ae3a_121886af1b51
+  n_019ff84e_4ed0_73d5_aa3f_dfbfd18b339c -->|"related_to"| n_019ff876_6daf_773a_b017_7d967b7a7add
 ```
 
 ## Related ADRs
@@ -142,6 +146,14 @@ architecture domain alongside code-derived domains (graph, behavior, data,
 api, infrastructure).
 
 [Open projection](../physical-component/ADR-PC-0011-adr-yaml-semantic-extraction.md)
+### ADR-PC-0013 — Extractor Validation Framework
+
+**Relationships:**
+- this ADR -[:related_to]-> 019ff876-6daf-773a-b017-7d967b7a7add
+
+**Context:** The semantic extraction subsystem needs a concrete validation component that checks extractor output quality, graph consistency, coverage, identity, schema conformance, and repeatability before derived state is accepted.
+
+[Open projection](../physical-component/ADR-PC-0013-extractor-validation-framework.md)
 
 
 

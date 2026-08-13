@@ -1648,6 +1648,7 @@ entities:
         - 019ff84e-4ecf-7776-bf27-ffc57bc598dd
         - 019ff84e-4ecf-7a24-801d-7d1e708577ac
         - 019ff84e-4ecf-7d5e-a53c-bae8c74aca48
+        - 019ff876-6dad-7d95-ad68-e13d96ed23a9
       enforces: []
       enforced_by: []
       enabled_by: []
@@ -2138,6 +2139,7 @@ entities:
         - 019ff84e-4ecf-721a-b936-e1b98d068ec7
         - 019ff84e-4ecf-73e1-8c0f-19a06db3004b
         - 019ff84e-4ecf-7a82-ae3a-121886af1b51
+        - 019ff876-6daf-773a-b017-7d967b7a7add
       enforces: []
       enforced_by: []
       enabled_by: []
@@ -2164,96 +2166,40 @@ entities:
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
-  - id: 019ff84e-4ed0-78a0-9334-d520d3decf14
+  - id: 019ff876-6dad-7d95-ad68-e13d96ed23a9
     entity_type: adr
-    name: ste-runtime MCP Server Implementation
+    name: RSS CLI and Runtime Graph Traversal
     summary: >-
-      Per STE Architecture Section 3.1, the Workspace Development Boundary requires: - **Provisional state** maintenance
-      (pre-merge, feature branches) - **Soft + hard enforcement** (LLM instruction-following + validation tools
-    lifecycle_stage: superseded
+      The runtime requires a developer-facing interface for deterministic traversal and context assembly over the RECON
+      semantic graph. This component provides the RSS CLI and the underlying graph operations used by runtime an
+    lifecycle_stage: proposed
     admission_status: admitted
     canonical_source:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-78a0-9334-d520d3decf14
-      artifact_path: adrs/physical/ADR-P-0004-ste-runtime-mcp-server-implementation.yaml
+      source_type: physical_component_adr
+      source_ref: 019ff876-6dad-7d95-ad68-e13d96ed23a9
+      artifact_path: adrs/physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.yaml
     source_refs: []
     metadata:
-      status: superseded
+      status: proposed
       domains:
-        - mcp
-        - integration
-        - implementation
-      tags:
-        - mcp
-        - server
-        - cursor-integration
-        - file-watching
-      related_reviews: []
-      related_overrides: []
-    relationships:
-      declared_in: []
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-      contradicts: []
-      rejects: []
-      rejected_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-78a0-9334-d520d3decf14
-      extraction_phase: extract_adr
-      classification: explicit
-      generator: adr-architecture-index
-  - id: 019ff84e-4ed0-79c2-843f-57944e4ec69c
-    entity_type: adr
-    name: RSS CLI Implementation for Developer-Invoked Graph Traversal
-    summary: >-
-      The STE Architecture Specification Section 4.6 defines RSS (Runtime State-Slicing) as the component responsible
-      for graph traversal and context assembly from AI-DOC state. RSS provides six core operations: | Operation | 
-    lifecycle_stage: active
-    admission_status: admitted
-    canonical_source:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-79c2-843f-57944e4ec69c
-      artifact_path: adrs/physical/ADR-P-0001-rss-cli-implementation-for-developer-invoked-graph.yaml
-    source_refs: []
-    metadata:
-      status: accepted
-      domains:
+        - runtime
         - rss
         - cli
-        - implementation
       tags:
         - rss
-        - cli
         - graph-traversal
-        - developer-tools
+        - cli
+        - context-assembly
       related_reviews: []
       related_overrides: []
     relationships:
       declared_in: []
-      declares: []
+      declares:
+        - 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
       references: []
       referenced_by: []
-      related_to: []
+      related_to:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
       enforces: []
       enforced_by: []
       enabled_by: []
@@ -2275,86 +2221,30 @@ entities:
       status: complete
       missing_fields: []
     provenance:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-79c2-843f-57944e4ec69c
+      source_type: physical_component_adr
+      source_ref: 019ff876-6dad-7d95-ad68-e13d96ed23a9
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
-  - id: 019ff84e-4ed0-7ba6-a33f-812df2eef432
+  - id: 019ff876-6daf-773a-b017-7d967b7a7add
     entity_type: adr
-    name: JSON Data Extraction for Compliance Controls and Schemas
+    name: Extractor Validation Framework
     summary: >-
-      Many enterprise codebases contain JSON files with semantic value beyond simple configuration: | Category |
-      Examples | Semantic Value | |----------|----------|----------------| | Controls/Rules Catalog | Security controls
-    lifecycle_stage: superseded
+      The semantic extraction subsystem needs a concrete validation component that checks extractor output quality,
+      graph consistency, coverage, identity, schema conformance, and repeatability before derived state is accepted.
+    lifecycle_stage: proposed
     admission_status: admitted
     canonical_source:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-7ba6-a33f-812df2eef432
-      artifact_path: adrs/physical/ADR-P-0002-json-data-extraction-for-compliance-controls-and-s.yaml
+      source_type: physical_component_adr
+      source_ref: 019ff876-6daf-773a-b017-7d967b7a7add
+      artifact_path: adrs/physical-component/ADR-PC-0013-extractor-validation-framework.yaml
     source_refs: []
     metadata:
-      status: superseded
+      status: proposed
       domains:
         - extraction
-        - data
-        - implementation
-      tags:
-        - json
-        - extractor
-        - compliance
-        - schemas
-      related_reviews: []
-      related_overrides: []
-    relationships:
-      declared_in: []
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-      contradicts: []
-      rejects: []
-      rejected_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-7ba6-a33f-812df2eef432
-      extraction_phase: extract_adr
-      classification: explicit
-      generator: adr-architecture-index
-  - id: 019ff84e-4ed0-7c04-af35-82ee16e5dc81
-    entity_type: adr
-    name: Extractor Validation Requirements
-    summary: ''
-    lifecycle_stage: active
-    admission_status: admitted
-    canonical_source:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-7c04-af35-82ee16e5dc81
-      artifact_path: adrs/physical/ADR-P-0005-extractor-validation-requirements.yaml
-    source_refs: []
-    metadata:
-      status: accepted
-      domains:
         - validation
-        - extraction
-        - implementation
+        - recon
       tags:
         - validation
         - extractors
@@ -2363,10 +2253,12 @@ entities:
       related_overrides: []
     relationships:
       declared_in: []
-      declares: []
+      declares:
+        - 019ff84e-4ed0-79a5-af08-91e55be4f49e
       references: []
       referenced_by: []
-      related_to: []
+      related_to:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
       enforces: []
       enforced_by: []
       enabled_by: []
@@ -2388,67 +2280,8 @@ entities:
       status: complete
       missing_fields: []
     provenance:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-7c04-af35-82ee16e5dc81
-      extraction_phase: extract_adr
-      classification: explicit
-      generator: adr-architecture-index
-  - id: 019ff84e-4ed0-7fa4-b739-80447b4e3085
-    entity_type: adr
-    name: Angular and CSS/SCSS Semantic Extraction
-    summary: >-
-      The TypeScript extractor currently processes Angular files as standard TypeScript, capturing: - Functions and
-      their signatures - Classes and their methods - Import/export relationships - Module structure However, Angular
-    lifecycle_stage: superseded
-    admission_status: admitted
-    canonical_source:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-7fa4-b739-80447b4e3085
-      artifact_path: adrs/physical/ADR-P-0003-angular-and-cssscss-semantic-extraction.yaml
-    source_refs: []
-    metadata:
-      status: superseded
-      domains:
-        - extraction
-        - frontend
-        - implementation
-      tags:
-        - angular
-        - css
-        - scss
-        - extractor
-        - frontend
-      related_reviews: []
-      related_overrides: []
-    relationships:
-      declared_in: []
-      declares: []
-      references: []
-      referenced_by: []
-      related_to: []
-      enforces: []
-      enforced_by: []
-      enabled_by: []
-      enables: []
-      governs: []
-      governed_by: []
-      implemented_by: []
-      implements: []
-      embodied_in: []
-      embodies: []
-      supersedes: []
-      superseded_by: []
-      refines: []
-      refined_by: []
-      contradicts: []
-      rejects: []
-      rejected_by: []
-    completeness:
-      status: complete
-      missing_fields: []
-    provenance:
-      source_type: physical_adr
-      source_ref: 019ff84e-4ed0-7fa4-b739-80447b4e3085
+      source_type: physical_component_adr
+      source_ref: 019ff876-6daf-773a-b017-7d967b7a7add
       extraction_phase: extract_adr
       classification: explicit
       generator: adr-architecture-index
@@ -3822,6 +3655,123 @@ entities:
     provenance:
       source_type: physical_component_adr
       source_ref: 019ff84e-4ecf-7d09-802f-c14b1802b27c#019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+    entity_type: component
+    name: RSS CLI and Runtime Graph Traversal
+    summary: >-
+      - Expose lookup, search, dependency, dependent, blast-radius, tag, and context commands through the RSS CLI - Load
+      and traverse AI-DOC graph state deterministically - Assemble source-backed context from graph entry point
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6dad-7d95-ad68-e13d96ed23a9#019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+      artifact_path: adrs/physical-component/ADR-PC-0012-rss-cli-and-runtime-graph-traversal.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff876-6dad-7d95-ad68-e13d96ed23a9
+      legacy_component_id: 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+      technologies:
+        - typescript
+        - node.js
+        - yaml
+      module_path: src/cli/rss-cli.ts
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ecf-78a6-bb1c-676e50a3d97a
+    relationships:
+      declared_in:
+        - 019ff876-6dad-7d95-ad68-e13d96ed23a9
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-727d-9337-e52045221df1
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6dad-7d95-ad68-e13d96ed23a9#019ff84e-4ed0-747c-b51f-dc3ec8b29bef
+      extraction_phase: extract_component
+      classification: explicit
+      generator: adr-architecture-index
+  - id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
+    entity_type: component
+    name: Extractor Validation Framework
+    summary: >-
+      - Validate extractor output quality and correctness - Check graph, coverage, identity, schema, and repeatability
+      invariants - Produce deterministic validation reports for RECON self-validation
+    lifecycle_stage: proposed
+    admission_status: admitted
+    canonical_source:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6daf-773a-b017-7d967b7a7add#019ff84e-4ed0-79a5-af08-91e55be4f49e
+      artifact_path: adrs/physical-component/ADR-PC-0013-extractor-validation-framework.yaml
+    source_refs: []
+    metadata:
+      adr_id: 019ff876-6daf-773a-b017-7d967b7a7add
+      legacy_component_id: 019ff84e-4ed0-79a5-af08-91e55be4f49e
+      technologies:
+        - typescript
+        - node.js
+        - schema-validation
+        - testing
+      module_path: src/recon/validation/
+      implements_capabilities: []
+      implements_system:
+        - 019ff84e-4ed0-73d5-aa3f-dfbfd18b339c
+    relationships:
+      declared_in:
+        - 019ff876-6daf-773a-b017-7d967b7a7add
+      declares: []
+      references: []
+      referenced_by: []
+      related_to: []
+      enforces: []
+      enforced_by: []
+      enabled_by: []
+      enables: []
+      governs: []
+      governed_by: []
+      implemented_by: []
+      implements: []
+      embodied_in:
+        - 019ff84e-4ed0-767d-a90d-e98e673532cc
+      embodies: []
+      supersedes: []
+      superseded_by: []
+      refines: []
+      refined_by: []
+      contradicts: []
+      rejects: []
+      rejected_by: []
+    completeness:
+      status: complete
+      missing_fields: []
+    provenance:
+      source_type: physical_component_adr
+      source_ref: 019ff876-6daf-773a-b017-7d967b7a7add#019ff84e-4ed0-79a5-af08-91e55be4f49e
       extraction_phase: extract_component
       classification: explicit
       generator: adr-architecture-index
@@ -7306,6 +7256,7 @@ entities:
         - 019ff84e-4ecf-745c-903f-18d2f4b20e63
         - 019ff84e-4ecf-7962-b83d-01e7e385b783
         - 019ff84e-4ecf-7ba6-ac1f-2a56af7d146c
+        - 019ff84e-4ed0-747c-b51f-dc3ec8b29bef
       supersedes: []
       superseded_by: []
       refines: []
@@ -7373,6 +7324,7 @@ entities:
         - 019ff84e-4ecf-7568-9a2b-9ca73464cb45
         - 019ff84e-4ecf-774e-b239-5c80be840bd0
         - 019ff84e-4ecf-7972-bf39-c81c4a74ae65
+        - 019ff84e-4ed0-79a5-af08-91e55be4f49e
       supersedes: []
       superseded_by: []
       refines: []
