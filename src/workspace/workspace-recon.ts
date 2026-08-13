@@ -32,6 +32,8 @@ export interface WorkspaceReconOptions {
   failOnAnyError?: boolean;
   skipUnchanged?: boolean;
   timeoutPerRepoMs?: number;
+  /** Public SDK seam; legacy CLI leaves this unset to preserve first-wins behavior. */
+  beforeMerge?: (outputDir: string) => Promise<void>;
 }
 
 export interface RepoResult {
@@ -321,6 +323,10 @@ export const executeWorkspaceRecon: (
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log(`[workspace-recon] Cross-repo edge analysis failed (non-fatal): ${msg}`);
+  }
+
+  if (options.beforeMerge) {
+    await options.beforeMerge(outputRoot);
   }
 
   try {

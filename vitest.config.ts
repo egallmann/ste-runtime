@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   test: {
@@ -39,7 +40,7 @@ export default defineConfig({
     
     // Resolve aliases for cleaner imports
     alias: {
-      '@/': new URL('./src/', import.meta.url).pathname,
+      '@/': fileURLToPath(new URL('./src/', import.meta.url)),
     },
     
     // Pool configuration: use 'forks' for reliable ESM mocking on Linux CI
