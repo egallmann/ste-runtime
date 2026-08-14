@@ -224,8 +224,8 @@ entities:
     entity_type: invariant
     name: 019ff84e-4ece-7387-b33f-3d203e3c968c
     summary: >-
-      Single repository only: RECON discovers files within the current repository. Cross-repository reconciliation is
-      out of scope.
+      RECON extraction is repository-local: each repository observation discovers files within its registered repository
+      source. Workspace orchestration may compose multiple repository observations into one derived workspace p
     lifecycle_stage: active
     admission_status: admitted
     canonical_source:
@@ -237,8 +237,9 @@ entities:
       adr_id: 019ff84e-4ece-791b-822f-21f537c95340
       scope: global
       statement: >-
-        Single repository only: RECON discovers files within the current repository. Cross-repository reconciliation is
-        out of scope.
+        RECON extraction is repository-local: each repository observation discovers files within its registered
+        repository source. Workspace orchestration may compose multiple repository observations into one derived
+        workspace projection. Cross-workspace reconciliation remains out of scope unless explicitly federated.
       enforcement_level: must
       declaration_mode: local
       upheld_by_decisions: []

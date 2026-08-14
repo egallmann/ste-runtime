@@ -23,9 +23,11 @@ checkout use; the package remains private and unpublished.
 
 ### Installation
 
-The RSS API is exported from the built source checkout. After `npm ci` and
-`npm run build`, local code may import from `./dist/index.js` or use a local
-`npm link`. Do not use `npm install ste-runtime`; the package is not published.
+RSS is a repository-internal/source-checkout API. It is not exported from the
+`ste-runtime` package root, which exposes the public runtime contract only.
+After `npm ci` and `npm run build`, repository-maintainer scripts may import
+the built internal module below. Do not use `npm install ste-runtime`; the
+package is not published.
 
 ```typescript
 import {
@@ -61,13 +63,14 @@ import {
   type RssQueryResult,
   type BrokenEdge,
   type BidirectionalInconsistency,
-} from './dist/index.js';
+} from './dist/rss/rss-operations.js';
 ```
 
-For TypeScript tooling, importing directly from the source is also possible:
+For source-level TypeScript tooling inside this repository, importing directly
+from the internal module is also possible:
 
 ```typescript
-import { initRssContext, search } from './ste-runtime/src/rss/rss-operations.js';
+import { initRssContext, search } from './src/rss/rss-operations.js';
 ```
 
 ### Basic Usage
@@ -565,7 +568,8 @@ Complete understanding without misses
 ### Implementation Pattern
 
 ```typescript
-import { initRssContext, findEntryPoints, blastRadius } from 'ste-runtime';
+// Repository-internal API; not a package-root import.
+import { initRssContext, findEntryPoints, blastRadius } from './dist/rss/rss-operations.js';
 
 async function getRelevantFiles(task: string): Promise<string[]> {
   const ctx = await initRssContext('.ste/state');
