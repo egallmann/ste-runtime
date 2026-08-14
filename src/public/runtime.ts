@@ -1,10 +1,11 @@
 import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
-import os from 'node:os';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-import type { WorkspaceReconResult } from '../workspace/workspace-recon.js';
+import {
+  createWorkspaceExecutionAdapter,
+  type LegacyGraph,
+  type WorkspaceExecutionResult,
+  WorkspaceExecutionError,
+} from '../workspace/runtime-workspace-execution.js';
 import {
   canonicalDefinition,
   definitionRevision,
@@ -37,38 +38,6 @@ import type {
   WorkspaceId,
   WorkspaceRegistration,
 } from './types.js';
-
-interface LegacyNode {
-  id: string;
-  type: string;
-  name: string;
-  repo?: string;
-  attributes?: Record<string, unknown>;
-  provenance?: {
-    source_path?: string;
-    source_ref?: string;
-    repo?: string;
-  };
-}
-
-interface LegacyEdge {
-  from: string;
-  to: string;
-  verb: string;
-  provenance?: {
-    source_path?: string;
-    source_ref?: string;
-    repo?: string;
-    source_repo?: string;
-    target_repo?: string;
-    evidence?: string;
-  };
-}
-
-interface LegacyGraph {
-  nodes?: LegacyNode[];
-  edges?: LegacyEdge[];
-}
 
 const UUID_V7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -195,10 +164,6 @@ function validateRegistration(registration: WorkspaceRegistration): WorkspaceReg
   return buildRegistration(registration.workspaceId, normalizedDefinition, registration.display, registration.repositories);
 }
 
-function executionKey(index: number): string {
-  return `repo-${index + 1}`;
-}
-
 function sourceLocator(sourcePath?: string, sourceRef?: string): string | undefined {
   if (!sourcePath && !sourceRef) return undefined;
   if (!sourceRef) return sourcePath;
@@ -211,22 +176,6 @@ function repositoryIdFor(
   executionToRepository: ReadonlyMap<string, RepositoryId>,
 ): RepositoryId | undefined {
   return key ? executionToRepository.get(key) : undefined;
-}
-
-async function readLegacyGraph(raw: string): Promise<LegacyGraph> {
-  const { default: yaml } = await import('js-yaml');
-  const parsed = yaml.load(raw) as LegacyGraph | null;
-  return parsed ?? {};
-}
-
-async function pathStatus(sourcePath: string): Promise<'present' | 'orphaned' | 'unavailable'> {
-  try {
-    const stat = await fs.stat(sourcePath);
-    return stat.isDirectory() ? 'present' : 'unavailable';
-  } catch (error) {
-    const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
-    return code === 'ENOENT' || code === 'ENOTDIR' ? 'orphaned' : 'unavailable';
-  }
 }
 
 function toDiagnostic(code: string, message: string, repositoryIds?: readonly RepositoryId[]): RuntimeDiagnostic {
@@ -331,44 +280,16 @@ function currentObservationValue(
   };
 }
 
-async function writeWorkspaceManifest(
-  workspaceRoot: string,
-  registration: WorkspaceRegistration,
-): Promise<{ manifestPath: string; executionToRepository: Map<string, RepositoryId> }> {
-  const repositories = sortedByRepositoryId(registration.definition.repositories);
-  const executionToRepository = new Map<string, RepositoryId>();
-  const manifestRepos = repositories.map((repository, index) => {
-    const key = executionKey(index);
-    executionToRepository.set(key, repository.repositoryId);
-    return {
-      name: key,
-      path: repository.source.path,
-      kind: 'service',
-      lang: 'unknown',
-    };
-  });
-  const manifestPath = path.join(workspaceRoot, 'workspace.yaml');
-  const { default: yaml } = await import('js-yaml');
-  await fs.writeFile(
-    manifestPath,
-    yaml.dump({ schema_version: '1.0', output_dir: '.workspace-graph', repos: manifestRepos }),
-    'utf8',
-  );
-  return { manifestPath, executionToRepository };
-}
-
 function observationsForResult(
   registration: WorkspaceRegistration,
-  result: WorkspaceReconResult,
-  executionToRepository: ReadonlyMap<string, RepositoryId>,
-  initialStatuses: ReadonlyMap<RepositoryId, 'present' | 'orphaned' | 'unavailable'>,
+  execution: WorkspaceExecutionResult,
 ): { observations: RepositoryObservation[]; observedCount: number; diagnostics: RuntimeDiagnostic[] } {
   const observations: RepositoryObservation[] = [];
   const diagnostics: RuntimeDiagnostic[] = [];
   for (const repository of sortedByRepositoryId(registration.definition.repositories)) {
-    const key = [...executionToRepository.entries()].find(([, id]) => id === repository.repositoryId)?.[0];
-    const repoResult = result.repos.find(entry => entry.name === key);
-    const initial = initialStatuses.get(repository.repositoryId) ?? 'unavailable';
+    const key = [...execution.executionToRepository.entries()].find(([, id]) => id === repository.repositoryId)?.[0];
+    const repoResult = execution.reconResult.repos.find(entry => entry.name === key);
+    const initial = execution.initialStatuses.get(repository.repositoryId) ?? 'unavailable';
     if (repoResult?.status === 'success') {
       observations.push({
         repositoryId: repository.repositoryId,
@@ -390,7 +311,7 @@ function observationsForResult(
 }
 
 export function createRuntime(): Runtime {
-  const temporaryRoots = new Set<string>();
+  const workspaceExecution = createWorkspaceExecutionAdapter();
   let closed = false;
 
   const capabilities: RuntimeCapabilityManifest = Object.freeze({
@@ -484,42 +405,24 @@ export function createRuntime(): Runtime {
       registration,
       refresh: async (): Promise<RuntimeSnapshot> => {
         ensureOpen();
-        const refreshRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'ste-runtime-public-refresh-'));
-        temporaryRoots.add(refreshRoot);
-        const { manifestPath, executionToRepository } = await writeWorkspaceManifest(refreshRoot, registration);
-        const initialStatuses = new Map<RepositoryId, 'present' | 'orphaned' | 'unavailable'>();
-        for (const repository of registration.definition.repositories) {
-          initialStatuses.set(repository.repositoryId, await pathStatus(repository.source.path));
-        }
-
         try {
-          const [{ executeWorkspaceRecon }, { preflightWorkspaceGraphIdentity }] = await Promise.all([
-            import('../workspace/workspace-recon.js'),
-            import('../workspace/workspace-merge.js'),
-          ]);
-          const result = await executeWorkspaceRecon({
-            workspacePath: manifestPath,
-            mode: 'full',
-            runtimeDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'),
-            failOnAnyError: false,
-            skipUnchanged: false,
-            beforeMerge: outputDir => preflightWorkspaceGraphIdentity(outputDir),
-          });
+          const execution = await workspaceExecution.execute(registration);
           const { observations, observedCount, diagnostics } = observationsForResult(
             registration,
-            result,
-            executionToRepository,
-            initialStatuses,
+            execution,
           );
           if (observedCount === 0) {
             throw new RefreshError('NO_SOURCE_OBSERVED', 'No registered repository could be observed', diagnostics);
           }
 
-          const graphRaw = await fs.readFile(path.join(refreshRoot, '.workspace-graph', 'graph.yaml'), 'utf8');
-          const legacyGraph = await readLegacyGraph(graphRaw);
           const snapshotId = uuidv7() as SnapshotId;
           validateSnapshotId(snapshotId);
-          const graph = graphFromLegacy(registration.workspaceId, snapshotId, legacyGraph, executionToRepository);
+          const graph = graphFromLegacy(
+            registration.workspaceId,
+            snapshotId,
+            execution.graph,
+            execution.executionToRepository,
+          );
           const snapshot: RuntimeSnapshot = {
             snapshotId,
             workspaceId: registration.workspaceId,
@@ -535,22 +438,17 @@ export function createRuntime(): Runtime {
           return deepFreeze(snapshot);
         } catch (error) {
           if (error instanceof RefreshError) throw error;
-          if (error instanceof Error && error.name === 'WorkspaceIdentityCollisionError' && 'collisions' in error) {
-            const collisions = (error as Error & { collisions: Array<{ id: string; repositories: string[] }> }).collisions;
+          if (error instanceof WorkspaceExecutionError && error.code === 'ENTITY_ID_COLLISION') {
+            const collisions = error.collisions ?? [];
             const diagnostics = collisions.map(collision => toDiagnostic(
               'ENTITY_ID_COLLISION',
-              `${collision.id} was declared by ${collision.repositories.join(', ')}`,
-              collision.repositories
-                .map(repository => executionToRepository.get(repository))
-                .filter((repositoryId): repositoryId is RepositoryId => repositoryId !== undefined),
+              `${collision.id} was declared by ${collision.repositoryIds.join(', ')}`,
+              collision.repositoryIds,
             ));
             throw new RefreshError('ENTITY_ID_COLLISION', error.message, diagnostics);
           }
           const message = error instanceof Error ? error.message : String(error);
           throw new RefreshError('REFRESH_FAILED', message, [toDiagnostic('REFRESH_FAILED', message)]);
-        } finally {
-          await fs.rm(refreshRoot, { recursive: true, force: true });
-          temporaryRoots.delete(refreshRoot);
         }
       },
     };
@@ -564,8 +462,7 @@ export function createRuntime(): Runtime {
     close: async () => {
       if (closed) return;
       closed = true;
-      await Promise.all([...temporaryRoots].map(root => fs.rm(root, { recursive: true, force: true })));
-      temporaryRoots.clear();
+      await workspaceExecution.close();
     },
   };
 }
