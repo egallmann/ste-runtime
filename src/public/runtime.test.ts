@@ -330,4 +330,32 @@ describe('no-source current projection', () => {
       await fs.rm(repositoryB, { recursive: true, force: true });
     }
   });
+
+  it('isolates concurrent refreshes without materializing state in either source repository', async () => {
+    const repositoryA = await createFixtureRepository('ste-runtime-concurrent-a');
+    const repositoryB = await createFixtureRepository('ste-runtime-concurrent-b');
+    const runtime = createRuntime();
+    try {
+      const [registrationA, registrationB] = await Promise.all([
+        runtime.createRegistration({ repositories: [{ source: { kind: 'local', path: repositoryA } }] }),
+        runtime.createRegistration({ repositories: [{ source: { kind: 'local', path: repositoryB } }] }),
+      ]);
+      const [snapshotA, snapshotB] = await Promise.all([
+        (await runtime.open(registrationA)).refresh(),
+        (await runtime.open(registrationB)).refresh(),
+      ]);
+
+      expect(snapshotA.workspaceId).toBe(registrationA.workspaceId);
+      expect(snapshotB.workspaceId).toBe(registrationB.workspaceId);
+      expect(snapshotA.workspaceId).not.toBe(snapshotB.workspaceId);
+      for (const repository of [repositoryA, repositoryB]) {
+        await expect(fs.access(path.join(repository, '.ste'))).rejects.toMatchObject({ code: 'ENOENT' });
+        await expect(fs.access(path.join(repository, '.workspace-graph'))).rejects.toMatchObject({ code: 'ENOENT' });
+      }
+    } finally {
+      await runtime.close();
+      await fs.rm(repositoryA, { recursive: true, force: true });
+      await fs.rm(repositoryB, { recursive: true, force: true });
+    }
+  });
 });
