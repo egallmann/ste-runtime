@@ -99,3 +99,21 @@ jobs:
     - name: Verify public-source release policy
       run: npm run release:check
 
+  required:
+    name: required
+    if: ${{ always() }}
+    needs:
+      - test
+      - portability
+    runs-on: ubuntu-latest
+    steps:
+    - name: Verify mandatory test jobs succeeded
+      env:
+        TEST_RESULT: ${{ needs.test.result }}
+        PORTABILITY_RESULT: ${{ needs.portability.result }}
+      run: |
+        if [ "$TEST_RESULT" != "success" ] || [ "$PORTABILITY_RESULT" != "success" ]; then
+          echo "Required test gate failed: test=$TEST_RESULT portability=$PORTABILITY_RESULT"
+          exit 1
+        fi
+
