@@ -185,24 +185,26 @@ before connecting an editor.
 
 ## Programmatic Use
 
-After building a source checkout, the current implementation exports can be
-imported from `dist/index.js`:
+The supported package-root API is the P1 runtime contract:
 
 ```js
-import { initRssContext, search, blastRadius } from './dist/index.js';
+import { createRuntime } from './dist/index.js';
 
-const ctx = await initRssContext('.ste/state');
-const matches = search(ctx, 'authentication');
-const impact = matches.nodes[0]
-  ? blastRadius(ctx, matches.nodes[0].key)
-  : { nodes: [] };
-
-console.log({ matches: matches.nodes.length, impact: impact.nodes.length });
+const runtime = createRuntime();
+try {
+  const registration = await runtime.createRegistration({
+    repositories: [{ source: { kind: 'local', path: '/absolute/path/to/repository' } }],
+  });
+  const snapshot = await (await runtime.open(registration)).refresh();
+  console.log({ workspaceId: snapshot.workspaceId, nodes: snapshot.graph.nodes.length });
+} finally {
+  await runtime.close();
+}
 ```
 
-This describes source-checkout use of current exports, not a production
-package compatibility guarantee. See the verified
-[RSS programmatic API guide](instructions/RSS-PROGRAMMATIC-API.md).
+RSS remains a repository-internal/source-checkout API rather than a package-root
+contract. Use the RSS CLI for supported RSS workflows; its internal APIs are
+documented separately for repository maintainers.
 
 ## Architecture Records and Generated State
 
