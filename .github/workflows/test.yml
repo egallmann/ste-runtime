@@ -44,17 +44,6 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Prove architecture compiler (ADR sources only)
-      run: npm run test:integration
-
-    - name: Verify public-source release policy
-      run: npm run release:check
-    
-    - name: Verify RECON self-documentation
-      run: |
-        npm run recon:self
-        echo "RECON self-documentation completed successfully"
-
   portability:
     name: OS portability / ${{ matrix.os }} / Node 24
     runs-on: ${{ matrix.os }}
@@ -90,14 +79,51 @@ jobs:
     - name: Run unit tests
       run: npm test
 
-    - name: Prove architecture compiler
-      run: npm run test:integration
+  contract:
+    name: Contract qualification / Ubuntu / Node 22
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: npm
+        cache-dependency-path: package-lock.json
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies and repository hooks
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    - name: Lint
+      run: npm run lint
 
     - name: Run contract guards
       run: npm run test:contract-guards
 
+    - name: Prove architecture compiler
+      run: npm run test:integration
+
+    - name: Prove public tarball consumer
+      run: npm run test:public-tarball
+
     - name: Verify public-source release policy
       run: npm run release:check
+
+    - name: Verify RECON self-documentation
+      run: npm run recon:self
 
   required:
     name: required
@@ -105,15 +131,17 @@ jobs:
     needs:
       - test
       - portability
+      - contract
     runs-on: ubuntu-latest
     steps:
     - name: Verify mandatory test jobs succeeded
       env:
         TEST_RESULT: ${{ needs.test.result }}
         PORTABILITY_RESULT: ${{ needs.portability.result }}
+        CONTRACT_RESULT: ${{ needs.contract.result }}
       run: |
-        if [ "$TEST_RESULT" != "success" ] || [ "$PORTABILITY_RESULT" != "success" ]; then
-          echo "Required test gate failed: test=$TEST_RESULT portability=$PORTABILITY_RESULT"
+        if [ "$TEST_RESULT" != "success" ] || [ "$PORTABILITY_RESULT" != "success" ] || [ "$CONTRACT_RESULT" != "success" ]; then
+          echo "Required test gate failed: test=$TEST_RESULT portability=$PORTABILITY_RESULT contract=$CONTRACT_RESULT"
           exit 1
         fi
 
