@@ -20,7 +20,10 @@ context: 'Reconnaissance tools traditionally assume a single repository as the u
 
   level so that cross-repo relationships, shared configuration, and
 
-  aggregate evidence can be captured correctly.
+  aggregate evidence can be captured correctly. A workspace is a durably identified
+  engineering scope composed of one or more repositories. Repositories are the only
+  workspace membership units; graph entities remain derived projections with repository
+  provenance.
 
   '
 capabilities:
@@ -68,7 +71,13 @@ decision: 'Scope is a workspace. A workspace contains one or more repositories.
 
   is --workspace <dir> where the workspace contains one repo. No
 
-  special-case code exists for single-repo mode.
+  special-case code exists for single-repo mode. Workspace identity is an immutable
+  UUIDv7 minted by explicit registration creation. Registration-scoped repository
+  UUIDv7 identities preserve provenance across local materialization path changes.
+  Definition revisions are runtime-generated canonical digests and do not change
+  workspace identity. Repository boundaries preserve source provenance; the workspace
+  boundary governs graph traversal. Cross-workspace traversal is fail-closed unless
+  future federation is explicitly declared.
 
   '
 consequences:

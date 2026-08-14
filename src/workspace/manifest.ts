@@ -111,6 +111,13 @@ function dedupeLanguages(langs: SupportedLanguage[]): SupportedLanguage[] {
   return [...new Set(langs)];
 }
 
+function equivalentLocalPath(left: string, right: string): boolean {
+  const normalize = (value: string) => path.normalize(value).replace(/[\\/]+$/, '');
+  const a = normalize(left);
+  const b = normalize(right);
+  return process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b;
+}
+
 /**
  * Map manifest `lang` labels to RECON {@link SupportedLanguage} values.
  * Unknown labels fall back to {@link detectLanguages} against the repository root.
@@ -319,7 +326,7 @@ export const buildPerRepoConfig: (
 
   const relativeStateDir = toPosixPath(path.relative(repoAbsPath, stateAbsPath));
   const resolvedViaJoin = path.resolve(repoAbsPath, relativeStateDir);
-  if (resolvedViaJoin !== stateAbsPath) {
+  if (!equivalentLocalPath(resolvedViaJoin, stateAbsPath)) {
     throw new Error(
       `Invariant 2 check failed: state path resolution mismatch (expected ${stateAbsPath}, got ${resolvedViaJoin})`,
     );

@@ -15,7 +15,7 @@ linking are the supported ways to experiment with it today.
 
 Prerequisites:
 
-- Node.js 18 or later;
+- Node.js 22 or later;
 - npm;
 - Python 3 for Python extractor development.
 

@@ -12,7 +12,7 @@ For single-repo usage, see [RECON-README.md](../../instructions/RECON-README.md)
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - npm
 - ste-runtime cloned and built:
 

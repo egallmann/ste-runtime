@@ -15,7 +15,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [22.x, 24.x]
     
     steps:
     - name: Checkout repository
@@ -56,7 +56,7 @@ jobs:
         echo "RECON self-documentation completed successfully"
 
   portability:
-    name: OS portability / ${{ matrix.os }} / Node 20
+    name: OS portability / ${{ matrix.os }} / Node 24
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -72,7 +72,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20.x
+        node-version: 24.x
         cache: npm
         cache-dependency-path: package-lock.json
 
@@ -98,4 +98,22 @@ jobs:
 
     - name: Verify public-source release policy
       run: npm run release:check
+
+  required:
+    name: required
+    if: ${{ always() }}
+    needs:
+      - test
+      - portability
+    runs-on: ubuntu-latest
+    steps:
+    - name: Verify mandatory test jobs succeeded
+      env:
+        TEST_RESULT: ${{ needs.test.result }}
+        PORTABILITY_RESULT: ${{ needs.portability.result }}
+      run: |
+        if [ "$TEST_RESULT" != "success" ] || [ "$PORTABILITY_RESULT" != "success" ]; then
+          echo "Required test gate failed: test=$TEST_RESULT portability=$PORTABILITY_RESULT"
+          exit 1
+        fi
 
