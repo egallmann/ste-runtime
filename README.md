@@ -10,7 +10,7 @@ repository exploration, task-scoped context, workspace queries, and evidence
 production without replacing canonical architecture or governance authority.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
 
 ## Runtime boundary and AI orientation
 
@@ -26,7 +26,7 @@ human-in-the-loop; the runtime is not an autonomous engineering agent.
 
 ## Quick Start
 
-The supported path is a source checkout. Requires Node.js 18 or later and npm.
+The supported path is a source checkout. Requires Node.js 22 or later and npm.
 Python 3 is also required by some extractors.
 
 ```bash
